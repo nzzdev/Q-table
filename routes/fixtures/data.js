@@ -2,7 +2,8 @@ const fixtureDataDirectory = '../../resources/fixtures/data';
 
 // provide every fixture data file present in ../../resources/fixtures/data
 const fixtureData = [
-  require(`${fixtureDataDirectory}/simple.json`),
+  require(`${fixtureDataDirectory}/two-column.json`),
+  require(`${fixtureDataDirectory}/four-column.json`),
 ];
 
 module.exports = {

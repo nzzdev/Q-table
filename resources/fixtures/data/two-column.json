@@ -1,16 +1,16 @@
 {
-  "title": "FIXTURE: simple short table",
+  "title": "FIXTURE: simple one-column short table with numeric values",
   "subtitle": "some subtitle here",
   "data": [
     ["Land", "Punkte"],
     ["Schweiz", "1"],
     ["Deutschland", "2"],
     ["Frankreich", "3"],
-    ["Österreich", "0.5"]
+    ["Österreich", "-35"]
   ],
   "options": {
     "cardLayout": false,
-    "cardLayoutIfSmall": true
+    "cardLayoutIfSmall": false
   },
   "notes": "Anmerkungen",
   "sources": [
