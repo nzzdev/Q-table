@@ -21,6 +21,7 @@
     padding: 0;
     width: 100%;
     table-layout: auto;
+    empty-cells: show;
   }
   table thead {
     background: unset;
@@ -57,8 +58,8 @@
     margin-bottom: 6px;
   }
   table td {
-    display: block;
-    text-align: right !important;
+    display: flex;
+    justify-content: space-between;
   }
   table td:before {
     /*
@@ -66,7 +67,7 @@
     content: attr(aria-label);
     */
     content: attr(data-label);
-    float: left;
+    // float: left;
     font-weight: 500;
   }
   table td:last-child {
