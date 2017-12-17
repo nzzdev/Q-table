@@ -1,9 +1,13 @@
 const querystring = require('querystring');
+const fs = require('fs');
 
 const Joi = require('joi');
 const Boom = require('boom');
 
+const resourcesDir = __dirname + '/../../resources/';
+const helpersDir = __dirname + '/../../helpers/';
 const viewsDir = __dirname + '/../../views/';
+const scriptsDir  = __dirname + '/../../scripts/';
 const stylesDir  = __dirname + '/../../styles/';
 
 // setup nunjucks environment
@@ -12,17 +16,41 @@ const nunjucksEnv = new nunjucks.Environment();
 
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
-const getExactPixelWidth = require('../../helpers/toolRuntimeConfig.js').getExactPixelWidth;
-const data = require('../../helpers/data.js');
+const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`).getExactPixelWidth;
+const data = require(`${helpersDir}data.js`);
 
-// temp function until we have all chart types implemented with the new vega renderer
-// determines if we go with the new or old renderer
-function shouldUseLegacyRenderingInfo(request) {
-  const item = request.payload.item;
-  if (item.options.chartType === 'Line') {
-    return false;
+
+// POSTed item will be validated against given schema
+// hence we fetch the JSON schema...
+const schemaString = JSON.parse(fs.readFileSync(resourcesDir + 'schema.json', {
+  encoding: 'utf-8'
+}));
+const Ajv = require('ajv');
+const ajv = new Ajv();
+
+// add draft-04 support explicit
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
+
+const validate = ajv.compile(schemaString);
+function validateAgainstSchema(item, options) {
+  if (validate(item)) {
+    return item;
+  } else {
+    throw Boom.badRequest(JSON.stringify(validate.errors));
   }
-  return true;
+}
+
+async function validatePayload(payload, options, next) {
+  if (typeof payload !== 'object') {
+    return next(Boom.badRequest(), payload);
+  }
+  if (typeof payload.item !== 'object') {
+    return next(Boom.badRequest(), payload);
+  }
+  if (typeof payload.toolRuntimeConfig !== 'object') {
+    return next(Boom.badRequest(), payload);
+  }
+  await validateAgainstSchema(payload.item, options);
 }
 
 module.exports = {
@@ -33,10 +61,7 @@ module.exports = {
       options: {
         allowUnknown: true
       },
-      payload: {
-        item: Joi.object(),
-        toolRuntimeConfig: Joi.object()
-      }
+      payload: validatePayload
     }
   },
   handler: async function(request, h) {
