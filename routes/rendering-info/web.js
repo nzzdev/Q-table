@@ -105,9 +105,9 @@ module.exports = {
               }
             }
             ${functionName}();
-            window.addEventListener('resize', () => {
+            window.addEventListener('resize', function() {
               ${process.env.APP_ENV !== 'production' ? 'console.log("Q-table: resize handler");' : ''}
-              requestAnimationFrame(() => {
+              requestAnimationFrame(function() {
                 var newWidth = ${dataObject}.element.getBoundingClientRect().width;
                 if (newWidth !== ${dataObject}.width) {
                   ${process.env.APP_ENV !== 'production' ? 'console.log("Q-table: new width !== old width");' : ''}
