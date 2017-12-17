@@ -64,7 +64,7 @@
       "type": "string"
     },
     "options": {
-      "title": "Allgemeine Optionen",
+      "title": "Optionen",
       "type": "object",
       "properties": {
         "cardLayout": {

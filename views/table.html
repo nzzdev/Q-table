@@ -1,19 +1,19 @@
 <div class="s-q-item q-table {% if initWithCardLayout %}q-table--card-layout{% endif %}" id="{{ id }}" style="opacity: 0;">
   <h3 class="s-q-item__title">{{ item.title }}</h3>
-  {%- if item.subtitle %}
-    <caption class="s-font-title-s">{{ item.subtitle }}</caption>
+  {%- if item.subtitle and item.subtitle !== '' %}
+    <div class="q-table__subtitle s-font-note">{{ item.subtitle }}</div>
   {%- endif %}
   <table>
     <thead>
       {%- for head in item.data[0] %}
-        <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} s-font-title-s">{{ head.value }}</th>
+        <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} s-font-note s-font-note--strong">{{ head.value }}</th>
       {%- endfor %}
     </thead>
     <tbody>
       {%- for row in item.data.slice(1) %}
         <tr>
           {%- for cell in row %}
-            <td data-label="{{ item.data[0][loop.index0].value }}" class="q-table__cell q-table__cell--{{ cell.type }} s-font-text">{{ cell.value }}</td>
+            <td data-label="{{ item.data[0][loop.index0].value }}" class="q-table__cell q-table__cell--{{ cell.type }} s-font-note">{{ cell.value }}</td>
           {%- endfor %}
         </tr>
       {%- endfor %}
