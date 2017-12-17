@@ -17,6 +17,7 @@
 .q-table {
   table {
     border-collapse: collapse;
+    border: none;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -27,12 +28,14 @@
     background: unset;
   }
   table tbody tr {
-    border: 1px solid #e9e9ee;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #e9e9ee;
   }
   table th,
   table td {
     padding: 4px;
-    border: 0 !important;
+    border: none !important;
   }
   table th {
     font-weight: unset;
