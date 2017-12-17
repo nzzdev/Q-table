@@ -73,9 +73,18 @@
           "default": false
         },
         "cardLayoutIfSmall": {
-          "title": "Card-Layout für mobile",
+          "title": "Card-Layout für Mobile",
           "type": "boolean",
-          "default": false
+          "default": false,
+          "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "withData": true,
+                "endpoint": "option-availability/cardLayoutIfSmall"
+              }
+            ]
+          }
         }
       }
     }
