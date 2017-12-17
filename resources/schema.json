@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Tabelle",
+  "properties": {
+    "title": {
+      "title": "Titel",
+      "type": "string"
+    },
+    "subtitle": {
+      "title": "Untertitel",
+      "type": "string"
+    },
+    "data": {
+      "title": "Daten",
+      "type": "array",
+      "Q:type": "table",
+      "items": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+            	"type": "string"
+          	},
+            {
+            	"type": "null"
+          	}
+          ]
+        }
+      },
+      "minItems": 1
+    },
+    "sources": {
+      "title": "Quellen",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "Quelle",
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "link": {
+            "Q:type": "link",
+            "title": "Link",
+            "type": "object",
+            "properties": {
+              "url": {
+                "title": "Url",
+                "type": "string"
+              },
+              "isValid": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": ["text"]
+      }
+    },
+    "notes": {
+      "title": "Anmerkungen",
+      "type": "string"
+    },
+    "options": {
+      "title": "Allgemeine Optionen",
+      "type": "object",
+      "properties": {
+        "cardLayout": {
+          "title": "Card-Layout",
+          "type": "boolean",
+          "default": false
+        },
+        "cardLayoutIfSmall": {
+          "title": "Card-Layout für mobile",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "required": [
+    "title", "data"
+  ]
+}
