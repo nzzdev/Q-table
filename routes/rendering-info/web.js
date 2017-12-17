@@ -97,16 +97,20 @@ module.exports = {
             ${dataObject}.width = ${dataObject}.element.getBoundingClientRect().width;
             function ${functionName}() {
               if (${dataObject}.width > 400) {
+                ${process.env.APP_ENV !== 'production' ? 'console.log("Q-table: remove card layout class");' : ''}
                 ${dataObject}.element.classList.remove('q-table--card-layout');
               } else {
+                ${process.env.APP_ENV !== 'production' ? 'console.log("Q-table: add card layout class");' : ''}
                 ${dataObject}.element.classList.add('q-table--card-layout');
               }
             }
             ${functionName}();
             window.addEventListener('resize', () => {
+              ${process.env.APP_ENV !== 'production' ? 'console.log("Q-table: resize handler");' : ''}
               requestAnimationFrame(() => {
                 var newWidth = ${dataObject}.element.getBoundingClientRect().width;
                 if (newWidth !== ${dataObject}.width) {
+                  ${process.env.APP_ENV !== 'production' ? 'console.log("Q-table: new width !== old width");' : ''}
                   ${dataObject}.width = newWidth;
                   ${functionName}();
                 }
