@@ -58,7 +58,7 @@
   }
   table td {
     display: block;
-    text-align: right;
+    text-align: right !important;
   }
   table td:before {
     /*
