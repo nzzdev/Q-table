@@ -5,17 +5,17 @@
   {%- endif %}
   <table class="q-table__table">
     {%- if item.options.hideTableHeader !== true %}
-    <thead>
+    <thead class="s-font-note s-font-note--strong">
       {%- for head in item.data[0] %}
-        <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} s-font-note s-font-note--strong">{{ head.value }}</th>
+        <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}">{{ head.value }}</th>
       {%- endfor %}
     </thead>
     {%- endif %}
-    <tbody>
+    <tbody class="s-font-note">
       {%- for row in item.data.slice(1) %}
         <tr>
           {%- for cell in row %}
-            <td {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}"{% endif %} class="q-table__cell q-table__cell--{{ cell.type }} s-font-note">{{ cell.value }}</td>
+            <td {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}"{% endif %} class="q-table__cell q-table__cell--{{ cell.type }}">{{ cell.value }}</td>
           {%- endfor %}
         </tr>
       {%- endfor %}
