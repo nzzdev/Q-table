@@ -48,7 +48,7 @@ lab.experiment('basics', () => {
 });
 
 lab.experiment('rendering-info/web', () => {
-  it('renderes a table', { plan: 4 }, async () => {
+  it('renders a table', { plan: 4 }, async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
@@ -63,7 +63,7 @@ lab.experiment('rendering-info/web', () => {
     expect(response.result.scripts[0].content).startsWith('function applyCardLayoutClassq_table_someid_');
   });
 
-  it('returns 400 no payload given', async () => {
+  it('returns 400 if no payload given', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST'
@@ -71,7 +71,7 @@ lab.experiment('rendering-info/web', () => {
     expect(response.statusCode).to.be.equal(400);
   });
 
-  it('returns 400 no item given in payload given', async () => {
+  it('returns 400 if no item given in payload', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
@@ -82,7 +82,7 @@ lab.experiment('rendering-info/web', () => {
     expect(response.statusCode).to.be.equal(400);
   });
 
-  it('returns 400 no toolRuntimeConfig given in payload given', async () => {
+  it('returns 400 if no toolRuntimeConfig given in payload', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
