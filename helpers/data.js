@@ -1,4 +1,15 @@
 const clone = require('clone');
+const d3 = {
+  format: require('d3-format')
+}
+
+d3.format.formatDefaultLocale({
+  "decimal": ".",
+  "thousands": "'",
+  "grouping": [3]
+});
+
+const formatNumber = d3.format.format(',');
 
 function isNumeric(cell) {
   return (cell && !Number.isNaN(parseFloat(cell)));
@@ -7,7 +18,7 @@ function isNumeric(cell) {
 function isColumnNumeric(data, columnIndex) {
   let isColumnNumeric = false;
   for (let row of clone(data).slice(1)) {
-    if (isNumeric(row[columnIndex])) {
+    if (isNumeric(row[columnIndex]) || row[columnIndex] === null || row[columnIndex] === '') { // if the cell is empty, we treat it as potentially numeric here
       isColumnNumeric = true;
     } else {
       return false;
@@ -19,30 +30,19 @@ function isColumnNumeric(data, columnIndex) {
 function getDataForTemplate(data) {
   return data
     .map((row, index) => {
-      // handle the header row differently
-      if (index === 0) {
-        return row
-          .map((cell, columnIndex) => {
-            let type = 'text';
-            if (isColumnNumeric(data, columnIndex)) {
-              type = 'numeric';
-            }
-            return {
-              value: cell,
-              type: type
-            };
-          });
-      }
-      // all data rows
       return row
-        .map(cell => {
+        .map((cell, columnIndex) => {
           let type = 'text';
-          if (isNumeric(cell)) {
+          let value = cell;
+          if (isColumnNumeric(data, columnIndex)) {
             type = 'numeric';
+          }
+          if (isNumeric(cell) && cell.length > 4) { // format like 100'000 if the number is more than 4 digits long (no years)
+            value = formatNumber(cell);
           }
           return {
             type: type,
-            value: cell
+            value: value
           };
         })
     })

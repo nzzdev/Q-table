@@ -2,42 +2,51 @@
   opacity: 1 !important;
 }
 
-.q-table table {
-  border: 1px solid #ccc;
-  border-collapse: collapse;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  table-layout: fixed;
+.q-table__subtitle {
+  margin-bottom: 12px;
 }
 
 .q-table__cell {
-  text-align: left;
+  text-align: left !important;
 }
 
 .q-table__cell--numeric {
-  text-align: right;
+  text-align: right !important;
 }
 
+// the high specificty is needed because nzz frontends apply lots of highly specific table styles we need to overwrite
+// this will change in the future and allow us to lower the specificity here again
 .q-table {
-  table tr {
-    border: 1px solid #e9e9ee;
-    padding: .35em;
+  table {
+    border-collapse: collapse;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: auto;
+    empty-cells: show;
   }
-  table th,
-  table td {
-    padding: .625em;
+  table thead {
+    background: unset;
   }
-  table th {
+  table tbody tr {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #e9e9ee;
+  }
+  table th, table td {
+    padding: 10px 4px;
+    border: none !important;
+
+    font-size: unset;
+    line-height: unset;
+    font-weight: unset;
   }
 }
 
 .q-table--card-layout {
   table {
     border: 0;
-  }
-  table caption {
-    font-size: 1.3em;
   }
   table thead {
     border: none;
@@ -51,21 +60,47 @@
   }
   table tr {
     display: block;
-    margin-bottom: .625em;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    &:first-child {
+      padding-top: 0;
+    }
   }
   table td {
     display: block;
-    text-align: right;
   }
-  table td:before {
-    /*
-    * aria-label has no advantage, it won't be read inside a table
-    content: attr(aria-label);
-    */
-    content: attr(data-label);
-    float: left;
+  table th, table td {
+    padding: 4px 0; // overwrite the padding from outside card-layout
   }
-  table td:last-child {
+
+  tbody:first-child {
+    td {
+      text-align: left !important;
+    }
+  }
+
+  // apply the label pseudo element and changed text-align only if we have a head
+  // we do not have a head if the option hideTableHeader is set to true
+  thead + tbody {
+    td {
+      text-align: right !important;
+    }
+    td::before {
+      /*
+      * aria-label has no advantage, it won't be read inside a table
+      content: attr(aria-label);
+      */
+      content: attr(data-label);
+      float: left;
+      font-weight: 500;
+    }
+    td::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+  }
+  tbody tr:last-child {
     border-bottom: 0;
   }
 }
