@@ -4,6 +4,8 @@ const fs = require('fs');
 const Joi = require('joi');
 const Boom = require('boom');
 
+const UglifyJS = require("uglify-js");
+
 const resourcesDir = __dirname + '/../../resources/';
 const helpersDir = __dirname + '/../../helpers/';
 const viewsDir = __dirname + '/../../views/';
@@ -105,7 +107,6 @@ module.exports = {
             }
             ${functionName}();
             window.addEventListener('resize', function() {
-              ${process.env.APP_ENV !== 'production' ? 'console.log("Q-table: resize handler");' : ''}
               requestAnimationFrame(function() {
                 var newWidth = ${dataObject}.element.getBoundingClientRect().width;
                 if (newWidth !== ${dataObject}.width) {
@@ -117,6 +118,11 @@ module.exports = {
           `
         }
       ]
+
+      // minify the script
+      for (let script of renderingInfo.scripts) {
+        script.content = UglifyJS.minify(script.content).code;
+      }
     }
 
     return renderingInfo;
