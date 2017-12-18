@@ -9,6 +9,12 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/index.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "run 2e2 test",
+      "program": "${workspaceFolder}/test/e2e-tests.js"
     }
   ]
 }
