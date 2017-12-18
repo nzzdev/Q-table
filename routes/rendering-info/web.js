@@ -76,6 +76,7 @@ module.exports = {
 
     const context = {
       item: item,
+      displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, ''),
       initWithCardLayout: item.options.cardLayout === true
     };
