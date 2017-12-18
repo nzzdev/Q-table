@@ -3,10 +3,10 @@
   "subtitle": "some subtitle here",
   "data": [
     ["Land", "Punkte"],
-    ["Schweiz", "1"],
-    ["Deutschland", "2"],
-    ["Frankreich", "3"],
-    ["Österreich", "-35"]
+    ["Schweiz", "10000000"],
+    ["Deutschland", "20000000"],
+    ["Frankreich", "355547.5"],
+    ["Österreich", "-3500000"]
   ],
   "options": {
     "cardLayout": false,
