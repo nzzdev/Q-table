@@ -4,6 +4,7 @@ const fixtureDataDirectory = '../../resources/fixtures/data';
 const fixtureData = [
   require(`${fixtureDataDirectory}/two-column.json`),
   require(`${fixtureDataDirectory}/four-column.json`),
+  require(`${fixtureDataDirectory}/four-column-no-header.json`),
 ];
 
 module.exports = {

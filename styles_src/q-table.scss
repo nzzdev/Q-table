@@ -62,21 +62,34 @@
   }
   table td {
     display: block;
-    text-align: right !important;
   }
-  table td::before {
-    /*
-    * aria-label has no advantage, it won't be read inside a table
-    content: attr(aria-label);
-    */
-    content: attr(data-label);
-    float: left;
-    font-weight: 500;
+
+  table > tbody:first-child {
+    td {
+      text-align: left !important;
+    }
   }
-  table td::after {
-    content: '';
-    display: block;
-    clear: both;
+
+  // apply the label pseudo element and changed text-align only if we have a head
+  // we do not have a head if the option hideTableHeader is set to true
+  table thead + tbody {
+    td {
+      text-align: right !important;
+    }
+    td::before {
+      /*
+      * aria-label has no advantage, it won't be read inside a table
+      content: attr(aria-label);
+      */
+      content: attr(data-label);
+      float: left;
+      font-weight: 500;
+    }
+    table td::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
   }
   table td:last-child {
     border-bottom: 0;

@@ -67,6 +67,11 @@
       "title": "Optionen",
       "type": "object",
       "properties": {
+        "hideTableHeader": {
+          "title": "Spaltenüberschriften ausblenden",
+          "type": "boolean",
+          "default": false
+        },
         "cardLayout": {
           "title": "Card-Layout",
           "type": "boolean",

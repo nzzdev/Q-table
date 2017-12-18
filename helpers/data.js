@@ -28,8 +28,8 @@ function getDataForTemplate(data) {
               type = 'numeric';
             }
             return {
-              value: cell,
-              type: type
+              type: type,
+              value: cell
             };
           });
       }
