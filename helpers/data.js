@@ -12,6 +12,14 @@ d3.format.formatDefaultLocale({
 const formatNumber = d3.format.format(',');
 
 function isNumeric(cell) {
+  // if there is more than one dot it is probably a date and not a number
+  if ((cell.match(/\./g) || []).length > 1) {
+     return false;
+  }
+  // if there is - in the data, it's not a number
+  if ((cell.match(/\-/g) || []).length > 0) {
+    return false;
+ }
   return (cell && !Number.isNaN(parseFloat(cell)));
 }
 
