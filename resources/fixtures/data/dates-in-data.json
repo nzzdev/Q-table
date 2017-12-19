@@ -1,0 +1,85 @@
+{
+  "title": "FIXTURE: dates in data",
+  "data": [
+    [
+      "Datum",
+      "Ort",
+      "Magnitude",
+      "Schaden"
+    ],
+    [
+      "18.10.1356",
+      "Basel",
+      "6.6",
+      "zerstörend"
+    ],
+    [
+      "03.09.1295",
+      "Churwalden",
+      "6.2",
+      "schwer"
+    ],
+    [
+      "25.07.1855",
+      "Stalden-Visp",
+      "6.2",
+      "schwer"
+    ],
+    [
+      "11.03.1584",
+      "Aigle",
+      "5.9",
+      "schwer"
+    ],
+    [
+      "18.09.1601",
+      "Unterwalden",
+      "5.9",
+      "schwer"
+    ],
+    [
+      "04-1524",
+      "Ardon",
+      "5.8",
+      "schwer"
+    ],
+    [
+      "25.01.1946",
+      "Siders",
+      "5.8",
+      "schwer"
+    ],
+    [
+      "09.12.1755",
+      "Brig-Naters",
+      "5.7",
+      "schwer"
+    ],
+    [
+      "10.09.1774",
+      "Altdorf",
+      "5.7",
+      "mittel"
+    ],
+    [
+      "29.04.1905",
+      "Lac d'Emosson",
+      "5.5",
+      "mittel"
+    ]
+  ],
+  "sources": [
+    {
+      "link": {
+        "url": "http://www.seismo.ethz.ch/de/earthquakes/switzerland/all-earthquakes/",
+        "isValid": true
+      },
+      "text": "Schweizerischer Erdbebendienst"
+    }
+  ],
+  "options": {
+    "hideTableHeader": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false
+  }
+}
