@@ -19,8 +19,8 @@ function isNumeric(cell) {
   if ((cell.match(/\./g) || []).length > 1) {
      return false;
   }
-  // if there is - in the data, it's not a number
-  if ((cell.match(/\-/g) || []).length > 0) {
+  // if there is - in the data not at first position
+  if ((cell.match(/\-/g) || []).length > 0 && cell.startsWith('-') === false) {
     return false;
  }
   return (cell && !Number.isNaN(parseFloat(cell)));
@@ -29,7 +29,7 @@ function isNumeric(cell) {
 function isColumnNumeric(data, columnIndex) {
   let isColumnNumeric = false;
   for (let row of clone(data).slice(1)) {
-    if (isNumeric(row[columnIndex]) || row[columnIndex] === null || row[columnIndex] === '') { // if the cell is empty, we treat it as potentially numeric here
+    if (isNumeric(row[columnIndex]) === true || row[columnIndex] === null || row[columnIndex] === '') { // if the cell is empty, we treat it as potentially numeric here
       isColumnNumeric = true;
     } else {
       return false;
