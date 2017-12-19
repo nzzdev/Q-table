@@ -29,7 +29,7 @@
   table thead {
     background: unset;
   }
-  table tbody tr {
+  table tbody tr, table thead tr {
     border-width: 0 0 1px 0;
     border-style: solid;
     border-color: #e9e9ee;
