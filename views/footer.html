@@ -3,7 +3,7 @@
     <span>{{ item.notes }}</span>
   {%- endif %}
   {%- if item.sources.length > 0 %}
-    &nbsp;&ndash;&nbsp;
+    {%- if item.notes %}&nbsp;&ndash;&nbsp;{% endif %}
     {%- if item.sources.length > 1 %}
       Quellen:
     {%- else %}
