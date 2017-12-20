@@ -4,8 +4,8 @@ const d3 = {
 }
 
 d3.format.formatDefaultLocale({
-  "decimal": ".",
-  "thousands": "'",
+  "decimal": ",",
+  "thousands": " ", // this is a viertelgeviert U+2005
   "grouping": [3]
 });
 
