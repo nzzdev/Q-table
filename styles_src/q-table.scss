@@ -93,6 +93,8 @@
       content: attr(data-label);
       float: left;
       font-weight: 500;
+      max-width: 80%;
+      text-align: left !important;
     }
     td::after {
       content: '';
