@@ -43,7 +43,7 @@ function getDataForTemplate(data) {
           if (isColumnNumeric(data, columnIndex)) {
             type = 'numeric';
             // do not format the header row or empty cells
-            if (rowIndex > 0 && row[columnIndex] !== null && row[columnIndex] !== '') {
+            if (rowIndex > 0 && cell !== null && cell !== '') {
               value = formatNumber(cell);
             }
           }
