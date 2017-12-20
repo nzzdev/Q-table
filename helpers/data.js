@@ -42,8 +42,8 @@ function getDataForTemplate(data) {
           let value = cell;
           if (isColumnNumeric(data, columnIndex)) {
             type = 'numeric';
-            // do not format the header row
-            if (rowIndex > 0) {
+            // do not format the header row or empty cells
+            if (rowIndex > 0 && row[columnIndex] !== null && row[columnIndex] !== '') {
               value = formatNumber(cell);
             }
           }
