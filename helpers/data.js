@@ -15,14 +15,9 @@ function isNumeric(cell) {
   if (!cell) {
     return false;
   }
-  // if there is more than one dot it is probably a date and not a number
-  if ((cell.match(/\./g) || []).length > 1) {
-     return false;
-  }
-  // if there is - in the data not at first position
-  if ((cell.match(/\-/g) || []).length > 0 && cell.startsWith('-') === false) {
+  if (cell.match(/^[+-]?\d+(\.\d+)?$/) === null) {
     return false;
- }
+  }
   return (cell && !Number.isNaN(parseFloat(cell)));
 }
 
@@ -40,16 +35,17 @@ function isColumnNumeric(data, columnIndex) {
 
 function getDataForTemplate(data) {
   return data
-    .map((row, index) => {
+    .map((row, rowIndex) => {
       return row
         .map((cell, columnIndex) => {
           let type = 'text';
           let value = cell;
           if (isColumnNumeric(data, columnIndex)) {
             type = 'numeric';
-          }
-          if (isNumeric(cell) && cell.length > 4) { // format like 100'000 if the number is more than 4 digits long (no years)
-            value = formatNumber(cell);
+            // do not format the header row
+            if (rowIndex > 0) {
+              value = formatNumber(cell);
+            }
           }
           return {
             type: type,
