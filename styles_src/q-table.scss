@@ -14,6 +14,11 @@
   text-align: right !important;
 }
 
+// only td should not break, th of --numeric columns are allowed to wrap
+td.q-table__cell--numeric {
+  white-space: nowrap;
+}
+
 // the high specificty is needed because nzz frontends apply lots of highly specific table styles we need to overwrite
 // this will change in the future and allow us to lower the specificity here again
 .q-table {
