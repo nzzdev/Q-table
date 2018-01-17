@@ -15,6 +15,9 @@
       "title": "Daten",
       "type": "array",
       "Q:type": "table",
+      "Q:options": {
+        "allowTranspose": false
+      },
       "items": {
         "type": "array",
         "items": {
