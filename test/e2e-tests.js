@@ -59,7 +59,7 @@ lab.experiment("rendering-info/web", () => {
       '<div class="s-q-item q-table " id="q_table_someid_'
     );
     expect(response.result.stylesheets[0].name).startsWith("q-table.");
-    expect(response.result.scripts[0].content).startsWith("window.q_domready");
+    expect(response.result.scripts[0].content).to.be.a.string();
   });
 
   it("returns 400 if no payload given", async () => {
