@@ -149,32 +149,40 @@ module.exports = {
       possibleToHaveToHideRows = false;
     }
 
+    // if we are going to add any script, we want the default script first
+    if (
+      (item.options.cardLayout === false &&
+        item.options.cardLayoutIfSmall === true) ||
+      possibleToHaveToHideRows
+    ) {
+      renderingInfo.scripts = [
+        {
+          content: renderingInfoScripts.getDefaultScript(context)
+        }
+      ];
+    }
+
     // if we have cardLayoutIfSmall, we need to measure the width to set the class
     // not needed if we have cardLayout all the time
     if (
       item.options.cardLayout === false &&
       item.options.cardLayoutIfSmall === true
     ) {
-      renderingInfo.scripts = [
-        {
-          content: renderingInfoScripts.getDefaultScript(context)
-        },
-        {
-          content: renderingInfoScripts.getCardLayoutScript(context)
-        }
-      ];
-
-      if (possibleToHaveToHideRows) {
-        renderingInfo.scripts.push({
-          content: renderingInfoScripts.getShowMoreButtonScript(context)
-        });
-      }
-
-      // minify the scripts
-      for (let script of renderingInfo.scripts) {
-        script.content = UglifyJS.minify(script.content).code;
-      }
+      renderingInfo.scripts.push({
+        content: renderingInfoScripts.getCardLayoutScript(context)
+      });
     }
+
+    if (possibleToHaveToHideRows) {
+      renderingInfo.scripts.push({
+        content: renderingInfoScripts.getShowMoreButtonScript(context)
+      });
+    }
+
+    // minify the scripts
+    // for (let script of renderingInfo.scripts) {
+    //   script.content = UglifyJS.minify(script.content).code;
+    // }
 
     return renderingInfo;
   }

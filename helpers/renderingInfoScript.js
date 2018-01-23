@@ -1,4 +1,5 @@
 function getDefaultScript(context) {
+  const dataObject = `window.${context.id}Data`;
   return `
     if (!window.q_domready) {
       window.q_domready = new Promise(function(resolve) {
@@ -18,6 +19,12 @@ function getDefaultScript(context) {
         }
       });
     }
+    if (${dataObject} === undefined) {
+      ${dataObject} = {};
+    }
+    ${dataObject}.element = document.querySelector("#${context.id}");
+    ${dataObject}.tableElement = ${dataObject}.element.querySelector(".q-table__table");
+    ${dataObject}.isCardLayout = ${context.item.options.cardLayout};
   `;
 }
 
@@ -26,16 +33,11 @@ function getCardLayoutScript(context) {
   const dataObject = `window.${context.id}Data`;
 
   return `
-    if (${dataObject} === undefined) {
-      ${dataObject} = {};
-    }
-    ${dataObject}.element = document.querySelector("#${context.id}");
-    ${dataObject}.tableElement = ${dataObject}.element.querySelector(".q-table__table");
     ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");
-    ${dataObject}.isCardLayout = undefined;
+    ${dataObject}.isCardLayout = ${dataObject}.isCardLayout || undefined;
 
     function ${applyCardLayoutClassFunctionName}() {
-      if (${dataObject}.width > 400) {
+      if (${dataObject}.width > 400 && !${context.item.options.cardLayout}) {
         ${dataObject}.isCardLayout = false;
         ${dataObject}.element.classList.remove('q-table--card-layout');
       } else if (${context.item.options.cardLayoutIfSmall}) {
@@ -79,16 +81,12 @@ function getShowMoreButtonScript(context) {
   const hideRowsFunctionName = `hideRows${context.id}`;
   const showRowsFunctionName = `showRows${context.id}`;
   return `
-    if (${dataObject} === undefined) {
-      ${dataObject} = {};
-    }
-    ${dataObject}.tableElement = ${dataObject}.tableElement || ${dataObject}.element.querySelector(".q-table__table");
     ${dataObject}.rowVisibilityState = 'visible';
     ${dataObject}.numberOfRows = ${context.item.data.length};
     ${dataObject}.numberOfRowsToHide = ${context.numberOfRowsToHide};
     function ${hideRowsFunctionName}() {
       ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
-        if (index > (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
+        if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
           rowElement.classList.add('q-table-state-hidden');
         }
       });
