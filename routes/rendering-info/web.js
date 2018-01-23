@@ -133,6 +133,12 @@ module.exports = {
     }
 
     let possibleToHaveToHideRows = false;
+
+    // if we show cards, we hide if more or equal than 6
+    if (item.options.cardLayout && item.data.length >= 6) {
+      possibleToHaveToHideRows = true;
+    }
+    // if we have cards for small, we hide if more or equal than 6
     if (
       item.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
       (context.width === undefined || context.width < 400) && // width is unknown or below 400px
