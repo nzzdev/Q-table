@@ -85,6 +85,7 @@ module.exports = {
 
     const context = {
       item: item,
+      numberOfRows: item.data.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
@@ -104,16 +105,15 @@ module.exports = {
     }
 
     // calculate the number of rows to hide
-    const numberOfRows = context.item.data.length;
 
     // if we init with card layout, we need to have minimum of 6 rows to hide all but 3 of them
     // this calculation here is not correct if we didn't get the width, as it doesn't take small/wide layout into account
     // but it's good enough to already apply display: none; in the markup to not use the complete height until the stylesheets/scripts are loaded
-    if (context.initWithCardLayout && numberOfRows >= 6) {
-      context.numberOfRowsToHide = numberOfRows - 3; // show 3 initially
-    } else if (numberOfRows >= 15) {
+    if (context.initWithCardLayout && context.numberOfRows >= 6) {
+      context.numberOfRowsToHide = context.numberOfRows - 3; // show 3 initially
+    } else if (context.numberOfRows >= 15) {
       // if we init without cardLayout, we hide rows if we have more than 15
-      context.numberOfRowsToHide = numberOfRows - 10; // show 10 initially
+      context.numberOfRowsToHide = context.numberOfRows - 10; // show 10 initially
     }
 
     // if we have toolRuntimeConfig.noInteraction, we do not hide rows because showing them is not possible
@@ -135,19 +135,19 @@ module.exports = {
     let possibleToHaveToHideRows = false;
 
     // if we show cards, we hide if more or equal than 6
-    if (item.options.cardLayout && item.data.length >= 6) {
+    if (item.options.cardLayout && context.numberOfRows >= 6) {
       possibleToHaveToHideRows = true;
     }
     // if we have cards for small, we hide if more or equal than 6
     if (
       item.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
       (context.width === undefined || context.width < 400) && // width is unknown or below 400px
-      item.data.length >= 6 // more than 6 rows
+      context.numberOfRows >= 6 // more than 6 rows
     ) {
       possibleToHaveToHideRows = true;
     }
     // if we have more than 15 rows, we probably have to hide rows
-    if (item.data.length >= 15) {
+    if (context.numberOfRows >= 15) {
       possibleToHaveToHideRows = true;
     }
 

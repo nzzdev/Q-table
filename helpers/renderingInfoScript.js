@@ -82,7 +82,7 @@ function getShowMoreButtonScript(context) {
   const showRowsFunctionName = `showRows${context.id}`;
   return `
     ${dataObject}.rowVisibilityState = 'visible';
-    ${dataObject}.numberOfRows = ${context.item.data.length};
+    ${dataObject}.numberOfRows = ${context.numberOfRows};
     ${dataObject}.numberOfRowsToHide = ${context.numberOfRowsToHide};
     function ${hideRowsFunctionName}() {
       ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
