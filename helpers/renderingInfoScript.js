@@ -113,7 +113,7 @@ function getShowMoreButtonScript(context) {
       ${dataObject}.showMoreButtonElement.classList.add('s-button');
       ${dataObject}.showMoreButtonElement.classList.add('s-button--secondary');
       ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button');
-      ${dataObject}.showMoreButtonElement.textContent = "mehr anzeigen";
+      ${dataObject}.showMoreButtonElement.textContent = "Ganze Tabelle anzeigen";
       ${dataObject}.showMoreButtonElement.setAttribute('type', 'button');
       ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.footerElement);
 
