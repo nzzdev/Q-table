@@ -1,5 +1,6 @@
 const querystring = require("querystring");
 const fs = require("fs");
+const path = require("path");
 
 const Joi = require("joi");
 const Boom = require("boom");
@@ -22,7 +23,7 @@ const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
   .getExactPixelWidth;
 const data = require(`${helpersDir}data.js`);
 
-const getScript = require("../../helpers/renderingInfoScript.js").getScript;
+const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
@@ -88,10 +89,65 @@ module.exports = {
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
       )}`.replace(/-/g, ""),
-      initWithCardLayout: item.options.cardLayout === true
+      width: getExactPixelWidth(request.payload.toolRuntimeConfig)
     };
 
-    renderingInfo.markup = nunjucksEnv.render(viewsDir + "table.html", context);
+    // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
+    if (
+      context.width &&
+      context.width < 400 &&
+      item.options.cardLayoutIfSmall
+    ) {
+      context.initWithCardLayout = true;
+    } else if (item.options.cardLayout) {
+      context.initWithCardLayout = true;
+    }
+
+    // calculate the number of rows to hide
+    const numberOfRows = context.item.data.length;
+
+    // if we init with card layout, we need to have minimum of 6 rows to hide all but 3 of them
+    // this calculation here is not correct if we didn't get the width, as it doesn't take small/wide layout into account
+    // but it's good enough to already apply display: none; in the markup to not use the complete height until the stylesheets/scripts are loaded
+    if (context.initWithCardLayout && numberOfRows >= 6) {
+      context.numberOfRowsToHide = numberOfRows - 3; // show 3 initially
+    } else if (numberOfRows >= 15) {
+      // if we init without cardLayout, we hide rows if we have more than 15
+      context.numberOfRowsToHide = numberOfRows - 10; // show 10 initially
+    }
+
+    // if we have toolRuntimeConfig.noInteraction, we do not hide rows because showing them is not possible
+    if (request.payload.toolRuntimeConfig.noInteraction) {
+      context.numberOfRowsToHide = undefined;
+    }
+
+    renderingInfo.markup = nunjucksEnv.render(
+      path.join(viewsDir, "table.html"),
+      context
+    );
+
+    // the scripts need to know if we are confident that the numberOfRowsToHide is correct
+    // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
+    if (context.width === undefined) {
+      context.numberOfRowsToHide = undefined;
+    }
+
+    let possibleToHaveToHideRows = false;
+    if (
+      item.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
+      (context.width === undefined || context.width < 400) && // width is unknown or below 400px
+      item.data.length >= 6 // more than 6 rows
+    ) {
+      possibleToHaveToHideRows = true;
+    }
+    // if we have more than 15 rows, we probably have to hide rows
+    if (item.data.length >= 15) {
+      possibleToHaveToHideRows = true;
+    }
+
+    if (request.payload.toolRuntimeConfig.noInteraction) {
+      possibleToHaveToHideRows = false;
+    }
 
     // if we have cardLayoutIfSmall, we need to measure the width to set the class
     // not needed if we have cardLayout all the time
@@ -101,11 +157,20 @@ module.exports = {
     ) {
       renderingInfo.scripts = [
         {
-          content: getScript(context)
+          content: renderingInfoScripts.getDefaultScript(context)
+        },
+        {
+          content: renderingInfoScripts.getCardLayoutScript(context)
         }
       ];
 
-      // minify the script
+      if (possibleToHaveToHideRows) {
+        renderingInfo.scripts.push({
+          content: renderingInfoScripts.getShowMoreButtonScript(context)
+        });
+      }
+
+      // minify the scripts
       for (let script of renderingInfo.scripts) {
         script.content = UglifyJS.minify(script.content).code;
       }
