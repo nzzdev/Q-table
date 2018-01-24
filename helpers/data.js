@@ -3,13 +3,14 @@ const d3 = {
   format: require("d3-format")
 };
 
-d3.format.formatDefaultLocale({
+const formatLocale = d3.format.formatLocale({
   decimal: ",",
   thousands: " ", // this is a viertelgeviert U+2005
   grouping: [3]
 });
 
-const formatNumber = d3.format.format(",");
+const formatGrouping = formatLocale.format(",");
+const formatNoGrouping = formatLocale.format("");
 
 function isNumeric(cell) {
   if (!cell) {
@@ -47,7 +48,11 @@ function getDataForTemplate(data) {
         type = "numeric";
         // do not format the header row or empty cells
         if (rowIndex > 0 && cell !== null && cell !== "") {
-          value = formatNumber(cell);
+          if (Math.abs(parseFloat(cell)) >= 10000) {
+            value = formatGrouping(cell);
+          } else {
+            value = formatNoGrouping(cell);
+          }
         }
       }
       return {
