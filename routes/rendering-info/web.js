@@ -186,9 +186,9 @@ module.exports = {
     }
 
     // minify the scripts
-    // for (let script of renderingInfo.scripts) {
-    //   script.content = UglifyJS.minify(script.content).code;
-    // }
+    for (let script of renderingInfo.scripts) {
+      script.content = UglifyJS.minify(script.content).code;
+    }
 
     return renderingInfo;
   }
