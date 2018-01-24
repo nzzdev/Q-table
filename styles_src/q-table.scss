@@ -34,12 +34,14 @@ td.q-table__cell--numeric {
   table thead {
     background: unset;
   }
-  table tbody tr, table thead tr {
+  table tbody tr,
+  table thead tr {
     border-width: 0 0 1px 0;
     border-style: solid;
     border-color: #e9e9ee;
   }
-  table th, table td {
+  table th,
+  table td {
     padding: 10px 4px;
     border: none !important;
 
@@ -65,6 +67,7 @@ td.q-table__cell--numeric {
   }
   table tr {
     display: block;
+    transition: transform 0.2s ease-in;
     padding-top: 3px;
     padding-bottom: 3px;
     &:first-child {
@@ -74,7 +77,8 @@ td.q-table__cell--numeric {
   table td {
     display: block;
   }
-  table th, table td {
+  table th,
+  table td {
     padding: 4px 0; // overwrite the padding from outside card-layout
   }
 
@@ -102,7 +106,7 @@ td.q-table__cell--numeric {
       text-align: left !important;
     }
     td::after {
-      content: '';
+      content: "";
       display: block;
       clear: both;
     }
@@ -110,4 +114,24 @@ td.q-table__cell--numeric {
   tbody tr:last-child {
     border-bottom: 0;
   }
+}
+
+.q-table_show-more-button {
+  margin: 10px auto;
+}
+
+.q-table_show-more-button--hidden {
+  display: none;
+}
+
+tr.q-table-state-hidden {
+  display: none !important;
+}
+
+tr.q-table-state-visible {
+  display: table-row !important; // needs to be important to overwrite any inline styles applied to hide the rows before we knew the exact width and thus card layout
+}
+
+.q-table--card-layout tr.q-table-state-visible {
+  display: block !important;
 }
