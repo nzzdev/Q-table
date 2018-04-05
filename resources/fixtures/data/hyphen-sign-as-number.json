@@ -1,0 +1,51 @@
+{
+  "title": "FIXTURE: hyphen sign as number",
+  "subtitle": "Subtitle",
+  "data": [
+    [
+      "",
+      "Fälligkeit",
+      "Schluss 28.3",
+      "Schluss 29.3",
+      "Rend. in %",
+      "-"
+    ],
+    [
+      "Raiffeisen",
+      "12.21",
+      "112.40",
+      "112.35",
+      "0.51",
+      "-"
+    ],
+    [
+      "Zürcher KB",
+      "01.26",
+      "100.20",
+      "-",
+      "0.22",
+      "Test"
+    ],
+    [
+      "Basler KB",
+      "08.23",
+      "10",
+      "112.35",
+      "0.51",
+      "-"
+    ],
+    [
+      "-",
+      "-",
+      "120",
+      "-",
+      "-",
+      "-"
+    ]
+  ],
+  "sources": [],
+  "options": {
+    "cardLayout": false,
+    "cardLayoutIfSmall": true
+  }
+}
