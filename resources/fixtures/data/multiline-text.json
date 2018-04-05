@@ -1,0 +1,32 @@
+{
+  "title": "FIXTURE: text top align",
+  "subtitle": "",
+  "data": [
+    [
+      "",
+      "GFK",
+      "Subsidiär"
+    ],
+    [
+      "Zahl 2017",
+      "119560", 
+      "98156"
+    ],
+    [
+      "Definition",
+      "Verfolgt aufgrund von Rasse, Nationalität, politischer Überzeugung, Religion, sexueller Orientierung",
+      "Tod, Folter oder massive Gewalt drohen bei Rückkehr. Status ist aber nicht an Verfolung geknüpft"
+    ],
+    [
+      "Regelung Familiennachzug",
+      "Unbeschränkt über Visa möglich",
+      "Künftig sollen 100 Angehörige pro Monat nachziehen dürfen. Härtefälle sind von dieser Regelung ausgenommen."
+    ]
+  ],
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false
+  }
+}
