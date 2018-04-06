@@ -28,9 +28,10 @@ function isColumnNumeric(data, columnIndex) {
     if (
       isNumeric(row[columnIndex]) === true ||
       row[columnIndex] === null ||
-      row[columnIndex] === ""
+      row[columnIndex] === "" ||
+      row[columnIndex] === "-"
     ) {
-      // if the cell is empty, we treat it as potentially numeric here
+      // if the cell is empty or is a hyphen(-), we treat it as potentially numeric here
       isColumnNumeric = true;
     } else {
       return false;
@@ -46,8 +47,8 @@ function getDataForTemplate(data) {
       let value = cell;
       if (isColumnNumeric(data, columnIndex)) {
         type = "numeric";
-        // do not format the header row or empty cells
-        if (rowIndex > 0 && cell !== null && cell !== "") {
+        // do not format the header row, empty cells or a hyphen(-)
+        if (rowIndex > 0 && cell !== null && cell !== "" && cell != "-") {
           if (Math.abs(parseFloat(cell)) >= 10000) {
             value = formatGrouping(cell);
           } else {
