@@ -7,12 +7,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/four-column-no-header.json`),
   require(`${fixtureDataDirectory}/dates-in-data.json`),
   require(`${fixtureDataDirectory}/mixed-numbers-and-text-in-cell.json`),
-<<<<<<< HEAD
   require(`${fixtureDataDirectory}/hyphen-sign-as-number.json`),
-||||||| merged common ancestors
-=======
   require(`${fixtureDataDirectory}/multiline-text.json`),
->>>>>>> added fixture for displaying multiline-text in table (#13)
   require(`${fixtureDataDirectory}/long.json`)
 ];
 
