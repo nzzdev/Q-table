@@ -1,5 +1,5 @@
 {
-  "title": "FIXTURE: text top align",
+  "title": "FIXTURE: multiline text",
   "subtitle": "",
   "data": [
     [
@@ -27,6 +27,6 @@
   "options": {
     "hideTableHeader": false,
     "cardLayout": false,
-    "cardLayoutIfSmall": false
+    "cardLayoutIfSmall": true
   }
 }
