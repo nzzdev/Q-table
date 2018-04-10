@@ -125,7 +125,7 @@ function getShowMoreButtonScript(context) {
           ${showRowsFunctionName}();
         } else {
           ${hideRowsFunctionName}();
-          document.getElementById(${dataObject}.id).scrollIntoView()
+          document.getElementById(${dataObject}.element.id).scrollIntoView(true);
         }
       });
       ${hideRowsFunctionName}();
