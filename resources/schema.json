@@ -93,6 +93,24 @@
               }
             ]
           }
+        },
+        "showColumnAsMiniBar": {
+          "title": "Mini-Bar",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "Q:options": {
+            "dynamicEnum": {
+              "type": "ToolEndpoint",
+              "withData": true,
+              "endpoint": "dynamic-enum/showColumnAsMiniBar"
+            }
+          }
         }
       }
     }
