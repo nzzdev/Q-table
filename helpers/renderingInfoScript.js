@@ -91,7 +91,7 @@ function getShowMoreButtonScript(context) {
           rowElement.classList.add('q-table-state-hidden');
         }
       });
-      ${dataObject}.showMoreButtonElement.textContent = "Ganze Tabelle anzeigen";
+      ${dataObject}.showMoreButtonElement.textContent = 'Letzte ' + ${dataObject}.numberOfRowsToHide + ' Zeilen anzeigen';
       ${dataObject}.rowVisibilityState = 'hidden';
     }
     function ${showRowsFunctionName}() {
