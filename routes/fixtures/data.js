@@ -7,6 +7,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/four-column-no-header.json`),
   require(`${fixtureDataDirectory}/dates-in-data.json`),
   require(`${fixtureDataDirectory}/mixed-numbers-and-text-in-cell.json`),
+  require(`${fixtureDataDirectory}/hyphen-sign-as-number.json`),
+  require(`${fixtureDataDirectory}/multiline-text.json`),
   require(`${fixtureDataDirectory}/long.json`)
 ];
 
