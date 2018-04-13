@@ -113,23 +113,25 @@ function getShowMoreButtonScript(context) {
       if (${dataObject}.numberOfRowsToHide === undefined || ${dataObject}.numberOfRowsToHide < 1) {
         return;
       }
+
       ${dataObject}.showMoreButtonElement = document.createElement('button');
       ${dataObject}.showMoreButtonElement.classList.add('s-button');
       ${dataObject}.showMoreButtonElement.classList.add('s-button--secondary');
       ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button');
       ${dataObject}.showMoreButtonElement.setAttribute('type', 'button');
-      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.footerElement);
+      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer"));
 
       ${dataObject}.showMoreButtonElement.addEventListener('click', function(event) {
         if (${dataObject}.rowVisibilityState === 'hidden') {
           ${showRowsFunctionName}();
         } else {
           ${hideRowsFunctionName}();
-          document.getElementById(${dataObject}.element.id).scrollIntoView(true);
+          ${dataObject}.tableElement.scrollIntoView(true);
         }
       });
       ${hideRowsFunctionName}();
     }
+    
     window.q_domready.then(function() {
       ${handleShowMoreButtonFunctionName}();
     });
