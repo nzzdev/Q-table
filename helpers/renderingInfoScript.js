@@ -87,9 +87,11 @@ function getShowMoreButtonScript(context) {
     function ${hideRowsFunctionName}() {
       ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
         if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
+          rowElement.classList.remove('q-table-state-visible');
           rowElement.classList.add('q-table-state-hidden');
         }
       });
+      ${dataObject}.showMoreButtonElement.textContent = 'Alle ' + ${dataObject}.numberOfRowsToHide + ' anzeigen';
       ${dataObject}.rowVisibilityState = 'hidden';
     }
     function ${showRowsFunctionName}() {
@@ -97,6 +99,8 @@ function getShowMoreButtonScript(context) {
         rowElement.classList.remove('q-table-state-hidden');
         rowElement.classList.add('q-table-state-visible');
       });
+      ${dataObject}.showMoreButtonElement.textContent = "Tabelle zuklappen";
+      ${dataObject}.rowVisibilityState = 'visible';
     }
     function ${handleShowMoreButtonFunctionName}() {
       if (${dataObject}.numberOfRowsToHide === undefined) {
@@ -109,20 +113,25 @@ function getShowMoreButtonScript(context) {
       if (${dataObject}.numberOfRowsToHide === undefined || ${dataObject}.numberOfRowsToHide < 1) {
         return;
       }
+
       ${dataObject}.showMoreButtonElement = document.createElement('button');
       ${dataObject}.showMoreButtonElement.classList.add('s-button');
       ${dataObject}.showMoreButtonElement.classList.add('s-button--secondary');
       ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button');
-      ${dataObject}.showMoreButtonElement.textContent = "Ganze Tabelle anzeigen";
       ${dataObject}.showMoreButtonElement.setAttribute('type', 'button');
-      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.footerElement);
+      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer"));
 
       ${dataObject}.showMoreButtonElement.addEventListener('click', function(event) {
-        ${showRowsFunctionName}();
-        ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button--hidden');
+        if (${dataObject}.rowVisibilityState === 'hidden') {
+          ${showRowsFunctionName}();
+        } else {
+          ${hideRowsFunctionName}();
+          ${dataObject}.tableElement.scrollIntoView(true);
+        }
       });
       ${hideRowsFunctionName}();
     }
+    
     window.q_domready.then(function() {
       ${handleShowMoreButtonFunctionName}();
     });
