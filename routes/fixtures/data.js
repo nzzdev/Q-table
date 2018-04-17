@@ -9,7 +9,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/mixed-numbers-and-text-in-cell.json`),
   require(`${fixtureDataDirectory}/hyphen-sign-as-number.json`),
   require(`${fixtureDataDirectory}/multiline-text.json`),
-  require(`${fixtureDataDirectory}/long.json`)
+  require(`${fixtureDataDirectory}/show-more-button.json`),
+  require(`${fixtureDataDirectory}/disappearing-columns.json`)
 ];
 
 module.exports = {
