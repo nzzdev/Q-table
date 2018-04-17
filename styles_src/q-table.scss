@@ -66,7 +66,6 @@ td.q-table__cell--numeric {
     width: 1px;
   }
   table tr {
-    display: block;
     transition: transform 0.2s ease-in;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -121,13 +120,13 @@ td.q-table__cell--numeric {
 }
 
 tr.q-table-state-hidden {
-  display: none !important;
+  visibility: collapse;
 }
 
 tr.q-table-state-visible {
-  display: table-row !important; // needs to be important to overwrite any inline styles applied to hide the rows before we knew the exact width and thus card layout
+  visibility: visible !important;
 }
 
 .q-table--card-layout tr.q-table-state-visible {
-  display: block !important;
+  visibility: visible !important;
 }
