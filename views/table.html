@@ -13,9 +13,9 @@
     {%- endif %}
     <tbody class="s-font-note">
       {%- for row in item.data.slice(1) %}
-      <tr>
+      <tr {% if numberOfRowsToHide and loop.index >= (item.data.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
         {%- for cell in row %}
-        <td {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} class="q-table__cell q-table__cell--{{ cell.type }}" {% if numberOfRowsToHide and loop.index > (item.data.length - numberOfRowsToHide) %}style="display: none;"{% endif %}">{{ cell.value }}</td>
+        <td {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} class="q-table__cell q-table__cell--{{ cell.type }}">{{ cell.value }}</td>
         {%- endfor %}
       </tr>
       {%- endfor %}
