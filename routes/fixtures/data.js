@@ -10,7 +10,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/hyphen-sign-as-number.json`),
   require(`${fixtureDataDirectory}/multiline-text.json`),
   require(`${fixtureDataDirectory}/show-more-button.json`),
-  require(`${fixtureDataDirectory}/disappearing-columns.json`)
+  require(`${fixtureDataDirectory}/disappearing-columns.json`),
+  require(`${fixtureDataDirectory}/column-spacing.json`)
 ];
 
 module.exports = {
