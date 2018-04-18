@@ -7,7 +7,11 @@
     {%- if item.options.hideTableHeader !== true %}
     <thead class="s-font-note s-font-note--strong">
       {%- for head in item.data[0] %}
-      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}">{{ head.value }}</th>
+      <th 
+        class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}"
+        {% if head.padding !== 0 or initWithCardLayout == false %}style="padding-left: {{ head.padding }}rem;"{% endif %}>
+          {{ head.value }}
+      </th> 
       {%- endfor %}
     </thead>
     {%- endif %}
@@ -15,7 +19,12 @@
       {%- for row in item.data.slice(1) %}
       <tr {% if numberOfRowsToHide and loop.index >= (item.data.length - numberOfRowsToHide) %}style="visibility: collapse"{% endif %}>
         {%- for cell in row %}
-        <td {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} class="q-table__cell q-table__cell--{{ cell.type }}">{{ cell.value }}</td>
+        <td 
+          {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
+          class="q-table__cell q-table__cell--{{ cell.type }}"
+          {% if cell.padding !== 0 or initWithCardLayout == false %}style="padding-left: {{ cell.padding }}rem;"{% endif %}>
+          {{ cell.value }} 
+        </td>
         {%- endfor %}
       </tr>
       {%- endfor %}
