@@ -45,7 +45,6 @@ function getDataForTemplate(data) {
     return row.map((cell, columnIndex) => {
       let type = "text";
       let value = cell;
-      let padding = 0;
       if (isColumnNumeric(data, columnIndex)) {
         type = "numeric";
         // do not format the header row, empty cells or a hyphen(-)
@@ -58,15 +57,9 @@ function getDataForTemplate(data) {
         }
       }
 
-      // if this column is numeric and next column is text add a padding for better spacing
-      if (type === "text" && isColumnNumeric(data, columnIndex - 1)) {
-        padding = 2; // in rem
-      }
-
       return {
         type: type,
-        value: value,
-        padding: padding
+        value: value
       };
     });
   });

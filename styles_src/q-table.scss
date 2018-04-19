@@ -51,6 +51,11 @@ td.q-table__cell--numeric {
   }
 }
 
+// when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
+.q-table:not(.q-table--card-layout) .q-table__cell--numeric + .q-table__cell:not(.q-table__cell--numeric) {
+  padding-left: 20px;
+}
+
 .q-table--card-layout {
   table {
     border: 0;
@@ -78,7 +83,7 @@ td.q-table__cell--numeric {
   }
   table th,
   table td {
-    padding: 4px 0; // overwrite the padding from outside card-layout
+    padding: 4px 0 !important; // overwrite the padding from outside card-layout
   }
 
   tbody:first-child {
