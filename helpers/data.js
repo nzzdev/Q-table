@@ -56,6 +56,7 @@ function getDataForTemplate(data) {
           }
         }
       }
+
       return {
         type: type,
         value: value
