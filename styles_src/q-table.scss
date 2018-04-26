@@ -135,3 +135,22 @@ tr.q-table-state-visible {
 .q-table--card-layout tr.q-table-state-visible {
   display: table-row !important;
 }
+
+.q-table-minibar-header {
+  text-align: center;
+  min-width: 140px;
+}
+
+.q-table-minibar-cell {
+  background-color:rgba(216, 216, 216, 0.15);
+}
+
+.q-table-minibar-valuebox {
+  width: 40%;
+  background-color: #5e6192;;
+}
+
+.q-table-minibar-valuebox--negative {
+  width: 40%;
+  background-color: #b23c39;;
+}
