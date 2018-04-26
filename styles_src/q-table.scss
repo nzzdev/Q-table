@@ -125,13 +125,13 @@ td.q-table__cell--numeric {
 }
 
 tr.q-table-state-hidden {
-  visibility: collapse;
+  display: none;
 }
 
 tr.q-table-state-visible {
-  visibility: visible !important;
+  display: table-row !important;
 }
 
 .q-table--card-layout tr.q-table-state-visible {
-  visibility: visible !important;
+  display: table-row !important;
 }
