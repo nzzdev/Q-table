@@ -94,8 +94,8 @@
             ]
           }
         },
-        "showColumnAsMiniBar": {
-          "title": "Mini-Bar",
+        "minibarOptions": {
+          "title": "Minibar",
           "oneOf": [
             {
               "type": "number"
@@ -108,7 +108,7 @@
             "dynamicEnum": {
               "type": "ToolEndpoint",
               "withData": true,
-              "endpoint": "dynamic-enum/showColumnAsMiniBar"
+              "endpoint": "dynamic-enum/minibarOptions"
             }
           }
         }

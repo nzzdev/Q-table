@@ -26,7 +26,7 @@ module.exports = {
     cors: true
   },
   handler: function(request, h) {
-    if (request.params.optionName === "showColumnAsMiniBar") {
+    if (request.params.optionName === "minibarOptions") {
       return {
         enum: getMiniBarEnum(request.payload),
         enum_titles: getMiniBarEnumTitles(request.payload)

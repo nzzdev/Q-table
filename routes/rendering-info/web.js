@@ -161,7 +161,8 @@ module.exports = {
     if (
       (item.options.cardLayout === false &&
         item.options.cardLayoutIfSmall === true) ||
-      possibleToHaveToHideRows
+      possibleToHaveToHideRows ||
+      item.options.minibarOptions !== null
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context)
@@ -182,6 +183,12 @@ module.exports = {
     if (possibleToHaveToHideRows) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getShowMoreButtonScript(context)
+      });
+    }
+
+    if (item.options.minibarOptions !== null) {
+      renderingInfo.scripts.push({
+        content: renderingInfoScripts.getMinibarScript(context)
       });
     }
 

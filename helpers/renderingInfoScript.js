@@ -47,6 +47,7 @@ function getCardLayoutScript(context) {
     }
     window.q_domready.then(function() {
       ${dataObject}.width = ${dataObject}.element.getBoundingClientRect().width;
+      
       ${applyCardLayoutClassFunctionName}();
     });
     function ${context.id}debounce(func, wait, immediate) {
@@ -138,8 +139,25 @@ function getShowMoreButtonScript(context) {
   `;
 }
 
+function getMinibarScript(context) {
+  const dataObject = `window.${context.id}Data`;
+  const applyMinibarClassesFunctionName = `applyMinibarClassesFunctionName${
+    context.id
+  }`;
+  return `
+    function ${applyMinibarClassesFunctionName}() {
+      // add classes to columns 
+    }
+
+    window.q_domready.then(function() {
+      ${applyMinibarClassesFunctionName}();
+    });
+  `;
+}
+
 module.exports = {
   getDefaultScript: getDefaultScript,
   getCardLayoutScript: getCardLayoutScript,
-  getShowMoreButtonScript: getShowMoreButtonScript
+  getShowMoreButtonScript: getShowMoreButtonScript,
+  getMinibarScript: getMinibarScript
 };
