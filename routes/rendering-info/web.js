@@ -121,6 +121,13 @@ module.exports = {
       context.numberOfRowsToHide = undefined;
     }
 
+    if (item.options.minibarOptions != null) {
+      context.minibarValues = data.getDataForMinibars(
+        item.data,
+        item.options.minibarOptions
+      );
+    }
+
     renderingInfo.markup = nunjucksEnv.render(
       path.join(viewsDir, "table.html"),
       context
@@ -183,12 +190,6 @@ module.exports = {
     if (possibleToHaveToHideRows) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getShowMoreButtonScript(context)
-      });
-    }
-
-    if (item.options.minibarOptions !== null) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getMinibarScript(context)
       });
     }
 

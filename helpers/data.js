@@ -12,6 +12,12 @@ const formatLocale = d3.format.formatLocale({
 const formatGrouping = formatLocale.format(",");
 const formatNoGrouping = formatLocale.format("");
 
+function prepareSelectedColumn(data, selectedColumnIndex) {
+  return data.map((row, rowIndex) => {
+    return parseFloat(row[selectedColumnIndex + 1].value);
+  });
+}
+
 function isNumeric(cell) {
   if (!cell) {
     return false;
@@ -65,6 +71,24 @@ function getDataForTemplate(data) {
   });
 }
 
+function getDataForMinibars(data, selectedColumnIndex) {
+  let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
+  dataColumn[0] = dataColumn[1]; // first row is title and therefore a string. overwrite to
+  let valueSpan = Math.abs(Math.min(...dataColumn) - Math.max(...dataColumn)); // this is 100% of the cell-width
+
+  return dataColumn.map(element => {
+    let type = "positive";
+    if (element < 0) {
+      type = "negative";
+    }
+    return {
+      type: type,
+      value: Math.abs(element * 100 / valueSpan)
+    };
+  });
+}
+
 module.exports = {
-  getDataForTemplate: getDataForTemplate
+  getDataForTemplate: getDataForTemplate,
+  getDataForMinibars: getDataForMinibars
 };

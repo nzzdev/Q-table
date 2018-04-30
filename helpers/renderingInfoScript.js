@@ -139,18 +139,8 @@ function getShowMoreButtonScript(context) {
   `;
 }
 
-function getMinibarScript(context) {
-  const dataObject = `window.${context.id}Data`;
-  return `
-    window.q_domready.then(function() {
-   
-    });
-  `;
-}
-
 module.exports = {
   getDefaultScript: getDefaultScript,
   getCardLayoutScript: getCardLayoutScript,
-  getShowMoreButtonScript: getShowMoreButtonScript,
-  getMinibarScript: getMinibarScript
+  getShowMoreButtonScript: getShowMoreButtonScript
 };
