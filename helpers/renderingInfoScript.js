@@ -141,16 +141,9 @@ function getShowMoreButtonScript(context) {
 
 function getMinibarScript(context) {
   const dataObject = `window.${context.id}Data`;
-  const applyMinibarClassesFunctionName = `applyMinibarClassesFunctionName${
-    context.id
-  }`;
   return `
-    function ${applyMinibarClassesFunctionName}() {
-      // add classes to columns 
-    }
-
     window.q_domready.then(function() {
-      ${applyMinibarClassesFunctionName}();
+   
     });
   `;
 }

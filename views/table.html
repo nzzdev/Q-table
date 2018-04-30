@@ -7,7 +7,10 @@
     {%- if item.options.hideTableHeader !== true %}
     <thead class="s-font-note s-font-note--strong">
       {%- for head in item.data[0] %}
-      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}">
+      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}"
+      {%- if (item.options.minibarOptions+2 === loop.index) and (item.options.minibarOptions != null) %}
+      colspan="2" id="q-table-minibar-header"
+      {% endif %}>
           {{ head.value }}
       </th> 
       {%- endfor %}
@@ -19,9 +22,17 @@
         {%- for cell in row %}
         <td 
           {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
-          class="q-table__cell q-table__cell--{{ cell.type }}">
+          class="q-table__cell q-table__cell--{{ cell.type }}
+          {%- if (item.options.minibarOptions+2 === loop.index) and (item.options.minibarOptions != null) %} 
+          q-table-minibar-cell--value
+          {% endif %}">
           {{ cell.value }} 
         </td>
+          {%- if (item.options.minibarOptions+2 === loop.index) and (item.options.minibarOptions != null) %}  
+           <td class="q-table-minibar-cell">
+             <div class="q-table-minibar-valuebox" style="width: 15%">&nbsp;</div>
+           </td> 
+          {%- endif %}
         {%- endfor %}
       </tr>
       {%- endfor %}

@@ -52,7 +52,7 @@ td.q-table__cell--numeric {
 }
 
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
-.q-table:not(.q-table--card-layout) .q-table__cell--numeric + .q-table__cell:not(.q-table__cell--numeric) {
+.q-table:not(.q-table--card-layout) .q-table__cell--numeric + .q-table__cell:not(.q-table__cell--numeric):not(#q.table-minibar-header) {
   padding-left: 20px;
 }
 
@@ -136,21 +136,23 @@ tr.q-table-state-visible {
   display: table-row !important;
 }
 
-.q-table-minibar-header {
-  text-align: center;
-  min-width: 140px;
+#q-table-minibar-header {
+  text-align: center !important;
+}
+
+.q-table-minibar-cell--value {
+  background-color:rgba(216, 216, 216, 0.15);
 }
 
 .q-table-minibar-cell {
   background-color:rgba(216, 216, 216, 0.15);
+  min-width: 140px;
 }
 
 .q-table-minibar-valuebox {
-  width: 40%;
-  background-color: #5e6192;;
+  background-color: #5e6192;
 }
 
 .q-table-minibar-valuebox--negative {
-  width: 40%;
-  background-color: #b23c39;;
+  background-color: #b23c39;
 }
