@@ -74,7 +74,8 @@ function getDataForTemplate(data) {
 function getDataForMinibars(data, selectedColumnIndex) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
   dataColumn[0] = dataColumn[1]; // first row is title and therefore a string. overwrite to
-  let valueSpan = Math.abs(Math.min(...dataColumn) - Math.max(...dataColumn)); // this is 100% of the cell-width
+  let valueSpan =
+    Math.abs(Math.min(...dataColumn)) + Math.abs(Math.max(...dataColumn)); // this is 100% of the cell-width
 
   return dataColumn.map(element => {
     let type = "positive";
