@@ -56,6 +56,11 @@ td.q-table__cell--numeric {
   padding-left: 20px;
 }
 
+.q-table--card-layout .q-table-minibar-cell {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .q-table--card-layout {
   table {
     border: 0;
