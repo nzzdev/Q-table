@@ -9,6 +9,12 @@ const formatLocale = d3.format.formatLocale({
   grouping: [3]
 });
 
+const miniBarTypes = {
+  positive: "positive",
+  negative: "negative",
+  mixed: "mixed"
+};
+
 const formatGrouping = formatLocale.format(",");
 const formatNoGrouping = formatLocale.format("");
 
@@ -16,6 +22,16 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
   return data.map((row, rowIndex) => {
     return parseFloat(row[selectedColumnIndex + 1].value);
   });
+}
+
+function getMinibarType(types) {
+  if (types.positives > 0 && types.negatives === 0) {
+    return miniBarTypes.positive;
+  } else if (types.negatives > 0 && types.positives === 0) {
+    return miniBarTypes.negative;
+  } else {
+    return miniBarTypes.mixed;
+  }
 }
 
 function isNumeric(cell) {
@@ -73,20 +89,30 @@ function getDataForTemplate(data) {
 
 function getDataForMinibars(data, selectedColumnIndex) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
-  dataColumn[0] = dataColumn[1]; // first row is title and therefore a string. overwrite to
+  dataColumn[0] = dataColumn[1]; // first row is title and therefore a string
   let valueSpan =
     Math.abs(Math.min(...dataColumn)) + Math.abs(Math.max(...dataColumn)); // this is 100% of the cell-width
+  let typeAmount = {
+    positives: 0,
+    negatives: 0
+  };
 
-  return dataColumn.map(element => {
-    let type = "positive";
+  dataColumn.values = dataColumn.map(element => {
+    let type = miniBarTypes.positive;
     if (element < 0) {
-      type = "negative";
+      type = miniBarTypes.negative;
+      typeAmount.negatives++;
+    } else {
+      typeAmount.positives++;
     }
     return {
       type: type,
       value: Math.abs(element * 100 / valueSpan)
     };
   });
+
+  dataColumn.type = getMinibarType(typeAmount);
+  return dataColumn;
 }
 
 module.exports = {

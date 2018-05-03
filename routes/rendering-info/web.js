@@ -122,7 +122,7 @@ module.exports = {
     }
 
     if (item.options.minibarOptions != null) {
-      context.minibarValues = data.getDataForMinibars(
+      context.minibar = data.getDataForMinibars(
         item.data,
         item.options.minibarOptions
       );
