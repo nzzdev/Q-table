@@ -12,16 +12,29 @@ const formatLocale = d3.format.formatLocale({
 const miniBarTypes = {
   positive: "positive",
   negative: "negative",
-  mixed: "mixed"
+  mixed: "mixed",
+  empty: "empty"
 };
 
 const formatGrouping = formatLocale.format(",");
 const formatNoGrouping = formatLocale.format("");
 
 function prepareSelectedColumn(data, selectedColumnIndex) {
-  return data.map((row, rowIndex) => {
-    return parseFloat(row[selectedColumnIndex + 1].value);
+  let preparedData = {
+    values: [],
+    numbers: []
+  };
+
+  data.map(row => {
+    if (isNumeric(row[selectedColumnIndex + 1].value)) {
+      preparedData.numbers.push(parseFloat(row[selectedColumnIndex + 1].value));
+      preparedData.values.push(parseFloat(row[selectedColumnIndex + 1].value));
+    } else {
+      preparedData.values.push(null);
+    }
   });
+
+  return preparedData;
 }
 
 function getMinibarType(types) {
@@ -87,32 +100,40 @@ function getDataForTemplate(data) {
   });
 }
 
-function getDataForMinibars(data, selectedColumnIndex) {
+function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
-  dataColumn[0] = dataColumn[1]; // first row is title and therefore a string
   let valueSpan =
-    Math.abs(Math.min(...dataColumn)) + Math.abs(Math.max(...dataColumn)); // this is 100% of the cell-width
+    Math.abs(Math.min(...dataColumn.numbers)) +
+    Math.abs(Math.max(...dataColumn.numbers)); // this is 100% of the cell-width
   let typeAmount = {
     positives: 0,
     negatives: 0
   };
 
-  dataColumn.values = dataColumn.map(element => {
+  let values = dataColumn.values.map(element => {
     let type = miniBarTypes.positive;
     if (element < 0) {
       type = miniBarTypes.negative;
       typeAmount.negatives++;
-    } else {
+    } else if (element > 0) {
       typeAmount.positives++;
+    } else {
+      type = miniBarTypes.empty;
     }
+
     return {
       type: type,
-      value: Math.abs(element * 100 / valueSpan)
+      value:
+        type !== miniBarTypes.empty
+          ? Math.abs(element * 100 / valueSpan)
+          : element
     };
   });
 
-  dataColumn.type = getMinibarType(typeAmount);
-  return dataColumn;
+  return {
+    values: values,
+    type: getMinibarType(typeAmount)
+  };
 }
 
 module.exports = {

@@ -33,13 +33,19 @@
               q-table-minibar--mixed">
               <div class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}}">{{ cell.value }}</div>
             {% else %}">
-              <div>{{ cell.value }}</div>
+              <div>
+              {{ cell.value }}
+              </div>
             {% endif %}
             
             {%- if (item.options.minibarOptions+2 === loop.index) and (item.options.minibarOptions != null) %}  
-              <div class="q-table-minibar-valuebox--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}"  style="width: {{minibar.values[row_loop.index].value / 2 }}%">
-                  &nbsp;
-                </div>
+              {% if (minibar.values[row_loop.index].type !== "empty") %}
+                <div class="q-table-minibar-valuebox--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}"  
+                style="width: {{minibar.values[row_loop.index].value / 2 }}%">
+                    &nbsp;
+                </div>           
+              </div>
+              {% endif %}
               </td>
             {%- endif %} 
           {% else %}
@@ -53,7 +59,10 @@
             </td>
             {%- if (item.options.minibarOptions+2 === loop.index) and (item.options.minibarOptions != null) %}  
               <td class="q-table-minibar-cell">
-                <div class="q-table-minibar-valuebox--{{minibar.values[row_loop.index].type}}"  style="width: {{minibar.values[row_loop.index].value}}%">
+                <div class="q-table-minibar-valuebox--{{minibar.values[row_loop.index].type}}"  
+                {% if (minibar.values[row_loop.index].type !== "empty") %}
+                style="width: {{minibar.values[row_loop.index].value}}%"
+                {% endif %}>
                     &nbsp;
                 </div>
               </td> 
