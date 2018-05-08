@@ -21,20 +21,48 @@ const formatNoGrouping = formatLocale.format("");
 
 function prepareSelectedColumn(data, selectedColumnIndex) {
   let preparedData = {
-    values: [],
+    items: [],
     numbers: []
+  };
+  let typeAmount = {
+    positives: 0,
+    negatives: 0
   };
 
   data.map(row => {
-    if (isNumeric(row[selectedColumnIndex + 1].value)) {
-      preparedData.numbers.push(parseFloat(row[selectedColumnIndex + 1].value));
-      preparedData.values.push(parseFloat(row[selectedColumnIndex + 1].value));
+    let value = row[selectedColumnIndex + 1].value;
+    let type = miniBarTypes.positive;
+
+    if (value < 0) {
+      type = miniBarTypes.negative;
+      typeAmount.negatives++;
+    } else if (value > 0) {
+      type = miniBarTypes.positive;
+      typeAmount.positives++;
     } else {
-      preparedData.values.push(null);
+      type = miniBarTypes.empty;
+    }
+
+    if (isNumeric(value)) {
+      preparedData.numbers.push(parseFloat(value));
+      preparedData.items.push({ value: parseFloat(value), type });
+    } else {
+      preparedData.items.push({ value: null, type });
     }
   });
 
+  preparedData.type = getMinibarType(typeAmount);
   return preparedData;
+}
+
+function getMinibarValue(type, value, min, max) {
+  if (type === miniBarTypes.positive) {
+    return Math.abs(value * 100 / max);
+  } else if (type === miniBarTypes.negative) {
+    return Math.abs(value * 100 / min);
+  } else {
+    return Math.abs(value * 100 / (Math.abs(min) + Math.abs(max)));
+  }
 }
 
 function getMinibarType(types) {
@@ -102,37 +130,19 @@ function getDataForTemplate(data) {
 
 function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
-  let valueSpan =
-    Math.abs(Math.min(...dataColumn.numbers)) +
-    Math.abs(Math.max(...dataColumn.numbers)); // this is 100% of the cell-width
-  let typeAmount = {
-    positives: 0,
-    negatives: 0
-  };
+  let minValue = Math.min(...dataColumn.numbers);
+  let maxValue = Math.max(...dataColumn.numbers);
 
-  let values = dataColumn.values.map(element => {
-    let type = miniBarTypes.positive;
-    if (element < 0) {
-      type = miniBarTypes.negative;
-      typeAmount.negatives++;
-    } else if (element > 0) {
-      typeAmount.positives++;
-    } else {
-      type = miniBarTypes.empty;
-    }
-
+  let values = dataColumn.items.map(item => {
     return {
-      type: type,
-      value:
-        type !== miniBarTypes.empty
-          ? Math.abs(element * 100 / valueSpan)
-          : element
+      type: item.type,
+      value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
     };
   });
 
   return {
     values: values,
-    type: getMinibarType(typeAmount)
+    type: dataColumn.type
   };
 }
 
