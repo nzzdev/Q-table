@@ -146,7 +146,6 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar--negative {
-  position: relative;
   right: 50%;
 }
 
@@ -168,12 +167,31 @@ tr.q-table-state-visible {
   background-color: #5e6192;
   height: 17px;
   display: inline-block;
+  position: relative;
+}
+
+.q-table-minibar-bar--positive::before {
+  content: "";
+  position: absolute;
+  border-left: 0.5px solid #393855;
+  height: 19px;
+  top: -1px;
 }
 
 .q-table-minibar-bar--negative {
   background-color: #b23c39;
   height: 17px;
   float: right;
+  position: relative;
+}
+
+.q-table-minibar-bar--negative::before{
+  content: "";
+  position: absolute;
+  border-right: 0.5px solid #393855;
+  height: 19px;
+  top: -1px;
+  left: 100%;
 }
 
 .q-table-minibar-alignment--positive {
