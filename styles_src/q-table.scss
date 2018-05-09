@@ -141,9 +141,8 @@ tr.q-table-state-visible {
   display: table-row !important;
 }
 
-.q-table-minibar--positive {
-  position: relative;
-  left: 50%;
+#q-table-minibar-header {
+  text-align: center !important;
 }
 
 .q-table-minibar--negative {
@@ -156,31 +155,31 @@ tr.q-table-state-visible {
   background-color:rgba(216, 216, 216, 0.15);
 }
 
-#q-table-minibar-header {
-  text-align: center !important;
+.q-table-minibar-cell {
+  background-color:rgba(216, 216, 216, 0.15);
+  min-width: 140px;
 }
 
 .q-table-minibar-cell--value {
   background-color:rgba(216, 216, 216, 0.15);
 }
 
-.q-table-minibar-cell {
-  background-color:rgba(216, 216, 216, 0.15);
-  min-width: 140px;
-}
-
-.q-table-minibar-valuebox--positive {
+.q-table-minibar-bar--positive {
   background-color: #5e6192;
+  height: 17px;
+  display: inline-block;
 }
 
-.q-table-minibar-valuebox--negative {
+.q-table-minibar-bar--negative {
   background-color: #b23c39;
+  height: 17px;
   float: right;
 }
 
 .q-table-minibar-alignment--positive {
   width: 50%;
   text-align: right;
+  float: left;
   padding-right: 4px;
 }
 
