@@ -193,6 +193,12 @@ module.exports = {
       });
     }
 
+    if (item.options.minibarOptions !== null) {
+      renderingInfo.scripts.push({
+        content: renderingInfoScripts.getMinibarsScript(context)
+      });
+    }
+
     // minify the scripts
     for (let script of renderingInfo.scripts) {
       script.content = UglifyJS.minify(script.content).code;

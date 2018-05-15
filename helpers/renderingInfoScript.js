@@ -70,6 +70,7 @@ function getCardLayoutScript(context) {
         if (newWidth !== ${dataObject}.width) {
           ${dataObject}.width = newWidth;
           ${applyCardLayoutClassFunctionName}();
+          renderMinibars();
         }
       });
     }, 250));
@@ -139,8 +140,69 @@ function getShowMoreButtonScript(context) {
   `;
 }
 
+function getMinibarsScript(context) {
+  const dataObject = `window.${context.id}Data`;
+  const removeMinibarFunctionName = `removeMinibar${context.id}`;
+  const addMinibarFunctionName = `addMinibar${context.id}`;
+
+  return `
+    function ${removeMinibarFunctionName}(cell){
+      cell.classList.remove('q-table-minibar--mixed');
+      cell.classList.add('mixed');
+
+      var divs = Array.from(cell.getElementsByTagName('div'));
+      divs.forEach(function(div){
+        if (div.className.includes('q-table-minibar-alignment--positive')){
+          div.classList.remove('q-table-minibar-alignment--positive');
+        }
+        if(div.className.includes('q-table-minibar-alignment--negative')){
+          div.classList.remove('q-table-minibar-alignment--negative');
+        }
+        if (div.className.includes('q-table-minibar-bar--positive') || div.className.includes('q-table-minibar-bar--negative')) {
+          div.classList.add('q-table-minibar-hidden');
+        }
+      });
+    }
+
+    function renderMinibars() {
+      var selectedColumn = getColumn(${dataObject}.tableElement,
+        ${context.item.options.minibarOptions + 1});
+
+      if (selectedColumn[0].className.includes('mixed')) {
+        if (${dataObject}.isCardLayout) {
+          // remove minibars when cardlayout and mixed
+          selectedColumn.forEach(function(cell){
+            ${removeMinibarFunctionName}(cell);
+          });
+        } else {
+          // add minibars when not cardlayout and mixed
+
+        }
+      }
+    }
+
+    window.q_domready.then(function() {
+        renderMinibars();
+    });
+
+    function getColumn(table, col) {
+      var tab = table.getElementsByTagName('tbody')[0];
+      var n = tab.rows.length;
+      var s = [];
+
+      for (var i = 0; i < n; i++) {
+          if (tab.rows[i].cells.length > col) { 
+              s.push(tab.rows[i].cells[col]);
+          }
+      }
+      return s;
+    }
+  `;
+}
+
 module.exports = {
   getDefaultScript: getDefaultScript,
   getCardLayoutScript: getCardLayoutScript,
-  getShowMoreButtonScript: getShowMoreButtonScript
+  getShowMoreButtonScript: getShowMoreButtonScript,
+  getMinibarsScript: getMinibarsScript
 };
