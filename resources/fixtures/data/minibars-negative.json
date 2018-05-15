@@ -41,7 +41,7 @@
   "options": {
     "hideTableHeader": false,
     "cardLayout": false,
-    "cardLayoutIfSmall": false,
+    "cardLayoutIfSmall": true,
     "minibarOptions": 2
   },
   "tool": "table",
