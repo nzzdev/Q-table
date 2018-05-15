@@ -27,21 +27,20 @@
             <td 
             {% if item.options.hideTableHeader !== true %}
               data-label="{{ item.data[0][loop.index0].value }}" 
+              data-minibar="{{minibar.type}}"
             {% endif %} 
             class="q-table__cell 
             {% if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}
               q-table-minibar--mixed">
-              <div class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}}">
+              <div data-minibar-type="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}}">
               {{ cell.value }}
               </div>
             {% else %}q-table__cell--{{cell.type}}">
-              
               {{ cell.value }}
-             
             {% endif %}
             {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}  
               {% if minibar.values[row_loop.index].type !== "empty" %}
-                <div class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}"  
+                <div data-minibar-type="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}"  
                 style="width: {{minibar.values[row_loop.index].value / 2 }}%">
                     &nbsp;
                 </div>
@@ -61,7 +60,7 @@
               </td>
               {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}  
                 <td class="q-table-minibar-cell" style="padding-right: 12px;">
-                  <div class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}"  
+                  <div data-minibar-type="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}"  
                   {% if minibar.values[row_loop.index].type !== "empty" %}
                   style="width: {{minibar.values[row_loop.index].value}}%"
                   {% endif %}>
@@ -71,7 +70,7 @@
             {% else %} 
                 {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}  
                 <td class="q-table-minibar-cell" style="padding-left: 12px; padding-right: 0px !important;">
-                  <div class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}"  
+                  <div data-minibar-type={{minibar.values[row_loop.index].type}}" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}"  
                   {% if minibar.values[row_loop.index].type !== "empty" %}
                   style="width: {{minibar.values[row_loop.index].value}}%"
                   {% endif %}>
