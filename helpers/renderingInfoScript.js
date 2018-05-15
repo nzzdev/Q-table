@@ -133,7 +133,7 @@ function getShowMoreButtonScript(context) {
       });
       ${hideRowsFunctionName}();
     }
-    
+
     window.q_domready.then(function() {
       ${handleShowMoreButtonFunctionName}();
     });
@@ -155,8 +155,11 @@ function getMinibarsScript(context) {
         if (div.className.includes('q-table-minibar-alignment--positive')){
           div.classList.remove('q-table-minibar-alignment--positive');
         }
-        if(div.className.includes('q-table-minibar-alignment--negative')){
+        if (div.className.includes('q-table-minibar-alignment--negative')){
           div.classList.remove('q-table-minibar-alignment--negative');
+        }
+        if (div.className.includes('q-table-minibar-alignment--empty')){
+          div.classList.remove('q-table-minibar-alignment--empty');
         }
         if (div.className.includes('q-table-minibar-bar--positive') || div.className.includes('q-table-minibar-bar--negative')) {
           div.classList.add('q-table-minibar-hidden');
