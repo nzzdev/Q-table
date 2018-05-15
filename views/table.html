@@ -31,9 +31,11 @@
             class="q-table__cell
             {% if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}
               q-table-minibar--mixed">
-              <div class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}}">{{ cell.value }}</div>
+              <div class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}}">
+              {{ cell.value }}
+              </div>
             {% else %}">
-              <div>
+              <div class="q-table__cell q-table__cell--{{cell.type}}">
               {{ cell.value }}
               </div>
             {% endif %}
@@ -42,13 +44,13 @@
                 <div class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}"  
                 style="width: {{minibar.values[row_loop.index].value / 2 }}%">
                     &nbsp;
-                </div>           
+                </div>
               </div>
               {% endif %}
               </td>
             {%- endif %} 
           {% else %}
-            {%- if minibar.type==="positive"%}
+            {%- if minibar.type==="positive" %}
               <td 
               {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
               class="q-table__cell q-table__cell--{{ cell.type }}

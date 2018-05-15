@@ -205,7 +205,7 @@ tr.q-table-state-visible {
   width: 50%;
   position: relative;
   left: 50%;
-  text-align: left;
+  text-align: left !important;
   padding-left: 4px;
   float: left;
 }
