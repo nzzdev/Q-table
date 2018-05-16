@@ -172,6 +172,7 @@ tr.q-table-state-visible {
 
 .q-table-minibar-bar--positive::before {
   content: "";
+  width: 1px;
   position: absolute;
   border-left: 0.5px solid #393855;
   height: 19px;
@@ -187,6 +188,7 @@ tr.q-table-state-visible {
 
 .q-table-minibar-bar--negative::before{
   content: "";
+  width: 1px;
   position: absolute;
   border-right: 0.5px solid #393855;
   height: 19px;

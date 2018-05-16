@@ -218,7 +218,7 @@ function getMinibarsScript(context) {
     }
 
     window.q_domready.then(function() {
-        renderMinibars();
+      renderMinibars();
     });
   `;
 }

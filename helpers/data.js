@@ -61,7 +61,7 @@ function getMinibarValue(type, value, min, max) {
   } else if (type === miniBarTypes.negative) {
     return Math.abs(value * 100 / min);
   } else {
-    return Math.abs(value * 100 / (Math.abs(min) + Math.abs(max)));
+    return Math.abs(value * 100 / Math.max(Math.abs(min), Math.abs(max)));
   }
 }
 
