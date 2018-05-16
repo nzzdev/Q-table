@@ -146,48 +146,6 @@ function getMinibarsScript(context) {
   const addMinibarFunctionName = `addMinibar${context.id}`;
 
   return `
-    function ${removeMinibarFunctionName}(cell){
-      cell.classList.remove('q-table-minibar--mixed');
-      cell.classList.add('mixed');
-
-      var divs = Array.from(cell.getElementsByTagName('div'));
-      divs.forEach(function(div){
-        if (div.className.includes('q-table-minibar-alignment--positive')){
-          div.classList.remove('q-table-minibar-alignment--positive');
-        }
-        if (div.className.includes('q-table-minibar-alignment--negative')){
-          div.classList.remove('q-table-minibar-alignment--negative');
-        }
-        if (div.className.includes('q-table-minibar-alignment--empty')){
-          div.classList.remove('q-table-minibar-alignment--empty');
-        }
-        if (div.className.includes('q-table-minibar-bar--positive') || div.className.includes('q-table-minibar-bar--negative')) {
-          div.classList.add('q-table-minibar-hidden');
-        }
-      });
-    }
-
-    function renderMinibars() {
-      var selectedColumn = getColumn(${dataObject}.tableElement,
-        ${context.item.options.minibarOptions + 1});
-
-      if (selectedColumn[0].className.includes('mixed')) {
-        if (${dataObject}.isCardLayout) {
-          // remove minibars when cardlayout and mixed
-          selectedColumn.forEach(function(cell){
-            ${removeMinibarFunctionName}(cell);
-          });
-        } else {
-          // add minibars when not cardlayout and mixed
-
-        }
-      }
-    }
-
-    window.q_domready.then(function() {
-        renderMinibars();
-    });
-
     function getColumn(table, col) {
       var tab = table.getElementsByTagName('tbody')[0];
       var n = tab.rows.length;
@@ -200,6 +158,68 @@ function getMinibarsScript(context) {
       }
       return s;
     }
+
+    function ${removeMinibarFunctionName}(cell){
+      cell.classList.remove('q-table-minibar--mixed');
+      var divs = Array.from(cell.getElementsByTagName('div'));
+      divs.forEach(function(div){
+        if (div.dataset.minibarType==="value"){
+          if (div.dataset.minibar==="positive"){
+            div.classList.remove('q-table-minibar-alignment--positive');
+          }
+          if (div.dataset.minibar==="negative"){
+            div.classList.remove('q-table-minibar-alignment--negative');
+          }
+          if (div.dataset.minibar==="empty"){
+            div.classList.remove('q-table-minibar-alignment--empty');
+          }
+        } else {
+          div.classList.add('q-table-minibar-hidden');
+        }
+      });
+    }
+
+    function ${addMinibarFunctionName}(cell) {
+      cell.classList.add('q-table-minibar--' + cell.dataset.minibar)
+      var divs = Array.from(cell.getElementsByTagName('div'));
+      divs.forEach(function(div){
+        if (div.dataset.minibarType==="value"){
+          if (div.dataset.minibar==="positive"){
+            div.classList.add('q-table-minibar-alignment--positive');
+          }
+          if (div.dataset.minibar==="negative"){
+            div.classList.add('q-table-minibar-alignment--negative');
+          }
+          if (div.dataset.minibar==="empty"){
+            div.classList.add('q-table-minibar-alignment--empty');
+          }
+        } else {
+          div.classList.remove('q-table-minibar-hidden');
+        }
+      });
+    }
+
+    function renderMinibars() {
+      var selectedColumn = getColumn(${dataObject}.tableElement,
+        ${context.item.options.minibarOptions + 1});
+      if (selectedColumn[0].dataset.minibar==="mixed") {
+        if (${dataObject}.isCardLayout) {
+          // remove minibars when cardlayout and mixed
+          selectedColumn.forEach(function(cell){
+            ${removeMinibarFunctionName}(cell);
+          });
+        } else {
+          // add minibars when not cardlayout and mixed
+          selectedColumn.forEach(function(cell){
+            ${addMinibarFunctionName}(cell);
+          });
+        }
+      }
+    }
+
+    window.q_domready.then(function() {
+        renderMinibars();
+    });
   `;
 }
 
