@@ -19,7 +19,9 @@ module.exports = {
 
     if (request.params.optionName === "minibarOptions") {
       return {
-        available: !request.payload.options.cardLayout
+        available:
+          !request.payload.options.cardLayout &&
+          request.payload.data[0].length >= 3
       };
     }
     return reply(Boom.badRequest());
