@@ -166,6 +166,8 @@ function getMinibarsScript(context) {
       var divs = Array.from(cell.getElementsByTagName('div'));
       divs.forEach(function(div){
         if (div.dataset.minibarType==="value"){
+          console.log(div.dataset.minibarType);
+          console.log(div.dataset.minibar);
           if (div.dataset.minibar==="positive"){
             div.classList.remove('q-table-minibar-alignment--positive');
           }
@@ -207,7 +209,6 @@ function getMinibarsScript(context) {
         if (tableRow !== null) {
           var bar = minibarColumn[i];
           var value = valueColumn[i];
-          console.log('runme');
           if (isCardLayout) {
             tableRow.replaceChild(bar, value);  
             tableRow.insertBefore(value, bar);
