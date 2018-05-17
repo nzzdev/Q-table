@@ -95,7 +95,7 @@
           }
         },
         "minibarOptions": {
-          "title": "Minibar",
+          "title": "Minibars",
           "oneOf": [
             {
               "type": "number"
