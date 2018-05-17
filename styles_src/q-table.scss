@@ -151,16 +151,16 @@ tr.q-table-state-visible {
 
 .q-table-minibar--mixed {
   min-width: 180px;
-  background-color:rgba(206, 206, 206, 0.15);
+  background-color:rgba(200, 200, 200, 0.15);
 }
 
 .q-table-minibar-cell {
-  background-color:rgba(206, 206, 206, 0.15);
+  background-color:rgba(200, 200, 200, 0.15);
   min-width: 140px;
 }
 
 .q-table-minibar-cell--value {
-  background-color:rgba(206, 206, 206, 0.15);
+  background-color:rgba(200, 200, 200, 0.15);
 }
 
 .q-table-minibar-bar--positive {
@@ -174,7 +174,7 @@ tr.q-table-state-visible {
   content: "";
   width: 1px;
   position: absolute;
-  border-left: 0.5px solid #393855;
+  border-left: 0.5px solid currentColor;
   height: 19px;
   top: -1px;
 }

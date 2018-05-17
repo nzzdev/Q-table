@@ -216,7 +216,6 @@ function getMinibarsScript(context) {
             tableRow.replaceChild(value, bar);  
             tableRow.insertBefore(bar, value);
           }
-          
         }
       }
     }
