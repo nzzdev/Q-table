@@ -105,6 +105,13 @@
             }
           ],
           "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "withData": true,
+                "endpoint": "option-availability/minibarOptions"
+              }
+            ],
             "dynamicEnum": {
               "type": "ToolEndpoint",
               "withData": true,

@@ -16,6 +16,12 @@ module.exports = {
         available: !request.payload.options.cardLayout
       };
     }
+
+    if (request.params.optionName === "minibarOptions") {
+      return {
+        available: !request.payload.options.cardLayout
+      };
+    }
     return reply(Boom.badRequest());
   }
 };
