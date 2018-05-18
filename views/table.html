@@ -8,7 +8,7 @@
     <thead class="s-font-note s-font-note--strong">
       {%- for head in item.data[0] %}
       <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}"
-      {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and minibar.type !== "mixed" %}
+      {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and minibar.type !== "mixed" and not initWithCardLayout %}
       colspan="2" id="q-table-minibar-header"
       {% elif minibar.type === "mixed" and item.options.minibarOptions+2 === loop.index %}
       id="q-table-minibar-header"
@@ -30,7 +30,7 @@
               data-minibar="{{minibar.type}}"
             {% endif %} 
             class="q-table__cell 
-            {% if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}
+            {% if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
               q-table-minibar--{{minibar.values[row_loop.index].type}}">
               <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}}">
               {{ cell.value }}
@@ -38,7 +38,7 @@
             {% else %}q-table__cell--{{cell.type}}">
               {{ cell.value }}
             {% endif %}
-            {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}  
+            {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
               {% if minibar.values[row_loop.index].type !== "empty" %}
                 <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}"  
                 style="width: {{minibar.values[row_loop.index].value}}%">
@@ -52,12 +52,12 @@
               <td 
                 {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
                 class="q-table__cell q-table__cell--{{ cell.type }}
-                {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %} 
+                {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
                 q-table-minibar-cell--value" data-minibar-type="value" data-minibar="{{minibar.type}}" style="padding-left: 12px;
                 {% endif %}">
                   {{ cell.value }} 
               </td>
-              {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}  
+              {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
                 <td data-minibar="{{minibar.type}}" class="q-table-minibar-cell" style="padding-right: 12px;">
                   <div data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}"  
                   {% if minibar.values[row_loop.index].type !== "empty" %}
@@ -67,7 +67,7 @@
                 </td> 
               {%- endif %} 
             {% else %} 
-                {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %}  
+                {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
                 <td class="q-table-minibar-cell" data-minibar="{{minibar.type}}" style="padding-left: 12px; padding-right: 0px !important;">
                   <div data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}"  
                   {% if minibar.values[row_loop.index].type !== "empty" %}
@@ -79,7 +79,7 @@
               <td 
               {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
               class="q-table__cell q-table__cell--{{ cell.type }}
-              {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null %} 
+              {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
               q-table-minibar-cell--value" data-minibar="{{minibar.type}}" data-minibar-type="value" style="padding-right: 12px;
               {% endif %}">
                 {{ cell.value }} 

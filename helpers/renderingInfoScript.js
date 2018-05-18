@@ -145,7 +145,6 @@ function getMinibarsScript(context) {
   const removeMinibarFunctionName = `removeMinibar${context.id}`;
   const addMinibarFunctionName = `addMinibar${context.id}`;
   const getColumnFunctionname = `getColumn${context.id}`;
-  const moveNegativeMinibarFunctionName = `moveNegativeMinibar${context.id}`;
 
   return `
     function ${getColumnFunctionname}(table, col) {
@@ -201,23 +200,6 @@ function getMinibarsScript(context) {
       });
     }
 
-    function ${moveNegativeMinibarFunctionName}(valueColumn, minibarColumn, isCardLayout) {
-      for(var i = 0; i <= valueColumn.length -1; i++) {
-        var tableRow = valueColumn[i].parentNode;
-        if (tableRow !== null) {
-          var bar = minibarColumn[i];
-          var value = valueColumn[i];
-          if (isCardLayout) {
-            tableRow.replaceChild(bar, value);  
-            tableRow.insertBefore(value, bar);
-          } else {
-            tableRow.replaceChild(value, bar);  
-            tableRow.insertBefore(bar, value);
-          }
-        }
-      }
-    }
-
     function renderMinibars() {
       var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
         ${context.item.options.minibarOptions + 1});
@@ -233,13 +215,6 @@ function getMinibarsScript(context) {
             ${addMinibarFunctionName}(cell);
           });
         }
-      }
-      
-      if (minibarColumn[0].dataset.minibar==="negative")
-      {
-        var valueColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
-          ${context.item.options.minibarOptions + 2});
-        ${moveNegativeMinibarFunctionName}(valueColumn, minibarColumn, ${dataObject}.isCardLayout);
       }
     }
 
