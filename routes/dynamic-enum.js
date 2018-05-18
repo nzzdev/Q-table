@@ -12,12 +12,11 @@ function getNumericColumns(data) {
   }
   return numericColumns;
 }
-
 function getMiniBarEnum(item) {
   if (item.data.length < 1) {
     return [null];
   }
-  return [null].concat(...getNumericColumns(item.data));
+  return [null].concat(...getNumericColumns(item.data).keys());
 }
 
 function getMiniBarEnumTitles(item) {

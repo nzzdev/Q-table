@@ -32,6 +32,9 @@ function getCardLayoutScript(context) {
   const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
   const dataObject = `window.${context.id}Data`;
 
+  let renderMinibarsFunction =
+    context.item.minibarOptions != null ? `renderMinibars${context.id}()` : "";
+
   return `
     ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");
     ${dataObject}.isCardLayout = ${dataObject}.isCardLayout || undefined;
@@ -70,7 +73,7 @@ function getCardLayoutScript(context) {
         if (newWidth !== ${dataObject}.width) {
           ${dataObject}.width = newWidth;
           ${applyCardLayoutClassFunctionName}();
-          renderMinibars();
+          ${renderMinibarsFunction};
         }
       });
     }, 250));
@@ -82,6 +85,7 @@ function getShowMoreButtonScript(context) {
   const handleShowMoreButtonFunctionName = `handleShowMoreButton${context.id}`;
   const hideRowsFunctionName = `hideRows${context.id}`;
   const showRowsFunctionName = `showRows${context.id}`;
+
   return `
     ${dataObject}.rowVisibilityState = 'visible';
     ${dataObject}.numberOfRows = ${context.numberOfRows};
@@ -142,6 +146,7 @@ function getShowMoreButtonScript(context) {
 
 function getMinibarsScript(context) {
   const dataObject = `window.${context.id}Data`;
+  const renderMinibarsFunctionName = `renderMinibars${context.id}`;
   const removeMixedMinibarFunctionName = `removeMixedMinibar${context.id}`;
   const addMixedMinibarFunctionName = `addMixedMinibar${context.id}`;
   const removeMinibarFunctionName = `removeMinibars${context.id}`;
@@ -220,7 +225,7 @@ function getMinibarsScript(context) {
       });
     }
 
-    function renderMinibars() {
+    function ${renderMinibarsFunctionName}() {
       var selectedColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
         ${context.item.options.minibarOptions + 1});
 
@@ -262,7 +267,7 @@ function getMinibarsScript(context) {
     }
 
     window.q_domready.then(function() {
-      renderMinibars();
+      ${renderMinibarsFunctionName}();
     });
   `;
 }
