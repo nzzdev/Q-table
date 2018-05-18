@@ -29,7 +29,7 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
     negatives: 0
   };
 
-  let dataCopy = JSON.parse(JSON.stringify(data));
+  let dataCopy = clone(data);
   dataCopy[0].map(cell => (cell.value = "")); // first row is always header so ignore it
 
   dataCopy.map((row, index) => {
@@ -153,5 +153,6 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 
 module.exports = {
   getDataForTemplate: getDataForTemplate,
-  getDataForMinibars: getDataForMinibars
+  getDataForMinibars: getDataForMinibars,
+  isColumnNumeric: isColumnNumeric
 };

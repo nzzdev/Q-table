@@ -1,19 +1,30 @@
 const Boom = require("boom");
 const Joi = require("joi");
+const clone = require("clone");
+const isColumnNumeric = require("../helpers/data.js").isColumnNumeric;
+
+function getNumericColumns(data) {
+  let numericColumns = [];
+  for (var i = 0; i <= data[0].slice(1).length; i++) {
+    if (isColumnNumeric(data, i + 1)) {
+      numericColumns.push(data[0].slice(1)[i]);
+    }
+  }
+  return numericColumns;
+}
 
 function getMiniBarEnum(item) {
   if (item.data.length < 1) {
     return [null];
   }
-  // constructs an array like [null,0,1,2,3,...] with as many indexes as there are data columns
-  return [null].concat([...item.data[0].slice(1).keys()]);
+  return [null].concat(...getNumericColumns(item.data));
 }
 
 function getMiniBarEnumTitles(item) {
   if (item.data.length < 1) {
     return ["keine"];
   }
-  return ["keine"].concat(item.data[0].slice(1));
+  return ["keine"].concat(...getNumericColumns(item.data));
 }
 
 module.exports = {
