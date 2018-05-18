@@ -142,8 +142,10 @@ function getShowMoreButtonScript(context) {
 
 function getMinibarsScript(context) {
   const dataObject = `window.${context.id}Data`;
-  const removeMinibarFunctionName = `removeMinibar${context.id}`;
-  const addMinibarFunctionName = `addMinibar${context.id}`;
+  const removeMixedMinibarFunctionName = `removeMixedMinibar${context.id}`;
+  const addMixedMinibarFunctionName = `addMixedMinibar${context.id}`;
+  const removeMinibarFunctionName = `removeMinibars${context.id}`;
+  const addMinibarFunctionName = `addMinibars${context.id}`;
   const getColumnFunctionname = `getColumn${context.id}`;
 
   return `
@@ -160,7 +162,7 @@ function getMinibarsScript(context) {
       return s;
     }
 
-    function ${removeMinibarFunctionName}(cell){
+    function ${removeMixedMinibarFunctionName}(cell){
       cell.classList.remove('q-table-minibar--mixed');
       var divs = Array.from(cell.getElementsByTagName('div'));
       divs.forEach(function(div){
@@ -180,7 +182,7 @@ function getMinibarsScript(context) {
       });
     }
 
-    function ${addMinibarFunctionName}(cell) {
+    function ${addMixedMinibarFunctionName}(cell) {
       cell.classList.add('q-table-minibar--' + cell.dataset.minibar)
       var divs = Array.from(cell.getElementsByTagName('div'));
       divs.forEach(function(div){
@@ -200,20 +202,61 @@ function getMinibarsScript(context) {
       });
     }
 
+    function ${removeMinibarFunctionName}(minibarColumn, valueColumn) {
+      minibarColumn.forEach(function(cell){
+        cell.classList.add('q-table-minibar-hidden');
+      });
+      valueColumn.forEach(function(cell){
+        cell.classList.remove('q-table-minibar-cell--value');
+      });
+    }
+
+    function ${addMinibarFunctionName}(minibarColumn, valueColumn) {
+      minibarColumn.forEach(function(cell){
+        cell.classList.remove('q-table-minibar-hidden');
+      });
+      valueColumn.forEach(function(cell){
+        cell.classList.add('q-table-minibar-cell--value');
+      });
+    }
+
     function renderMinibars() {
-      var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+      var selectedColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
         ${context.item.options.minibarOptions + 1});
-      if (minibarColumn[0].dataset.minibar==="mixed") {
-        if (${dataObject}.isCardLayout) {
-          // remove minibars when cardlayout and mixed
-          minibarColumn.forEach(function(cell){
-            ${removeMinibarFunctionName}(cell);
+
+      var tableMinibarType = selectedColumn[0].dataset.minibar;
+      
+      if (${dataObject}.isCardLayout) { 
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            ${removeMixedMinibarFunctionName}(cell);
           });
-        } else {
-          // add minibars when not cardlayout and mixed
-          minibarColumn.forEach(function(cell){
-            ${addMinibarFunctionName}(cell);
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${removeMinibarFunctionName}(minibarColumn, selectedColumn);
+        }
+        if (tableMinibarType==="negative") {
+          var valueColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${removeMinibarFunctionName}(selectedColumn, valueColumn);
+        }
+      } else {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            ${addMixedMinibarFunctionName}(cell);
           });
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${addMinibarFunctionName}(minibarColumn, selectedColumn);
+        }
+        if (tableMinibarType==="negative") {
+          var valueColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${addMinibarFunctionName}(selectedColumn, valueColumn);
         }
       }
     }
