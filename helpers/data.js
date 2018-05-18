@@ -30,7 +30,10 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
   };
 
   data.map(row => {
-    let value = row[selectedColumnIndex + 1].value;
+    let value = row[selectedColumnIndex + 1].value
+      .replace(/\s/g, "")
+      .replace(",", ".");
+    console.log(value);
     let type = miniBarTypes.positive;
 
     if (value < 0) {
