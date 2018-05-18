@@ -29,11 +29,13 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
     negatives: 0
   };
 
-  data.map(row => {
+  let dataCopy = JSON.parse(JSON.stringify(data));
+  dataCopy[0].map(cell => (cell.value = "")); // first row is always header so ignore it
+
+  dataCopy.map((row, index) => {
     let value = row[selectedColumnIndex + 1].value
       .replace(/\s/g, "")
       .replace(",", ".");
-    console.log(value);
     let type = miniBarTypes.positive;
 
     if (value < 0) {
