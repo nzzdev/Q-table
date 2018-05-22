@@ -146,12 +146,12 @@ function getShowMoreButtonScript(context) {
 
 function getMinibarsScript(context) {
   const dataObject = `window.${context.id}Data`;
-  const renderMinibarsFunctionName = `renderMinibars${context.id}`;
+  const getColumnFunctionname = `getColumn${context.id}`;
   const removeMixedMinibarFunctionName = `removeMixedMinibar${context.id}`;
   const addMixedMinibarFunctionName = `addMixedMinibar${context.id}`;
   const removeMinibarFunctionName = `removeMinibars${context.id}`;
   const addMinibarFunctionName = `addMinibars${context.id}`;
-  const getColumnFunctionname = `getColumn${context.id}`;
+  const renderMinibarsFunctionName = `renderMinibars${context.id}`;
 
   return `
     function ${getColumnFunctionname}(table, col) {
