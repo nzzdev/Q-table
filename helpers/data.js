@@ -108,6 +108,16 @@ function isColumnNumeric(data, columnIndex) {
   return isColumnNumeric;
 }
 
+function getNumericColumns(data) {
+  let numericColumns = [];
+  for (var i = 0; i <= data[0].length; i++) {
+    if (isColumnNumeric(data, i)) {
+      numericColumns.push(data[0][i]);
+    }
+  }
+  return numericColumns;
+}
+
 function getDataForTemplate(data) {
   return data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
@@ -154,5 +164,5 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 module.exports = {
   getDataForTemplate: getDataForTemplate,
   getDataForMinibars: getDataForMinibars,
-  isColumnNumeric: isColumnNumeric
+  getNumericColumns: getNumericColumns
 };

@@ -1,22 +1,18 @@
 const Boom = require("boom");
 const Joi = require("joi");
 const clone = require("clone");
-const isColumnNumeric = require("../helpers/data.js").isColumnNumeric;
+const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 
-function getNumericColumns(data) {
-  let numericColumns = [];
-  for (var i = 0; i <= data[0].slice(1).length; i++) {
-    if (isColumnNumeric(data, i + 1)) {
-      numericColumns.push(data[0].slice(1)[i]);
-    }
-  }
-  return numericColumns;
-}
 function getMiniBarEnum(item) {
   if (item.data.length < 1) {
     return [null];
   }
-  return [null].concat(...getNumericColumns(item.data).keys());
+
+  let numericColumns = getNumericColumns(item.data).map(columnNames => {
+    return item.data[0].indexOf(columnNames) - 1;
+  });
+
+  return [null].concat(...numericColumns);
 }
 
 function getMiniBarEnumTitles(item) {
