@@ -166,7 +166,7 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar-bar--positive {
-  background-color: #5e6192;
+  background-color: currentColor;
   position: relative;
   height: 17px;
   display: inline-block;
@@ -174,7 +174,7 @@ tr.q-table-state-visible {
 
 .q-table-minibar-bar--positive::before {
   content: "";
-  border-left: 0.5px solid currentColor;
+  border-left: 0.5px solid #393855;
   position: absolute;
   height: 19px;
   width: 1px;
@@ -182,7 +182,7 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar-bar--negative {
-  background-color: #b23c39;
+  background-color: currentColor;
   position: relative;
   float: right;
   height: 17px;
