@@ -1,5 +1,6 @@
 const Boom = require("boom");
 const Joi = require("joi");
+const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 
 module.exports = {
   method: "POST",
@@ -21,7 +22,8 @@ module.exports = {
       return {
         available:
           !request.payload.options.cardLayout &&
-          request.payload.data[0].length >= 3
+          request.payload.data[0].length >= 3 &&
+          getNumericColumns(request.payload.data).length > 0
       };
     }
     return reply(Boom.badRequest());
