@@ -152,6 +152,8 @@ tr.q-table-state-visible {
 .q-table-minibar--mixed {
   min-width: 180px;
   background-color:rgba(200, 200, 200, 0.15);
+  padding-right: 8px !important;
+  padding-left: 8px !important;
 }
 
 .q-table-minibar-cell {
