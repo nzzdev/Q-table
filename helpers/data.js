@@ -48,7 +48,7 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
       type = miniBarTypes.empty;
     }
 
-    if (isNumeric(value)) {
+    if (isNumeric(value) || parseFloat(value)) {
       preparedData.numbers.push(parseFloat(value));
       preparedData.items.push({ value: parseFloat(value), type });
     } else {
