@@ -146,19 +146,19 @@ function getShowMoreButtonScript(context) {
 
 function getMinibarsScript(context) {
   const dataObject = `window.${context.id}Data`;
-  const getColumnFunctionname = `getColumn${context.id}`;
+  const getColumnFunctionName = `getColumn${context.id}`;
   const removeMixedMinibarFunctionName = `removeMixedMinibar${context.id}`;
   const addMixedMinibarFunctionName = `addMixedMinibar${context.id}`;
   const removeMinibarFunctionName = `removeMinibars${context.id}`;
   const addMinibarFunctionName = `addMinibars${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
   const handleMinibarsFunctionName = `handleMinibars${context.id}`;
-  const handleMinibarsMinWidthFunctionName = `handlehandleMinibarsMinWidthMinibars${
+  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${
     context.id
   }`;
 
   return `
-    function ${getColumnFunctionname}(table, col) {
+    function ${getColumnFunctionName}(table, col) {
       var tab = table.getElementsByTagName('tbody')[0];
       var n = tab.rows.length;
       var s = [];
@@ -237,12 +237,12 @@ function getMinibarsScript(context) {
           });
         }
         if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
             ${context.item.options.minibarOptions + 2});
           ${removeMinibarFunctionName}(minibarColumn, selectedColumn);
         }
         if (tableMinibarType==="negative") {
-          var valueColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+          var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
             ${context.item.options.minibarOptions + 2});
           ${removeMinibarFunctionName}(selectedColumn, valueColumn);
         }
@@ -253,12 +253,12 @@ function getMinibarsScript(context) {
           });
         }
         if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
             ${context.item.options.minibarOptions + 2});
           ${addMinibarFunctionName}(minibarColumn, selectedColumn);
         }
         if (tableMinibarType==="negative") {
-          var valueColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+          var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
             ${context.item.options.minibarOptions + 2});
           ${addMinibarFunctionName}(selectedColumn, valueColumn);
         }
@@ -273,7 +273,7 @@ function getMinibarsScript(context) {
           });
         }
         if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
             ${context.item.options.minibarOptions + 2});
           minibarColumn.forEach(function(cell){
             cell.classList.add('q-table-minibar-cell-mobile');
@@ -291,7 +291,7 @@ function getMinibarsScript(context) {
           });
         }
         if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
             ${context.item.options.minibarOptions + 2});
           minibarColumn.forEach(function(cell){
             cell.classList.remove('q-table-minibar-cell-mobile');
@@ -306,7 +306,7 @@ function getMinibarsScript(context) {
     }
 
     function ${renderMinibarsFunctionName}() {
-      var selectedColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+      var selectedColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
         ${context.item.options.minibarOptions + 1});
 
       ${handleMinibarsFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
