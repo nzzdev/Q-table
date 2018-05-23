@@ -152,6 +152,10 @@ function getMinibarsScript(context) {
   const removeMinibarFunctionName = `removeMinibars${context.id}`;
   const addMinibarFunctionName = `addMinibars${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
+  const handleMinibarsFunctionName = `handleMinibars${context.id}`;
+  const handleMinibarsMinWidthFunctionName = `handlehandleMinibarsMinWidthMinibars${
+    context.id
+  }`;
 
   return `
     function ${getColumnFunctionname}(table, col) {
@@ -225,12 +229,7 @@ function getMinibarsScript(context) {
       });
     }
 
-    function ${renderMinibarsFunctionName}() {
-      var selectedColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
-        ${context.item.options.minibarOptions + 1});
-
-      var tableMinibarType = selectedColumn[0].dataset.minibar;
-      
+    function ${handleMinibarsFunctionName}(selectedColumn, tableMinibarType) {
       if (${dataObject}.isCardLayout) { 
         if (tableMinibarType==="mixed") {
           selectedColumn.forEach(function(cell){
@@ -264,6 +263,54 @@ function getMinibarsScript(context) {
           ${addMinibarFunctionName}(selectedColumn, valueColumn);
         }
       }
+    }
+
+    function ${handleMinibarsMinWidthFunctionName}(selectedColumn, tableMinibarType) {
+      if (${dataObject}.element.getBoundingClientRect().width < 400) {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar--mixed-mobile');
+          });
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          minibarColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar-cell-mobile');
+          });
+        }
+        if (tableMinibarType==="negative") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar-cell-mobile');
+          });
+        }
+      } else {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar--mixed-mobile');
+          });
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          minibarColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar-cell-mobile');
+          });
+        }
+        if (tableMinibarType==="negative") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar-cell-mobile');
+          });
+        }
+      }
+    }
+
+    function ${renderMinibarsFunctionName}() {
+      var selectedColumn = ${getColumnFunctionname}(${dataObject}.tableElement,
+        ${context.item.options.minibarOptions + 1});
+
+      ${handleMinibarsFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
+      ${handleMinibarsMinWidthFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
     }
 
     window.q_domready.then(function() {

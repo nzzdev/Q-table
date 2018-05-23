@@ -156,9 +156,17 @@ tr.q-table-state-visible {
   padding-left: 12px !important;
 }
 
+.q-table-minibar--mixed-mobile {
+  min-width: 90px;
+}
+
 .q-table-minibar-cell {
   background-color:rgba(200, 200, 200, 0.15);
   min-width: 140px;
+}
+
+.q-table-minibar-cell-mobile {
+  min-width: 50px !important;
 }
 
 .q-table-minibar-cell--value {
