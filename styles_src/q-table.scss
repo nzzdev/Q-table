@@ -50,9 +50,8 @@ td.q-table__cell--numeric {
     font-weight: unset;
   }
 }
-
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
-.q-table:not(.q-table--card-layout) .q-table__cell--numeric + .q-table__cell:not(.q-table__cell--numeric):not(#q.table-minibar-header) {
+.q-table:not(.q-table--card-layout) .q-table__cell--numeric:not(#q-table-minibar-header) + .q-table__cell:not(.q-table__cell--numeric){
   padding-left: 20px;
 }
 
