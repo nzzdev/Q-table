@@ -8,18 +8,16 @@ function getMiniBarEnum(item) {
     return [null];
   }
 
-  let numericColumns = getNumericColumns(item.data).map(columnNames => {
-    return item.data[0].indexOf(columnNames) - 1;
-  });
-
-  return [null].concat(...numericColumns);
+  return [null].concat(...getNumericColumns(item.data).map(col => col.index));
 }
 
 function getMiniBarEnumTitles(item) {
   if (item.data.length < 1) {
     return ["keine"];
   }
-  return ["keine"].concat(...getNumericColumns(item.data));
+  return ["keine"].concat(
+    ...getNumericColumns(item.data).map(col => col.title)
+  );
 }
 
 module.exports = {

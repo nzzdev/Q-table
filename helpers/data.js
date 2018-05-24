@@ -112,7 +112,7 @@ function getNumericColumns(data) {
   let numericColumns = [];
   for (var i = 0; i <= data[0].length; i++) {
     if (isColumnNumeric(data, i)) {
-      numericColumns.push(data[0][i]);
+      numericColumns.push({ title: data[0][i], index: i - 1 });
     }
   }
   return numericColumns;
