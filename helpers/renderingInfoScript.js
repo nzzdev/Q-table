@@ -160,15 +160,14 @@ function getMinibarsScript(context) {
   return `
     function ${getColumnFunctionName}(table, col) {
       var tab = table.getElementsByTagName('tbody')[0];
-      var n = tab.rows.length;
-      var s = [];
+      var columns = [];
 
-      for (var i = 0; i < n; i++) {
+      for (var i = 0; i < tab.rows.length; i++) {
           if (tab.rows[i].cells.length > col) { 
-              s.push(tab.rows[i].cells[col]);
+              columns.push(tab.rows[i].cells[col]);
           }
       }
-      return s;
+      return columns;
     }
 
     function ${removeMixedMinibarFunctionName}(cell){
