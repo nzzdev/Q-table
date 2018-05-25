@@ -193,7 +193,10 @@ module.exports = {
       });
     }
 
-    if (item.options.minibarOptions !== null) {
+    if (
+      item.options.minibarOptions !== undefined &&
+      item.options.minibarOptions !== null
+    ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getMinibarsScript(context)
       });
