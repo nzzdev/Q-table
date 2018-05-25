@@ -93,6 +93,31 @@
               }
             ]
           }
+        },
+        "minibarOptions": {
+          "title": "Minibars",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "withData": true,
+                "endpoint": "option-availability/minibarOptions"
+              }
+            ],
+            "dynamicEnum": {
+              "type": "ToolEndpoint",
+              "withData": true,
+              "endpoint": "dynamic-enum/minibarOptions"
+            }
+          }
         }
       }
     }

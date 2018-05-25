@@ -50,9 +50,8 @@ td.q-table__cell--numeric {
     font-weight: unset;
   }
 }
-
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
-.q-table:not(.q-table--card-layout) .q-table__cell--numeric + .q-table__cell:not(.q-table__cell--numeric) {
+.q-table:not(.q-table--card-layout) .q-table__cell--numeric:not(#q-table-minibar-header) + .q-table__cell:not(.q-table__cell--numeric){
   padding-left: 20px;
 }
 
@@ -134,4 +133,93 @@ tr.q-table-state-visible {
 
 .q-table--card-layout tr.q-table-state-visible {
   display: table-row !important;
+}
+
+#q-table-minibar-header {
+  text-align: center !important;
+}
+
+.q-table-minibar--negative {
+  right: 50%;
+}
+
+.q-table-minibar--mixed {
+  background-color:rgba(200, 200, 200, 0.15);
+  min-width: 180px;
+  padding-right: 12px !important;
+  padding-left: 12px !important;
+}
+
+.q-table-minibar--mixed-mobile {
+  min-width: 90px;
+}
+
+.q-table-minibar-cell {
+  background-color:rgba(200, 200, 200, 0.15);
+  min-width: 140px;
+}
+
+.q-table-minibar-cell-mobile {
+  min-width: 50px !important;
+}
+
+.q-table-minibar-cell--value {
+  background-color:rgba(200, 200, 200, 0.15);
+}
+
+.q-table-minibar-bar--positive {
+  background-color: currentColor;
+  position: relative;
+  height: 17px;
+  display: inline-block;
+}
+
+.q-table-minibar-bar--positive::before {
+  content: "";
+  border-left: 0.5px solid #393855;
+  position: absolute;
+  height: 19px;
+  width: 1px;
+  top: -1px;
+}
+
+.q-table-minibar-bar--negative {
+  background-color: currentColor;
+  position: relative;
+  float: right;
+  height: 17px;
+}
+
+.q-table-minibar-bar--negative::before{
+  content: "";
+  border-right: 0.5px solid #393855;
+  position: absolute;
+  width: 1px;
+  height: 19px;
+  top: -1px;
+  right: 0px;
+}
+
+.q-table-minibar-alignment--positive {
+  text-align: right;
+  float: left;
+  width: 50%;
+  padding-right: 4px;
+}
+
+.q-table-minibar-alignment--negative {
+  position: relative;
+  text-align: left !important;
+  float: left;
+  left: 50%;
+  padding-left: 4px;
+}
+
+.q-table-minibar-alignment--empty {
+  text-align: center !important;
+  width: 100%;
+}
+
+.q-table-minibar-hidden {
+  display: none !important;
 }
