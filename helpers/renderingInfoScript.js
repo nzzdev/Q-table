@@ -33,7 +33,9 @@ function getCardLayoutScript(context) {
   const dataObject = `window.${context.id}Data`;
 
   let renderMinibarsFunction =
-    context.item.minibarOptions != null ? `renderMinibars${context.id}()` : "";
+    context.item.options.minibarOptions != null
+      ? `renderMinibars${context.id}()`
+      : "";
 
   return `
     ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");
@@ -191,6 +193,7 @@ function getMinibarsScript(context) {
     }
 
     function ${addMixedMinibarFunctionName}(cell) {
+      cell.classList.add('q-table-minibar-mixed');
       cell.classList.add('q-table-minibar--' + cell.dataset.minibar)
       var divs = Array.from(cell.getElementsByTagName('div'));
       divs.forEach(function(div){
@@ -307,7 +310,7 @@ function getMinibarsScript(context) {
     function ${renderMinibarsFunctionName}() {
       var selectedColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
         ${context.item.options.minibarOptions + 1});
-
+        
       ${handleMinibarsFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
       ${handleMinibarsMinWidthFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
     }
