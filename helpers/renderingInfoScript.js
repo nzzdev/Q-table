@@ -32,6 +32,11 @@ function getCardLayoutScript(context) {
   const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
   const dataObject = `window.${context.id}Data`;
 
+  let renderMinibarsFunction =
+    context.item.options.minibarOptions != null
+      ? `renderMinibars${context.id}()`
+      : "";
+
   return `
     ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");
     ${dataObject}.isCardLayout = ${dataObject}.isCardLayout || undefined;
@@ -47,6 +52,7 @@ function getCardLayoutScript(context) {
     }
     window.q_domready.then(function() {
       ${dataObject}.width = ${dataObject}.element.getBoundingClientRect().width;
+      
       ${applyCardLayoutClassFunctionName}();
     });
     function ${context.id}debounce(func, wait, immediate) {
@@ -69,6 +75,7 @@ function getCardLayoutScript(context) {
         if (newWidth !== ${dataObject}.width) {
           ${dataObject}.width = newWidth;
           ${applyCardLayoutClassFunctionName}();
+          ${renderMinibarsFunction};
         }
       });
     }, 250));
@@ -80,6 +87,7 @@ function getShowMoreButtonScript(context) {
   const handleShowMoreButtonFunctionName = `handleShowMoreButton${context.id}`;
   const hideRowsFunctionName = `hideRows${context.id}`;
   const showRowsFunctionName = `showRows${context.id}`;
+
   return `
     ${dataObject}.rowVisibilityState = 'visible';
     ${dataObject}.numberOfRows = ${context.numberOfRows};
@@ -131,9 +139,184 @@ function getShowMoreButtonScript(context) {
       });
       ${hideRowsFunctionName}();
     }
-    
+
     window.q_domready.then(function() {
       ${handleShowMoreButtonFunctionName}();
+    });
+  `;
+}
+
+function getMinibarsScript(context) {
+  const dataObject = `window.${context.id}Data`;
+  const getColumnFunctionName = `getColumn${context.id}`;
+  const removeMixedMinibarFunctionName = `removeMixedMinibar${context.id}`;
+  const addMixedMinibarFunctionName = `addMixedMinibar${context.id}`;
+  const removeMinibarFunctionName = `removeMinibars${context.id}`;
+  const addMinibarFunctionName = `addMinibars${context.id}`;
+  const renderMinibarsFunctionName = `renderMinibars${context.id}`;
+  const handleMinibarsFunctionName = `handleMinibars${context.id}`;
+  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${
+    context.id
+  }`;
+
+  return `
+    function ${getColumnFunctionName}(table, col) {
+      var tab = table.getElementsByTagName('tbody')[0];
+      var columns = [];
+
+      for (var i = 0; i < tab.rows.length; i++) {
+          if (tab.rows[i].cells.length > col) { 
+              columns.push(tab.rows[i].cells[col]);
+          }
+      }
+      return columns;
+    }
+
+    function ${removeMixedMinibarFunctionName}(cell){
+      cell.classList.remove('q-table-minibar--mixed');
+      var divs = Array.from(cell.getElementsByTagName('div'));
+      divs.forEach(function(div){
+        if (div.dataset.minibarType==="value"){
+          if (div.dataset.minibar==="positive"){
+            div.classList.remove('q-table-minibar-alignment--positive');
+          }
+          if (div.dataset.minibar==="negative"){
+            div.classList.remove('q-table-minibar-alignment--negative');
+          }
+          if (div.dataset.minibar==="empty"){
+            div.classList.remove('q-table-minibar-alignment--empty');
+          }
+        } else {
+          div.classList.add('q-table-minibar-hidden');
+        }
+      });
+    }
+
+    function ${addMixedMinibarFunctionName}(cell) {
+      cell.classList.add('q-table-minibar-mixed');
+      cell.classList.add('q-table-minibar--' + cell.dataset.minibar)
+      var divs = Array.from(cell.getElementsByTagName('div'));
+      divs.forEach(function(div){
+        if (div.dataset.minibarType==="value"){
+          if (div.dataset.minibar==="positive"){
+            div.classList.add('q-table-minibar-alignment--positive');
+          }
+          if (div.dataset.minibar==="negative"){
+            div.classList.add('q-table-minibar-alignment--negative');
+          }
+          if (div.dataset.minibar==="empty"){
+            div.classList.add('q-table-minibar-alignment--empty');
+          }
+        } else {
+          div.classList.remove('q-table-minibar-hidden');
+        }
+      });
+    }
+
+    function ${removeMinibarFunctionName}(minibarColumn, valueColumn) {
+      minibarColumn.forEach(function(cell){
+        cell.classList.add('q-table-minibar-hidden');
+      });
+      valueColumn.forEach(function(cell){
+        cell.classList.remove('q-table-minibar-cell--value');
+      });
+    }
+
+    function ${addMinibarFunctionName}(minibarColumn, valueColumn) {
+      minibarColumn.forEach(function(cell){
+        cell.classList.remove('q-table-minibar-hidden');
+      });
+      valueColumn.forEach(function(cell){
+        cell.classList.add('q-table-minibar-cell--value');
+      });
+    }
+
+    function ${handleMinibarsFunctionName}(selectedColumn, tableMinibarType) {
+      if (${dataObject}.isCardLayout) { 
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            ${removeMixedMinibarFunctionName}(cell);
+          });
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${removeMinibarFunctionName}(minibarColumn, selectedColumn);
+        }
+        if (tableMinibarType==="negative") {
+          var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${removeMinibarFunctionName}(selectedColumn, valueColumn);
+        }
+      } else {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            ${addMixedMinibarFunctionName}(cell);
+          });
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${addMinibarFunctionName}(minibarColumn, selectedColumn);
+        }
+        if (tableMinibarType==="negative") {
+          var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          ${addMinibarFunctionName}(selectedColumn, valueColumn);
+        }
+      }
+    }
+
+    function ${handleMinibarsMinWidthFunctionName}(selectedColumn, tableMinibarType) {
+      if (${dataObject}.element.getBoundingClientRect().width < 400) {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar--mixed-mobile');
+          });
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          minibarColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar-cell-mobile');
+          });
+        }
+        if (tableMinibarType==="negative") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar-cell-mobile');
+          });
+        }
+      } else {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar--mixed-mobile');
+          });
+        }
+        if (tableMinibarType==="positive") {
+          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+            ${context.item.options.minibarOptions + 2});
+          minibarColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar-cell-mobile');
+          });
+        }
+        if (tableMinibarType==="negative") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar-cell-mobile');
+          });
+        }
+      }
+    }
+
+    function ${renderMinibarsFunctionName}() {
+      var selectedColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+        ${context.item.options.minibarOptions + 1});
+        
+      ${handleMinibarsFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
+      ${handleMinibarsMinWidthFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
+    }
+
+    window.q_domready.then(function() {
+      ${renderMinibarsFunctionName}();
     });
   `;
 }
@@ -141,5 +324,6 @@ function getShowMoreButtonScript(context) {
 module.exports = {
   getDefaultScript: getDefaultScript,
   getCardLayoutScript: getCardLayoutScript,
-  getShowMoreButtonScript: getShowMoreButtonScript
+  getShowMoreButtonScript: getShowMoreButtonScript,
+  getMinibarsScript: getMinibarsScript
 };

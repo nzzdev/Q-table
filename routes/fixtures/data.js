@@ -11,7 +11,10 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/multiline-text.json`),
   require(`${fixtureDataDirectory}/show-more-button.json`),
   require(`${fixtureDataDirectory}/disappearing-columns.json`),
-  require(`${fixtureDataDirectory}/column-spacing.json`)
+  require(`${fixtureDataDirectory}/column-spacing.json`),
+  require(`${fixtureDataDirectory}/minibars-mixed.json`),
+  require(`${fixtureDataDirectory}/minibars-positive.json`),
+  require(`${fixtureDataDirectory}/minibars-negative.json`)
 ];
 
 module.exports = {
