@@ -33,9 +33,12 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
   dataCopy[0].map(cell => (cell.value = "")); // first row is always header so ignore it
 
   dataCopy.map((row, index) => {
-    let value = row[selectedColumnIndex + 1].value
-      .replace(/\s/g, "")
-      .replace(",", ".");
+    let value = row[selectedColumnIndex + 1].value;
+
+    value !== null
+      ? (value = value.replace(/\s/g, "").replace(",", "."))
+      : value;
+
     let type = miniBarTypes.positive;
 
     if (value < 0) {
