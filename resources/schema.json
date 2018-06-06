@@ -125,6 +125,10 @@
           "Q:options": {
             "availabilityChecks": [
               {
+                "type": "UserHasRole",
+                "role": "expert-table"
+              },
+              {
                 "type": "ToolEndpoint",
                 "withData": true,
                 "endpoint": "option-availability/colorOverwrite"
