@@ -26,6 +26,16 @@ module.exports = {
           getNumericColumns(request.payload.data).length > 0
       };
     }
-    return reply(Boom.badRequest());
+
+    if (
+      request.payload.options.minibarOptions !== null &&
+      request.payload.options.minibarOptions !== undefined
+    ) {
+      return {
+        available: true
+      };
+    }
+
+    return Boom.badRequest();
   }
 };

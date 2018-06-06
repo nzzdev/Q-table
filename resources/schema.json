@@ -118,6 +118,29 @@
               "endpoint": "dynamic-enum/minibarOptions"
             }
           }
+        },
+        "colorOverwrite": {
+          "title": "Farben",
+          "type": "object",
+          "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "withData": true,
+                "endpoint": "option-availability/colorOverwrite"
+              }
+            ]
+          },
+          "properties": {
+            "colorPositive": {
+              "title": "Positiv",
+              "type": "string"
+            },
+            "colorNegative": {
+              "title": "Negativ",
+              "type": "string"
+            }
+          }
         }
       }
     }
