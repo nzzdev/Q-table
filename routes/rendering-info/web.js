@@ -144,25 +144,23 @@ module.exports = {
     }
 
     if (
-      item.options.minibarOptions !== null &&
+      item.options.colorOverWrite !== undefined &&
       item.options.minibarOptions !== undefined &&
-      item.options.colorOverwrite.colorPositive === ""
+      item.options.minibarOptions !== null
     ) {
-      item.options.colorOverwrite.colorPositive = getColor(
-        context.minibar.type,
-        true
-      );
-    }
+      if (item.options.colorOverwrite.colorPositive === "") {
+        item.options.colorOverwrite.colorPositive = getColor(
+          context.minibar.type,
+          true
+        );
+      }
 
-    if (
-      item.options.minibarOptions !== null &&
-      item.options.minibarOptions !== undefined &&
-      item.options.colorOverwrite.colorNegative === ""
-    ) {
-      item.options.colorOverwrite.colorNegative = getColor(
-        context.minibar.type,
-        false
-      );
+      if (item.options.colorOverwrite.colorNegative === "") {
+        item.options.colorOverwrite.colorNegative = getColor(
+          context.minibar.type,
+          false
+        );
+      }
     }
 
     if (
