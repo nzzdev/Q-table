@@ -143,29 +143,31 @@ module.exports = {
       );
     }
 
-    if (
-      item.options.colorOverwrite.colorPositive !== undefined &&
-      item.options.minibarOptions !== undefined &&
-      item.options.minibarOptions !== null
-    ) {
-      if (item.options.colorOverwrite.colorPositive === "") {
-        item.options.colorOverwrite.colorPositive = getColor(
-          context.minibar.type,
-          true
-        );
+    if (item.options.colorOverwrite !== undefined) {
+      if (
+        item.options.colorOverwrite.colorPositive !== undefined &&
+        item.options.minibarOptions !== undefined &&
+        item.options.minibarOptions !== null
+      ) {
+        if (item.options.colorOverwrite.colorPositive === "") {
+          item.options.colorOverwrite.colorPositive = getColor(
+            context.minibar.type,
+            true
+          );
+        }
       }
-    }
 
-    if (
-      item.options.colorOverwrite.colorNegative !== undefined &&
-      item.options.minibarOptions !== undefined &&
-      item.options.minibarOptions !== null
-    ) {
-      if (item.options.colorOverwrite.colorNegative === "") {
-        item.options.colorOverwrite.colorNegative = getColor(
-          context.minibar.type,
-          false
-        );
+      if (
+        item.options.colorOverwrite.colorNegative !== undefined &&
+        item.options.minibarOptions !== undefined &&
+        item.options.minibarOptions !== null
+      ) {
+        if (item.options.colorOverwrite.colorNegative === "") {
+          item.options.colorOverwrite.colorNegative = getColor(
+            context.minibar.type,
+            false
+          );
+        }
       }
     }
 
