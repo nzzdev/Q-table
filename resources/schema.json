@@ -122,6 +122,7 @@
         "invertColors": {
           "title": "Farben invertieren",
           "type": "boolean",
+          "default": false,
           "Q:options": {
             "availabilityChecks": [
               {

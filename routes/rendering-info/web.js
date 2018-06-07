@@ -47,6 +47,18 @@ function validateAgainstSchema(item, options) {
   }
 }
 
+function getColor(type, isPositive) {
+  let color;
+  if (type === "mixed") {
+    color = isPositive
+      ? "s-viz-color-diverging-2-2"
+      : "s-viz-color-diverging-2-1";
+  } else {
+    color = "s-viz-color-one-5";
+  }
+  return color;
+}
+
 async function validatePayload(payload, options, next) {
   if (typeof payload !== "object") {
     return next(Boom.badRequest(), payload);
@@ -121,11 +133,47 @@ module.exports = {
       context.numberOfRowsToHide = undefined;
     }
 
-    if (item.options.minibarOptions != null) {
+    if (
+      item.options.minibarOptions !== null &&
+      item.options.minibarOptions !== undefined
+    ) {
       context.minibar = data.getDataForMinibars(
         item.data,
         item.options.minibarOptions
       );
+    }
+
+    if (
+      item.options.minibarOptions !== null &&
+      item.options.minibarOptions !== undefined &&
+      item.options.colorOverwrite.colorPositive === ""
+    ) {
+      item.options.colorOverwrite.colorPositive = getColor(
+        context.minibar.type,
+        true
+      );
+    }
+
+    if (
+      item.options.minibarOptions !== null &&
+      item.options.minibarOptions !== undefined &&
+      item.options.colorOverwrite.colorNegative === ""
+    ) {
+      item.options.colorOverwrite.colorNegative = getColor(
+        context.minibar.type,
+        false
+      );
+    }
+
+    if (
+      item.options.minibarOptions !== null &&
+      item.options.minibarOptions !== undefined &&
+      item.options.invertColors
+    ) {
+      let color = context.item.options.colorOverwrite.colorNegative;
+      context.item.options.colorOverwrite.colorNegative =
+        context.item.options.colorOverwrite.colorPositive;
+      context.item.options.colorOverwrite.colorPositive = color;
     }
 
     renderingInfo.markup = nunjucksEnv.render(

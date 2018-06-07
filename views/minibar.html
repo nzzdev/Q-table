@@ -16,7 +16,11 @@
   {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
     {% if minibar.values[row_loop.index].type !== "empty" %}
       <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}
-      {% if minibar.values[row_loop.index].type === "positive" %}s-viz-color-diverging-2-2{% else %}s-viz-color-diverging-2-1{% endif %}"  
+      {% if minibar.values[row_loop.index].type === "positive" %}
+        {{item.options.colorOverwrite.colorPositive}}
+      {% else %}
+        {{item.options.colorOverwrite.colorNegative}}
+      {% endif %}"  
       style="width: {{minibar.values[row_loop.index].value}}%">
       </div>
     {% endif %}
@@ -35,7 +39,11 @@
     {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
       <td data-minibar="{{minibar.type}}" class="q-table-minibar-cell" style="padding-right: 12px;">
         <div data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}
-        {% if minibar.values[row_loop.index].type === "positive" %}s-viz-color-diverging-2-2{% else %}s-viz-color-diverging-2-1{% endif %}"  
+        {% if minibar.values[row_loop.index].type === "positive" %}
+          {{item.options.colorOverwrite.colorPositive}}
+        {% else %}
+          {{item.options.colorOverwrite.colorNegative}}
+        {% endif %}"  
         {% if minibar.values[row_loop.index].type !== "empty" %}
         style="width: {{minibar.values[row_loop.index].value}}%"
         {% endif %}>
@@ -46,7 +54,11 @@
       {%- if item.options.minibarOptions+2 === loop.index and item.options.minibarOptions != null and not initWithCardLayout %}
       <td class="q-table-minibar-cell" data-minibar="{{minibar.type}}" style="padding-left: 12px; padding-right: 0px !important;">
         <div data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}
-        {% if minibar.values[row_loop.index].type === "positive" %}s-viz-color-diverging-2-2{% else %}s-viz-color-diverging-2-1{% endif %}"  
+        {% if minibar.values[row_loop.index].type === "positive" %}
+          {{item.options.colorOverwrite.colorPositive}}
+        {% else %}
+          {{item.options.colorOverwrite.colorNegative}}
+        {% endif %}"  
         {% if minibar.values[row_loop.index].type !== "empty" %}
         style="width: {{minibar.values[row_loop.index].value}}%"
         {% endif %}>
