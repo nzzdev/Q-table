@@ -65,11 +65,11 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
 
 function getMinibarValue(type, value, min, max) {
   if (type === miniBarTypes.positive) {
-    return Math.abs(value * 100 / max);
+    return Math.abs((value * 100) / max);
   } else if (type === miniBarTypes.negative) {
-    return Math.abs(value * 100 / min);
+    return Math.abs((value * 100) / min);
   } else {
-    return Math.abs(value * 100 / Math.max(Math.abs(min), Math.abs(max))) / 2; // divided by 2 because max. value is 50%
+    return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2; // divided by 2 because max. value is 50%
   }
 }
 
@@ -167,5 +167,6 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 module.exports = {
   getDataForTemplate: getDataForTemplate,
   getDataForMinibars: getDataForMinibars,
-  getNumericColumns: getNumericColumns
+  getNumericColumns: getNumericColumns,
+  getMinibarType: getMinibarType
 };

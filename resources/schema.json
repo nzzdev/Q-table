@@ -141,22 +141,35 @@
               {
                 "type": "UserHasRole",
                 "role": "expert-table"
-              },
-              {
-                "type": "ToolEndpoint",
-                "withData": true,
-                "endpoint": "option-availability/colorOverwrite"
               }
             ]
           },
           "properties": {
             "colorPositive": {
               "title": "Positiv",
-              "type": "string"
+              "type": "string",
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "withData": true,
+                    "endpoint": "option-availability/colorOverwritePositive"
+                  }
+                ]
+              }
             },
             "colorNegative": {
               "title": "Negativ",
-              "type": "string"
+              "type": "string",
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "withData": true,
+                    "endpoint": "option-availability/colorOverwriteNegative"
+                  }
+                ]
+              }
             }
           }
         }

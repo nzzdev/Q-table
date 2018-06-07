@@ -144,7 +144,7 @@ module.exports = {
     }
 
     if (
-      item.options.colorOverWrite !== undefined &&
+      item.options.colorOverwrite.colorPositive !== undefined &&
       item.options.minibarOptions !== undefined &&
       item.options.minibarOptions !== null
     ) {
@@ -154,7 +154,13 @@ module.exports = {
           true
         );
       }
+    }
 
+    if (
+      item.options.colorOverwrite.colorNegative !== undefined &&
+      item.options.minibarOptions !== undefined &&
+      item.options.minibarOptions !== null
+    ) {
       if (item.options.colorOverwrite.colorNegative === "") {
         item.options.colorOverwrite.colorNegative = getColor(
           context.minibar.type,
