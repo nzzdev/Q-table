@@ -42,11 +42,18 @@ module.exports = {
     }
 
     if (request.params.optionName === "minibarOptions") {
-      return {
-        available:
+      let isAvailable = false;
+      if (request.payload.data.length !== 0) {
+        if (
           !request.payload.options.cardLayout &&
           request.payload.data[0].length >= 3 &&
           getNumericColumns(request.payload.data).length > 0
+        ) {
+          isAvailable = true;
+        }
+      }
+      return {
+        available: isAvailable
       };
     }
 
