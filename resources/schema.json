@@ -119,8 +119,21 @@
             }
           }
         },
+        "invertColors": {
+          "title": "Farben invertieren",
+          "type": "boolean",
+          "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "withData": true,
+                "endpoint": "option-availability/invertColors"
+              }
+            ]
+          }
+        },  
         "colorOverwrite": {
-          "title": "Farben",
+          "title": "Farben", 
           "type": "object",
           "Q:options": {
             "availabilityChecks": [

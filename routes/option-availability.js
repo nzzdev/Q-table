@@ -27,12 +27,19 @@ module.exports = {
       };
     }
 
-    if (
-      request.payload.options.minibarOptions !== null &&
-      request.payload.options.minibarOptions !== undefined
-    ) {
+    if (request.params.optionName === "colorOverwrite") {
       return {
-        available: true
+        available:
+          request.payload.options.minibarOptions !== null &&
+          request.payload.options.minibarOptions !== undefined
+      };
+    }
+
+    if (request.params.optionName === "invertColors") {
+      return {
+        available:
+          request.payload.options.minibarOptions !== null &&
+          request.payload.options.minibarOptions !== undefined
       };
     }
 
