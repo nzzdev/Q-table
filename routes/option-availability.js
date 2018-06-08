@@ -1,28 +1,23 @@
 const Boom = require("boom");
 const Joi = require("joi");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
-const calculateMinibarType = require("../helpers/data.js").getMinibarType;
+const getMinibarType = require("../helpers/data.js").getMinibarType;
 
-function getMinibarType(data, selectedColumnIndex) {
+function calculateMinibarType(data, selectedColumnIndex) {
   let typeAmount = {
     positives: 0,
     negatives: 0
   };
 
-  data[0].map(value => (value = "")); // first row is always header so ignore it
-  data.map((row, index) => {
-    let value = row[selectedColumnIndex + 1];
-    value !== null
-      ? (value = value.replace(/\s/g, "").replace(",", "."))
-      : value;
-
-    if (value < 0) {
+  // first row is always header so ignore it
+  data.slice(1).map((row, index) => {
+    if (row[selectedColumnIndex + 1] < 0) {
       typeAmount.negatives++;
     } else {
       typeAmount.positives++;
     }
   });
-  return calculateMinibarType(typeAmount);
+  return getMinibarType(typeAmount);
 }
 
 module.exports = {
@@ -64,7 +59,7 @@ module.exports = {
         request.payload.options.minibarOptions !== null &&
         request.payload.options.minibarOptions !== undefined
       ) {
-        let type = getMinibarType(
+        let type = calculateMinibarType(
           request.payload.data,
           request.payload.options.minibarOptions
         );
@@ -83,7 +78,7 @@ module.exports = {
         request.payload.options.minibarOptions !== null &&
         request.payload.options.minibarOptions !== undefined
       ) {
-        let type = getMinibarType(
+        let type = calculateMinibarType(
           request.payload.data,
           request.payload.options.minibarOptions
         );
@@ -101,7 +96,7 @@ module.exports = {
         request.payload.options.minibarOptions !== null &&
         request.payload.options.minibarOptions !== undefined
       ) {
-        let type = getMinibarType(
+        let type = calculateMinibarType(
           request.payload.data,
           request.payload.options.minibarOptions
         );
