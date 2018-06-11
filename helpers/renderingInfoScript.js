@@ -32,10 +32,18 @@ function getCardLayoutScript(context) {
   const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
   const dataObject = `window.${context.id}Data`;
 
-  let renderMinibarsFunction =
-    context.item.options.minibar.selectedColumn != null
-      ? `renderMinibars${context.id}()`
-      : "";
+  let renderMinibarsFunction = "";
+  if (
+    context.item.options.minibar != null &&
+    context.item.options.minibar !== undefined
+  ) {
+    if (
+      context.item.options.minibar.selectedColumn !== null &&
+      context.item.options.minibar.selectedColumn !== undefined
+    ) {
+      renderMinibarsFunction = `renderMinibars${context.id}()`;
+    }
+  }
 
   return `
     ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");

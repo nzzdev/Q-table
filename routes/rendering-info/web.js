@@ -142,36 +142,38 @@ module.exports = {
     }
 
     // if minibars active
-    if (
-      item.options.minibar.selectedColumn !== null &&
-      item.options.minibar.selectedColumn !== undefined
-    ) {
-      context.minibar = data.getDataForMinibars(
-        item.data,
-        item.options.minibar.selectedColumn
-      );
+    if (item.options.minibar !== null && item.options.minibar !== undefined) {
+      if (
+        item.options.minibar.selectedColumn !== null &&
+        item.options.minibar.selectedColumn !== undefined
+      ) {
+        context.minibar = data.getDataForMinibars(
+          item.data,
+          item.options.minibar.selectedColumn
+        );
 
-      if (item.options.minibar.barColor.positive !== undefined) {
-        if (item.options.minibar.barColor.positive === "") {
-          context.item.options.minibar.barColor.positive = getPositiveColor(
-            context.minibar.type
-          );
+        if (item.options.minibar.barColor.positive !== undefined) {
+          if (item.options.minibar.barColor.positive === "") {
+            context.item.options.minibar.barColor.positive = getPositiveColor(
+              context.minibar.type
+            );
+          }
         }
-      }
 
-      if (item.options.minibar.barColor.negative !== undefined) {
-        if (item.options.minibar.barColor.negative === "") {
-          context.item.options.minibar.barColor.negative = getNegativeColor(
-            context.minibar.type
-          );
+        if (item.options.minibar.barColor.negative !== undefined) {
+          if (item.options.minibar.barColor.negative === "") {
+            context.item.options.minibar.barColor.negative = getNegativeColor(
+              context.minibar.type
+            );
+          }
         }
-      }
 
-      if (context.item.options.minibar.invertColors) {
-        let color = context.item.options.minibar.barColor.negative;
-        context.item.options.minibar.barColor.negative =
-          context.item.options.minibar.barColor.positive;
-        context.item.options.minibar.barColor.positive = color;
+        if (context.item.options.minibar.invertColors) {
+          let color = context.item.options.minibar.barColor.negative;
+          context.item.options.minibar.barColor.negative =
+            context.item.options.minibar.barColor.positive;
+          context.item.options.minibar.barColor.positive = color;
+        }
       }
     }
 
@@ -240,10 +242,7 @@ module.exports = {
       });
     }
 
-    if (
-      item.options.minibar.selectedColumn !== undefined &&
-      item.options.minibar.selectedColumn !== null
-    ) {
+    if (item.options.minibar !== undefined && item.options.minibar !== null) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getMinibarsScript(context)
       });
