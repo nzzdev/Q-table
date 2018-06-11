@@ -47,12 +47,20 @@ function validateAgainstSchema(item, options) {
   }
 }
 
-function getColor(type, isPositive) {
+function getPositiveColor(type) {
   let color;
   if (type === "mixed") {
-    color = isPositive
-      ? "s-viz-color-diverging-2-2"
-      : "s-viz-color-diverging-2-1";
+    color = "s-viz-color-diverging-2-2";
+  } else {
+    color = "s-viz-color-one-5";
+  }
+  return color;
+}
+
+function getNegativeColor() {
+  let color;
+  if (type === "mixed") {
+    color = "s-viz-color-diverging-2-1";
   } else {
     color = "s-viz-color-one-5";
   }
@@ -145,18 +153,16 @@ module.exports = {
 
       if (item.options.minibar.barColor.positive !== undefined) {
         if (item.options.minibar.barColor.positive === "") {
-          context.item.options.minibar.barColor.positive = getColor(
-            context.minibar.type,
-            true
+          context.item.options.minibar.barColor.positive = getPositiveColor(
+            context.minibar.type
           );
         }
       }
 
       if (item.options.minibar.barColor.negative !== undefined) {
         if (item.options.minibar.barColor.negative === "") {
-          context.item.options.minibar.barColor.negative = getColor(
-            context.minibar.type,
-            false
+          context.item.options.minibar.barColor.negative = getNegativeColor(
+            context.minibar.type
           );
         }
       }
