@@ -33,7 +33,7 @@ function getCardLayoutScript(context) {
   const dataObject = `window.${context.id}Data`;
 
   let renderMinibarsFunction =
-    context.item.options.minibarOptions != null
+    context.item.options.minibar.selectedColumn != null
       ? `renderMinibars${context.id}()`
       : "";
 
@@ -240,12 +240,12 @@ function getMinibarsScript(context) {
         }
         if (tableMinibarType==="positive") {
           var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibarOptions + 2});
+            ${context.item.options.minibar.selectedColumn + 1});
           ${removeMinibarFunctionName}(minibarColumn, selectedColumn);
         }
         if (tableMinibarType==="negative") {
           var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibarOptions + 2});
+            ${context.item.options.minibar.selectedColumn + 1});
           ${removeMinibarFunctionName}(selectedColumn, valueColumn);
         }
       } else {
@@ -256,12 +256,12 @@ function getMinibarsScript(context) {
         }
         if (tableMinibarType==="positive") {
           var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibarOptions + 2});
+            ${context.item.options.minibar.selectedColumn + 1});
           ${addMinibarFunctionName}(minibarColumn, selectedColumn);
         }
         if (tableMinibarType==="negative") {
           var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibarOptions + 2});
+            ${context.item.options.minibar.selectedColumn + 1});
           ${addMinibarFunctionName}(selectedColumn, valueColumn);
         }
       }
@@ -276,7 +276,7 @@ function getMinibarsScript(context) {
         }
         if (tableMinibarType==="positive") {
           var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibarOptions + 2});
+            ${context.item.options.minibar.selectedColumn + 1});
           minibarColumn.forEach(function(cell){
             cell.classList.add('q-table-minibar-cell-mobile');
           });
@@ -294,7 +294,7 @@ function getMinibarsScript(context) {
         }
         if (tableMinibarType==="positive") {
           var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibarOptions + 2});
+            ${context.item.options.minibar.selectedColumn + 1});
           minibarColumn.forEach(function(cell){
             cell.classList.remove('q-table-minibar-cell-mobile');
           });
@@ -309,8 +309,7 @@ function getMinibarsScript(context) {
 
     function ${renderMinibarsFunctionName}() {
       var selectedColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-        ${context.item.options.minibarOptions + 1});
-        
+        ${context.item.options.minibar.selectedColumn});
       ${handleMinibarsFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
       ${handleMinibarsMinWidthFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
     }

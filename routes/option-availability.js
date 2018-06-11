@@ -10,8 +10,8 @@ function calculateMinibarType(data, selectedColumnIndex) {
   };
 
   // first row is always header so ignore it
-  data.slice(1).map((row, index) => {
-    if (row[selectedColumnIndex + 1] < 0) {
+  data.slice(1).map(row => {
+    if (row[selectedColumnIndex] < 0) {
       typeAmount.negatives++;
     } else {
       typeAmount.positives++;
@@ -36,7 +36,10 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "minibarOptions") {
+    if (
+      request.params.optionName === "minibars" ||
+      request.params.optionName === "selectedColumn"
+    ) {
       let isAvailable = false;
       if (request.payload.data.length !== 0) {
         if (
@@ -52,16 +55,24 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "colorOverwritePositive") {
+    if (request.params.optionName === "barColor") {
+      return {
+        available:
+          request.payload.options.minibar.selectedColumn !== null &&
+          request.payload.options.minibar.selectedColumn !== undefined
+      };
+    }
+
+    if (request.params.optionName === "barColorPositive") {
       let isAvailable = false;
 
       if (
-        request.payload.options.minibarOptions !== null &&
-        request.payload.options.minibarOptions !== undefined
+        request.payload.options.minibar.selectedColumn !== null &&
+        request.payload.options.minibar.selectedColumn !== undefined
       ) {
         let type = calculateMinibarType(
           request.payload.data,
-          request.payload.options.minibarOptions
+          request.payload.options.minibar.selectedColumn
         );
 
         isAvailable = type === "mixed" || type === "positive";
@@ -71,16 +82,16 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "colorOverwriteNegative") {
+    if (request.params.optionName === "barColorNegative") {
       let isAvailable = false;
 
       if (
-        request.payload.options.minibarOptions !== null &&
-        request.payload.options.minibarOptions !== undefined
+        request.payload.options.minibar.selectedColumn !== null &&
+        request.payload.options.minibar.selectedColumn !== undefined
       ) {
         let type = calculateMinibarType(
           request.payload.data,
-          request.payload.options.minibarOptions
+          request.payload.options.minibar.selectedColumn
         );
 
         isAvailable = type === "mixed" || type === "negative";
@@ -93,12 +104,12 @@ module.exports = {
     if (request.params.optionName === "invertColors") {
       let isAvailable = false;
       if (
-        request.payload.options.minibarOptions !== null &&
-        request.payload.options.minibarOptions !== undefined
+        request.payload.options.minibar !== null &&
+        request.payload.options.minibar !== undefined
       ) {
         let type = calculateMinibarType(
           request.payload.data,
-          request.payload.options.minibarOptions
+          request.payload.options.minibar.selectedColumn
         );
 
         isAvailable = type === "mixed";

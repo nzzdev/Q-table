@@ -94,81 +94,101 @@
             ]
           }
         },
-        "minibarOptions": {
+        "minibar": {
           "title": "Minibars",
-          "oneOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "Q:options": {
-            "availabilityChecks": [
-              {
-                "type": "ToolEndpoint",
-                "withData": true,
-                "endpoint": "option-availability/minibarOptions"
-              }
-            ],
-            "dynamicEnum": {
-              "type": "ToolEndpoint",
-              "withData": true,
-              "endpoint": "dynamic-enum/minibarOptions"
-            }
-          }
-        },
-        "invertColors": {
-          "title": "Farben invertieren",
-          "type": "boolean",
-          "default": false,
-          "Q:options": {
-            "availabilityChecks": [
-              {
-                "type": "ToolEndpoint",
-                "withData": true,
-                "endpoint": "option-availability/invertColors"
-              }
-            ]
-          }
-        },  
-        "colorOverwrite": {
-          "title": "Farben", 
           "type": "object",
-          "Q:options": {
+          "Q:options" : {
             "availabilityChecks": [
               {
-                "type": "UserHasRole",
-                "role": "expert-table"
+                "type": "ToolEndpoint",
+                "withData": true,
+                "endpoint": "option-availability/minibars"
               }
             ]
           },
           "properties": {
-            "colorPositive": {
-              "title": "Positiv",
-              "type": "string",
+            "selectedColumn": {
+              "title": "Spalte auswählen",
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
               "Q:options": {
                 "availabilityChecks": [
                   {
                     "type": "ToolEndpoint",
                     "withData": true,
-                    "endpoint": "option-availability/colorOverwritePositive"
+                    "endpoint": "option-availability/selectedColumn"
+                  }
+                ],
+                "dynamicEnum": {
+                  "type": "ToolEndpoint",
+                  "withData": true,
+                  "endpoint": "dynamic-enum/selectedColumn"
+                }
+              }
+            },
+            "invertColors": {
+              "title": "Farben invertieren",
+              "type": "boolean",
+              "default": false,
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "withData": true,
+                    "endpoint": "option-availability/invertColors"
                   }
                 ]
               }
-            },
-            "colorNegative": {
-              "title": "Negativ",
-              "type": "string",
+            },  
+            "barColor": {
+              "title": "Farben", 
+              "type": "object",
               "Q:options": {
                 "availabilityChecks": [
                   {
+                    "type": "UserHasRole",
+                    "role": "expert-table"
+                  },
+                  {
                     "type": "ToolEndpoint",
                     "withData": true,
-                    "endpoint": "option-availability/colorOverwriteNegative"
+                    "endpoint": "option-availability/barColor"
                   }
                 ]
+              },
+              "properties": {
+                "positive": {
+                  "title": "Positiv",
+                  "type": "string",
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "withData": true,
+                        "endpoint": "option-availability/barColorPositive"
+                      }
+                    ]
+                  }
+                },
+                "negative": {
+                  "title": "Negativ",
+                  "type": "string",
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "withData": true,
+                        "endpoint": "option-availability/barColorNegative"
+                      }
+                    ]
+                  }
+                }
               }
             }
           }

@@ -32,8 +32,8 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
   let dataCopy = clone(data);
   dataCopy[0].map(cell => (cell.value = "")); // first row is always header so ignore it
 
-  dataCopy.map((row, index) => {
-    let value = row[selectedColumnIndex + 1].value;
+  dataCopy.map(row => {
+    let value = row[selectedColumnIndex].value;
 
     value !== null
       ? (value = value.replace(/\s/g, "").replace(",", "."))
@@ -115,7 +115,7 @@ function getNumericColumns(data) {
   let numericColumns = [];
   for (var i = 0; i <= data[0].length; i++) {
     if (isColumnNumeric(data, i)) {
-      numericColumns.push({ title: data[0][i], index: i - 1 });
+      numericColumns.push({ title: data[0][i], index: i });
     }
   }
   return numericColumns;

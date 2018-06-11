@@ -133,53 +133,40 @@ module.exports = {
       context.numberOfRowsToHide = undefined;
     }
 
+    // if minibars active
     if (
-      item.options.minibarOptions !== null &&
-      item.options.minibarOptions !== undefined
+      item.options.minibar.selectedColumn !== null &&
+      item.options.minibar.selectedColumn !== undefined
     ) {
       context.minibar = data.getDataForMinibars(
         item.data,
-        item.options.minibarOptions
+        item.options.minibar.selectedColumn
       );
-    }
 
-    if (item.options.colorOverwrite !== undefined) {
-      if (
-        item.options.colorOverwrite.colorPositive !== undefined &&
-        item.options.minibarOptions !== undefined &&
-        item.options.minibarOptions !== null
-      ) {
-        if (item.options.colorOverwrite.colorPositive === "") {
-          item.options.colorOverwrite.colorPositive = getColor(
+      if (item.options.minibar.barColor.positive !== undefined) {
+        if (item.options.minibar.barColor.positive === "") {
+          context.item.options.minibar.barColor.positive = getColor(
             context.minibar.type,
             true
           );
         }
       }
 
-      if (
-        item.options.colorOverwrite.colorNegative !== undefined &&
-        item.options.minibarOptions !== undefined &&
-        item.options.minibarOptions !== null
-      ) {
-        if (item.options.colorOverwrite.colorNegative === "") {
-          item.options.colorOverwrite.colorNegative = getColor(
+      if (item.options.minibar.barColor.negative !== undefined) {
+        if (item.options.minibar.barColor.negative === "") {
+          context.item.options.minibar.barColor.negative = getColor(
             context.minibar.type,
             false
           );
         }
       }
-    }
 
-    if (
-      item.options.minibarOptions !== null &&
-      item.options.minibarOptions !== undefined &&
-      item.options.invertColors
-    ) {
-      let color = context.item.options.colorOverwrite.colorNegative;
-      context.item.options.colorOverwrite.colorNegative =
-        context.item.options.colorOverwrite.colorPositive;
-      context.item.options.colorOverwrite.colorPositive = color;
+      if (context.item.options.minibar.invertColors) {
+        let color = context.item.options.minibar.barColor.negative;
+        context.item.options.minibar.barColor.negative =
+          context.item.options.minibar.barColor.positive;
+        context.item.options.minibar.barColor.positive = color;
+      }
     }
 
     renderingInfo.markup = nunjucksEnv.render(
@@ -223,7 +210,7 @@ module.exports = {
       (item.options.cardLayout === false &&
         item.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
-      item.options.minibarOptions !== null
+      item.options.minibar.minibars !== null
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context)
@@ -248,8 +235,8 @@ module.exports = {
     }
 
     if (
-      item.options.minibarOptions !== undefined &&
-      item.options.minibarOptions !== null
+      item.options.minibar.selectedColumn !== undefined &&
+      item.options.minibar.selectedColumn !== null
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getMinibarsScript(context)
