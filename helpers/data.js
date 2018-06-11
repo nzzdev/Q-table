@@ -160,5 +160,5 @@ module.exports = {
   getDataForTemplate: getDataForTemplate,
   getDataForMinibars: getDataForMinibars,
   getNumericColumns: getNumericColumns,
-  getMinibarType: getMinibarType
+  prepareSelectedColumn: prepareSelectedColumn
 };

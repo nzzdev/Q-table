@@ -1,24 +1,8 @@
 const Boom = require("boom");
 const Joi = require("joi");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
-const getMinibarType = require("../helpers/data.js").getMinibarType;
-
-function calculateMinibarType(data, selectedColumnIndex) {
-  let typeAmount = {
-    positives: 0,
-    negatives: 0
-  };
-
-  // first row is always header so ignore it
-  data.slice(1).map(row => {
-    if (row[selectedColumnIndex] < 0) {
-      typeAmount.negatives++;
-    } else {
-      typeAmount.positives++;
-    }
-  });
-  return getMinibarType(typeAmount);
-}
+const prepareSelectedColumn = require("../helpers/data.js")
+  .prepareSelectedColumn;
 
 module.exports = {
   method: "POST",
@@ -70,10 +54,10 @@ module.exports = {
         request.payload.options.minibar.selectedColumn !== null &&
         request.payload.options.minibar.selectedColumn !== undefined
       ) {
-        let type = calculateMinibarType(
+        let type = prepareSelectedColumn(
           request.payload.data,
           request.payload.options.minibar.selectedColumn
-        );
+        ).type;
 
         isAvailable = type === "mixed" || type === "positive";
       }
@@ -89,10 +73,10 @@ module.exports = {
         request.payload.options.minibar.selectedColumn !== null &&
         request.payload.options.minibar.selectedColumn !== undefined
       ) {
-        let type = calculateMinibarType(
+        let type = prepareSelectedColumn(
           request.payload.data,
           request.payload.options.minibar.selectedColumn
-        );
+        ).type;
 
         isAvailable = type === "mixed" || type === "negative";
       }
@@ -107,10 +91,10 @@ module.exports = {
         request.payload.options.minibar !== null &&
         request.payload.options.minibar !== undefined
       ) {
-        let type = calculateMinibarType(
+        let type = prepareSelectedColumn(
           request.payload.data,
           request.payload.options.minibar.selectedColumn
-        );
+        ).type;
 
         isAvailable = type === "mixed";
       }
