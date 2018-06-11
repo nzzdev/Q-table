@@ -101,6 +101,7 @@ module.exports = {
     ];
 
     const item = request.payload.item;
+    const itemDataCopy = request.payload.item.data.slice(0); // get unformated copy of data for minibars
     item.data = data.getDataForTemplate(item.data);
 
     const context = {
@@ -148,7 +149,7 @@ module.exports = {
         item.options.minibar.selectedColumn !== undefined
       ) {
         context.minibar = data.getDataForMinibars(
-          item.data,
+          itemDataCopy,
           item.options.minibar.selectedColumn
         );
 
@@ -218,7 +219,7 @@ module.exports = {
       (item.options.cardLayout === false &&
         item.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
-      item.options.minibar.minibars !== null
+      item.options.minibar !== null
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context)

@@ -29,16 +29,8 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
     negatives: 0
   };
 
-  let dataCopy = clone(data);
-  dataCopy[0].map(cell => (cell.value = "")); // first row is always header so ignore it
-
-  dataCopy.map(row => {
-    let value = row[selectedColumnIndex].value;
-
-    value !== null
-      ? (value = value.replace(/\s/g, "").replace(",", "."))
-      : value;
-
+  data.map(row => {
+    let value = row[selectedColumnIndex];
     let type = miniBarTypes.positive;
 
     if (value < 0) {
