@@ -165,7 +165,7 @@
               "properties": {
                 "positive": {
                   "title": "Positiv",
-                  "type": "string",
+                  "type": "object",
                   "Q:options": {
                     "availabilityChecks": [
                       {
@@ -174,11 +174,22 @@
                         "endpoint": "option-availability/barColorPositive"
                       }
                     ]
+                  },
+                  "properties": {
+                    "className": {
+                      "title": "CSS Klassenname",
+                      "type": "string"
+                    },
+                    "colorCode": {
+                      "title": "Farbcode",
+                      "type": "string",
+                      "Q:type": "color"
+                    }
                   }
                 },
                 "negative": {
                   "title": "Negativ",
-                  "type": "string",
+                  "type": "object",
                   "Q:options": {
                     "availabilityChecks": [
                       {
@@ -187,6 +198,17 @@
                         "endpoint": "option-availability/barColorNegative"
                       }
                     ]
+                  },
+                  "properties": {
+                    "className": {
+                      "title": "CSS Klassenname",
+                      "type": "string"
+                    }, 
+                    "colorCode": {
+                      "title": "Farbcode",
+                      "type": "string",
+                      "Q:type": "color"
+                    }
                   }
                 }
               }

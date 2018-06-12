@@ -57,7 +57,7 @@ function getPositiveColor(type) {
   return color;
 }
 
-function getNegativeColor() {
+function getNegativeColor(type) {
   let color;
   if (type === "mixed") {
     color = "s-viz-color-diverging-2-1";
@@ -153,20 +153,30 @@ module.exports = {
           item.options.minibar.selectedColumn
         );
 
-        if (item.options.minibar.barColor.positive !== undefined) {
-          if (item.options.minibar.barColor.positive === "") {
-            context.item.options.minibar.barColor.positive = getPositiveColor(
-              context.minibar.type
-            );
-          }
+        if (
+          item.options.minibar.barColor.positive.className === undefined &&
+          item.options.minibar.barColor.positive.colorCode === undefined
+        ) {
+          item.options.minibar.barColor.positive.className = getPositiveColor(
+            context.minibar.type
+          );
+        } else if (
+          item.options.minibar.barColor.positive.className !== undefined
+        ) {
+          item.options.minibar.barColor.positive.colorCode = "";
         }
 
-        if (item.options.minibar.barColor.negative !== undefined) {
-          if (item.options.minibar.barColor.negative === "") {
-            context.item.options.minibar.barColor.negative = getNegativeColor(
-              context.minibar.type
-            );
-          }
+        if (
+          item.options.minibar.barColor.negative.className === undefined &&
+          item.options.minibar.barColor.negative.colorCode === undefined
+        ) {
+          item.options.minibar.barColor.negative.className = getNegativeColor(
+            context.minibar.type
+          );
+        } else if (
+          item.options.minibar.barColor.negative.className !== undefined
+        ) {
+          item.options.minibar.barColor.negative.colorCode = "";
         }
 
         if (context.item.options.minibar.invertColors) {

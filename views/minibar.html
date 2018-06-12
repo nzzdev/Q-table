@@ -17,11 +17,16 @@
     {% if minibar.values[row_loop.index].type !== "empty" %}
       <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}}
       {% if minibar.values[row_loop.index].type === "positive" %}
-        {{item.options.minibar.barColor.positive}}
+        {{item.options.minibar.barColor.positive.className}}
       {% else %}
-        {{item.options.minibar.barColor.negative}}
+        {{item.options.minibar.barColor.negative.className}}
       {% endif %}"  
-      style="width: {{minibar.values[row_loop.index].value}}%">
+      style="width: {{minibar.values[row_loop.index].value}}%; background-color:
+      {% if minibar.values[row_loop.index].type === "positive" %}
+        {{item.options.minibar.barColor.positive.colorCode}}
+      {% else %}
+        {{item.options.minibar.barColor.negative.colorCode}}
+      {% endif %}">
       </div>
     {% endif %}
     </td>
@@ -40,12 +45,17 @@
       <td data-minibar="{{minibar.type}}" class="q-table-minibar-cell" style="padding-right: 12px;">
         <div data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}
         {% if minibar.values[row_loop.index].type === "positive" %}
-          {{item.options.minibar.barColor.positive}}
+          {{item.options.minibar.barColor.positive.className}}
         {% else %}
-          {{item.options.minibar.barColor.negative}}
-        {% endif %}"  
+          {{item.options.minibar.barColor.negative.className}}
+        {% endif %}"
         {% if minibar.values[row_loop.index].type !== "empty" %}
-        style="width: {{minibar.values[row_loop.index].value}}%"
+        style="width: {{minibar.values[row_loop.index].value}}%; background-color:
+          {% if minibar.values[row_loop.index].type === "positive" %}
+            {{item.options.minibar.barColor.positive.colorCode}}
+          {% else %}
+            {{item.options.minibar.barColor.negative.colorCode}}
+          {% endif %}"
         {% endif %}>
         </div>
       </td> 
@@ -55,12 +65,17 @@
       <td class="q-table-minibar-cell" data-minibar="{{minibar.type}}" style="padding-left: 12px; padding-right: 0px !important;">
         <div data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}}
         {% if minibar.values[row_loop.index].type === "positive" %}
-          {{item.options.minibar.barColor.positive}}
+          {{item.options.minibar.barColor.positive.className}}
         {% else %}
-          {{item.options.minibar.barColor.negative}}
+          {{item.options.minibar.barColor.negative.className}}
         {% endif %}"  
         {% if minibar.values[row_loop.index].type !== "empty" %}
-        style="width: {{minibar.values[row_loop.index].value}}%"
+        style="width: {{minibar.values[row_loop.index].value}}%; background-color:
+          {% if minibar.values[row_loop.index].type === "positive" %}
+            {{item.options.minibar.barColor.positive.colorCode}}
+          {% else %}
+            {{item.options.minibar.barColor.negative.colorCode}}
+          {% endif %}"
         {% endif %}>
         </div>
       </td> 
