@@ -88,8 +88,8 @@ module.exports = {
     if (request.params.optionName === "invertColors") {
       let isAvailable = false;
       if (
-        request.payload.options.minibar !== null &&
-        request.payload.options.minibar !== undefined
+        request.payload.options.minibar.selectedColumn !== null &&
+        request.payload.options.minibar.selectedColumn !== undefined
       ) {
         let type = prepareSelectedColumn(
           request.payload.data,
