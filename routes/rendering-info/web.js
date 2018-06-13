@@ -154,28 +154,24 @@ module.exports = {
         );
 
         if (
-          item.options.minibar.barColor.positive.className === undefined &&
-          item.options.minibar.barColor.positive.colorCode === undefined
+          item.options.minibar.barColor.positive.className === "" &&
+          item.options.minibar.barColor.positive.colorCode === ""
         ) {
           item.options.minibar.barColor.positive.className = getPositiveColor(
             context.minibar.type
           );
-        } else if (
-          item.options.minibar.barColor.positive.className !== undefined
-        ) {
+        } else if (item.options.minibar.barColor.positive.className !== "") {
           item.options.minibar.barColor.positive.colorCode = "";
         }
 
         if (
-          item.options.minibar.barColor.negative.className === undefined &&
-          item.options.minibar.barColor.negative.colorCode === undefined
+          item.options.minibar.barColor.negative.className === "" &&
+          item.options.minibar.barColor.negative.colorCode === ""
         ) {
           item.options.minibar.barColor.negative.className = getNegativeColor(
             context.minibar.type
           );
-        } else if (
-          item.options.minibar.barColor.negative.className !== undefined
-        ) {
+        } else if (item.options.minibar.barColor.negative.className !== "") {
           item.options.minibar.barColor.negative.colorCode = "";
         }
 

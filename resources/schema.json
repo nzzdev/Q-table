@@ -178,11 +178,13 @@
                   "properties": {
                     "className": {
                       "title": "CSS Klassenname",
+                      "default": "",
                       "type": "string"
                     },
                     "colorCode": {
                       "title": "Farbcode",
                       "type": "string",
+                      "default": "",
                       "Q:type": "color"
                     }
                   }
@@ -202,11 +204,13 @@
                   "properties": {
                     "className": {
                       "title": "CSS Klassenname",
+                      "default": "",
                       "type": "string"
                     }, 
                     "colorCode": {
                       "title": "Farbcode",
                       "type": "string",
+                      "default": "",
                       "Q:type": "color"
                     }
                   }
