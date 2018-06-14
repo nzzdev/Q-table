@@ -1,5 +1,5 @@
 {
-  "title": "FIXTURE: minibars with positive values",
+  "title": "FIXTURE: mixed minibars with custom colors (colorCode)",
   "data": [
     [
       "",
@@ -29,7 +29,7 @@
       "Cashflow aus Geschäftstätigkeite",
       "929",
       "810",
-      "13"
+      "-13"
     ]
   ],
   "sources": [
@@ -47,11 +47,11 @@
       "barColor": {
         "positive": {
           "className": "",
-          "colorCode": ""
+          "colorCode": "#c0c0c0"
         },
         "negative": {
           "className": "",
-          "colorCode": ""
+          "colorCode": "#ff7e79"
         }
       }
     }

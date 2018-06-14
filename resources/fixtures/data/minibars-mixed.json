@@ -43,7 +43,7 @@
     "cardLayout": false,
     "cardLayoutIfSmall": true,
     "minibar": {
-      "selectedColumn": 2,
+      "selectedColumn": 3,
       "barColor": {
         "positive": {
           "className": "",
