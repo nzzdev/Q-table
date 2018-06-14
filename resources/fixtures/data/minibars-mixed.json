@@ -42,7 +42,19 @@
     "hideTableHeader": false,
     "cardLayout": false,
     "cardLayoutIfSmall": true,
-    "minibarOptions": 2
+    "minibar": {
+      "selectedColumn": 2,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      }
+    }
   },
   "tool": "table",
   "subtitle": "State by state breakdown"
