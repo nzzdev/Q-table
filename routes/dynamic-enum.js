@@ -8,7 +8,9 @@ function getMiniBarEnum(item) {
     return [null];
   }
 
-  return [null].concat(...getNumericColumns(item.data).map(col => col.index));
+  return [null].concat(
+    ...getNumericColumns(item.data.table).map(col => col.index)
+  );
 }
 
 function getMiniBarEnumTitles(item) {
@@ -16,7 +18,7 @@ function getMiniBarEnumTitles(item) {
     return ["keine"];
   }
   return ["keine"].concat(
-    ...getNumericColumns(item.data).map(col => col.title)
+    ...getNumericColumns(item.data.table).map(col => col.title)
   );
 }
 

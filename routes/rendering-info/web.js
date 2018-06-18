@@ -101,8 +101,8 @@ module.exports = {
     ];
 
     const item = request.payload.item;
-    const itemDataCopy = request.payload.item.data.slice(0); // get unformated copy of data for minibars
-    item.data = data.getDataForTemplate(item.data);
+    const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
+    item.data = data.getDataForTemplate(item.data.table);
 
     const context = {
       item: item,

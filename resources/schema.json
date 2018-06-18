@@ -15,26 +15,54 @@
       "type": "string"
     },
     "data": {
-      "title": "Daten",
-      "type": "array",
-      "Q:type": "table",
+      "type": "object",
       "Q:options": {
-        "allowTranspose": false
-      },
-      "items": {
-        "type": "array",
-        "items": {
-          "oneOf": [
-            {
-            	"type": "string"
-          	},
-            {
-            	"type": "null"
-          	}
-          ]
+        "allowTranspose": false,
+        "metaData": {
+          "type": "array",
+          "items": {
+            "hasFootnote": true
+          }
         }
       },
-      "minItems": 1
+      "properties": {
+        "table": {
+          "title": "Daten",
+          "type": "array",
+          "Q:type": "table",
+          "items": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "minItems": 1
+        },
+        "metaData": {
+          "type": "array",
+          "Q:type": "metaData",
+          "items": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }  
+      }
     },
     "sources": {
       "title": "Quelle(n)",
