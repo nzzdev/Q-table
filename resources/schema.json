@@ -94,28 +94,128 @@
             ]
           }
         },
-        "minibarOptions": {
+        "minibar": {
           "title": "Minibars",
-          "oneOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "Q:options": {
+          "type": "object",
+          "Q:options" : {
             "availabilityChecks": [
               {
                 "type": "ToolEndpoint",
                 "withData": true,
-                "endpoint": "option-availability/minibarOptions"
+                "endpoint": "option-availability/minibars"
               }
-            ],
-            "dynamicEnum": {
-              "type": "ToolEndpoint",
-              "withData": true,
-              "endpoint": "dynamic-enum/minibarOptions"
+            ]
+          },
+          "properties": {
+            "selectedColumn": {
+              "title": "Spalte auswählen",
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "withData": true,
+                    "endpoint": "option-availability/selectedColumn"
+                  }
+                ],
+                "dynamicEnum": {
+                  "type": "ToolEndpoint",
+                  "withData": true,
+                  "endpoint": "dynamic-enum/selectedColumn"
+                }
+              }
+            },
+            "invertColors": {
+              "title": "Farben invertieren",
+              "type": "boolean",
+              "default": false,
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "withData": true,
+                    "endpoint": "option-availability/invertColors"
+                  }
+                ]
+              }
+            },  
+            "barColor": {
+              "title": "Farben", 
+              "type": "object",
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "UserHasRole",
+                    "role": "expert-table"
+                  },
+                  {
+                    "type": "ToolEndpoint",
+                    "withData": true,
+                    "endpoint": "option-availability/barColor"
+                  }
+                ]
+              },
+              "properties": {
+                "positive": {
+                  "title": "Positiv",
+                  "type": "object",
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "withData": true,
+                        "endpoint": "option-availability/barColorPositive"
+                      }
+                    ]
+                  },
+                  "properties": {
+                    "className": {
+                      "title": "CSS Klassenname",
+                      "default": "",
+                      "type": "string"
+                    },
+                    "colorCode": {
+                      "title": "Farbcode",
+                      "type": "string",
+                      "default": "",
+                      "Q:type": "color"
+                    }
+                  }
+                },
+                "negative": {
+                  "title": "Negativ",
+                  "type": "object",
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "withData": true,
+                        "endpoint": "option-availability/barColorNegative"
+                      }
+                    ]
+                  },
+                  "properties": {
+                    "className": {
+                      "title": "CSS Klassenname",
+                      "default": "",
+                      "type": "string"
+                    }, 
+                    "colorCode": {
+                      "title": "Farbcode",
+                      "type": "string",
+                      "default": "",
+                      "Q:type": "color"
+                    }
+                  }
+                }
+              }
             }
           }
         }

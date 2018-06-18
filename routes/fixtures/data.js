@@ -14,7 +14,9 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/column-spacing.json`),
   require(`${fixtureDataDirectory}/minibars-mixed.json`),
   require(`${fixtureDataDirectory}/minibars-positive.json`),
-  require(`${fixtureDataDirectory}/minibars-negative.json`)
+  require(`${fixtureDataDirectory}/minibars-negative.json`),
+  require(`${fixtureDataDirectory}/minibars-custom-className.json`),
+  require(`${fixtureDataDirectory}/minibars-custom-colorCode.json`)
 ];
 
 module.exports = {

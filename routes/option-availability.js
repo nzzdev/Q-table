@@ -1,6 +1,8 @@
 const Boom = require("boom");
 const Joi = require("joi");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
+const prepareSelectedColumn = require("../helpers/data.js")
+  .prepareSelectedColumn;
 
 module.exports = {
   method: "POST",
@@ -18,14 +20,89 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "minibarOptions") {
-      return {
-        available:
+    if (
+      request.params.optionName === "minibars" ||
+      request.params.optionName === "selectedColumn"
+    ) {
+      let isAvailable = false;
+      if (request.payload.data.length !== 0) {
+        if (
           !request.payload.options.cardLayout &&
           request.payload.data[0].length >= 3 &&
           getNumericColumns(request.payload.data).length > 0
+        ) {
+          isAvailable = true;
+        }
+      }
+      return {
+        available: isAvailable
       };
     }
-    return reply(Boom.badRequest());
+
+    if (request.params.optionName === "barColor") {
+      return {
+        available:
+          request.payload.options.minibar.selectedColumn !== null &&
+          request.payload.options.minibar.selectedColumn !== undefined
+      };
+    }
+
+    if (request.params.optionName === "barColorPositive") {
+      let isAvailable = false;
+
+      if (
+        request.payload.options.minibar.selectedColumn !== null &&
+        request.payload.options.minibar.selectedColumn !== undefined
+      ) {
+        let type = prepareSelectedColumn(
+          request.payload.data,
+          request.payload.options.minibar.selectedColumn
+        ).type;
+
+        isAvailable = type === "mixed" || type === "positive";
+      }
+      return {
+        available: isAvailable
+      };
+    }
+
+    if (request.params.optionName === "barColorNegative") {
+      let isAvailable = false;
+
+      if (
+        request.payload.options.minibar.selectedColumn !== null &&
+        request.payload.options.minibar.selectedColumn !== undefined
+      ) {
+        let type = prepareSelectedColumn(
+          request.payload.data,
+          request.payload.options.minibar.selectedColumn
+        ).type;
+
+        isAvailable = type === "mixed" || type === "negative";
+      }
+      return {
+        available: isAvailable
+      };
+    }
+
+    if (request.params.optionName === "invertColors") {
+      let isAvailable = false;
+      if (
+        request.payload.options.minibar.selectedColumn !== null &&
+        request.payload.options.minibar.selectedColumn !== undefined
+      ) {
+        let type = prepareSelectedColumn(
+          request.payload.data,
+          request.payload.options.minibar.selectedColumn
+        ).type;
+
+        isAvailable = type === "mixed";
+      }
+      return {
+        available: isAvailable
+      };
+    }
+
+    return Boom.badRequest();
   }
 };

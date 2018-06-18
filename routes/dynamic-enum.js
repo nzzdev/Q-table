@@ -30,7 +30,7 @@ module.exports = {
     cors: true
   },
   handler: function(request, h) {
-    if (request.params.optionName === "minibarOptions") {
+    if (request.params.optionName === "selectedColumn") {
       return {
         enum: getMiniBarEnum(request.payload),
         enum_titles: getMiniBarEnumTitles(request.payload)
