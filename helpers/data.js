@@ -29,16 +29,8 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
     negatives: 0
   };
 
-  let dataCopy = clone(data);
-  dataCopy[0].map(cell => (cell.value = "")); // first row is always header so ignore it
-
-  dataCopy.map((row, index) => {
-    let value = row[selectedColumnIndex + 1].value;
-
-    value !== null
-      ? (value = value.replace(/\s/g, "").replace(",", "."))
-      : value;
-
+  data.map(row => {
+    let value = row[selectedColumnIndex];
     let type = miniBarTypes.positive;
 
     if (value < 0) {
@@ -65,11 +57,11 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
 
 function getMinibarValue(type, value, min, max) {
   if (type === miniBarTypes.positive) {
-    return Math.abs(value * 100 / max);
+    return Math.abs((value * 100) / max);
   } else if (type === miniBarTypes.negative) {
-    return Math.abs(value * 100 / min);
+    return Math.abs((value * 100) / min);
   } else {
-    return Math.abs(value * 100 / Math.max(Math.abs(min), Math.abs(max))) / 2; // divided by 2 because max. value is 50%
+    return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2; // divided by 2 because max. value is 50%
   }
 }
 
@@ -115,7 +107,7 @@ function getNumericColumns(data) {
   let numericColumns = [];
   for (var i = 0; i <= data[0].length; i++) {
     if (isColumnNumeric(data, i)) {
-      numericColumns.push({ title: data[0][i], index: i - 1 });
+      numericColumns.push({ title: data[0][i], index: i });
     }
   }
   return numericColumns;
@@ -167,5 +159,6 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 module.exports = {
   getDataForTemplate: getDataForTemplate,
   getDataForMinibars: getDataForMinibars,
-  getNumericColumns: getNumericColumns
+  getNumericColumns: getNumericColumns,
+  prepareSelectedColumn: prepareSelectedColumn
 };

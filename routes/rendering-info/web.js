@@ -47,6 +47,26 @@ function validateAgainstSchema(item, options) {
   }
 }
 
+function getPositiveColor(type) {
+  let color;
+  if (type === "mixed") {
+    color = "s-viz-color-diverging-2-2";
+  } else {
+    color = "s-viz-color-one-5";
+  }
+  return color;
+}
+
+function getNegativeColor(type) {
+  let color;
+  if (type === "mixed") {
+    color = "s-viz-color-diverging-2-1";
+  } else {
+    color = "s-viz-color-one-5";
+  }
+  return color;
+}
+
 async function validatePayload(payload, options, next) {
   if (typeof payload !== "object") {
     return next(Boom.badRequest(), payload);
@@ -81,6 +101,7 @@ module.exports = {
     ];
 
     const item = request.payload.item;
+    const itemDataCopy = request.payload.item.data.slice(0); // get unformated copy of data for minibars
     item.data = data.getDataForTemplate(item.data);
 
     const context = {
@@ -121,11 +142,46 @@ module.exports = {
       context.numberOfRowsToHide = undefined;
     }
 
-    if (item.options.minibarOptions != null) {
-      context.minibar = data.getDataForMinibars(
-        item.data,
-        item.options.minibarOptions
-      );
+    // if minibars active
+    if (item.options.minibar !== null && item.options.minibar !== undefined) {
+      if (
+        item.options.minibar.selectedColumn !== null &&
+        item.options.minibar.selectedColumn !== undefined
+      ) {
+        context.minibar = data.getDataForMinibars(
+          itemDataCopy,
+          item.options.minibar.selectedColumn
+        );
+
+        if (
+          item.options.minibar.barColor.positive.className === "" &&
+          item.options.minibar.barColor.positive.colorCode === ""
+        ) {
+          item.options.minibar.barColor.positive.className = getPositiveColor(
+            context.minibar.type
+          );
+        } else if (item.options.minibar.barColor.positive.className !== "") {
+          item.options.minibar.barColor.positive.colorCode = "";
+        }
+
+        if (
+          item.options.minibar.barColor.negative.className === "" &&
+          item.options.minibar.barColor.negative.colorCode === ""
+        ) {
+          item.options.minibar.barColor.negative.className = getNegativeColor(
+            context.minibar.type
+          );
+        } else if (item.options.minibar.barColor.negative.className !== "") {
+          item.options.minibar.barColor.negative.colorCode = "";
+        }
+
+        if (context.item.options.minibar.invertColors) {
+          let color = context.item.options.minibar.barColor.negative;
+          context.item.options.minibar.barColor.negative =
+            context.item.options.minibar.barColor.positive;
+          context.item.options.minibar.barColor.positive = color;
+        }
+      }
     }
 
     renderingInfo.markup = nunjucksEnv.render(
@@ -169,7 +225,7 @@ module.exports = {
       (item.options.cardLayout === false &&
         item.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
-      item.options.minibarOptions !== null
+      item.options.minibar !== null
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context)
@@ -193,10 +249,7 @@ module.exports = {
       });
     }
 
-    if (
-      item.options.minibarOptions !== undefined &&
-      item.options.minibarOptions !== null
-    ) {
+    if (item.options.minibar !== undefined && item.options.minibar !== null) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getMinibarsScript(context)
       });
