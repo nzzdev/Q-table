@@ -5,7 +5,7 @@ module.exports.migrate = function(item) {
 
   if (item.options.minibarOptions) {
     let minibars = {
-      selectedColumn: item.options.minibarOptions,
+      selectedColumn: item.options.minibarOptions + 1,
       barColor: {
         positive: {
           className: "",
