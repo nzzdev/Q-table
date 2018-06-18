@@ -3,7 +3,7 @@ module.exports.migrate = function(item) {
     isChanged: false
   };
 
-  if (item.options.minibarOptions) {
+  if (!Number.isNaN(parseInt(item.options.minibarOptions))) {
     let minibars = {
       selectedColumn: item.options.minibarOptions + 1,
       barColor: {
@@ -19,6 +19,9 @@ module.exports.migrate = function(item) {
       invertColors: false
     };
     item.options["minibar"] = minibars;
+    delete item.options.minibarOptions;
+    result.isChanged = true;
+  } else {
     delete item.options.minibarOptions;
     result.isChanged = true;
   }
