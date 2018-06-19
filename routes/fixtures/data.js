@@ -15,6 +15,7 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/minibars-mixed.json`),
   require(`${fixtureDataDirectory}/minibars-positive.json`),
   require(`${fixtureDataDirectory}/minibars-negative.json`),
+  require(`${fixtureDataDirectory}/minibars-header-with-numbers.json`),
   require(`${fixtureDataDirectory}/minibars-custom-className.json`),
   require(`${fixtureDataDirectory}/minibars-custom-colorCode.json`)
 ];
