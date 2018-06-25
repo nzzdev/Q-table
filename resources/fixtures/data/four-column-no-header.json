@@ -55,6 +55,20 @@
   "options": {
     "hideTableHeader": true,
     "cardLayout": false,
-    "cardLayoutIfSmall": true
+    "cardLayoutIfSmall": true,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": null
+    }
   }
 }
