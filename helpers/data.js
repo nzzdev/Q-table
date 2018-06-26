@@ -108,9 +108,11 @@ function isColumnNumeric(data, columnIndex) {
 
 function getNumericColumns(data) {
   let numericColumns = [];
-  for (var i = 0; i <= data[0].length; i++) {
-    if (isColumnNumeric(data, i)) {
-      numericColumns.push({ title: data[0][i], index: i });
+  if (data[0] !== undefined) {
+    for (var i = 0; i <= data[0].length; i++) {
+      if (isColumnNumeric(data, i)) {
+        numericColumns.push({ title: data[0][i], index: i });
+      }
     }
   }
   return numericColumns;
