@@ -2,8 +2,8 @@
   <td 
   {% if item.options.hideTableHeader !== true %}
     data-label="{{ item.data[0][loop.index0].value }}" 
-    data-minibar="{{minibar.type}}"
   {% endif %} 
+  data-minibar="{{minibar.type}}"
   class="q-table__cell 
   {% if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     q-table-minibar--{{minibar.values[row_loop.index].type}}">
