@@ -53,7 +53,7 @@
             "type": "object",
             "Q:options": {
               "placeholder": "Direktlink zur Quelle, http://..."
-            }
+            },
             "properties": {
               "url": {
                 "title": "Url",
