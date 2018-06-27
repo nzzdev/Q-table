@@ -40,26 +40,38 @@ module.exports = {
     }
 
     if (request.params.optionName === "barColor") {
-      return {
-        available:
+      let isAvailable = false;
+      if (
+        request.payload.options.minibar !== null &&
+        request.payload.options.minibar !== undefined
+      ) {
+        isAvailable =
           request.payload.options.minibar.selectedColumn !== null &&
-          request.payload.options.minibar.selectedColumn !== undefined
+          request.payload.options.minibar.selectedColumn !== undefined;
+      }
+
+      return {
+        available: isAvailable
       };
     }
 
     if (request.params.optionName === "barColorPositive") {
       let isAvailable = false;
-
       if (
-        request.payload.options.minibar.selectedColumn !== null &&
-        request.payload.options.minibar.selectedColumn !== undefined
+        request.payload.options.minibar != null &&
+        request.payload.options.minibar != undefined
       ) {
-        let type = prepareSelectedColumn(
-          request.payload.data,
-          request.payload.options.minibar.selectedColumn
-        ).type;
+        if (
+          request.payload.options.minibar.selectedColumn !== null &&
+          request.payload.options.minibar.selectedColumn !== undefined
+        ) {
+          let type = prepareSelectedColumn(
+            request.payload.data,
+            request.payload.options.minibar.selectedColumn
+          ).type;
 
-        isAvailable = type === "mixed" || type === "positive";
+          isAvailable = type === "mixed" || type === "positive";
+        }
       }
       return {
         available: isAvailable
@@ -68,17 +80,21 @@ module.exports = {
 
     if (request.params.optionName === "barColorNegative") {
       let isAvailable = false;
-
       if (
-        request.payload.options.minibar.selectedColumn !== null &&
-        request.payload.options.minibar.selectedColumn !== undefined
+        request.payload.options.minibar != null &&
+        request.payload.options.minibar != undefined
       ) {
-        let type = prepareSelectedColumn(
-          request.payload.data,
-          request.payload.options.minibar.selectedColumn
-        ).type;
+        if (
+          request.payload.options.minibar.selectedColumn !== null &&
+          request.payload.options.minibar.selectedColumn !== undefined
+        ) {
+          let type = prepareSelectedColumn(
+            request.payload.data,
+            request.payload.options.minibar.selectedColumn
+          ).type;
 
-        isAvailable = type === "mixed" || type === "negative";
+          isAvailable = type === "mixed" || type === "negative";
+        }
       }
       return {
         available: isAvailable
@@ -88,15 +104,20 @@ module.exports = {
     if (request.params.optionName === "invertColors") {
       let isAvailable = false;
       if (
-        request.payload.options.minibar.selectedColumn !== null &&
-        request.payload.options.minibar.selectedColumn !== undefined
+        request.payload.options.minibar != null &&
+        request.payload.options.minibar != undefined
       ) {
-        let type = prepareSelectedColumn(
-          request.payload.data,
-          request.payload.options.minibar.selectedColumn
-        ).type;
+        if (
+          request.payload.options.minibar.selectedColumn !== null &&
+          request.payload.options.minibar.selectedColumn !== undefined
+        ) {
+          let type = prepareSelectedColumn(
+            request.payload.data,
+            request.payload.options.minibar.selectedColumn
+          ).type;
 
-        isAvailable = type === "mixed";
+          isAvailable = type === "mixed";
+        }
       }
       return {
         available: isAvailable
