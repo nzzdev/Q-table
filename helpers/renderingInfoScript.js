@@ -34,10 +34,15 @@ function getCardLayoutScript(context) {
 
   let renderMinibarsFunction = "";
   if (
-    context.item.options.minibar.selectedColumn !== null &&
-    context.item.options.minibar.selectedColumn !== undefined
+    context.item.options.minibar !== null &&
+    context.item.options.minibar !== undefined
   ) {
-    renderMinibarsFunction = `renderMinibars${context.id}()`;
+    if (
+      context.item.options.minibar.selectedColumn !== null &&
+      context.item.options.minibar.selectedColumn !== undefined
+    ) {
+      renderMinibarsFunction = `renderMinibars${context.id}()`;
+    }
   }
 
   return `
