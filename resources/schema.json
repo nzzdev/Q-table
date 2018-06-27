@@ -5,7 +5,10 @@
   "properties": {
     "title": {
       "title": "Titel",
-      "type": "string"
+      "type": "string",
+      "Q:options": {
+        "placeholder": "Der Titel bringt die Kernaussage der Tabelle auf den Punkt."
+      }
     },
     "subtitle": {
       "title": "Untertitel",
@@ -34,20 +37,23 @@
       "minItems": 1
     },
     "sources": {
-      "title": "Quellen",
+      "title": "Quelle(n)",
       "type": "array",
       "items": {
         "type": "object",
         "title": "Quelle",
         "properties": {
           "text": {
-            "title": "Text",
+            "title": "Quelle",
             "type": "string"
           },
           "link": {
             "Q:type": "link",
             "title": "Link",
             "type": "object",
+            "Q:options": {
+              "placeholder": "Direktlink zur Quelle, http://..."
+            },
             "properties": {
               "url": {
                 "title": "Url",
@@ -147,7 +153,7 @@
               }
             },  
             "barColor": {
-              "title": "Farben", 
+              "title": "Farben manuell festlegen", 
               "type": "object",
               "Q:options": {
                 "availabilityChecks": [
@@ -164,7 +170,7 @@
               },
               "properties": {
                 "positive": {
-                  "title": "Positiv",
+                  "title": "Positive Werte",
                   "type": "object",
                   "Q:options": {
                     "availabilityChecks": [
@@ -177,7 +183,7 @@
                   },
                   "properties": {
                     "className": {
-                      "title": "CSS Klassenname",
+                      "title": "CSS-Klassenname",
                       "default": "",
                       "type": "string"
                     },
@@ -190,7 +196,7 @@
                   }
                 },
                 "negative": {
-                  "title": "Negativ",
+                  "title": "Negative Werte",
                   "type": "object",
                   "Q:options": {
                     "availabilityChecks": [
@@ -203,7 +209,7 @@
                   },
                   "properties": {
                     "className": {
-                      "title": "CSS Klassenname",
+                      "title": "CSS-Klassenname",
                       "default": "",
                       "type": "string"
                     }, 
