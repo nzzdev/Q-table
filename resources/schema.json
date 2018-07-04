@@ -185,7 +185,10 @@
                     "className": {
                       "title": "CSS-Klassenname",
                       "default": "",
-                      "type": "string"
+                      "type": "string",
+                      "Q:options": {
+                        "placeholder": "s-viz-color-one-5"
+                      },
                     },
                     "colorCode": {
                       "title": "Farbcode",
@@ -211,7 +214,10 @@
                     "className": {
                       "title": "CSS-Klassenname",
                       "default": "",
-                      "type": "string"
+                      "type": "string",
+                      "Q:options": {
+                        "placeholder": "s-viz-color-two-3"
+                      },
                     }, 
                     "colorCode": {
                       "title": "Farbcode",
