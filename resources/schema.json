@@ -16,12 +16,15 @@
     },
     "data": {
       "type": "object",
+      "Q:type": "table",
       "Q:options": {
         "allowTranspose": false,
         "metaData": {
-          "type": "array",
-          "items": {
-            "hasFootnote": true
+          "dataPath": "table",
+          "features": {
+            "cells": {
+              "path": "metaData.cells"
+            }
           }
         }
       },
@@ -29,7 +32,6 @@
         "table": {
           "title": "Daten",
           "type": "array",
-          "Q:type": "table",
           "items": {
             "type": "array",
             "items": {
@@ -46,19 +48,24 @@
           "minItems": 1
         },
         "metaData": {
-          "type": "array",
-          "Q:type": "metaData",
-          "items": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+          "type": "object",
+          "properties": {
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "footnote": {
+                        "title": "Fussnote",
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
-              ]
+              }
             }
           }
         }  
