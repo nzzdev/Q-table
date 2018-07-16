@@ -188,7 +188,7 @@
                       "type": "string",
                       "Q:options": {
                         "placeholder": "s-viz-color-one-5"
-                      },
+                      }
                     },
                     "colorCode": {
                       "title": "Farbcode",
@@ -217,7 +217,7 @@
                       "type": "string",
                       "Q:options": {
                         "placeholder": "s-viz-color-two-3"
-                      },
+                      }
                     }, 
                     "colorCode": {
                       "title": "Farbcode",
