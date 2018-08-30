@@ -102,7 +102,20 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
+    item.metaData = request.payload.item.data.metaData;
     item.data = data.getDataForTemplate(item.data.table);
+
+    item.metaData.cells.forEach((cell, index) => {
+      if (
+        (cell.data !== null || cell.data !== undefined) &&
+        (item.data[cell.rowIndex][cell.colIndex].value !== null ||
+          item.data[cell.rowIndex][cell.colIndex].value !== undefined)
+      ) {
+        if (cell.data.footnote) {
+          item.data[cell.rowIndex][cell.colIndex].footnote = index + 1 + "*";
+        }
+      }
+    });
 
     const context = {
       item: item,

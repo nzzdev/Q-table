@@ -223,3 +223,8 @@ tr.q-table-state-visible {
 .q-table-minibar-hidden {
   display: none !important;
 }
+
+.q-table-footnote {
+  vertical-align: super;
+  font-size:smaller;
+}

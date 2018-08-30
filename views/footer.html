@@ -23,4 +23,12 @@
 
     {%- endfor %}
   {%- endif %}
+  {%- if item.metaData.cells.length > 0 %}
+    {%- for cell in item.metaData.cells -%}
+      {%- if cell.data.footnote -%}
+      <span>{{loop.index}}*</span> - <span>{{cell.data.footnote}}</span>
+      {% if not loop.last %}<br />{% endif %}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif %}
 </div>

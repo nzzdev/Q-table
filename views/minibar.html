@@ -8,10 +8,12 @@
   {% if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     q-table-minibar--{{minibar.values[row_loop.index].type}}">
     <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}}">
-    {{ cell.value }}
+      {{ cell.value }}
+      {%- if cell.footnote %}<span class="q-table-footnote s-font-note--superlight">{{ cell.footnote }}</span>{%- endif %}
     </div>
   {% else %}q-table__cell--{{cell.type}}">
     {{ cell.value }}
+    {%- if cell.footnote %}<span class="q-table-footnote s-font-note--superlight">{{ cell.footnote }}</span>{%- endif %}
   {% endif %}
   {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     {% if minibar.values[row_loop.index].type !== "empty" %}
@@ -40,6 +42,7 @@
       q-table-minibar-cell--value" data-minibar-type="value" data-minibar="{{minibar.type}}" style="padding-left: 12px;
       {% endif %}">
         {{ cell.value }}
+        {%- if cell.footnote %}<span class="q-table-footnote s-font-note--superlight">{{ cell.footnote }}</span>{%- endif %}
     </td>
     {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
       <td data-minibar="{{minibar.type}}" class="q-table-minibar-cell" style="padding-right: 12px;">
@@ -87,6 +90,7 @@
     q-table-minibar-cell--value" data-minibar="{{minibar.type}}" data-minibar-type="value" style="padding-right: 12px;
     {% endif %}">
       {{ cell.value }}
+      {%- if cell.footnote %}<span class="q-table-footnote s-font-note--superlight">{{ cell.footnote }}</span>{%- endif %}
     </td>
   {% endif %}
 {% endif %}
