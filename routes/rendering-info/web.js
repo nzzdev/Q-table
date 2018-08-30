@@ -112,7 +112,13 @@ module.exports = {
           item.data[cell.rowIndex][cell.colIndex].value !== undefined)
       ) {
         if (cell.data.footnote) {
-          item.data[cell.rowIndex][cell.colIndex].footnote = index + 1 + "*";
+          item.metaData.cells.sort((a, b) => {
+            if (a.rowIndex !== b.rowIndex) {
+              return a.rowIndex - b.rowIndex;
+            }
+            return a.colIndex - b.colIndex;
+          });
+          item.data[cell.rowIndex][cell.colIndex].footnote = index + 1;
         }
       }
     });
