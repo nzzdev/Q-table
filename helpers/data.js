@@ -143,6 +143,29 @@ function getDataForTemplate(data) {
   });
 }
 
+function getDataForFootnotes(data, metaData) {
+  metaData.cells.sort((a, b) => {
+    if (a.rowIndex !== b.rowIndex) {
+      return a.rowIndex - b.rowIndex;
+    }
+    return a.colIndex - b.colIndex;
+  });
+
+  metaData.cells.forEach((cell, index) => {
+    if (
+      (cell.data !== null || cell.data !== undefined) &&
+      (data[cell.rowIndex][cell.colIndex].value !== null ||
+        data[cell.rowIndex][cell.colIndex].value !== undefined)
+    ) {
+      if (cell.data.footnote) {
+        data[cell.rowIndex][cell.colIndex].footnote = index + 1;
+      }
+    }
+  });
+
+  return data;
+}
+
 function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
   let minValue = Math.min(...dataColumn.numbers);
@@ -164,6 +187,7 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 module.exports = {
   getDataForTemplate: getDataForTemplate,
   getDataForMinibars: getDataForMinibars,
+  getDataForFootnotes: getDataForFootnotes,
   getNumericColumns: getNumericColumns,
   prepareSelectedColumn: prepareSelectedColumn
 };
