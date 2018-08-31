@@ -225,6 +225,8 @@ tr.q-table-state-visible {
 }
 
 .q-table-footnote {
-  vertical-align: super;
-  font-size:smaller;
+  position: absolute;
+  margin-left: 1.5px;
+  margin-top: -2.5px;
+  font-size: xx-small;
 }
