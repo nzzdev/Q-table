@@ -6,7 +6,7 @@
   <table class="q-table__table">
     {%- if item.options.hideTableHeader !== true %}
     <thead class="s-font-note s-font-note--strong">
-      {%- for head in item.data[0] %}
+      {%- for head in tableData[0] %}
       <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}"
       {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
       colspan="2" id="q-table-minibar-header"
@@ -19,9 +19,9 @@
     </thead>
     {%- endif %}
     <tbody class="s-font-note">
-      {%- for row in item.data.slice(1) %}
+      {%- for row in tableData.slice(1) %}
       {% set row_loop = loop %}
-      <tr {% if numberOfRowsToHide and loop.index >= (item.data.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
+      <tr {% if numberOfRowsToHide and loop.index >= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
         {%- for cell in row %}
           {% include "./minibar.html" %}
         {%- endfor %}

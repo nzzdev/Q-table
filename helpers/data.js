@@ -108,6 +108,7 @@ function isColumnNumeric(data, columnIndex) {
 
 function getNumericColumns(data) {
   let numericColumns = [];
+  // data[0].length is undefined when creating a new item
   if (data[0] !== undefined) {
     for (var i = 0; i <= data[0].length; i++) {
       if (isColumnNumeric(data, i)) {
@@ -118,7 +119,7 @@ function getNumericColumns(data) {
   return numericColumns;
 }
 
-function getDataForTemplate(data) {
+function getTableData(data) {
   return data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       let type = "text";
@@ -143,7 +144,7 @@ function getDataForTemplate(data) {
   });
 }
 
-function getDataForFootnotes(data, metaData) {
+function appendFootnotesToData(data, metaData) {
   metaData.cells.sort((a, b) => {
     if (a.rowIndex !== b.rowIndex) {
       return a.rowIndex - b.rowIndex;
@@ -185,9 +186,9 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 }
 
 module.exports = {
-  getDataForTemplate: getDataForTemplate,
+  getTableData: getTableData,
   getDataForMinibars: getDataForMinibars,
-  getDataForFootnotes: getDataForFootnotes,
+  appendFootnotesToData: appendFootnotesToData,
   getNumericColumns: getNumericColumns,
   prepareSelectedColumn: prepareSelectedColumn
 };

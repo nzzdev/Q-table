@@ -1,7 +1,7 @@
 {%- if minibar.type==="mixed"%}
   <td 
   {% if item.options.hideTableHeader !== true %}
-    data-label="{{ item.data[0][loop.index0].value }}" 
+    data-label="{{ tableData[0][loop.index0].value }}" 
   {% endif %} 
   data-minibar="{{minibar.type}}"
   class="q-table__cell 
@@ -36,7 +36,7 @@
 {% else %}
   {%- if minibar.type==="positive" %}
     <td 
-      {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
+      {% if item.options.hideTableHeader !== true %}data-label="{{ tableData[0][loop.index0].value }}" {% endif %} 
       class="q-table__cell q-table__cell--{{ cell.type }}
       {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
       q-table-minibar-cell--value" data-minibar-type="value" data-minibar="{{minibar.type}}" style="padding-left: 12px;
@@ -84,7 +84,7 @@
       </td> 
     {%- endif %} 
     <td 
-    {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
+    {% if item.options.hideTableHeader !== true %}data-label="{{ tableData[0][loop.index0].value }}" {% endif %} 
     class="q-table__cell q-table__cell--{{ cell.type }}
     {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     q-table-minibar-cell--value" data-minibar="{{minibar.type}}" data-minibar-type="value" style="padding-right: 12px;
