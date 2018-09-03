@@ -145,6 +145,7 @@ function getTableData(data) {
 }
 
 function appendFootnotesToData(data, metaData) {
+  // sorting metaData to display them chronologically
   metaData.cells.sort((a, b) => {
     if (a.rowIndex !== b.rowIndex) {
       return a.rowIndex - b.rowIndex;
@@ -159,6 +160,7 @@ function appendFootnotesToData(data, metaData) {
         data[cell.rowIndex][cell.colIndex].value !== undefined)
     ) {
       if (cell.data.footnote) {
+        // create a new property to safe the index of the footnote
         data[cell.rowIndex][cell.colIndex].footnote = index + 1;
       }
     }
