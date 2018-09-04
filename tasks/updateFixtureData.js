@@ -66,6 +66,10 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/minibars-custom-colorCode.json`,
     require(`${fixtureDataDirectory}/minibars-custom-colorCode.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/display-footnotes.json`,
+    require(`${fixtureDataDirectory}/display-footnotes.json`)
   ]
 ];
 
