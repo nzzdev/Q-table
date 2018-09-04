@@ -44,63 +44,63 @@ lab.experiment("basics", () => {
   });
 });
 
-// lab.experiment("rendering-info/web", () => {
-//   it("renders a table", { plan: 4 }, async () => {
-//     const response = await server.inject({
-//       url: "/rendering-info/web?_id=someid",
-//       method: "POST",
-//       payload: {
-//         item: require("../resources/fixtures/data/four-column-no-header.json"),
-//         toolRuntimeConfig: {}
-//       }
-//     });
-//     expect(response.statusCode).to.be.equal(200);
-//     expect(response.result.markup).startsWith(
-//       '<div class="s-q-item q-table " id="q_table_someid_'
-//     );
-//     expect(response.result.stylesheets[0].name).startsWith("q-table.");
-//     expect(response.result.scripts[0].content).to.be.a.string();
-//   });
+lab.experiment("rendering-info/web", () => {
+  it("renders a table", { plan: 4 }, async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/four-column-no-header.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+    expect(response.statusCode).to.be.equal(200);
+    expect(response.result.markup).startsWith(
+      '<div class="s-q-item q-table " id="q_table_someid_'
+    );
+    expect(response.result.stylesheets[0].name).startsWith("q-table.");
+    expect(response.result.scripts[0].content).to.be.a.string();
+  });
 
-//   it("returns 400 if no payload given", async () => {
-//     const response = await server.inject({
-//       url: "/rendering-info/web?_id=someid",
-//       method: "POST"
-//     });
-//     expect(response.statusCode).to.be.equal(400);
-//   });
+  it("returns 400 if no payload given", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST"
+    });
+    expect(response.statusCode).to.be.equal(400);
+  });
 
-//   it("returns 400 if no item given in payload", async () => {
-//     const response = await server.inject({
-//       url: "/rendering-info/web?_id=someid",
-//       method: "POST",
-//       payload: {
-//         item: require("../resources/fixtures/data/four-column-no-header.json")
-//       }
-//     });
-//     expect(response.statusCode).to.be.equal(400);
-//   });
+  it("returns 400 if no item given in payload", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/four-column-no-header.json")
+      }
+    });
+    expect(response.statusCode).to.be.equal(400);
+  });
 
-//   it("returns 400 if no toolRuntimeConfig given in payload", async () => {
-//     const response = await server.inject({
-//       url: "/rendering-info/web?_id=someid",
-//       method: "POST",
-//       payload: {
-//         toolRuntimeConfig: {}
-//       }
-//     });
-//     expect(response.statusCode).to.be.equal(400);
-//   });
+  it("returns 400 if no toolRuntimeConfig given in payload", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        toolRuntimeConfig: {}
+      }
+    });
+    expect(response.statusCode).to.be.equal(400);
+  });
 
-//   it("returns 400 if invalid item given", async () => {
-//     const response = await server.inject({
-//       url: "/rendering-info/web?_id=someid",
-//       method: "POST",
-//       payload: {
-//         item: { foo: "bar" },
-//         toolRuntimeConfig: {}
-//       }
-//     });
-//     expect(response.statusCode).to.be.equal(400);
-//   });
-// });
+  it("returns 400 if invalid item given", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: { foo: "bar" },
+        toolRuntimeConfig: {}
+      }
+    });
+    expect(response.statusCode).to.be.equal(400);
+  });
+});

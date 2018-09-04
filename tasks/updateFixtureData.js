@@ -86,7 +86,7 @@ fixtureData.forEach(item => {
       script.migrate(item[1]);
       fs.writeFile(
         item[0].split("../")[1],
-        JSON.stringify(item[1], null, 4),
+        JSON.stringify(item[1], null, 2),
         function(err) {
           if (err) {
             return console.log(err);
