@@ -145,27 +145,19 @@ function getTableData(data) {
 }
 
 function appendFootnotesToData(data, metaData) {
-  // sorting metaData to display them chronologically
-  metaData.cells.sort((a, b) => {
-    if (a.rowIndex !== b.rowIndex) {
-      return a.rowIndex - b.rowIndex;
-    }
-    return a.colIndex - b.colIndex;
-  });
-
-  metaData.cells.forEach((cell, index) => {
-    if (
-      (cell.data !== null || cell.data !== undefined) &&
-      (data[cell.rowIndex][cell.colIndex].value !== null ||
-        data[cell.rowIndex][cell.colIndex].value !== undefined)
-    ) {
-      if (cell.data.footnote) {
-        // create a new property to safe the index of the footnote
-        data[cell.rowIndex][cell.colIndex].footnote = index + 1;
+  metaData.cells
+    .filter(cell => cell.data.footnote) // remove cells with no footnotes
+    .sort((a, b) => {
+      // sorting metaData to display them chronologically
+      if (a.rowIndex !== b.rowIndex) {
+        return a.rowIndex - b.rowIndex;
       }
-    }
-  });
-
+      return a.colIndex - b.colIndex;
+    })
+    .forEach((cell, index) => {
+      // create a new property to safe the index of the footnote
+      data[cell.rowIndex][cell.colIndex].footnote = index + 1;
+    });
   return data;
 }
 
