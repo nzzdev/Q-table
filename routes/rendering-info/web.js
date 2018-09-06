@@ -104,12 +104,14 @@ module.exports = {
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
     const tableData = data.getTableData(item.data.table);
     const metaData = data.prepareMetaData(item.data.metaData);
+    const footnoteColIndexes = data.getIndexOfColsWithFootnotes(metaData);
     data.appendFootnotesToData(tableData, metaData);
 
     const context = {
       item: item,
       tableData: tableData,
       metaData: metaData,
+      footnoteColIndexes: footnoteColIndexes,
       numberOfRows: item.data.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(

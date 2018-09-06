@@ -164,6 +164,16 @@ function prepareMetaData(metaData) {
     });
 }
 
+function getIndexOfColsWithFootnotes(metaData) {
+  let colsWithFootnotes = [];
+  metaData.forEach(cell => {
+    if (!colsWithFootnotes.includes(cell.colIndex)) {
+      colsWithFootnotes.push(cell.colIndex);
+    }
+  });
+  return colsWithFootnotes;
+}
+
 function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
   let minValue = Math.min(...dataColumn.numbers);
@@ -188,5 +198,6 @@ module.exports = {
   appendFootnotesToData: appendFootnotesToData,
   getNumericColumns: getNumericColumns,
   prepareSelectedColumn: prepareSelectedColumn,
-  prepareMetaData: prepareMetaData
+  prepareMetaData: prepareMetaData,
+  getIndexOfColsWithFootnotes: getIndexOfColsWithFootnotes
 };
