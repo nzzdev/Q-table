@@ -9,7 +9,19 @@
       {%- for head in tableData[0] %}
       <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}
       {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
-      {% if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and head.type === "numeric" -%}q-table-col-footnotes{%- endif -%}"
+      {%- if metaData.length >= 10 -%}
+        {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and head.type === "numeric" -%}
+          q-table-col-footnotes-double
+        {% elif loop.last %}
+          q-table-col-footnotes-double-last
+        {%- endif -%}  
+      {%- else -%}
+        {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and head.type === "numeric" -%}
+          q-table-col-footnotes-single
+        {% elif loop.last %}
+          q-table-col-footnotes-single-last
+        {%- endif -%}  
+      {%- endif -%}"
       {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
       colspan="2" id="q-table-minibar-header"
       {% elif minibar.type === "mixed" and item.options.minibar.selectedColumn+1 === loop.index %}

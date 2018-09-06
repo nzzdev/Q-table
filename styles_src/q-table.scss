@@ -237,6 +237,18 @@ tr.q-table-state-visible {
   font-size: xx-small;
 }
 
-.q-table-col-footnotes {
+.q-table-col-footnotes-single {
   padding-right: 10px!important;
+}
+
+.q-table-col-footnotes-double {
+  padding-right: 20px!important;
+}
+
+.q-table-col-footnotes-single-last {
+  padding-right: 8px!important;
+}
+
+.q-table-col-footnotes-double-last {
+  padding-right: 16px!important;
 }
