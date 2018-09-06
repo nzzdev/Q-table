@@ -4,7 +4,7 @@ const clone = require("clone");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 
 function getMiniBarEnum(item) {
-  if (item.data.length < 1) {
+  if (item.data.table.length < 1) {
     return [null];
   }
 
@@ -14,7 +14,7 @@ function getMiniBarEnum(item) {
 }
 
 function getMiniBarEnumTitles(item) {
-  if (item.data.length < 1) {
+  if (item.data.table.length < 1) {
     return ["keine"];
   }
   return ["keine"].concat(

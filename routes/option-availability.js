@@ -67,7 +67,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
           let type = prepareSelectedColumn(
-            request.payload.data,
+            request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
 
@@ -90,7 +90,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
           let type = prepareSelectedColumn(
-            request.payload.data,
+            request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
 
@@ -113,7 +113,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
           let type = prepareSelectedColumn(
-            request.payload.data,
+            request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
 
