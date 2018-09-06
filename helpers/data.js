@@ -144,8 +144,16 @@ function getTableData(data) {
   });
 }
 
-function appendFootnotesToData(data, metaData) {
-  metaData.cells
+function appendFootnotesToData(tableData, metaData) {
+  metaData.forEach((cell, index) => {
+    // create a new property to safe the index of the footnote
+    tableData[cell.rowIndex][cell.colIndex].footnote = index + 1;
+  });
+  return tableData;
+}
+
+function prepareMetaData(metaData) {
+  return metaData.cells
     .filter(cell => cell.data.footnote) // remove cells with no footnotes
     .sort((a, b) => {
       // sorting metaData to display them chronologically
@@ -153,12 +161,7 @@ function appendFootnotesToData(data, metaData) {
         return a.rowIndex - b.rowIndex;
       }
       return a.colIndex - b.colIndex;
-    })
-    .forEach((cell, index) => {
-      // create a new property to safe the index of the footnote
-      data[cell.rowIndex][cell.colIndex].footnote = index + 1;
     });
-  return data;
 }
 
 function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
@@ -184,5 +187,6 @@ module.exports = {
   getDataForMinibars: getDataForMinibars,
   appendFootnotesToData: appendFootnotesToData,
   getNumericColumns: getNumericColumns,
-  prepareSelectedColumn: prepareSelectedColumn
+  prepareSelectedColumn: prepareSelectedColumn,
+  prepareMetaData: prepareMetaData
 };

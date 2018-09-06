@@ -23,8 +23,8 @@
 
     {%- endfor %}
   {%- endif %}
-  {%- if item.data.metaData.cells.length > 0 %}
-    {%- for cell in item.data.metaData.cells -%}
+  {%- if metaData.length > 0 %}
+    {%- for cell in metaData -%}
       {%- if cell.data.footnote -%}
       <span class="q-table-footnote">{{loop.index}}</span> {{cell.data.footnote}}
       {% if not loop.last %}<br />{% endif %}
