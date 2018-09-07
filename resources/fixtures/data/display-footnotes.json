@@ -61,6 +61,13 @@
           },
           "rowIndex": 5,
           "colIndex": 1
+        },
+        {
+          "data": {
+            "footnote": "Verhalten in letzter Spalte"
+          },
+          "rowIndex": 1,
+          "colIndex": 3
         }
       ]
     }
