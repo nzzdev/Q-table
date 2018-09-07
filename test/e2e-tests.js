@@ -219,7 +219,8 @@ lab.experiment("footnotes", () => {
       },
       {
         data: {
-          footnote: "test3"
+          footnote: "test3",
+          multipleData: true
         },
         rowIndex: 4,
         colIndex: 1
