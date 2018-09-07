@@ -176,6 +176,23 @@ lab.experiment("footnotes", () => {
     ]);
   });
 
+  it("displays a bigger padding in column with footnotes when column with minibars follows", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-footnotes-before-minibar.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-single"
+    ).length;
+    expect(annotations).to.be.equal(6);
+  });
+
   it("behaves correctly with other metaData in cells", async () => {
     let item = require("../resources/fixtures/data/display-footnotes.json");
     item.data.metaData.cells = [
