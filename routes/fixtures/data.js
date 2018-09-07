@@ -18,7 +18,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/minibars-header-with-numbers.json`),
   require(`${fixtureDataDirectory}/minibars-custom-className.json`),
   require(`${fixtureDataDirectory}/minibars-custom-colorCode.json`),
-  require(`${fixtureDataDirectory}/display-footnotes.json`)
+  require(`${fixtureDataDirectory}/display-footnotes.json`),
+  require(`${fixtureDataDirectory}/display-footnotes-before-minibar.json`)
 ];
 
 module.exports = {
