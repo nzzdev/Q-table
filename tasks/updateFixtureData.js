@@ -74,6 +74,10 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/display-footnotes-before-minibar.json`,
     require(`${fixtureDataDirectory}/display-footnotes-before-minibar.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/display-alot-of-footnotes.json`,
+    require(`${fixtureDataDirectory}/display-alot-of-footnotes.json`)
   ]
 ];
 

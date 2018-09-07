@@ -1,0 +1,139 @@
+{
+  "title": "FIXTURE: display alot of footnotes",
+  "data": {
+    "table": [
+      [
+        "Rank",
+        "Name",
+        "Medien",
+        "Forschung"
+      ],
+      [
+        "1",
+        "Hanspeter Musterfrau",
+        "250",
+        "0"
+      ],
+      [
+        "2",
+        "Fridolin Hanspeter",
+        "240",
+        "3"
+      ],
+      [
+        "3",
+        "Ruedi Müller",
+        "200",
+        "4"
+      ],
+      [
+        "4",
+        "Peter Hinterbach",
+        "190",
+        "0"
+      ],
+      [
+        "5",
+        "Ralf Vorderbach",
+        "150",
+        "10"
+      ]
+    ],
+    "metaData": {
+      "cells": [
+        {
+          "data": {
+            "footnote": "test mulitple"
+          },
+          "rowIndex": 0,
+          "colIndex": 0
+        },
+        {
+          "data": {
+            "footnote": "test mulitple1"
+          },
+          "rowIndex": 0,
+          "colIndex": 1
+        },
+        {
+          "data": {
+            "footnote": "test mulitple2"
+          },
+          "rowIndex": 0,
+          "colIndex": 2
+        },
+        {
+          "data": {
+            "footnote": "test mulitple3"
+          },
+          "rowIndex": 0,
+          "colIndex": 3
+        },
+        {
+          "data": {
+            "footnote": "test mulitple4"
+          },
+          "rowIndex": 1,
+          "colIndex": 0
+        },
+        {
+          "data": {
+            "footnote": "test mulitple5"
+          },
+          "rowIndex": 1,
+          "colIndex": 1
+        },
+        {
+          "data": {
+            "footnote": "test mulitple6"
+          },
+          "rowIndex": 1,
+          "colIndex": 2
+        },
+        {
+          "data": {
+            "footnote": "test mulitple7"
+          },
+          "rowIndex": 1,
+          "colIndex": 3
+        },
+        {
+          "data": {
+            "footnote": "test mulitple8"
+          },
+          "rowIndex": 2,
+          "colIndex": 0
+        },
+        {
+          "data": {
+            "footnote": "test mulitple9"
+          },
+          "rowIndex": 2,
+          "colIndex": 1
+        }
+      ]
+    }
+  },
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": 3
+    }
+  },
+  "tool": "table",
+  "subtitle": "Einfluss auf Medien und Forschung"
+}
