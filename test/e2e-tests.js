@@ -159,19 +159,19 @@ lab.experiment("footnotes", () => {
     expect(arrayOfFootnotes).to.be.equal([
       {
         index: "1",
-        text: "Frisch verheiratet, früher Hanspeter Mustermann"
+        text: " Frisch verheiratet, früher Hanspeter Mustermann"
       },
       {
         index: "2",
-        text: "Verhalten in letzter Spalte"
+        text: " Verhalten in letzter Spalte"
       },
       {
         index: "3",
-        text: "Frisch verheiratet, früher Peter Vorderbach"
+        text: " Frisch verheiratet, früher Peter Vorderbach"
       },
       {
         index: "4",
-        text: "Frisch verheiratet, früher Ralf Hinterbach"
+        text: " Frisch verheiratet, früher Ralf Hinterbach"
       }
     ]);
   });
@@ -191,6 +191,27 @@ lab.experiment("footnotes", () => {
       ".q-table-col-footnotes-single"
     ).length;
     expect(annotations).to.be.equal(6);
+  });
+
+  it("displays a even bigger padding in column with footnotes with there are more than 9", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-alot-of-footnotes.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-double"
+    ).length;
+    const annotationsLast = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-double-last"
+    ).length;
+    expect(annotations).to.be.equal(6);
+    expect(annotationsLast).to.be.equal(6);
   });
 
   it("behaves correctly with other metaData in cells", async () => {
