@@ -119,8 +119,8 @@ function getNumericColumns(data) {
   return numericColumns;
 }
 
-function getTableData(data) {
-  return data.map((row, rowIndex) => {
+function getTableData(data, metaData) {
+  let tableData = data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       let type = "text";
       let value = cell;
@@ -142,6 +142,7 @@ function getTableData(data) {
       };
     });
   });
+  return appendFootnotesToData(tableData, metaData);
 }
 
 function appendFootnotesToData(tableData, metaData) {
@@ -195,7 +196,6 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 module.exports = {
   getTableData: getTableData,
   getDataForMinibars: getDataForMinibars,
-  appendFootnotesToData: appendFootnotesToData,
   getNumericColumns: getNumericColumns,
   prepareSelectedColumn: prepareSelectedColumn,
   prepareFootnoteMetaData: prepareFootnoteMetaData,
