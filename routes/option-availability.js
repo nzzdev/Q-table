@@ -25,11 +25,12 @@ module.exports = {
       request.params.optionName === "selectedColumn"
     ) {
       let isAvailable = false;
-      if (request.payload.data.length !== 0) {
+
+      if (request.payload.data.table.length !== 0) {
         if (
           !request.payload.options.cardLayout &&
-          request.payload.data[0].length >= 3 &&
-          getNumericColumns(request.payload.data).length > 0
+          request.payload.data.table[0].length >= 3 &&
+          getNumericColumns(request.payload.data.table).length > 0
         ) {
           isAvailable = true;
         }
@@ -66,7 +67,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
           let type = prepareSelectedColumn(
-            request.payload.data,
+            request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
 
@@ -89,7 +90,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
           let type = prepareSelectedColumn(
-            request.payload.data,
+            request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
 
@@ -112,7 +113,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
           let type = prepareSelectedColumn(
-            request.payload.data,
+            request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
 

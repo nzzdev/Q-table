@@ -23,4 +23,13 @@
 
     {%- endfor %}
   {%- endif %}
+  {%- if metaData.length > 0 %}
+    {%- for cell in metaData -%}
+      {%- if cell.data.footnote -%}
+      <div class="q-table-footer-footnote">
+        <span class="q-table-footnote-index">{{loop.index}}</span><span class="q-table-footnote-text"> {{cell.data.footnote}}</span>
+      </div>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif %}
 </div>

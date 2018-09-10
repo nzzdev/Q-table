@@ -1,28 +1,33 @@
 {
   "title": "FIXTURE: mixed number and text in cell",
   "subtitle": "Opel Insignia Country Tourer 2.0 BiTurbo Diesel",
-  "data": [
-    [
-      "Kennzahl",
-      "Wert"
+  "data": {
+    "table": [
+      [
+        "Kennzahl",
+        "Wert"
+      ],
+      [
+        "Hubraum",
+        "1956 ccm"
+      ],
+      [
+        "Motorbauart",
+        "4 Zyl. Reihe, 2 Turbo, Diesel"
+      ],
+      [
+        "Antrieb/Getriebe",
+        "AWD/A8"
+      ],
+      [
+        "Leistung",
+        "154/210 kW/PS"
+      ]
     ],
-    [
-      "Hubraum",
-      "1956 ccm"
-    ],
-    [
-      "Motorbauart",
-      "4 Zyl. Reihe, 2 Turbo, Diesel"
-    ],
-    [
-      "Antrieb/Getriebe",
-      "AWD/A8"
-    ],
-    [
-      "Leistung",
-      "154/210 kW/PS"
-    ]
-  ],
+    "metaData": {
+      "cells": []
+    }
+  },
   "sources": [],
   "options": {
     "hideTableHeader": true,

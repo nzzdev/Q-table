@@ -4,19 +4,21 @@ const clone = require("clone");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 
 function getMiniBarEnum(item) {
-  if (item.data.length < 1) {
+  if (item.data.table.length < 1) {
     return [null];
   }
 
-  return [null].concat(...getNumericColumns(item.data).map(col => col.index));
+  return [null].concat(
+    ...getNumericColumns(item.data.table).map(col => col.index)
+  );
 }
 
 function getMiniBarEnumTitles(item) {
-  if (item.data.length < 1) {
+  if (item.data.table.length < 1) {
     return ["keine"];
   }
   return ["keine"].concat(
-    ...getNumericColumns(item.data).map(col => col.title)
+    ...getNumericColumns(item.data.table).map(col => col.title)
   );
 }
 

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf scripts && mkdir scripts && rm -rf styles && mkdir styles && node tasks/build.js",
-    "test": "lab -a code -c -P tests --verbose --leaks"
+    "test": "lab -a code -c -P tests --verbose --leaks",
+    "update-local-fixtureData": "node tasks/updateFixtureData.js"
   },
   "author": "Beni Buess <beni.buess@nzz.ch>",
   "license": "",
@@ -28,5 +29,8 @@
     "postcss": "^6.0.22",
     "postcss-import": "^11.1.0",
     "uglify-js": "^3.4.0"
+  },
+  "devDependencies": {
+    "jsdom": "^12.0.0"
   }
 }

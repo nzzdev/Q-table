@@ -223,3 +223,32 @@ tr.q-table-state-visible {
 .q-table-minibar-hidden {
   display: none !important;
 }
+
+.q-table-annotation {
+  position: absolute;
+  color: #6e6e7e;
+  margin-left: 1px;
+  margin-top: -5.5px;
+  font-size: 9px;
+}
+
+.q-table-footnote-index {
+  vertical-align: super;
+  font-size: 9px;
+}
+
+.q-table-col-footnotes-single {
+  padding-right: 10px!important;
+}
+
+.q-table-col-footnotes-double {
+  padding-right: 20px!important;
+}
+
+.q-table-col-footnotes-single-last {
+  padding-right: 8px!important;
+}
+
+.q-table-col-footnotes-double-last {
+  padding-right: 16px!important;
+}

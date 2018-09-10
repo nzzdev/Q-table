@@ -15,26 +15,76 @@
       "type": "string"
     },
     "data": {
-      "title": "Daten",
-      "type": "array",
+      "type": "object",
       "Q:type": "table",
       "Q:options": {
-        "allowTranspose": false
-      },
-      "items": {
-        "type": "array",
-        "items": {
-          "oneOf": [
-            {
-            	"type": "string"
-          	},
-            {
-            	"type": "null"
-          	}
-          ]
+        "allowTranspose": false,
+        "metaDataEditor": {
+          "dataPropertyName": "table",
+          "features": {
+            "cells": {
+              "propertyPath": "metaData.cells"
+            }
+          }
         }
       },
-      "minItems": 1
+      "properties": {
+        "table": {
+          "title": "Daten",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "minItems": 1
+        },
+        "metaData": {
+          "type": "object",
+          "Q:options": {
+            "compact": true
+          },
+          "properties": {
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rowIndex": {
+                    "type": "number",
+                    "Q:options": {
+                      "hideInEditor": true
+                    }
+                  },
+                  "colIndex": {
+                    "type": "number",
+                    "Q:options": {
+                      "hideInEditor": true
+                    }
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "footnote": {
+                        "title": "Fussnote",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }  
+      }
     },
     "sources": {
       "title": "Quelle(n)",
