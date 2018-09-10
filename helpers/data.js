@@ -152,7 +152,7 @@ function appendFootnotesToData(tableData, metaData) {
   return tableData;
 }
 
-function prepareMetaData(metaData) {
+function prepareFootnoteMetaData(metaData) {
   return metaData.cells
     .filter(cell => cell.data.footnote) // remove cells with no footnotes
     .sort((a, b) => {
@@ -198,6 +198,6 @@ module.exports = {
   appendFootnotesToData: appendFootnotesToData,
   getNumericColumns: getNumericColumns,
   prepareSelectedColumn: prepareSelectedColumn,
-  prepareMetaData: prepareMetaData,
+  prepareFootnoteMetaData: prepareFootnoteMetaData,
   getIndexOfColsWithFootnotes: getIndexOfColsWithFootnotes
 };
