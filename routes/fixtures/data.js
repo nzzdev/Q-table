@@ -21,7 +21,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/display-footnotes.json`),
   require(`${fixtureDataDirectory}/display-footnotes-before-minibar.json`),
   require(`${fixtureDataDirectory}/display-alot-of-footnotes.json`),
-  require(`${fixtureDataDirectory}/hide-footnotes-in-header.json`)
+  require(`${fixtureDataDirectory}/hide-footnotes-in-header.json`),
+  require(`${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`)
 ];
 
 module.exports = {

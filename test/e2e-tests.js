@@ -239,6 +239,23 @@ lab.experiment("footnotes", () => {
     expect(annotationsLast).to.be.equal(6);
   });
 
+  it("displays a bigger margin in column when table has footnotes and cardlayout ", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-cardlayout-single"
+    ).length;
+    expect(annotations).to.be.equal(20);
+  });
+
   it("behaves correctly with other metaData in cells", async () => {
     let item = require("../resources/fixtures/data/display-footnotes.json");
     item.data.metaData.cells = [

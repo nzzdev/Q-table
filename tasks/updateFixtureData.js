@@ -82,6 +82,10 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/hide-footnotes-in-header.json`,
     require(`${fixtureDataDirectory}/hide-footnotes-in-header.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`,
+    require(`${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`)
   ]
 ];
 
