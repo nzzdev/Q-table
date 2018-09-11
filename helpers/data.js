@@ -153,9 +153,14 @@ function appendFootnotesToData(tableData, metaData) {
   return tableData;
 }
 
-function prepareFootnoteMetaData(metaData) {
+function prepareFootnoteMetaData(metaData, hideTableHeader) {
   return metaData.cells
-    .filter(cell => cell.data.footnote) // remove cells with no footnotes
+    .filter(cell => {
+      if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
+        return false;
+      }
+      return true;
+    }) // remove cells with no footnotes
     .sort((a, b) => {
       // sorting metaData to display them chronologically
       if (a.rowIndex !== b.rowIndex) {
@@ -175,7 +180,7 @@ function getIndexOfColsWithFootnotes(metaData) {
   return colsWithFootnotes;
 }
 
-function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
+function getDataForMinibars(data, selectedColumnIndex) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
   let minValue = Math.min(...dataColumn.numbers);
   let maxValue = Math.max(...dataColumn.numbers);

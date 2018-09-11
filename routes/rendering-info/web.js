@@ -102,7 +102,10 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
-    const metaData = dataHelpers.prepareFootnoteMetaData(item.data.metaData);
+    const metaData = dataHelpers.prepareFootnoteMetaData(
+      item.data.metaData,
+      item.options.hideTableHeader
+    );
     const footnoteColIndexes = dataHelpers.getIndexOfColsWithFootnotes(
       metaData
     );
