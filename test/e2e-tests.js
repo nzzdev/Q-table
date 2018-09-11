@@ -176,6 +176,31 @@ lab.experiment("footnotes", () => {
     ]);
   });
 
+  it("hides footnotes because header is hidden", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/hide-footnotes-in-header.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-annotation"
+    );
+
+    const footnoteIndexes = dom.window.document.querySelectorAll(
+      ".q-table-footnote-index"
+    );
+
+    expect(annotations[0].innerHTML).to.be.equal("1");
+    expect(footnoteIndexes[0].innerHTML).to.be.equal("1");
+    expect(annotations.length).to.be.equal(6);
+    expect(footnoteIndexes.length).to.be.equal(6);
+  });
+
   it("displays a bigger padding in column with footnotes when column with minibars follows", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
