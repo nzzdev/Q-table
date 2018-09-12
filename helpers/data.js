@@ -146,9 +146,23 @@ function getTableData(data, metaData) {
 }
 
 function appendFootnotesToData(tableData, metaData) {
+  const unicodes = {
+    1: "\u00b9",
+    2: "\u00b2",
+    3: "\u00b3",
+    4: "\u2074",
+    5: "\u2075",
+    6: "\u2076",
+    7: "\u2077",
+    8: "\u2078",
+    9: "\u2079"
+  };
   metaData.forEach((cell, index) => {
     // create a new property to safe the index of the footnote
-    tableData[cell.rowIndex][cell.colIndex].footnote = index + 1;
+    tableData[cell.rowIndex][cell.colIndex].footnote = {
+      value: index + 1,
+      unicode: unicodes[index + 1]
+    };
   });
   return tableData;
 }

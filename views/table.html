@@ -36,7 +36,7 @@
       id="q-table-minibar-header"
       {% endif %}>
           {{ head.value }}
-          {%- if head.footnote %}<span class="q-table-annotation">{{ head.footnote }}</span>{%- endif %}
+          {%- if head.footnote %}<span class="q-table-annotation">{{ head.footnote.value }}</span>{%- endif %}
       </th> 
       {%- endfor %}
     </thead>
