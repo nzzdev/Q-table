@@ -176,6 +176,30 @@ lab.experiment("footnotes", () => {
     ]);
   });
 
+  it("shows annotation of footnotes in header of cardlayout", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll("td");
+
+    const footnoteOne = decodeURI(
+      annotations[0].getAttribute("data-label").split(" ")[1]
+    );
+    const footnoteTwo = decodeURI(
+      annotations[1].getAttribute("data-label").split(" ")[1]
+    );
+
+    expect(footnoteOne).to.be.equal("\u00b9");
+    expect(footnoteTwo).to.be.equal("\u00b2");
+  });
+
   it("hides footnotes because header is hidden", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
