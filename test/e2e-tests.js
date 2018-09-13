@@ -151,8 +151,8 @@ lab.experiment("footnotes", () => {
 
     footnotes.forEach(footnote => {
       arrayOfFootnotes.push({
-        index: footnote.childNodes[1].innerHTML,
-        text: footnote.childNodes[2].innerHTML
+        index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
+        text: footnote.childNodes[2].innerHTML.replace("\n        ", "")
       });
     });
 
@@ -219,8 +219,10 @@ lab.experiment("footnotes", () => {
       ".q-table-footnote-index"
     );
 
-    expect(annotations[0].innerHTML).to.be.equal("1");
-    expect(footnoteIndexes[0].innerHTML).to.be.equal("1");
+    expect(annotations[0].innerHTML.replace("\n        ", "")).to.be.equal("1");
+    expect(footnoteIndexes[0].innerHTML.replace("\n        ", "")).to.be.equal(
+      "1"
+    );
     expect(annotations.length).to.be.equal(6);
     expect(footnoteIndexes.length).to.be.equal(6);
   });
