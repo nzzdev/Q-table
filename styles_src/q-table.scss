@@ -235,6 +235,8 @@ tr.q-table-state-visible {
 .q-table-footnote-index {
   vertical-align: super;
   font-size: 9px;
+  display: inline-block;
+  width: 5px;
 }
 
 .q-table-col-footnotes-single {
@@ -251,4 +253,12 @@ tr.q-table-state-visible {
 
 .q-table-col-footnotes-double-last {
   padding-right: 16px!important;
+}
+
+.q-table-col-footnotes-cardlayout-single {
+  margin-right: 7px!important;
+}
+
+.q-table-col-footnotes-cardlayout-double {
+  margin-right: 14px!important;
 }

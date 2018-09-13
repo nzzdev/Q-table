@@ -15,6 +15,7 @@
       "type": "string"
     },
     "data": {
+      "title": "Daten",
       "type": "object",
       "Q:type": "table",
       "Q:options": {
@@ -30,7 +31,6 @@
       },
       "properties": {
         "table": {
-          "title": "Daten",
           "type": "array",
           "items": {
             "type": "array",

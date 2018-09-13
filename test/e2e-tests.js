@@ -151,8 +151,8 @@ lab.experiment("footnotes", () => {
 
     footnotes.forEach(footnote => {
       arrayOfFootnotes.push({
-        index: footnote.childNodes[1].innerHTML,
-        text: footnote.childNodes[2].innerHTML
+        index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
+        text: footnote.childNodes[2].innerHTML.replace("\n        ", "")
       });
     });
 
@@ -174,6 +174,57 @@ lab.experiment("footnotes", () => {
         text: " Frisch verheiratet, früher Ralf Hinterbach"
       }
     ]);
+  });
+
+  it("shows annotation of footnotes in header of cardlayout", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll("td");
+
+    const footnoteOne = decodeURI(
+      annotations[0].getAttribute("data-label").split(" ")[1]
+    );
+    const footnoteTwo = decodeURI(
+      annotations[1].getAttribute("data-label").split(" ")[1]
+    );
+
+    expect(footnoteOne).to.be.equal("\u00b9");
+    expect(footnoteTwo).to.be.equal("\u00b2");
+  });
+
+  it("hides footnotes because header is hidden", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/hide-footnotes-in-header.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-annotation"
+    );
+
+    const footnoteIndexes = dom.window.document.querySelectorAll(
+      ".q-table-footnote-index"
+    );
+
+    expect(annotations[0].innerHTML.replace("\n        ", "")).to.be.equal("1");
+    expect(footnoteIndexes[0].innerHTML.replace("\n        ", "")).to.be.equal(
+      "1"
+    );
+    expect(annotations.length).to.be.equal(6);
+    expect(footnoteIndexes.length).to.be.equal(6);
   });
 
   it("displays a bigger padding in column with footnotes when column with minibars follows", async () => {
@@ -212,6 +263,23 @@ lab.experiment("footnotes", () => {
     ).length;
     expect(annotations).to.be.equal(6);
     expect(annotationsLast).to.be.equal(6);
+  });
+
+  it("displays a bigger margin in column when table has footnotes and cardlayout ", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-cardlayout-single"
+    ).length;
+    expect(annotations).to.be.equal(20);
   });
 
   it("behaves correctly with other metaData in cells", async () => {

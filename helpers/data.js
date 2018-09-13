@@ -146,16 +146,35 @@ function getTableData(data, metaData) {
 }
 
 function appendFootnotesToData(tableData, metaData) {
+  const unicodes = {
+    1: "\u00b9",
+    2: "\u00b2",
+    3: "\u00b3",
+    4: "\u2074",
+    5: "\u2075",
+    6: "\u2076",
+    7: "\u2077",
+    8: "\u2078",
+    9: "\u2079"
+  };
   metaData.forEach((cell, index) => {
     // create a new property to safe the index of the footnote
-    tableData[cell.rowIndex][cell.colIndex].footnote = index + 1;
+    tableData[cell.rowIndex][cell.colIndex].footnote = {
+      value: index + 1,
+      unicode: unicodes[index + 1]
+    };
   });
   return tableData;
 }
 
-function prepareFootnoteMetaData(metaData) {
+function prepareFootnoteMetaData(metaData, hideTableHeader) {
   return metaData.cells
-    .filter(cell => cell.data.footnote) // remove cells with no footnotes
+    .filter(cell => {
+      if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
+        return false;
+      }
+      return true;
+    }) // remove cells with no footnotes
     .sort((a, b) => {
       // sorting metaData to display them chronologically
       if (a.rowIndex !== b.rowIndex) {
@@ -175,7 +194,7 @@ function getIndexOfColsWithFootnotes(metaData) {
   return colsWithFootnotes;
 }
 
-function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
+function getDataForMinibars(data, selectedColumnIndex) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
   let minValue = Math.min(...dataColumn.numbers);
   let maxValue = Math.max(...dataColumn.numbers);
