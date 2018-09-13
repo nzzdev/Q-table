@@ -68,6 +68,20 @@
           },
           "rowIndex": 1,
           "colIndex": 3
+        },
+        {
+          "data": {
+            "footnote": "Header1"
+          },
+          "rowIndex": 0,
+          "colIndex": 0
+        },
+        {
+          "data": {
+            "footnote": "Header2"
+          },
+          "rowIndex": 0,
+          "colIndex": 1
         }
       ]
     }
@@ -75,7 +89,7 @@
   "sources": [],
   "options": {
     "hideTableHeader": false,
-    "cardLayout": true,
+    "cardLayout": false,
     "cardLayoutIfSmall": false,
     "minibar": {
       "invertColors": false,
