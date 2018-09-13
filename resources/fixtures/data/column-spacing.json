@@ -1,12 +1,42 @@
 {
   "title": "FIXTURE: column spacing",
-  "data": [
-    ["Burglind", "km/h", "Lothar", "km/h"],
-    ["Gütsch ob Andermatt", "201", "Säntis", "230"],
-    ["Pilatus", "195", "Hörnli", "208"],
-    ["Chaseral", "184", "La Dôle", "201"],
-    ["Crap Masegn", "179", "Delémont", "170"]
-  ],
+  "data": {
+    "table": [
+      [
+        "Burglind",
+        "km/h",
+        "Lothar",
+        "km/h"
+      ],
+      [
+        "Gütsch ob Andermatt",
+        "201",
+        "Säntis",
+        "230"
+      ],
+      [
+        "Pilatus",
+        "195",
+        "Hörnli",
+        "208"
+      ],
+      [
+        "Chaseral",
+        "184",
+        "La Dôle",
+        "201"
+      ],
+      [
+        "Crap Masegn",
+        "179",
+        "Delémont",
+        "170"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
   "sources": [
     {
       "link": {},

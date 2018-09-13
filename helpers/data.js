@@ -108,16 +108,19 @@ function isColumnNumeric(data, columnIndex) {
 
 function getNumericColumns(data) {
   let numericColumns = [];
-  for (var i = 0; i <= data[0].length; i++) {
-    if (isColumnNumeric(data, i)) {
-      numericColumns.push({ title: data[0][i], index: i });
+  // data[0].length is undefined when creating a new item
+  if (data[0] !== undefined) {
+    for (var i = 0; i <= data[0].length; i++) {
+      if (isColumnNumeric(data, i)) {
+        numericColumns.push({ title: data[0][i], index: i });
+      }
     }
   }
   return numericColumns;
 }
 
-function getDataForTemplate(data) {
-  return data.map((row, rowIndex) => {
+function getTableData(data, metaData) {
+  let tableData = data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       let type = "text";
       let value = cell;
@@ -139,9 +142,59 @@ function getDataForTemplate(data) {
       };
     });
   });
+  return appendFootnotesToData(tableData, metaData);
 }
 
-function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
+function appendFootnotesToData(tableData, metaData) {
+  const unicodes = {
+    1: "\u00b9",
+    2: "\u00b2",
+    3: "\u00b3",
+    4: "\u2074",
+    5: "\u2075",
+    6: "\u2076",
+    7: "\u2077",
+    8: "\u2078",
+    9: "\u2079"
+  };
+  metaData.forEach((cell, index) => {
+    // create a new property to safe the index of the footnote
+    tableData[cell.rowIndex][cell.colIndex].footnote = {
+      value: index + 1,
+      unicode: unicodes[index + 1]
+    };
+  });
+  return tableData;
+}
+
+function prepareFootnoteMetaData(metaData, hideTableHeader) {
+  return metaData.cells
+    .filter(cell => {
+      if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
+        return false;
+      }
+      return true;
+    }) // remove cells with no footnotes
+    .sort((a, b) => {
+      // sorting metaData to display them chronologically
+      if (a.rowIndex !== b.rowIndex) {
+        return a.rowIndex - b.rowIndex;
+      }
+      return a.colIndex - b.colIndex;
+    });
+}
+
+function getIndexOfColsWithFootnotes(metaData) {
+  let colsWithFootnotes = [];
+  metaData.forEach(cell => {
+    if (!colsWithFootnotes.includes(cell.colIndex)) {
+      colsWithFootnotes.push(cell.colIndex);
+    }
+  });
+  return colsWithFootnotes;
+}
+
+function getDataForMinibars(data, selectedColumnIndex) {
   let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
   let minValue = Math.min(...dataColumn.numbers);
   let maxValue = Math.max(...dataColumn.numbers);
@@ -160,8 +213,10 @@ function getDataForMinibars(data, selectedColumnIndex, hideTableHeader) {
 }
 
 module.exports = {
-  getDataForTemplate: getDataForTemplate,
+  getTableData: getTableData,
   getDataForMinibars: getDataForMinibars,
   getNumericColumns: getNumericColumns,
-  prepareSelectedColumn: prepareSelectedColumn
+  prepareSelectedColumn: prepareSelectedColumn,
+  prepareFootnoteMetaData: prepareFootnoteMetaData,
+  getIndexOfColsWithFootnotes: getIndexOfColsWithFootnotes
 };

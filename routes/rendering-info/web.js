@@ -21,7 +21,7 @@ const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
 const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
   .getExactPixelWidth;
-const data = require(`${helpersDir}data.js`);
+const dataHelpers = require(`${helpersDir}data.js`);
 
 const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
@@ -101,12 +101,21 @@ module.exports = {
     ];
 
     const item = request.payload.item;
-    const itemDataCopy = request.payload.item.data.slice(0); // get unformated copy of data for minibars
-    item.data = data.getDataForTemplate(item.data);
+    const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
+    const metaData = dataHelpers.prepareFootnoteMetaData(
+      item.data.metaData,
+      item.options.hideTableHeader
+    );
+    const footnoteColIndexes = dataHelpers.getIndexOfColsWithFootnotes(
+      metaData
+    );
 
     const context = {
       item: item,
-      numberOfRows: item.data.length - 1, // do not count the header
+      tableData: dataHelpers.getTableData(item.data.table, metaData),
+      metaData: metaData,
+      footnoteColIndexes: footnoteColIndexes,
+      numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
@@ -148,7 +157,7 @@ module.exports = {
         item.options.minibar.selectedColumn !== null &&
         item.options.minibar.selectedColumn !== undefined
       ) {
-        context.minibar = data.getDataForMinibars(
+        context.minibar = dataHelpers.getDataForMinibars(
           itemDataCopy,
           item.options.minibar.selectedColumn
         );

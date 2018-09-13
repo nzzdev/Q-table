@@ -1,37 +1,42 @@
 {
   "title": "FIXTURE: minibars with positive and negative values",
-  "data": [
-    [
-      "",
-      "2016",
-      "2017",
-      "+/- %"
+  "data": {
+    "table": [
+      [
+        "",
+        "2016",
+        "2017",
+        "+/- %"
+      ],
+      [
+        "Auftragseingang",
+        "10375",
+        "10989",
+        "6"
+      ],
+      [
+        "Umsatz",
+        "9683",
+        "10178",
+        "5"
+      ],
+      [
+        "Ebit-Mage (%)",
+        "11.7",
+        "11.7",
+        "-"
+      ],
+      [
+        "Cashflow aus Geschäftstätigkeite",
+        "929",
+        "810",
+        "-13"
+      ]
     ],
-    [
-      "Auftragseingang",
-      "10375",
-      "10989",
-      "6"
-    ],
-    [
-      "Umsatz",
-      "9683",
-      "10178",
-      "5"
-    ],
-    [
-      "Ebit-Mage (%)",
-      "11.7",
-      "11.7",
-      "-"
-    ],
-    [
-      "Cashflow aus Geschäftstätigkeite",
-      "929",
-      "810",
-      "-13"
-    ]
-  ],
+    "metaData": {
+      "cells": []
+    }
+  },
   "sources": [
     {
       "link": {},

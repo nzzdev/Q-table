@@ -1,13 +1,33 @@
 {
   "title": "FIXTURE: simple one-column short table with numeric values",
   "subtitle": "some subtitle here",
-  "data": [
-    ["Land", "Punkte"],
-    ["Schweiz", "10000000"],
-    ["Deutschland", "20000000"],
-    ["Frankreich", "355547.5"],
-    ["Österreich", "-3500000"]
-  ],
+  "data": {
+    "table": [
+      [
+        "Land",
+        "Punkte"
+      ],
+      [
+        "Schweiz",
+        "10000000"
+      ],
+      [
+        "Deutschland",
+        "20000000"
+      ],
+      [
+        "Frankreich",
+        "355547.5"
+      ],
+      [
+        "Österreich",
+        "-3500000"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
   "options": {
     "cardLayout": false,
     "cardLayoutIfSmall": false,

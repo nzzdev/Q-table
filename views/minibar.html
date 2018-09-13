@@ -1,17 +1,39 @@
 {%- if minibar.type==="mixed"%}
   <td 
-  {% if item.options.hideTableHeader !== true %}
-    data-label="{{ item.data[0][loop.index0].value }}" 
-  {% endif %} 
+  {% if item.options.hideTableHeader !== true %}data-label="{{ tableData[0][loop.index0].value }} {% if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 %}{{tableData[0][loop.index0].footnote.unicode}}{% endif %}" {% endif %} 
   data-minibar="{{minibar.type}}"
   class="q-table__cell 
+  {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
+  {%- if item.options.cardLayout -%}
+    {%- if metaData.length >= 10 -%}
+      q-table-col-footnotes-cardlayout-double
+    {%- else -%}
+      q-table-col-footnotes-cardlayout-single
+    {%- endif -%}  
+  {%- else -%}
+    {%- if metaData.length >= 10 -%}
+      {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
+        q-table-col-footnotes-double
+      {% elif loop.last %}
+        q-table-col-footnotes-double-last
+      {%- endif -%}  
+    {%- else -%}
+      {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
+        q-table-col-footnotes-single
+      {% elif loop.last %}
+        q-table-col-footnotes-single-last
+      {%- endif -%}  
+    {%- endif -%}
+  {%- endif -%}
   {% if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     q-table-minibar--{{minibar.values[row_loop.index].type}}">
     <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}}">
-    {{ cell.value }}
+      {{ cell.value }}
+      {%- if cell.footnote %}<span class="q-table-annotation">{{ cell.footnote.value }}</span>{%- endif %}
     </div>
   {% else %}q-table__cell--{{cell.type}}">
     {{ cell.value }}
+    {%- if cell.footnote %}<span class="q-table-annotation">{{ cell.footnote.value }}</span>{%- endif %}
   {% endif %}
   {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     {% if minibar.values[row_loop.index].type !== "empty" %}
@@ -34,12 +56,35 @@
 {% else %}
   {%- if minibar.type==="positive" %}
     <td 
-      {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
+    {% if item.options.hideTableHeader !== true %}data-label="{{ tableData[0][loop.index0].value }} {% if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 %}{{tableData[0][loop.index0].footnote.unicode}}{% endif %}" {% endif %} 
       class="q-table__cell q-table__cell--{{ cell.type }}
+      {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
+      {%- if item.options.cardLayout -%}
+        {%- if metaData.length >= 10 -%}
+          q-table-col-footnotes-cardlayout-double
+        {%- else -%}
+          q-table-col-footnotes-cardlayout-single
+        {%- endif -%}  
+      {%- else -%}
+        {%- if metaData.length >= 10 -%}
+          {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
+            q-table-col-footnotes-double
+          {% elif loop.last %}
+            q-table-col-footnotes-double-last
+          {%- endif -%}  
+        {%- else -%}
+          {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
+            q-table-col-footnotes-single
+          {% elif loop.last %}
+            q-table-col-footnotes-single-last
+          {%- endif -%}  
+        {%- endif -%}
+      {%- endif -%}
       {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
       q-table-minibar-cell--value" data-minibar-type="value" data-minibar="{{minibar.type}}" style="padding-left: 12px;
       {% endif %}">
         {{ cell.value }}
+        {%- if cell.footnote %}<span class="q-table-annotation">{{ cell.footnote.value }}</span>{%- endif %}
     </td>
     {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
       <td data-minibar="{{minibar.type}}" class="q-table-minibar-cell" style="padding-right: 12px;">
@@ -80,13 +125,37 @@
         </div>
       </td> 
     {%- endif %} 
-    <td 
-    {% if item.options.hideTableHeader !== true %}data-label="{{ item.data[0][loop.index0].value }}" {% endif %} 
+    <td
+    {% if item.options.hideTableHeader !== true %}data-label="{{ tableData[0][loop.index0].value }} {% if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 %}{{tableData[0][loop.index0].footnote.unicode}}{% endif %}" {% endif %} 
     class="q-table__cell q-table__cell--{{ cell.type }}
+    {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
+    {%- if item.options.cardLayout -%}
+      {%- if metaData.length >= 10 -%}
+        q-table-col-footnotes-cardlayout-double
+      {%- else -%}
+        q-table-col-footnotes-cardlayout-single
+      {%- endif -%}  
+    {%- else -%}
+      {%- if metaData.length >= 10 -%}
+        {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
+          q-table-col-footnotes-double
+        {% elif loop.last %}
+          q-table-col-footnotes-double-last
+        {%- endif -%}  
+      {%- else -%}
+        {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
+          q-table-col-footnotes-single
+        {% elif loop.last %}
+          q-table-col-footnotes-single-last
+        {%- endif -%}  
+      {%- endif -%}
+    {%- endif -%}
     {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     q-table-minibar-cell--value" data-minibar="{{minibar.type}}" data-minibar-type="value" style="padding-right: 12px;
     {% endif %}">
-      {{ cell.value }}
+    {{ cell.value }}
+    {%- if cell.footnote %}<span class="q-table-annotation">{{ cell.footnote.value }}</span>{%- endif %}
     </td>
   {% endif %}
 {% endif %}
+

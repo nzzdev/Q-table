@@ -6,22 +6,45 @@
   <table class="q-table__table">
     {%- if item.options.hideTableHeader !== true %}
     <thead class="s-font-note s-font-note--strong">
-      {%- for head in item.data[0] %}
-      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}"
+      {%- for head in tableData[0] %}
+      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}
+      {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
+      {%- if item.options.cardLayout -%}
+        {%- if metaData.length >= 10 -%}
+          q-table-col-footnotes-cardlayout-double
+        {%- else -%}
+          q-table-col-footntoes-cardlayout-single
+        {%- endif -%}  
+      {%- else -%}
+        {%- if metaData.length >= 10 -%}
+          {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and head.type === "numeric" -%}
+            q-table-col-footnotes-double
+          {% elif loop.last %}
+            q-table-col-footnotes-double-last
+          {%- endif -%}  
+        {%- else -%}
+          {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and head.type === "numeric" -%}
+            q-table-col-footnotes-single
+          {% elif loop.last %}
+            q-table-col-footnotes-single-last
+          {%- endif -%}  
+        {%- endif -%}
+      {%- endif -%}"
       {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
       colspan="2" id="q-table-minibar-header"
       {% elif minibar.type === "mixed" and item.options.minibar.selectedColumn+1 === loop.index %}
       id="q-table-minibar-header"
       {% endif %}>
           {{ head.value }}
+          {%- if head.footnote %}<span class="q-table-annotation">{{ head.footnote.value }}</span>{%- endif %}
       </th> 
       {%- endfor %}
     </thead>
     {%- endif %}
     <tbody class="s-font-note">
-      {%- for row in item.data.slice(1) %}
+      {%- for row in tableData.slice(1) %}
       {% set row_loop = loop %}
-      <tr {% if numberOfRowsToHide and loop.index >= (item.data.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
+      <tr {% if numberOfRowsToHide and loop.index >= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
         {%- for cell in row %}
           {% include "./minibar.html" %}
         {%- endfor %}
