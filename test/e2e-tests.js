@@ -176,50 +176,6 @@ lab.experiment("footnotes", () => {
     ]);
   });
 
-  it("shows text of footnotes in footer of table with right index", async () => {
-    const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
-      payload: {
-        item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
-        toolRuntimeConfig: {}
-      }
-    });
-
-    const dom = new JSDOM(response.result.markup);
-    const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footer-footnote"
-    );
-
-    let arrayOfFootnotes = [];
-
-    footnotes.forEach(footnote => {
-      arrayOfFootnotes.push({
-        index: footnote.childNodes[1].innerHTML,
-        text: footnote.childNodes[2].innerHTML
-      });
-    });
-
-    expect(arrayOfFootnotes).to.be.equal([
-      {
-        index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann"
-      },
-      {
-        index: "2",
-        text: " Verhalten in letzter Spalte"
-      },
-      {
-        index: "3",
-        text: " Frisch verheiratet, früher Peter Vorderbach"
-      },
-      {
-        index: "4",
-        text: " Frisch verheiratet, früher Ralf Hinterbach"
-      }
-    ]);
-  });
-
   it("hides footnotes because header is hidden", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
