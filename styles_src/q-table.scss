@@ -11,7 +11,15 @@
 }
 
 .q-table__cell--numeric {
+  font-feature-settings: "tnum"; // use tabular font variant for numbers
   text-align: right !important;
+}
+
+@supports (font-variant-numeric: tabular-nums) {
+  .q-table__cell--numeric {
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+  }
 }
 
 // only td should not break, th of --numeric columns are allowed to wrap
