@@ -82,6 +82,7 @@ function isNumeric(cell) {
   if (!cell) {
     return false;
   }
+  cell = cell.trim(); // remove whitespaces
   if (cell.match(/^[+-]?\d+(\.\d+)?$/) === null) {
     return false;
   }
