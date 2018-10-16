@@ -120,7 +120,7 @@ function getNumericColumns(data) {
   return numericColumns;
 }
 
-function getTableData(data, metaData) {
+function getTableData(data, footnotes) {
   let tableData = data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       let type = "text";
@@ -143,10 +143,10 @@ function getTableData(data, metaData) {
       };
     });
   });
-  return appendFootnotesToData(tableData, metaData);
+  return appendFootnotesToData(tableData, footnotes);
 }
 
-function appendFootnotesToData(tableData, metaData) {
+function appendFootnotesToData(tableData, footnotes) {
   const unicodes = {
     1: "\u00b9",
     2: "\u00b2",
@@ -158,9 +158,9 @@ function appendFootnotesToData(tableData, metaData) {
     8: "\u2078",
     9: "\u2079"
   };
-  metaData.forEach((cell, index) => {
+  footnotes.forEach((footnote, index) => {
     // create a new property to safe the index of the footnote
-    tableData[cell.rowIndex][cell.colIndex].footnote = {
+    tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: index + 1,
       unicode: unicodes[index + 1]
     };
@@ -168,7 +168,7 @@ function appendFootnotesToData(tableData, metaData) {
   return tableData;
 }
 
-function prepareFootnoteMetaData(metaData, hideTableHeader) {
+function prepareFootnotes(metaData, hideTableHeader) {
   return metaData.cells
     .filter(cell => {
       if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
@@ -185,11 +185,11 @@ function prepareFootnoteMetaData(metaData, hideTableHeader) {
     });
 }
 
-function getIndexOfColsWithFootnotes(metaData) {
+function getIndexOfColsWithFootnotes(footnotes) {
   let colsWithFootnotes = [];
-  metaData.forEach(cell => {
-    if (!colsWithFootnotes.includes(cell.colIndex)) {
-      colsWithFootnotes.push(cell.colIndex);
+  footnotes.forEach(footnote => {
+    if (!colsWithFootnotes.includes(footnote.colIndex)) {
+      colsWithFootnotes.push(footnote.colIndex);
     }
   });
   return colsWithFootnotes;
@@ -218,6 +218,6 @@ module.exports = {
   getDataForMinibars: getDataForMinibars,
   getNumericColumns: getNumericColumns,
   prepareSelectedColumn: prepareSelectedColumn,
-  prepareFootnoteMetaData: prepareFootnoteMetaData,
+  prepareFootnotes: prepareFootnotes,
   getIndexOfColsWithFootnotes: getIndexOfColsWithFootnotes
 };
