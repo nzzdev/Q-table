@@ -5,13 +5,13 @@
   class="q-table__cell 
   {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
   {%- if item.options.cardLayout -%}
-    {%- if metaData.length >= 10 -%}
-      q-table-col-footnotes-cardlayout-double
+    {%- if footnotes.length >= 10 -%}
+    q-table-col-footnotes-cardlayout-double
     {%- else -%}
       q-table-col-footnotes-cardlayout-single
     {%- endif -%}  
   {%- else -%}
-    {%- if metaData.length >= 10 -%}
+    {%- if footnotes.length >= 10 -%}
       {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
         q-table-col-footnotes-double
       {% elif loop.last %}
@@ -60,13 +60,13 @@
       class="q-table__cell q-table__cell--{{ cell.type }}
       {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
       {%- if item.options.cardLayout -%}
-        {%- if metaData.length >= 10 -%}
+        {%- if footnotes.length >= 10 -%}
           q-table-col-footnotes-cardlayout-double
         {%- else -%}
           q-table-col-footnotes-cardlayout-single
         {%- endif -%}  
       {%- else -%}
-        {%- if metaData.length >= 10 -%}
+        {%- if footnotes.length >= 10 -%}
           {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
             q-table-col-footnotes-double
           {% elif loop.last %}
@@ -130,13 +130,13 @@
     class="q-table__cell q-table__cell--{{ cell.type }}
     {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
     {%- if item.options.cardLayout -%}
-      {%- if metaData.length >= 10 -%}
+      {%- if footnotes.length >= 10 -%}
         q-table-col-footnotes-cardlayout-double
       {%- else -%}
         q-table-col-footnotes-cardlayout-single
       {%- endif -%}  
     {%- else -%}
-      {%- if metaData.length >= 10 -%}
+      {%- if footnotes.length >= 10 -%}
         {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and cell.type === "numeric" -%}
           q-table-col-footnotes-double
         {% elif loop.last %}
