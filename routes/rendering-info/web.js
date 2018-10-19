@@ -106,15 +106,15 @@ module.exports = {
       item.data.metaData,
       item.options.hideTableHeader
     );
-    const footnoteColIndexes = dataHelpers.getIndexOfColsWithFootnotes(
-      footnotes
-    );
 
     const context = {
       item: item,
-      tableData: dataHelpers.getTableData(item.data.table, footnotes),
+      tableData: dataHelpers.getTableData(
+        item.data.table,
+        footnotes,
+        item.options
+      ),
       footnotes: footnotes,
-      footnoteColIndexes: footnoteColIndexes,
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(

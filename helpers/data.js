@@ -120,7 +120,7 @@ function getNumericColumns(data) {
   return numericColumns;
 }
 
-function getTableData(data, footnotes) {
+function getTableData(data, footnotes, options) {
   let tableData = data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       let type = "text";
@@ -143,10 +143,10 @@ function getTableData(data, footnotes) {
       };
     });
   });
-  return appendFootnotesToData(tableData, footnotes);
+  return appendFootnotesToData(tableData, footnotes, options);
 }
 
-function appendFootnotesToData(tableData, footnotes) {
+function appendFootnotesToData(tableData, footnotes, options) {
   const unicodes = {
     1: "\u00b9",
     2: "\u00b2",
@@ -158,14 +158,59 @@ function appendFootnotesToData(tableData, footnotes) {
     8: "\u2078",
     9: "\u2079"
   };
+  let footnoteSpacings = [];
+
   footnotes.forEach((footnote, index) => {
+    let footnoteSpacing = getFootnoteSpacing(
+      options,
+      footnote,
+      footnotes.length,
+      tableData[footnote.rowIndex][footnote.colIndex].type,
+      tableData[footnote.rowIndex].length - 1
+    );
+    footnoteSpacings.push({
+      colIndex: footnote.colIndex,
+      class: footnoteSpacing
+    });
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: index + 1,
       unicode: unicodes[index + 1]
     };
   });
+
+  tableData.forEach(row => {
+    footnoteSpacings.forEach(footnoteSpacing => {
+      row[footnoteSpacing.colIndex].spacingClass = footnoteSpacing.class;
+    });
+  });
+
   return tableData;
+}
+
+function getFootnoteSpacing(
+  options,
+  footnote,
+  amountOfFootnotes,
+  type,
+  lastColIndex
+) {
+  // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column
+  if (
+    (type === "numeric" &&
+      (options.minibar.selectedColumn === footnote.colIndex ||
+        options.minibar.selectedColumn === footnote.colIndex + 1)) ||
+    footnote.colIndex === lastColIndex
+  ) {
+    let spacingClass = "q-table-col-footnotes";
+    if (amountOfFootnotes >= 10) {
+      spacingClass += "-double";
+    } else {
+      spacingClass += "-single";
+    }
+    return spacingClass;
+  }
+  return null;
 }
 
 function prepareFootnotes(metaData, hideTableHeader) {
@@ -185,7 +230,7 @@ function prepareFootnotes(metaData, hideTableHeader) {
     });
 }
 
-function getIndexOfColsWithFootnotes(footnotes) {
+function getFootnoteColIndexes(footnotes) {
   let colsWithFootnotes = [];
   footnotes.forEach(footnote => {
     if (!colsWithFootnotes.includes(footnote.colIndex)) {
@@ -219,5 +264,5 @@ module.exports = {
   getNumericColumns: getNumericColumns,
   prepareSelectedColumn: prepareSelectedColumn,
   prepareFootnotes: prepareFootnotes,
-  getIndexOfColsWithFootnotes: getIndexOfColsWithFootnotes
+  getFootnoteColIndexes: getFootnoteColIndexes
 };
