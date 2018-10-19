@@ -175,7 +175,8 @@ function appendFootnotesToData(tableData, footnotes, options) {
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: index + 1,
-      unicode: unicodes[index + 1]
+      unicode: unicodes[index + 1],
+      spacingClass: footnoteSpacing
     };
   });
 
