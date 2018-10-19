@@ -239,26 +239,30 @@ tr.q-table-state-visible {
   width: 5px;
 }
 
-.q-table-col-footnotes-single {
-  padding-right: 10px!important;
-}
+.q-table-col-footnotes {
+  &-single {
+    padding-right: 8px!important;
+  }
 
-.q-table-col-footnotes-double {
-  padding-right: 20px!important;
-}
+  &-double {
+    padding-right: 16px!important;
+  }
 
-.q-table-col-footnotes-single-last {
-  padding-right: 8px!important;
-}
+  &-single:last-child {
+    padding-right: 8px!important;
+  }
+  
+  &-double:last-child {
+    padding-right: 10px!important;
+  }
+  
+  &-cardlayout {
+    &-single {
+      margin-right: 7px!important;
+    }
 
-.q-table-col-footnotes-double-last {
-  padding-right: 16px!important;
-}
-
-.q-table-col-footnotes-cardlayout-single {
-  margin-right: 7px!important;
-}
-
-.q-table-col-footnotes-cardlayout-double {
-  margin-right: 14px!important;
+    &-double {
+      margin-right: 14px!important;
+    }
+  }
 }
