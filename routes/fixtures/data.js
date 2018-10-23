@@ -22,7 +22,10 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/display-footnotes-before-minibar.json`),
   require(`${fixtureDataDirectory}/display-alot-of-footnotes.json`),
   require(`${fixtureDataDirectory}/hide-footnotes-in-header.json`),
-  require(`${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`)
+  require(`${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`),
+  require(`${fixtureDataDirectory}/footnotes-positive-minibars.json`),
+  require(`${fixtureDataDirectory}/footnotes-negative-minibars.json`),
+  require(`${fixtureDataDirectory}/footnotes-mixed-minibars.json`)
 ];
 
 module.exports = {
