@@ -247,22 +247,12 @@ tr.q-table-state-visible {
   &-double {
     padding-right: 16px!important;
   }
+}
 
-  &-single:last-child {
-    padding-right: 8px!important;
-  }
-  
-  &-double:last-child {
-    padding-right: 10px!important;
-  }
-  
-  &-cardlayout {
-    &-single {
-      margin-right: 7px!important;
-    }
+.q-table--card-layout .q-table-col-footnotes-cardlayout-single {
+  margin-right: 7px!important;
+}
 
-    &-double {
-      margin-right: 14px!important;
-    }
-  }
+.q-table--card-layout .q-table-col-footnotes-cardlayout-double {
+  margin-right: 14px!important;
 }
