@@ -158,7 +158,7 @@ function appendFootnotesToData(tableData, footnotes, options) {
     8: "\u2078",
     9: "\u2079"
   };
-  let footnoteSpacings = [];
+  let spacings = [];
 
   footnotes.forEach((footnote, index) => {
     let footnoteSpacing = getFootnoteSpacing(
@@ -168,10 +168,12 @@ function appendFootnotesToData(tableData, footnotes, options) {
       tableData[footnote.rowIndex][footnote.colIndex].type,
       tableData[footnote.rowIndex].length - 1
     );
-    footnoteSpacings.push({
-      colIndex: footnote.colIndex,
-      class: footnoteSpacing
-    });
+    if (footnoteSpacing) {
+      spacings.push({
+        colIndex: footnote.colIndex,
+        class: footnoteSpacing
+      });
+    }
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: index + 1,
@@ -180,12 +182,26 @@ function appendFootnotesToData(tableData, footnotes, options) {
     };
   });
 
-  tableData.forEach(row => {
-    footnoteSpacings.forEach(footnoteSpacing => {
-      row[footnoteSpacing.colIndex].spacingClass = footnoteSpacing.class;
-    });
+  // assign spacingClass to cell
+  tableData.forEach((row, index) => {
+    if (options.cardLayout || options.cardLayoutIfSmall) {
+      if (!options.hideTableHeader && index !== 0) {
+        row.forEach(cell => {
+          cell.spacingClass =
+            footnotes.length >= 10
+              ? "q-table-col-footnotes-cardlayout-double"
+              : "q-table-col-footnotes-cardlayout-single";
+        });
+      }
+    }
+    if (!options.cardLayout || options.cardLayoutIfSmall) {
+      spacings.forEach(spacing => {
+        row[spacing.colIndex].spacingClass = row[spacing.colIndex].spacingClass
+          ? `${row[spacing.colIndex].spacingClass} ${spacing.class}`
+          : spacing.class;
+      });
+    }
   });
-
   return tableData;
 }
 
