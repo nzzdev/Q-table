@@ -278,6 +278,57 @@ lab.experiment("footnotes", () => {
     expect(annotations).to.be.equal(20);
   });
 
+  it("displays the margin correctly when table has positive minibars", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/footnotes-positive-minibars.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-single"
+    ).length;
+    expect(annotations).to.be.equals(16);
+  });
+
+  it("displays the margin correctly when table has negative minibars", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/footnotes-negative-minibars.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-single"
+    ).length;
+    expect(annotations).to.be.equals(16);
+  });
+
+  it("displays the margin correctly when table has mixed minibars", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/footnotes-mixed-minibars.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const annotations = dom.window.document.querySelectorAll(
+      ".q-table-col-footnotes-single"
+    ).length;
+    expect(annotations).to.be.equals(18);
+  });
+
   it("behaves correctly with other metaData in cells", async () => {
     let item = require("../resources/fixtures/data/display-footnotes.json");
     item.data.metaData.cells = [
