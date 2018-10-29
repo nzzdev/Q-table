@@ -8,7 +8,7 @@
     <thead class="s-font-note s-font-note--strong">
       {%- for head in tableData[0] %}
       <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} {{head.spacingClass}}"
-      {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
+      {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
       colspan="2" id="q-table-minibar-header"
       {% elif minibar.type === "mixed" and item.options.minibar.selectedColumn+1 === loop.index %}
       id="q-table-minibar-header"
