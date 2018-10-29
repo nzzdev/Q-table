@@ -102,19 +102,19 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
-    const metaData = dataHelpers.prepareFootnoteMetaData(
+    const footnotes = dataHelpers.prepareFootnotes(
       item.data.metaData,
       item.options.hideTableHeader
-    );
-    const footnoteColIndexes = dataHelpers.getIndexOfColsWithFootnotes(
-      metaData
     );
 
     const context = {
       item: item,
-      tableData: dataHelpers.getTableData(item.data.table, metaData),
-      metaData: metaData,
-      footnoteColIndexes: footnoteColIndexes,
+      tableData: dataHelpers.getTableData(
+        item.data.table,
+        footnotes,
+        item.options
+      ),
+      footnotes: footnotes,
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(
