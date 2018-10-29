@@ -241,7 +241,7 @@ lab.experiment("footnotes", () => {
     const annotations = dom.window.document.querySelectorAll(
       ".q-table-col-footnotes-single"
     ).length;
-    expect(annotations).to.be.equal(6);
+    expect(annotations).to.be.equal(12);
   });
 
   it("displays a even bigger padding in column with footnotes with there are more than 9", async () => {
@@ -258,11 +258,7 @@ lab.experiment("footnotes", () => {
     const annotations = dom.window.document.querySelectorAll(
       ".q-table-col-footnotes-double"
     ).length;
-    const annotationsLast = dom.window.document.querySelectorAll(
-      ".q-table-col-footnotes-double-last"
-    ).length;
-    expect(annotations).to.be.equal(6);
-    expect(annotationsLast).to.be.equal(6);
+    expect(annotations).to.be.equal(12);
   });
 
   it("displays a bigger margin in column when table has footnotes and cardlayout ", async () => {
