@@ -22,6 +22,7 @@ const styleHashMap = require(`${stylesDir}/hashMap.json`);
 const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
   .getExactPixelWidth;
 const dataHelpers = require(`${helpersDir}data.js`);
+const footnoteHelpers = require(`${helpersDir}footnotes.js`);
 
 const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
@@ -102,7 +103,7 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
-    const footnotes = dataHelpers.prepareFootnotes(
+    const footnotes = footnoteHelpers.getFilteredMetaDataFootnotes(
       item.data.metaData,
       item.options.hideTableHeader
     );
