@@ -10,74 +10,8 @@ const formatLocale = d3.format.formatLocale({
   grouping: [3]
 });
 
-const miniBarTypes = {
-  positive: "positive",
-  negative: "negative",
-  mixed: "mixed",
-  empty: "empty"
-};
-
 const formatGrouping = formatLocale.format(",");
 const formatNoGrouping = formatLocale.format("");
-
-function prepareSelectedColumn(data, selectedColumnIndex) {
-  let preparedData = {
-    items: [],
-    numbers: []
-  };
-  let typeAmount = {
-    positives: 0,
-    negatives: 0
-  };
-
-  let dataCopy = clone(data);
-  dataCopy[0] = dataCopy[0].map(cell => (cell = "")); // first row is always header so ignore it
-
-  dataCopy.map(row => {
-    let value = row[selectedColumnIndex];
-    let type = miniBarTypes.positive;
-
-    if (value < 0) {
-      type = miniBarTypes.negative;
-      typeAmount.negatives++;
-    } else if (value > 0) {
-      type = miniBarTypes.positive;
-      typeAmount.positives++;
-    } else {
-      type = miniBarTypes.empty;
-    }
-
-    if (isNumeric(value) || parseFloat(value)) {
-      preparedData.numbers.push(parseFloat(value));
-      preparedData.items.push({ value: parseFloat(value), type });
-    } else {
-      preparedData.items.push({ value: null, type });
-    }
-  });
-
-  preparedData.type = getMinibarType(typeAmount);
-  return preparedData;
-}
-
-function getMinibarValue(type, value, min, max) {
-  if (type === miniBarTypes.positive) {
-    return Math.abs((value * 100) / max);
-  } else if (type === miniBarTypes.negative) {
-    return Math.abs((value * 100) / min);
-  } else {
-    return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2; // divided by 2 because max. value is 50%
-  }
-}
-
-function getMinibarType(types) {
-  if (types.positives > 0 && types.negatives === 0) {
-    return miniBarTypes.positive;
-  } else if (types.negatives > 0 && types.positives === 0) {
-    return miniBarTypes.negative;
-  } else {
-    return miniBarTypes.mixed;
-  }
-}
 
 function isNumeric(cell) {
   if (!cell) {
@@ -147,27 +81,8 @@ function getTableData(data, footnotes, options) {
   return appendFootnotesToData(tableData, footnotes, options);
 }
 
-function getDataForMinibars(data, selectedColumnIndex) {
-  let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
-  let minValue = Math.min(...dataColumn.numbers);
-  let maxValue = Math.max(...dataColumn.numbers);
-
-  let values = dataColumn.items.map(item => {
-    return {
-      type: item.type,
-      value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
-    };
-  });
-
-  return {
-    values: values,
-    type: dataColumn.type
-  };
-}
-
 module.exports = {
   getTableData: getTableData,
-  getDataForMinibars: getDataForMinibars,
   getNumericColumns: getNumericColumns,
-  prepareSelectedColumn: prepareSelectedColumn
+  isNumeric: isNumeric
 };

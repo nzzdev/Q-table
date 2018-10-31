@@ -1,7 +1,7 @@
 const Boom = require("boom");
 const Joi = require("joi");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
-const prepareSelectedColumn = require("../helpers/data.js")
+const prepareSelectedColumn = require("../helpers/minibars.js")
   .prepareSelectedColumn;
 
 module.exports = {
