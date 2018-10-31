@@ -23,6 +23,7 @@ const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
   .getExactPixelWidth;
 const dataHelpers = require(`${helpersDir}data.js`);
 const footnoteHelpers = require(`${helpersDir}footnotes.js`);
+const minibarHelpers = require(`${helpersDir}minibars.js`);
 
 const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
@@ -158,7 +159,7 @@ module.exports = {
         item.options.minibar.selectedColumn !== null &&
         item.options.minibar.selectedColumn !== undefined
       ) {
-        context.minibar = dataHelpers.getDataForMinibars(
+        context.minibar = minibarHelpers.getDataForMinibars(
           itemDataCopy,
           item.options.minibar.selectedColumn
         );
