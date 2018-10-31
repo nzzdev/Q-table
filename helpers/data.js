@@ -2,7 +2,8 @@ const clone = require("clone");
 const d3 = {
   format: require("d3-format")
 };
-const appendFootnotesToData = require("./footnotes.js").appendFootnotesToData;
+const appendFootnoteAnnotationsToTableData = require("./footnotes.js")
+  .appendFootnoteAnnotationsToTableData;
 
 const formatLocale = d3.format.formatLocale({
   decimal: ",",
@@ -78,7 +79,7 @@ function getTableData(data, footnotes, options) {
       };
     });
   });
-  return appendFootnotesToData(tableData, footnotes, options);
+  return appendFootnoteAnnotationsToTableData(tableData, footnotes, options);
 }
 
 module.exports = {

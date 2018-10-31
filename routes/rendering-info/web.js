@@ -159,7 +159,7 @@ module.exports = {
         item.options.minibar.selectedColumn !== null &&
         item.options.minibar.selectedColumn !== undefined
       ) {
-        context.minibar = minibarHelpers.getDataForMinibars(
+        context.minibar = minibarHelpers.getMinibarData(
           itemDataCopy,
           item.options.minibar.selectedColumn
         );

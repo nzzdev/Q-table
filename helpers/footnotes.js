@@ -1,4 +1,4 @@
-function appendFootnotesToData(tableData, footnotes, options) {
+function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   const unicodes = {
     1: "\u00b9",
     2: "\u00b2",
@@ -100,6 +100,6 @@ function getFilteredMetaDataFootnotes(metaData, hideTableHeader) {
 }
 
 module.exports = {
-  appendFootnotesToData: appendFootnotesToData,
+  appendFootnoteAnnotationsToTableData: appendFootnoteAnnotationsToTableData,
   getFilteredMetaDataFootnotes: getFilteredMetaDataFootnotes
 };
