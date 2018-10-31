@@ -8,8 +8,8 @@ const miniBarTypes = {
   empty: "empty"
 };
 
-function prepareSelectedColumn(data, selectedColumnIndex) {
-  let preparedData = {
+function getMinibarNumbersWithType(data, selectedColumnIndex) {
+  let minibarsWithType = {
     items: [],
     numbers: []
   };
@@ -36,15 +36,15 @@ function prepareSelectedColumn(data, selectedColumnIndex) {
     }
 
     if (isNumeric(value) || parseFloat(value)) {
-      preparedData.numbers.push(parseFloat(value));
-      preparedData.items.push({ value: parseFloat(value), type });
+      minibarsWithType.numbers.push(parseFloat(value));
+      minibarsWithType.items.push({ value: parseFloat(value), type });
     } else {
-      preparedData.items.push({ value: null, type });
+      minibarsWithType.items.push({ value: null, type });
     }
   });
 
-  preparedData.type = getMinibarType(typeAmount);
-  return preparedData;
+  minibarsWithType.type = getMinibarType(typeAmount);
+  return minibarsWithType;
 }
 
 function getMinibarValue(type, value, min, max) {
@@ -67,8 +67,8 @@ function getMinibarType(types) {
   }
 }
 
-function getDataForMinibars(data, selectedColumnIndex) {
-  let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
+function getMinibarData(data, selectedColumnIndex) {
+  let dataColumn = getMinibarNumbersWithType(data, selectedColumnIndex);
   let minValue = Math.min(...dataColumn.numbers);
   let maxValue = Math.max(...dataColumn.numbers);
 
@@ -86,6 +86,6 @@ function getDataForMinibars(data, selectedColumnIndex) {
 }
 
 module.exports = {
-  prepareSelectedColumn: prepareSelectedColumn,
-  getDataForMinibars: getDataForMinibars
+  getMinibarNumbersWithType: getMinibarNumbersWithType,
+  getMinibarData: getMinibarData
 };

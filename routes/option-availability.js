@@ -1,8 +1,8 @@
 const Boom = require("boom");
 const Joi = require("joi");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
-const prepareSelectedColumn = require("../helpers/minibars.js")
-  .prepareSelectedColumn;
+const getMinibarNumbersWithType = require("../helpers/minibars.js")
+  .getMinibarNumbersWithType;
 
 module.exports = {
   method: "POST",
@@ -66,7 +66,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== null &&
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
-          let type = prepareSelectedColumn(
+          let type = getMinibarNumbersWithType(
             request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
@@ -89,7 +89,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== null &&
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
-          let type = prepareSelectedColumn(
+          let type = getMinibarNumbersWithType(
             request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
@@ -112,7 +112,7 @@ module.exports = {
           request.payload.options.minibar.selectedColumn !== null &&
           request.payload.options.minibar.selectedColumn !== undefined
         ) {
-          let type = prepareSelectedColumn(
+          let type = getMinibarNumbersWithType(
             request.payload.data.table,
             request.payload.options.minibar.selectedColumn
           ).type;
