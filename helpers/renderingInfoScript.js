@@ -157,10 +157,7 @@ function getShowMoreButtonScript(context) {
 function getMinibarsScript(context) {
   const dataObject = `window.${context.id}Data`;
   const getColumnFunctionName = `getColumn${context.id}`;
-  const removeMixedMinibarFunctionName = `removeMixedMinibar${context.id}`;
-  const addMixedMinibarFunctionName = `addMixedMinibar${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
-  const handleMinibarsFunctionName = `handleMinibars${context.id}`;
   const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${
     context.id
   }`;
@@ -176,63 +173,6 @@ function getMinibarsScript(context) {
           }
       }
       return columns;
-    }
-
-    function ${removeMixedMinibarFunctionName}(cell){
-      cell.classList.remove('q-table-minibar--mixed');
-      var divs = Array.from(cell.getElementsByTagName('div'));
-      divs.forEach(function(div){
-        if (div.dataset.minibarType==="value"){
-          if (div.dataset.minibar==="positive"){
-            div.classList.remove('q-table-minibar-alignment--positive');
-          }
-          if (div.dataset.minibar==="negative"){
-            div.classList.remove('q-table-minibar-alignment--negative');
-          }
-          if (div.dataset.minibar==="empty"){
-            div.classList.remove('q-table-minibar-alignment--empty');
-          }
-        } else {
-          div.classList.add('q-table-minibar-hidden');
-        }
-      });
-    }
-
-    function ${addMixedMinibarFunctionName}(cell) {
-      cell.classList.add('q-table-minibar-mixed');
-      cell.classList.add('q-table-minibar--' + cell.dataset.minibar)
-      var divs = Array.from(cell.getElementsByTagName('div'));
-      divs.forEach(function(div){
-        if (div.dataset.minibarType==="value"){
-          if (div.dataset.minibar==="positive"){
-            div.classList.add('q-table-minibar-alignment--positive');
-          }
-          if (div.dataset.minibar==="negative"){
-            div.classList.add('q-table-minibar-alignment--negative');
-          }
-          if (div.dataset.minibar==="empty"){
-            div.classList.add('q-table-minibar-alignment--empty');
-          }
-        } else {
-          div.classList.remove('q-table-minibar-hidden');
-        }
-      });
-    }
-
-    function ${handleMinibarsFunctionName}(selectedColumn, tableMinibarType) {
-      if (${dataObject}.isCardLayout) { 
-        if (tableMinibarType==="mixed") {
-          selectedColumn.forEach(function(cell){
-            ${removeMixedMinibarFunctionName}(cell);
-          });
-        }
-      } else {
-        if (tableMinibarType==="mixed") {
-          selectedColumn.forEach(function(cell){
-            ${addMixedMinibarFunctionName}(cell);
-          });
-        }
-      }
     }
 
     function ${handleMinibarsMinWidthFunctionName}(selectedColumn, tableMinibarType) {
@@ -278,7 +218,6 @@ function getMinibarsScript(context) {
     function ${renderMinibarsFunctionName}() {
       var selectedColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
         ${context.item.options.minibar.selectedColumn});
-      ${handleMinibarsFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
       ${handleMinibarsMinWidthFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
     }
 
