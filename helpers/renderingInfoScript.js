@@ -159,8 +159,6 @@ function getMinibarsScript(context) {
   const getColumnFunctionName = `getColumn${context.id}`;
   const removeMixedMinibarFunctionName = `removeMixedMinibar${context.id}`;
   const addMixedMinibarFunctionName = `addMixedMinibar${context.id}`;
-  const removeMinibarFunctionName = `removeMinibars${context.id}`;
-  const addMinibarFunctionName = `addMinibars${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
   const handleMinibarsFunctionName = `handleMinibars${context.id}`;
   const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${
@@ -221,24 +219,6 @@ function getMinibarsScript(context) {
       });
     }
 
-    function ${removeMinibarFunctionName}(minibarColumn, valueColumn) {
-      minibarColumn.forEach(function(cell){
-        cell.classList.add('q-table-minibar-hidden');
-      });
-      valueColumn.forEach(function(cell){
-        cell.classList.remove('q-table-minibar-cell--value');
-      });
-    }
-
-    function ${addMinibarFunctionName}(minibarColumn, valueColumn) {
-      minibarColumn.forEach(function(cell){
-        cell.classList.remove('q-table-minibar-hidden');
-      });
-      valueColumn.forEach(function(cell){
-        cell.classList.add('q-table-minibar-cell--value');
-      });
-    }
-
     function ${handleMinibarsFunctionName}(selectedColumn, tableMinibarType) {
       if (${dataObject}.isCardLayout) { 
         if (tableMinibarType==="mixed") {
@@ -246,31 +226,11 @@ function getMinibarsScript(context) {
             ${removeMixedMinibarFunctionName}(cell);
           });
         }
-        if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibar.selectedColumn + 1});
-          ${removeMinibarFunctionName}(minibarColumn, selectedColumn);
-        }
-        if (tableMinibarType==="negative") {
-          var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibar.selectedColumn + 1});
-          ${removeMinibarFunctionName}(selectedColumn, valueColumn);
-        }
       } else {
         if (tableMinibarType==="mixed") {
           selectedColumn.forEach(function(cell){
             ${addMixedMinibarFunctionName}(cell);
           });
-        }
-        if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibar.selectedColumn + 1});
-          ${addMinibarFunctionName}(minibarColumn, selectedColumn);
-        }
-        if (tableMinibarType==="negative") {
-          var valueColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibar.selectedColumn + 1});
-          ${addMinibarFunctionName}(selectedColumn, valueColumn);
         }
       }
     }

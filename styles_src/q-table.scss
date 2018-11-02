@@ -220,10 +220,9 @@ tr.q-table-state-visible {
   width: 100%;
 }
 
-.q-table-minibar-hidden {
-  display: none !important;
+.q-table--card-layout .q-table-minibar-cell--value {
+  display: none!important;
 }
-
 .q-table-annotation {
   position: absolute;
   color: #6e6e7e;
