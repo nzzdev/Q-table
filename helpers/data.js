@@ -79,7 +79,16 @@ function getTableData(data, footnotes, options) {
       };
     });
   });
-  return appendFootnoteAnnotationsToTableData(tableData, footnotes, options);
+
+  if (footnotes.length > 0) {
+    tableData = appendFootnoteAnnotationsToTableData(
+      tableData,
+      footnotes,
+      options
+    );
+  }
+
+  return tableData;
 }
 
 module.exports = {
