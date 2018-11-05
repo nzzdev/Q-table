@@ -3,7 +3,7 @@
 {% if item.options.hideTableHeader !== true %}
   data-label="{{ tableData[0][loop.index0].value }}{% if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 %}{{tableData[0][loop.index0].footnote.unicode}}{% endif %}"
 {% endif %} 
-  class="q-table__cell q-table__cell--{{ cell.type }} {{cell.spacingClass}}
+  class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}}
 {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
   q-table-minibar-cell--value" data-minibar-type="value" data-minibar="{{minibar.type}}" style="padding-left: 12px;
 {% endif %}">

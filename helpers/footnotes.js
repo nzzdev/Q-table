@@ -30,7 +30,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: index + 1,
       unicode: unicodes[index + 1],
-      spacingClass: footnoteSpacing
+      spacing: footnoteSpacing
     };
   });
 
@@ -39,7 +39,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     // assign class when not cardlayout but cardlayoutifsmall
     if (!options.cardLayout || options.cardLayoutIfSmall) {
       spacings.forEach(spacing => {
-        row[spacing.colIndex].spacingClass = spacing.class;
+        row[spacing.colIndex].classes.push(spacing.class);
       });
     }
 
@@ -47,19 +47,9 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     if (options.cardLayout || options.cardLayoutIfSmall) {
       if (!options.hideTableHeader && index !== 0) {
         row.forEach(cell => {
-          if (cell.spacingClass === undefined) {
-            // assign class when there's no other class assigned
-            cell.spacingClass =
-              footnotes.length >= 10
-                ? "q-table-col-footnotes-cardlayout-double"
-                : "q-table-col-footnotes-cardlayout-single";
-          } else {
-            // append class when there's an other class set
-            cell.spacingClass +=
-              footnotes.length >= 10
-                ? " q-table-col-footnotes-cardlayout-double"
-                : " q-table-col-footnotes-cardlayout-single";
-          }
+          footnotes.length >= 10
+            ? cell.classes.push("q-table-col-footnotes-cardlayout-double")
+            : cell.classes.push("q-table-col-footnotes-cardlayout-single");
         });
       }
     }
