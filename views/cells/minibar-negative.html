@@ -16,7 +16,7 @@
     {{tableData[0][loop.index0].footnote.unicode}}
   {% endif %}"
 {% endif %} 
-  class="q-table__cell q-table__cell--{{ cell.type }} {{cell.spacingClass}}
+  class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}}
 {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
   q-table-minibar-cell--value" data-minibar="{{minibar.type}}" data-minibar-type="value" style="padding-right: 12px;
 {% endif %}">
