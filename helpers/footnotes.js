@@ -13,24 +13,24 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   let spacings = [];
 
   footnotes.forEach((footnote, index) => {
-    let footnoteSpacing = getFootnoteSpacing(
+    let footnoteClass = getClass(
       options,
       footnote,
       footnotes.length,
       tableData[footnote.rowIndex][footnote.colIndex].type,
       tableData[footnote.rowIndex].length - 1
     );
-    if (footnoteSpacing) {
+    if (footnoteClass) {
       spacings.push({
         colIndex: footnote.colIndex,
-        class: footnoteSpacing
+        class: footnoteClass
       });
     }
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: index + 1,
       unicode: unicodes[index + 1],
-      spacing: footnoteSpacing
+      class: footnoteClass
     };
   });
 
@@ -57,13 +57,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   return tableData;
 }
 
-function getFootnoteSpacing(
-  options,
-  footnote,
-  amountOfFootnotes,
-  type,
-  lastColIndex
-) {
+function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
   // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column
   if (
     (type === "numeric" &&

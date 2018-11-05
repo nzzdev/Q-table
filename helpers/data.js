@@ -76,7 +76,7 @@ function getTableData(data, footnotes, options) {
       return {
         type: type,
         value: value,
-        classes: new Array()
+        classes: []
       };
     });
   });

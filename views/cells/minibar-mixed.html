@@ -4,7 +4,7 @@
   class="q-table__cell {{cell.classes.join(" ")}} q-table-minibar--{{minibar.values[row_loop.index].type}}
   {% if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
   q-table-minibar--{{minibar.values[row_loop.index].type}}">
-  <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.spacing}}{%- endif -%} ">
+  <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.class}}{%- endif -%} ">
     {{ cell.value }}
     {%- if cell.footnote %}<span class="q-table-annotation">{{ cell.footnote.value }}</span>{%- endif %}
   </div>
