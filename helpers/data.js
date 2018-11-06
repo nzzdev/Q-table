@@ -75,11 +75,21 @@ function getTableData(data, footnotes, options) {
 
       return {
         type: type,
-        value: value
+        value: value,
+        classes: []
       };
     });
   });
-  return appendFootnoteAnnotationsToTableData(tableData, footnotes, options);
+
+  if (footnotes.length > 0) {
+    tableData = appendFootnoteAnnotationsToTableData(
+      tableData,
+      footnotes,
+      options
+    );
+  }
+
+  return tableData;
 }
 
 module.exports = {

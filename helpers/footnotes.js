@@ -13,57 +13,51 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   let spacings = [];
 
   footnotes.forEach((footnote, index) => {
-    let footnoteSpacing = getFootnoteSpacing(
+    let footnoteClass = getClass(
       options,
       footnote,
       footnotes.length,
       tableData[footnote.rowIndex][footnote.colIndex].type,
       tableData[footnote.rowIndex].length - 1
     );
-    if (footnoteSpacing) {
+    if (footnoteClass) {
       spacings.push({
         colIndex: footnote.colIndex,
-        class: footnoteSpacing
+        class: footnoteClass
       });
     }
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: index + 1,
       unicode: unicodes[index + 1],
-      spacingClass: footnoteSpacing
+      class: footnoteClass
     };
   });
 
   // assign spacingClass to cell
   tableData.forEach((row, index) => {
+    // assign class when not cardlayout but cardlayoutifsmall
+    if (!options.cardLayout || options.cardLayoutIfSmall) {
+      spacings.forEach(spacing => {
+        row[spacing.colIndex].classes.push(spacing.class);
+      });
+    }
+
+    // assign class when cardlayout or cardlayoutifsmall is active
     if (options.cardLayout || options.cardLayoutIfSmall) {
       if (!options.hideTableHeader && index !== 0) {
         row.forEach(cell => {
-          cell.spacingClass =
-            footnotes.length >= 10
-              ? "q-table-col-footnotes-cardlayout-double"
-              : "q-table-col-footnotes-cardlayout-single";
+          footnotes.length >= 10
+            ? cell.classes.push("q-table-col-footnotes-cardlayout-double")
+            : cell.classes.push("q-table-col-footnotes-cardlayout-single");
         });
       }
-    }
-    if (!options.cardLayout || options.cardLayoutIfSmall) {
-      spacings.forEach(spacing => {
-        row[spacing.colIndex].spacingClass = row[spacing.colIndex].spacingClass
-          ? `${row[spacing.colIndex].spacingClass} ${spacing.class}`
-          : spacing.class;
-      });
     }
   });
   return tableData;
 }
 
-function getFootnoteSpacing(
-  options,
-  footnote,
-  amountOfFootnotes,
-  type,
-  lastColIndex
-) {
+function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
   // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column
   if (
     (type === "numeric" &&
