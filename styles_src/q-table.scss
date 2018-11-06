@@ -248,6 +248,45 @@ tr.q-table-state-visible {
   }
 }
 
+.q-table--card-layout .q-table-minibar-cell {
+  display:none!important;
+}
+
+.q-table--card-layout .q-table-minibar-cell--value {
+  background-color: white;
+  display: block!important;
+}
+
+.q-table--card-layout .q-table-minibar-bar--positive {
+  display: none!important
+}
+
+.q-table--card-layout .q-table-minibar-bar--negative {
+  display: none!important
+} 
+
+.q-table--card-layout .q-table-minibar--mixed {
+  background-color: white;
+  width: 100%!important;
+}
+
+.q-table--card-layout .q-table-minibar-alignment--positive {
+  float: none;
+  width: 100%!important;
+  padding-right: 0px;
+}
+
+.q-table--card-layout .q-table-minibar-alignment--empty {
+  text-align: right!important;
+  padding-right: 0px;
+}
+
+.q-table--card-layout .q-table-minibar-alignment--negative {
+  text-align: right!important;
+  float: none;
+  left: 0;
+}
+
 .q-table--card-layout .q-table-col-footnotes-cardlayout-single {
   margin-right: 7px!important;
 }
