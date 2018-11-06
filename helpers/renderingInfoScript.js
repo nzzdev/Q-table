@@ -175,7 +175,7 @@ function getMinibarsScript(context) {
       return columns;
     }
 
-    function ${handleMinibarsMinWidthFunctionName}(selectedColumn, tableMinibarType) {
+    function ${handleMinibarsMinWidthFunctionName}(selectedColumn, minibarColumn, tableMinibarType) {
       if (${dataObject}.element.getBoundingClientRect().width < 400) {
         if (tableMinibarType==="mixed") {
           selectedColumn.forEach(function(cell){
@@ -183,8 +183,6 @@ function getMinibarsScript(context) {
           });
         }
         if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibar.selectedColumn + 1});
           minibarColumn.forEach(function(cell){
             cell.classList.add('q-table-minibar-cell-mobile');
           });
@@ -201,8 +199,6 @@ function getMinibarsScript(context) {
           });
         }
         if (tableMinibarType==="positive") {
-          var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
-            ${context.item.options.minibar.selectedColumn + 1});
           minibarColumn.forEach(function(cell){
             cell.classList.remove('q-table-minibar-cell-mobile');
           });
@@ -218,7 +214,9 @@ function getMinibarsScript(context) {
     function ${renderMinibarsFunctionName}() {
       var selectedColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
         ${context.item.options.minibar.selectedColumn});
-      ${handleMinibarsMinWidthFunctionName}(selectedColumn, selectedColumn[0].dataset.minibar);
+      var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+        ${context.item.options.minibar.selectedColumn + 1});
+      ${handleMinibarsMinWidthFunctionName}(selectedColumn, minibarColumn, selectedColumn[0].dataset.minibar);
     }
 
     window.q_domready.then(function() {
