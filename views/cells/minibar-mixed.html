@@ -1,24 +1,10 @@
   <td 
   {% if item.options.hideTableHeader !== true %}data-label="{{ tableData[0][loop.index0].value }} {% if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 %}{{tableData[0][loop.index0].footnote.unicode}}{% endif %}" {% endif %} 
   data-minibar="{{minibar.type}}"
-<<<<<<< HEAD
-  class="q-table__cell {{cell.classes.join(" ")}} q-table-minibar--{{minibar.values[row_loop.index].type}}
-||||||| merged common ancestors
-  class="q-table__cell {{cell.spacingClass}} q-table-minibar--{{minibar.values[row_loop.index].type}}
-=======
-  class="q-table__cell {{cell.spacingClass}}
->>>>>>> deleted functions to handle cardlayout
+  class="q-table__cell {{cell.classes.join(" ")}} 
   {% if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
-<<<<<<< HEAD
-  q-table-minibar--{{minibar.values[row_loop.index].type}}">
-  <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.class}}{%- endif -%} ">
-||||||| merged common ancestors
-  q-table-minibar--{{minibar.values[row_loop.index].type}}">
-  <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.spacingClass}}{%- endif -%} ">
-=======
   q-table-minibar--mixed">
-  <div data-minibar="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.spacingClass}}{%- endif -%} ">
->>>>>>> deleted functions to handle cardlayout
+  <div data-minibar="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.class}}{%- endif -%} ">
     {{ cell.value }}
     {%- if cell.footnote %}<span class="q-table-annotation">{{ cell.footnote.value }}</span>{%- endif %}
   </div>
