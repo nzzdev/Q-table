@@ -270,29 +270,39 @@ tr.q-table-state-visible {
   width: 100%!important;
 }
 
-.q-table-col-footnotes-cardlayout-single .q-table-minibar--mixed-mobile {
-  padding-right: 7px!important;
-}
-
-.q-table-col-footnotes-cardlayout-double .q-table-minibar--mixed-mobile {
-  padding-right: 12px!important;
-}
-
 .q-table--card-layout .q-table-minibar-alignment--positive {
   float: none;
   width: 100%!important;
-  padding-right: 0px;
 }
 
 .q-table--card-layout .q-table-minibar-alignment--empty {
   text-align: right!important;
-  padding-right: 0px;
 }
 
 .q-table--card-layout .q-table-minibar-alignment--negative {
   text-align: right!important;
   float: none;
   left: 0;
+}
+
+.q-table--card-layout .q-table-col-footnotes-cardlayout-single .q-table-minibar-alignment--negative {
+  padding-right: 7px;
+}
+.q-table--card-layout .q-table-col-footnotes-cardlayout-single .q-table-minibar-alignment--empty {
+  padding-right: 7px;
+}
+.q-table--card-layout .q-table-col-footnotes-cardlayout-single .q-table-minibar-alignment--positive {
+  padding-right: 7px;
+}
+
+.q-table--card-layout .q-table-col-footnotes-cardlayout-double .q-table-minibar-alignment--negative {
+  padding-right: 14px;
+}
+.q-table--card-layout .q-table-col-footnotes-cardlayout-double .q-table-minibar-alignment--empty {
+  padding-right: 14px;
+}
+.q-table--card-layout .q-table-col-footnotes-cardlayout-double .q-table-minibar-alignment--positive {
+  padding-right: 14px;
 }
 
 .q-table--card-layout .q-table-col-footnotes-cardlayout-single {
