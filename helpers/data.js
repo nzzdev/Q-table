@@ -2,6 +2,8 @@ const clone = require("clone");
 const d3 = {
   format: require("d3-format")
 };
+const appendFootnoteAnnotationsToTableData = require("./footnotes.js")
+  .appendFootnoteAnnotationsToTableData;
 
 const formatLocale = d3.format.formatLocale({
   decimal: ",",
@@ -9,74 +11,8 @@ const formatLocale = d3.format.formatLocale({
   grouping: [3]
 });
 
-const miniBarTypes = {
-  positive: "positive",
-  negative: "negative",
-  mixed: "mixed",
-  empty: "empty"
-};
-
 const formatGrouping = formatLocale.format(",");
 const formatNoGrouping = formatLocale.format("");
-
-function prepareSelectedColumn(data, selectedColumnIndex) {
-  let preparedData = {
-    items: [],
-    numbers: []
-  };
-  let typeAmount = {
-    positives: 0,
-    negatives: 0
-  };
-
-  let dataCopy = clone(data);
-  dataCopy[0] = dataCopy[0].map(cell => (cell = "")); // first row is always header so ignore it
-
-  dataCopy.map(row => {
-    let value = row[selectedColumnIndex];
-    let type = miniBarTypes.positive;
-
-    if (value < 0) {
-      type = miniBarTypes.negative;
-      typeAmount.negatives++;
-    } else if (value > 0) {
-      type = miniBarTypes.positive;
-      typeAmount.positives++;
-    } else {
-      type = miniBarTypes.empty;
-    }
-
-    if (isNumeric(value) || parseFloat(value)) {
-      preparedData.numbers.push(parseFloat(value));
-      preparedData.items.push({ value: parseFloat(value), type });
-    } else {
-      preparedData.items.push({ value: null, type });
-    }
-  });
-
-  preparedData.type = getMinibarType(typeAmount);
-  return preparedData;
-}
-
-function getMinibarValue(type, value, min, max) {
-  if (type === miniBarTypes.positive) {
-    return Math.abs((value * 100) / max);
-  } else if (type === miniBarTypes.negative) {
-    return Math.abs((value * 100) / min);
-  } else {
-    return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2; // divided by 2 because max. value is 50%
-  }
-}
-
-function getMinibarType(types) {
-  if (types.positives > 0 && types.negatives === 0) {
-    return miniBarTypes.positive;
-  } else if (types.negatives > 0 && types.positives === 0) {
-    return miniBarTypes.negative;
-  } else {
-    return miniBarTypes.mixed;
-  }
-}
 
 function isNumeric(cell) {
   if (!cell) {
@@ -120,7 +56,7 @@ function getNumericColumns(data) {
   return numericColumns;
 }
 
-function getTableData(data, metaData) {
+function getTableData(data, footnotes, options) {
   let tableData = data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       let type = "text";
@@ -139,85 +75,25 @@ function getTableData(data, metaData) {
 
       return {
         type: type,
-        value: value
+        value: value,
+        classes: []
       };
     });
   });
-  return appendFootnotesToData(tableData, metaData);
-}
 
-function appendFootnotesToData(tableData, metaData) {
-  const unicodes = {
-    1: "\u00b9",
-    2: "\u00b2",
-    3: "\u00b3",
-    4: "\u2074",
-    5: "\u2075",
-    6: "\u2076",
-    7: "\u2077",
-    8: "\u2078",
-    9: "\u2079"
-  };
-  metaData.forEach((cell, index) => {
-    // create a new property to safe the index of the footnote
-    tableData[cell.rowIndex][cell.colIndex].footnote = {
-      value: index + 1,
-      unicode: unicodes[index + 1]
-    };
-  });
+  if (footnotes.length > 0) {
+    tableData = appendFootnoteAnnotationsToTableData(
+      tableData,
+      footnotes,
+      options
+    );
+  }
+
   return tableData;
-}
-
-function prepareFootnoteMetaData(metaData, hideTableHeader) {
-  return metaData.cells
-    .filter(cell => {
-      if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
-        return false;
-      }
-      return true;
-    }) // remove cells with no footnotes
-    .sort((a, b) => {
-      // sorting metaData to display them chronologically
-      if (a.rowIndex !== b.rowIndex) {
-        return a.rowIndex - b.rowIndex;
-      }
-      return a.colIndex - b.colIndex;
-    });
-}
-
-function getIndexOfColsWithFootnotes(metaData) {
-  let colsWithFootnotes = [];
-  metaData.forEach(cell => {
-    if (!colsWithFootnotes.includes(cell.colIndex)) {
-      colsWithFootnotes.push(cell.colIndex);
-    }
-  });
-  return colsWithFootnotes;
-}
-
-function getDataForMinibars(data, selectedColumnIndex) {
-  let dataColumn = prepareSelectedColumn(data, selectedColumnIndex);
-  let minValue = Math.min(...dataColumn.numbers);
-  let maxValue = Math.max(...dataColumn.numbers);
-
-  let values = dataColumn.items.map(item => {
-    return {
-      type: item.type,
-      value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
-    };
-  });
-
-  return {
-    values: values,
-    type: dataColumn.type
-  };
 }
 
 module.exports = {
   getTableData: getTableData,
-  getDataForMinibars: getDataForMinibars,
   getNumericColumns: getNumericColumns,
-  prepareSelectedColumn: prepareSelectedColumn,
-  prepareFootnoteMetaData: prepareFootnoteMetaData,
-  getIndexOfColsWithFootnotes: getIndexOfColsWithFootnotes
+  isNumeric: isNumeric
 };

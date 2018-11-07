@@ -1,0 +1,121 @@
+{
+  "title": "FIXTURE: footnotes with mixed minibars",
+  "data": {
+    "table": [
+      [
+        "Test1",
+        "Test2",
+        "Test3",
+        "Test4"
+      ],
+      [
+        "Test",
+        "Test",
+        "1",
+        "-1"
+      ],
+      [
+        "Test",
+        "Test",
+        "2",
+        "2"
+      ],
+      [
+        "Test",
+        "Test",
+        "3",
+        "-3"
+      ],
+      [
+        "Test",
+        "Test",
+        "4",
+        "4"
+      ],
+      [
+        "Test",
+        "Test",
+        "5",
+        "-5"
+      ],
+      [
+        "Test",
+        "Test",
+        "6",
+        "6"
+      ],
+      [
+        "Test",
+        "Test",
+        "7",
+        "-7"
+      ]
+    ],
+    "metaData": {
+      "cells": [
+        {
+          "data": {
+            "footnote": "Footnote in header"
+          },
+          "rowIndex": 0,
+          "colIndex": 0
+        },
+        {
+          "data": {
+            "footnote": "footnote"
+          },
+          "rowIndex": 1,
+          "colIndex": 1
+        },
+        {
+          "data": {
+            "footnote": "footnote before minibar"
+          },
+          "rowIndex": 2,
+          "colIndex": 2
+        },
+        {
+          "data": {
+            "footnote": "footnote in minibar"
+          },
+          "rowIndex": 2,
+          "colIndex": 3
+        },
+        {
+          "data": {
+            "footnote": "footnote in minibar 1"
+          },
+          "rowIndex": 3,
+          "colIndex": 3
+        },
+        {
+          "data": {
+            "footnote": "footnote in minibar 2"
+          },
+          "rowIndex": 6,
+          "colIndex": 3
+        }
+      ]
+    }
+  },
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": 3
+    }
+  }
+}

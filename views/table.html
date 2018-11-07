@@ -7,30 +7,8 @@
     {%- if item.options.hideTableHeader !== true %}
     <thead class="s-font-note s-font-note--strong">
       {%- for head in tableData[0] %}
-      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }}
-      {# when column has footnotes, is not declared as a minibar (but the one that follows) and is not a text-type the class q-table-col-foonote will be adjusted #}
-      {%- if item.options.cardLayout -%}
-        {%- if metaData.length >= 10 -%}
-          q-table-col-footnotes-cardlayout-double
-        {%- else -%}
-          q-table-col-footntoes-cardlayout-single
-        {%- endif -%}  
-      {%- else -%}
-        {%- if metaData.length >= 10 -%}
-          {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and head.type === "numeric" -%}
-            q-table-col-footnotes-double
-          {% elif loop.last %}
-            q-table-col-footnotes-double-last
-          {%- endif -%}  
-        {%- else -%}
-          {%- if footnoteColIndexes.includes(loop.index0) and item.options.minibar.selectedColumn !== loop.index0 and item.options.minibar.selectedColumn === loop.index0+1 and head.type === "numeric" -%}
-            q-table-col-footnotes-single
-          {% elif loop.last %}
-            q-table-col-footnotes-single-last
-          {%- endif -%}  
-        {%- endif -%}
-      {%- endif -%}"
-      {%- if item.options.minibar.selectedColumn+1 === loop.index and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
+      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} {{head.classes.join(" ")}}"
+      {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
       colspan="2" id="q-table-minibar-header"
       {% elif minibar.type === "mixed" and item.options.minibar.selectedColumn+1 === loop.index %}
       id="q-table-minibar-header"
@@ -46,7 +24,15 @@
       {% set row_loop = loop %}
       <tr {% if numberOfRowsToHide and loop.index >= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
         {%- for cell in row %}
-          {% include "./minibar.html" %}
+          {% if item.options.minibar.selectedColumn === null %}
+            {% include "./cells/cell.html" %}
+          {% elif minibar.type==="positive" %}
+            {% include "./cells/minibar-positive.html" %}
+          {% elif minibar.type==="negative" %}
+            {% include "./cells/minibar-negative.html" %}
+          {% elif minibar.type==="mixed" %}
+            {% include "./cells/minibar-mixed.html" %}
+          {% endif %}
         {%- endfor %}
       </tr>
       {%- endfor %}
