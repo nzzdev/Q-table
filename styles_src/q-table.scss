@@ -118,21 +118,13 @@ td.q-table__cell--numeric {
     border-bottom: 0;
   }
 
-  .q-table-minibar-cell {
+  .q-table-minibar-cell, .q-table-minibar-bar--negative, .q-table-minibar-bar--positive {
     display:none!important;
   }
   
   .q-table-minibar-cell--value {
     background-color: white;
     display: block!important;
-  }
-  
-  .q-table-minibar-bar--positive {
-    display: none!important
-  }
-  
-  .q-table-minibar-bar--negative {
-    display: none!important
   } 
   
   .q-table-minibar--mixed {
