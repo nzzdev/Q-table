@@ -1,10 +1,10 @@
   <td 
   {% if item.options.hideTableHeader !== true %}data-label="{{ tableData[0][loop.index0].value }} {% if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 %}{{tableData[0][loop.index0].footnote.unicode}}{% endif %}" {% endif %} 
   data-minibar="{{minibar.type}}"
-  class="q-table__cell {{cell.classes.join(" ")}} q-table-minibar--{{minibar.values[row_loop.index].type}}
+  class="q-table__cell {{cell.classes.join(" ")}} 
   {% if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
-  q-table-minibar--{{minibar.values[row_loop.index].type}}">
-  <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="value" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.class}}{%- endif -%} ">
+  q-table-minibar--mixed">
+  <div data-minibar="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.class}}{%- endif -%} ">
     {{ cell.value }}
     {%- if cell.footnote %}<span class="q-table-annotation">{{ cell.footnote.value }}</span>{%- endif %}
   </div>
@@ -14,7 +14,7 @@
   {% endif %}
   {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
     {% if minibar.values[row_loop.index].type !== "empty" %}
-      <div data-minibar="{{minibar.values[row_loop.index].type}}" data-minibar-type="bar" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}} 
+      <div data-minibar="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}} 
       {% if minibar.values[row_loop.index].type === "positive" -%}
         {{item.options.minibar.barColor.positive.className}}
       {%- else -%}
