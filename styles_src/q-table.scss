@@ -2,10 +2,6 @@
   opacity: 1 !important;
 }
 
-.q-table__subtitle {
-  margin-bottom: 12px;
-}
-
 .q-table__cell {
   text-align: left !important;
 }
@@ -117,6 +113,51 @@ td.q-table__cell--numeric {
   tbody tr:last-child {
     border-bottom: 0;
   }
+
+  .q-table-minibar-cell, .q-table-minibar-bar--negative, .q-table-minibar-bar--positive {
+    display:none!important;
+  }
+  
+  .q-table-minibar-cell--value {
+    background-color: white;
+    display: block!important;
+  } 
+  
+  .q-table-minibar--mixed {
+    background-color: white;
+    width: 100%!important;
+  }
+  
+  .q-table-minibar-alignment--positive {
+    float: none;
+    width: 100%!important;
+  }
+  
+  .q-table-minibar-alignment--empty {
+    text-align: right!important;
+  }
+  
+  .q-table-minibar-alignment--negative {
+    text-align: right!important;
+    float: none;
+    left: 0;
+  }
+  
+  .q-table-col-footnotes-cardlayout-single {
+    margin-right: 7px!important;
+
+    .q-table-minibar-alignment--negative, .q-table-minibar-alignment--empty, .q-table-minibar-alignment--positive {
+      padding-right: 7px;
+    }
+  } 
+  
+  .q-table-col-footnotes-cardlayout-double {
+    margin-right: 14px!important;
+
+    .q-table-minibar-alignment--negative, .q-table-minibar-alignment--empty, .q-table-minibar-alignment--positive {
+      padding-right: 14px;
+    }
+  }
 }
 
 .q-table_show-more-button {
@@ -220,10 +261,6 @@ tr.q-table-state-visible {
   width: 100%;
 }
 
-.q-table-minibar-hidden {
-  display: none !important;
-}
-
 .q-table-annotation {
   position: absolute;
   color: #6e6e7e;
@@ -239,26 +276,12 @@ tr.q-table-state-visible {
   width: 5px;
 }
 
-.q-table-col-footnotes-single {
-  padding-right: 10px!important;
-}
+.q-table-col-footnotes {
+  &-single {
+    padding-right: 8px!important;
+  }
 
-.q-table-col-footnotes-double {
-  padding-right: 20px!important;
-}
-
-.q-table-col-footnotes-single-last {
-  padding-right: 8px!important;
-}
-
-.q-table-col-footnotes-double-last {
-  padding-right: 16px!important;
-}
-
-.q-table-col-footnotes-cardlayout-single {
-  margin-right: 7px!important;
-}
-
-.q-table-col-footnotes-cardlayout-double {
-  margin-right: 14px!important;
+  &-double {
+    padding-right: 16px!important;
+  }
 }

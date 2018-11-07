@@ -86,6 +86,18 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`,
     require(`${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/footnote-positive-minibars.json`,
+    require(`${fixtureDataDirectory}/footnote-positive-minibars.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/footnote-negative-minibars.json`,
+    require(`${fixtureDataDirectory}/footnote-negative-minibars.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/footnote-mixed-minibars.json`,
+    require(`${fixtureDataDirectory}/footnote-mixed-minibars.json`)
   ]
 ];
 

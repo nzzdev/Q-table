@@ -22,6 +22,8 @@ const styleHashMap = require(`${stylesDir}/hashMap.json`);
 const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
   .getExactPixelWidth;
 const dataHelpers = require(`${helpersDir}data.js`);
+const footnoteHelpers = require(`${helpersDir}footnotes.js`);
+const minibarHelpers = require(`${helpersDir}minibars.js`);
 
 const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
@@ -102,19 +104,19 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
-    const metaData = dataHelpers.prepareFootnoteMetaData(
+    const footnotes = footnoteHelpers.getFilteredMetaDataFootnotes(
       item.data.metaData,
       item.options.hideTableHeader
-    );
-    const footnoteColIndexes = dataHelpers.getIndexOfColsWithFootnotes(
-      metaData
     );
 
     const context = {
       item: item,
-      tableData: dataHelpers.getTableData(item.data.table, metaData),
-      metaData: metaData,
-      footnoteColIndexes: footnoteColIndexes,
+      tableData: dataHelpers.getTableData(
+        item.data.table,
+        footnotes,
+        item.options
+      ),
+      footnotes: footnotes,
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(
@@ -157,7 +159,7 @@ module.exports = {
         item.options.minibar.selectedColumn !== null &&
         item.options.minibar.selectedColumn !== undefined
       ) {
-        context.minibar = dataHelpers.getDataForMinibars(
+        context.minibar = minibarHelpers.getMinibarData(
           itemDataCopy,
           item.options.minibar.selectedColumn
         );
@@ -193,10 +195,14 @@ module.exports = {
       }
     }
 
-    renderingInfo.markup = nunjucksEnv.render(
-      path.join(viewsDir, "table.html"),
-      context
-    );
+    try {
+      renderingInfo.markup = nunjucksEnv.render(
+        path.join(viewsDir, "table.html"),
+        context
+      );
+    } catch (ex) {
+      console.log(ex);
+    }
 
     // the scripts need to know if we are confident that the numberOfRowsToHide is correct
     // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
