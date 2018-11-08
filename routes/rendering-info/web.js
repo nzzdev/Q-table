@@ -195,14 +195,10 @@ module.exports = {
       }
     }
 
-    try {
-      renderingInfo.markup = nunjucksEnv.render(
-        path.join(viewsDir, "table.html"),
-        context
-      );
-    } catch (ex) {
-      console.log(ex);
-    }
+    renderingInfo.markup = nunjucksEnv.render(
+      path.join(viewsDir, "table.html"),
+      context
+    );
 
     // the scripts need to know if we are confident that the numberOfRowsToHide is correct
     // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
