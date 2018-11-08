@@ -22,15 +22,15 @@
     {% if minibar.values[row_loop.index].type !== "empty" %}
       <div data-minibar="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} q-table-minibar--{{minibar.values[row_loop.index].type}} 
       {% if minibar.values[row_loop.index].type === "positive" -%}
-        {{item.options.minibar.barColor.positive.className}}
+        {{minibar.barColor.positive.className}}
       {%- else -%}
-        {{item.options.minibar.barColor.negative.className}}
+        {{minibar.barColor.negative.className}}
       {%- endif -%}"  
       style="width: {{minibar.values[row_loop.index].value}}%;
       {%- if minibar.values[row_loop.index].type === "positive" -%}
-        background-color: {{item.options.minibar.barColor.positive.colorCode}};
+        background-color: {{minibar.barColor.positive.colorCode}};
       {%- else -%}
-        background-color: {{item.options.minibar.barColor.negative.colorCode}};
+        background-color: {{minibar.barColor.negative.colorCode}};
       {%- endif -%}">
       </div>
     {% endif %}
