@@ -27,7 +27,7 @@
       {% set row_loop = loop %}
       <tr {% if numberOfRowsToHide and loop.index >= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
         {%- for cell in row %}
-          {% if item.options.minibar.selectedColumn === null %}
+          {% if item.options.minibar.selectedColumn === null or item.options.minibar === undefined %}
             {% include "./cells/cell.html" %}
           {% elif minibar.type==="positive" %}
             {% include "./cells/minibar-positive.html" %}
