@@ -7,9 +7,10 @@
 {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
   q-table-minibar-cell--value" data-minibar="{{minibar.type}}" style="padding-left: 12px;
 {% endif %}">
-  {{ cell.value }}
 {%- if cell.footnote %}
-  <span class="q-table-annotation">{{ cell.footnote.value }}</span>
+  <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">{{ cell.value }}</span>
+{% else %}
+  {{ cell.value }}
 {%- endif %}
 </td>
 {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}

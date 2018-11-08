@@ -209,7 +209,7 @@ lab.experiment("footnotes", () => {
     let annotationIndexes = [];
 
     annotations.forEach(annotation => {
-      annotationIndexes.push(annotation.innerHTML);
+      annotationIndexes.push(annotation.dataset.annotation);
     });
 
     expect(annotationIndexes).to.be.equal(["1", "2", "3", "4"]);
@@ -460,7 +460,7 @@ lab.experiment("footnotes", () => {
     );
     let annotationIndexes = [];
     annotations.forEach(annotation => {
-      annotationIndexes.push(annotation.innerHTML);
+      annotationIndexes.push(annotation.dataset.annotation);
     });
 
     expect(annotationIndexes).to.be.equal(["1"]);
