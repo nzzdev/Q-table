@@ -261,6 +261,10 @@ tr.q-table-state-visible {
   width: 100%;
 }
 
+.q-table-annotation {
+  position: relative;
+}
+
 .q-table-annotation:after {
   content: attr(data-annotation);
   position: absolute;
