@@ -1,9 +1,9 @@
 {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and not initWithCardLayout %}
   <!-- this cell contains the minibar -->
   <td class="q-table-minibar-cell" data-minibar="{{minibar.type}}" style="padding-left: 12px; padding-right: 0px !important;">
-    <div class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} {{item.options.minibar.barColor.negative.className}}"
+    <div class="q-table-minibar-bar--{{minibar.values[row_loop.index].type}} {{minibar.barColor.negative.className}}"
   {% if minibar.values[row_loop.index].type !== "empty" %}
-    style="width: {{minibar.values[row_loop.index].value}}%; background-color: {{item.options.minibar.barColor.negative.colorCode}};"
+    style="width: {{minibar.values[row_loop.index].value}}%; background-color: {{minibar.barColor.negative.colorCode}};"
   {% endif %}>
   </div>
 </td> 
