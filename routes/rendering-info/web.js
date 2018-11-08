@@ -49,26 +49,6 @@ function validateAgainstSchema(item, options) {
   }
 }
 
-function getPositiveColor(type) {
-  let color;
-  if (type === "mixed") {
-    color = "s-viz-color-diverging-2-2";
-  } else {
-    color = "s-viz-color-one-5";
-  }
-  return color;
-}
-
-function getNegativeColor(type) {
-  let color;
-  if (type === "mixed") {
-    color = "s-viz-color-diverging-2-1";
-  } else {
-    color = "s-viz-color-one-5";
-  }
-  return color;
-}
-
 async function validatePayload(payload, options, next) {
   if (typeof payload !== "object") {
     return next(Boom.badRequest(), payload);
@@ -116,6 +96,7 @@ module.exports = {
         footnotes,
         item.options
       ),
+      minibar: minibarHelpers.getMinibarContext(item.options, itemDataCopy),
       footnotes: footnotes,
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
@@ -151,48 +132,6 @@ module.exports = {
     // if we have toolRuntimeConfig.noInteraction, we do not hide rows because showing them is not possible
     if (request.payload.toolRuntimeConfig.noInteraction) {
       context.numberOfRowsToHide = undefined;
-    }
-
-    // if minibars active
-    if (item.options.minibar !== null && item.options.minibar !== undefined) {
-      if (
-        item.options.minibar.selectedColumn !== null &&
-        item.options.minibar.selectedColumn !== undefined
-      ) {
-        context.minibar = minibarHelpers.getMinibarData(
-          itemDataCopy,
-          item.options.minibar.selectedColumn
-        );
-
-        if (
-          item.options.minibar.barColor.positive.className === "" &&
-          item.options.minibar.barColor.positive.colorCode === ""
-        ) {
-          item.options.minibar.barColor.positive.className = getPositiveColor(
-            context.minibar.type
-          );
-        } else if (item.options.minibar.barColor.positive.className !== "") {
-          item.options.minibar.barColor.positive.colorCode = "";
-        }
-
-        if (
-          item.options.minibar.barColor.negative.className === "" &&
-          item.options.minibar.barColor.negative.colorCode === ""
-        ) {
-          item.options.minibar.barColor.negative.className = getNegativeColor(
-            context.minibar.type
-          );
-        } else if (item.options.minibar.barColor.negative.className !== "") {
-          item.options.minibar.barColor.negative.colorCode = "";
-        }
-
-        if (context.item.options.minibar.invertColors) {
-          let color = context.item.options.minibar.barColor.negative;
-          context.item.options.minibar.barColor.negative =
-            context.item.options.minibar.barColor.positive;
-          context.item.options.minibar.barColor.positive = color;
-        }
-      }
     }
 
     renderingInfo.markup = nunjucksEnv.render(
