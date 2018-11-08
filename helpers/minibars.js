@@ -1,6 +1,5 @@
 const clone = require("clone");
 const isNumeric = require("./data.js").isNumeric;
-
 const miniBarTypes = {
   positive: "positive",
   negative: "negative",
@@ -47,6 +46,44 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
   return minibarsWithType;
 }
 
+function getMinibarContext(options, itemDataCopy) {
+  let minibar = {};
+  // if minibars active
+  if (options.minibar !== null && options.minibar !== undefined) {
+    if (
+      options.minibar.selectedColumn !== null &&
+      options.minibar.selectedColumn !== undefined
+    ) {
+      // get minibar
+      minibar = getMinibarData(itemDataCopy, options.minibar);
+      if (
+        minibar.barColor.positive.className === "" &&
+        minibar.barColor.positive.colorCode === ""
+      ) {
+        minibar.barColor.positive.className = getPositiveColor(minibar.type);
+      } else if (minibar.barColor.positive.className !== "") {
+        minibar.barColor.positive.colorCode = "";
+      }
+
+      if (
+        minibar.barColor.negative.className === "" &&
+        minibar.barColor.negative.colorCode === ""
+      ) {
+        minibar.barColor.negative.className = getNegativeColor(minibar.type);
+      } else if (minibar.barColor.negative.className !== "") {
+        minibar.barColor.negative.colorCode = "";
+      }
+
+      if (options.minibar.invertColors) {
+        let color = minibar.barColor.negative;
+        minibar.barColor.negative = minibar.barColor.positive;
+        minibar.barColor.positive = color;
+      }
+    }
+  }
+  return minibar;
+}
+
 function getMinibarValue(type, value, min, max) {
   if (type === miniBarTypes.positive) {
     return Math.abs((value * 100) / max);
@@ -67,8 +104,11 @@ function getMinibarType(types) {
   }
 }
 
-function getMinibarData(data, selectedColumnIndex) {
-  let dataColumn = getMinibarNumbersWithType(data, selectedColumnIndex);
+function getMinibarData(data, minibarOptions) {
+  let dataColumn = getMinibarNumbersWithType(
+    data,
+    minibarOptions.selectedColumn
+  );
   let minValue = Math.min(...dataColumn.numbers);
   let maxValue = Math.max(...dataColumn.numbers);
 
@@ -81,11 +121,32 @@ function getMinibarData(data, selectedColumnIndex) {
 
   return {
     values: values,
-    type: dataColumn.type
+    type: dataColumn.type,
+    barColor: minibarOptions.barColor
   };
+}
+
+function getPositiveColor(type) {
+  let color;
+  if (type === "mixed") {
+    color = "s-viz-color-diverging-2-2";
+  } else {
+    color = "s-viz-color-one-5";
+  }
+  return color;
+}
+
+function getNegativeColor(type) {
+  let color;
+  if (type === "mixed") {
+    color = "s-viz-color-diverging-2-1";
+  } else {
+    color = "s-viz-color-one-5";
+  }
+  return color;
 }
 
 module.exports = {
   getMinibarNumbersWithType: getMinibarNumbersWithType,
-  getMinibarData: getMinibarData
+  getMinibarContext: getMinibarContext
 };
