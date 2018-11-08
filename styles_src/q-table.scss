@@ -261,7 +261,8 @@ tr.q-table-state-visible {
   width: 100%;
 }
 
-.q-table-annotation {
+.q-table-annotation:after {
+  content: attr(data-annotation);
   position: absolute;
   color: #6e6e7e;
   margin-left: 1px;
