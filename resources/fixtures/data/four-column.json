@@ -59,20 +59,6 @@
   "sources": [],
   "options": {
     "cardLayout": false,
-    "cardLayoutIfSmall": true,
-    "minibar": {
-      "invertColors": false,
-      "barColor": {
-        "positive": {
-          "className": "",
-          "colorCode": ""
-        },
-        "negative": {
-          "className": "",
-          "colorCode": ""
-        }
-      },
-      "selectedColumn": null
-    }
+    "cardLayoutIfSmall": true
   }
 }
