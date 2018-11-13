@@ -188,6 +188,21 @@ lab.experiment("minibars", () => {
 
     expect(resultResp).to.be.equals(workingMinibarsMarkup);
   });
+
+  it("shows table correctly when no minibar-options", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/four-column.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const cells = dom.window.document.querySelectorAll("td");
+    expect(cells.length).to.be.equals(28);
+  });
 });
 
 lab.experiment("footnotes", () => {
