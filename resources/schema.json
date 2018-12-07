@@ -144,8 +144,10 @@
             "availabilityChecks": [
               {
                 "type": "ToolEndpoint",
-                "withData": true,
-                "endpoint": "option-availability/cardLayoutIfSmall"
+                "config": {
+                  "endpoint": "option-availability/cardLayoutIfSmall",
+                  "fields": ["options", "data"]
+                }
               }
             ]
           }
@@ -157,8 +159,10 @@
             "availabilityChecks": [
               {
                 "type": "ToolEndpoint",
-                "withData": true,
-                "endpoint": "option-availability/minibars"
+                "config": {
+                  "endpoint": "option-availability/minibars",
+                  "fields": ["options", "data"]
+                }
               }
             ]
           },
@@ -176,15 +180,19 @@
               "Q:options": {
                 "availabilityChecks": [
                   {
-                    "type": "ToolEndpoint",
-                    "withData": true,
-                    "endpoint": "option-availability/selectedColumn"
+                    "type": "ToolEndpoint",  
+                    "config": {
+                      "endpoint": "option-availability/selectedColumn",
+                      "fields": ["options", "data"]
+                    }
                   }
                 ],
                 "dynamicEnum": {
-                  "type": "ToolEndpoint",
-                  "withData": true,
-                  "endpoint": "dynamic-enum/selectedColumn"
+                  "type": "ToolEndpoint",  
+                  "config": {
+                    "endpoint": "dynamic-enum/selectedColumn",
+                    "fields": ["options", "data"]
+                  }
                 }
               }
             },
@@ -196,8 +204,10 @@
                 "availabilityChecks": [
                   {
                     "type": "ToolEndpoint",
-                    "withData": true,
-                    "endpoint": "option-availability/invertColors"
+                    "config": {
+                      "endpoint": "option-availability/invertColors",
+                      "fields": ["options", "data"]
+                    }
                   }
                 ]
               }
@@ -213,8 +223,10 @@
                   },
                   {
                     "type": "ToolEndpoint",
-                    "withData": true,
-                    "endpoint": "option-availability/barColor"
+                    "config": {
+                      "endpoint": "option-availability/barColor",
+                      "fields": ["options", "data"]
+                    }
                   }
                 ]
               },
@@ -226,8 +238,10 @@
                     "availabilityChecks": [
                       {
                         "type": "ToolEndpoint",
-                        "withData": true,
-                        "endpoint": "option-availability/barColorPositive"
+                        "config": {
+                          "endpoint": "option-availability/barColorPositive",
+                          "fields": ["options", "data"]
+                        }
                       }
                     ]
                   },
@@ -255,8 +269,10 @@
                     "availabilityChecks": [
                       {
                         "type": "ToolEndpoint",
-                        "withData": true,
-                        "endpoint": "option-availability/barColorNegative"
+                        "config": {
+                          "endpoint": "option-availability/barColorNegative",
+                          "fields": ["options", "data"]
+                        }
                       }
                     ]
                   },
