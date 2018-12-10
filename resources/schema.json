@@ -219,7 +219,9 @@
                 "availabilityChecks": [
                   {
                     "type": "UserHasRole",
-                    "role": "expert-table"
+                    "config": {
+                      "role": "expert-table"
+                    }
                   },
                   {
                     "type": "ToolEndpoint",
