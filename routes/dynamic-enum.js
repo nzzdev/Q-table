@@ -34,8 +34,8 @@ module.exports = {
   handler: function(request, h) {
     if (request.params.optionName === "selectedColumn") {
       return {
-        enum: getMiniBarEnum(request.payload),
-        enum_titles: getMiniBarEnumTitles(request.payload)
+        enum: getMiniBarEnum(request.payload.item),
+        enum_titles: getMiniBarEnumTitles(request.payload.item)
       };
     }
     return Boom.badRequest();
