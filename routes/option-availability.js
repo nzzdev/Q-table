@@ -14,9 +14,10 @@ module.exports = {
     cors: true
   },
   handler: function(request, h) {
+    const item = request.payload.item;
     if (request.params.optionName === "cardLayoutIfSmall") {
       return {
-        available: !request.payload.item.options.cardLayout
+        available: !item.options.cardLayout
       };
     }
 
@@ -26,11 +27,11 @@ module.exports = {
     ) {
       let isAvailable = false;
 
-      if (request.payload.item.data.table.length !== 0) {
+      if (item.data.table.length !== 0) {
         if (
-          !request.payload.item.options.cardLayout &&
-          request.payload.item.data.table[0].length >= 3 &&
-          getNumericColumns(request.payload.item.data.table).length > 0
+          !item.options.cardLayout &&
+          item.data.table[0].length >= 3 &&
+          getNumericColumns(item.data.table).length > 0
         ) {
           isAvailable = true;
         }
@@ -42,13 +43,10 @@ module.exports = {
 
     if (request.params.optionName === "barColor") {
       let isAvailable = false;
-      if (
-        request.payload.item.options.minibar !== null &&
-        request.payload.item.options.minibar !== undefined
-      ) {
+      if (item.options.minibar !== null && item.options.minibar !== undefined) {
         isAvailable =
-          request.payload.item.options.minibar.selectedColumn !== null &&
-          request.payload.item.options.minibar.selectedColumn !== undefined;
+          item.options.minibar.selectedColumn !== null &&
+          item.options.minibar.selectedColumn !== undefined;
       }
 
       return {
@@ -58,17 +56,14 @@ module.exports = {
 
     if (request.params.optionName === "barColorPositive") {
       let isAvailable = false;
-      if (
-        request.payload.item.options.minibar != null &&
-        request.payload.item.options.minibar != undefined
-      ) {
+      if (item.options.minibar != null && item.options.minibar != undefined) {
         if (
-          request.payload.item.options.minibar.selectedColumn !== null &&
-          request.payload.item.options.minibar.selectedColumn !== undefined
+          item.options.minibar.selectedColumn !== null &&
+          item.options.minibar.selectedColumn !== undefined
         ) {
           let type = getMinibarNumbersWithType(
-            request.payload.item.data.table,
-            request.payload.item.options.minibar.selectedColumn
+            item.data.table,
+            item.options.minibar.selectedColumn
           ).type;
 
           isAvailable = type === "mixed" || type === "positive";
@@ -81,17 +76,14 @@ module.exports = {
 
     if (request.params.optionName === "barColorNegative") {
       let isAvailable = false;
-      if (
-        request.payload.item.options.minibar != null &&
-        request.payload.item.options.minibar != undefined
-      ) {
+      if (item.options.minibar != null && item.options.minibar != undefined) {
         if (
-          request.payload.item.options.minibar.selectedColumn !== null &&
-          request.payload.item.options.minibar.selectedColumn !== undefined
+          item.options.minibar.selectedColumn !== null &&
+          item.options.minibar.selectedColumn !== undefined
         ) {
           let type = getMinibarNumbersWithType(
-            request.payload.item.data.table,
-            request.payload.item.options.minibar.selectedColumn
+            item.data.table,
+            item.options.minibar.selectedColumn
           ).type;
 
           isAvailable = type === "mixed" || type === "negative";
@@ -104,17 +96,14 @@ module.exports = {
 
     if (request.params.optionName === "invertColors") {
       let isAvailable = false;
-      if (
-        request.payload.item.options.minibar != null &&
-        request.payload.item.options.minibar != undefined
-      ) {
+      if (item.options.minibar != null && item.options.minibar != undefined) {
         if (
-          request.payload.item.options.minibar.selectedColumn !== null &&
-          request.payload.item.options.minibar.selectedColumn !== undefined
+          item.options.minibar.selectedColumn !== null &&
+          item.options.minibar.selectedColumn !== undefined
         ) {
           let type = getMinibarNumbersWithType(
-            request.payload.item.data.table,
-            request.payload.item.options.minibar.selectedColumn
+            item.data.table,
+            item.options.minibar.selectedColumn
           ).type;
 
           isAvailable = type === "mixed";
