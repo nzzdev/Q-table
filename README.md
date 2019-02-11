@@ -38,21 +38,42 @@ The tool structure follows the general structure of each Q tool. Further informa
 
 ## Features
 
-- [Card-Layout](#card-layout)
-- [Minibars](#minibars)
-- [Footnotes](#footnotes)
+### Spacing
+
+- Q-Table uses [CSS Table-Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/table-layout) to adjust columns, rows and cells
+- An algorythm discribes how large the width of each column and cell should be and to use the whole desktop width
+- We want to give the responsability fully to the browser and don't want to calculate the layout by our own
+- We want define rules based on the type of the column (Number, Text, Minibar)
+
+#### Rules for spacing
+tbd
+###### Card-Layout
+tbd
+###### Minibars
+tbd
+###### Footnotes
+tbd
+
+### Collapsable table
+
+- When rendering the rows, the renderingInfoScript `getShowMoreButtonScript()` will check how many rows the table contains
+- If the table will be displayed as Card-Layout and contains more than 6 rows, the first 3 rows will be displayed, the rest will be hidden
+- If the table will be displayed with the Card-Layout and contains more than 15 rows, the frist 10 will be displayed, the reest will be hidden
+- If there are rows hidden, a new element will be created with the class `q-table_show-more-button` assigned
+- Clicking on the button will either run the function `showRowsFunction()` or `hideRowsFunction()`
+
 
 ### Card-Layout
-Card-Layout is an option to display large tables well-arranged on mobile. 
-
-#### General
+- Card-Layout is an option to display large tables well-arranged on mobile
 - The Card-Layout renderingInfoScript contains an `EventListener` on the event `resize` which calculates the current size of the graphic
 - When the graphic is smaller than `400px`, the renderingInfoScript `applyCardLayoutClassFunction` adds the class `q-table--card-layout` to the `dataObject` and replaces all its styles
 - The column headers will then be hidden and each cell will display the `:before` selector containing its column header (e.g. `Header1`)
 
 ### Minibars
+tbd
 
 ### Footnotes
+tbd
 
 ## License
 Copyright (c) 2018 Neue Zürcher Zeitung. All rights reserved.
