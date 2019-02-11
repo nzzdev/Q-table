@@ -5,7 +5,7 @@
 **Maintainer**: [manuelroth](https://github.com/manuelroth)
 
 Q Table is one tool of the Q toolbox to create tables.
-Test it in the demo: https://editor.q.tools
+Test it in the [demo](https://editor.q.tools).
 
 - [Installation](#installation)
 - [Development](#development)
@@ -47,7 +47,7 @@ Card-Layout is an option to display large tables well-arranged on mobile.
 
 #### General
 - The Card-Layout renderingInfoScript contains an `EventListener` on the event `resize` which calculates the current size of the graphic
-- When the graphic is smaller than `400px`, the renderingInfoScript `applyCardLayoutClassFunction` adds the class `q-table--card-layout` to the `dataObject`
+- When the graphic is smaller than `400px`, the renderingInfoScript `applyCardLayoutClassFunction` adds the class `q-table--card-layout` to the `dataObject` and replaces all its styles
 - The column headers will then be hidden and each cell will display the `:before` selector containing its column header (e.g. `Header1`)
 
 ### Minibars
