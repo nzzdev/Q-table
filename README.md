@@ -39,6 +39,8 @@ The tool structure follows the general structure of each Q tool. Further informa
 ## Features
 
 - [Card-Layout](#card-layout)
+- [Minibars](#minibars)
+- [Footnotes](#footnotes)
 
 ### Card-Layout
 Card-Layout is an option to display large tables well-arranged on mobile. 
@@ -48,6 +50,9 @@ Card-Layout is an option to display large tables well-arranged on mobile.
 - When the graphic is smaller than `400px`, the renderingInfoScript `applyCardLayoutClassFunction` adds the class `q-table--card-layout` to the `dataObject`
 - The column headers will then be hidden and each cell will display the `:before` selector containing its column header (e.g. `Header1`)
 
+### Minibars
+
+### Footnotes
 
 ## License
 Copyright (c) 2018 Neue Zürcher Zeitung. All rights reserved.
