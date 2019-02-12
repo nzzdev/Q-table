@@ -9,6 +9,7 @@ Test it in the [demo](https://editor.q.tools).
 
 - [Installation](#installation)
 - [Development](#development)
+- [Testing](#testing)
 - [Implementation details](#implementation-details)
 - [Features](#features)
 - [License](#license)
@@ -31,6 +32,14 @@ $ Q server
 Run the Q tool:
 ```
 $ node index.js
+```
+
+## Testing
+The testing framework used in this repository is [Code](https://github.com/hapijs/code).
+
+Run the tests
+```
+$ npm run test
 ```
 
 ## Implementation details
