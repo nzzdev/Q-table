@@ -49,7 +49,7 @@ The tool structure follows the general structure of each Q tool. Further informa
 ###### Text after number
 The spacing between text and number is by default pretty small, that's why we handle this by our own
 
-![Text after number](https://user-images.githubusercontent.com/7341342/52629728-a8111f80-2eba-11e9-9980-6db1211cfdef.png)
+![Text after number](https://user-images.githubusercontent.com/7341342/52629728-a8111f80-2eba-11e9-9980-6db1211cfdef.png# text-after-number)
 
 ##### Implementation details
 There's a CSS rule which contains that if the table doesn't use Card-Layout, the cell is not `q-talble-minibar-header` and the following cell is not `q-table__cell--numeric` then the `padding-left` will be `20px`.
@@ -58,7 +58,7 @@ There's a CSS rule which contains that if the table doesn't use Card-Layout, the
 ### Collapsable table
 This is a feature to shorten large tables in the article and make them collapsable.
 
-![Show more button](https://user-images.githubusercontent.com/7341342/52629726-a8111f80-2eba-11e9-9194-4597c030cb26.png)
+![Show more button](https://user-images.githubusercontent.com/7341342/52629726-a8111f80-2eba-11e9-9194-4597c030cb26.png# show-more-button)
 
 ##### Implementation details
 - When rendering the rows, the renderingInfoScript `getShowMoreButtonScript()` will check how many rows the table contains
@@ -74,7 +74,7 @@ Card-Layout is an option to display large tables well-arranged on mobile. There 
 - Only show the Card-Layout in the mobile view
 - Show the Card-Layout in every view
 
-![Card-Layout](https://user-images.githubusercontent.com/7341342/52629727-a8111f80-2eba-11e9-90ee-cd957a4c66cd.png)
+![Card-Layout](https://user-images.githubusercontent.com/7341342/52629727-a8111f80-2eba-11e9-90ee-cd957a4c66cd.png# card-layout)
 
 ##### Implementation details
 - The Card-Layout renderingInfoScript contains an `EventListener` on the event `resize` which calculates the current size of the graphic
@@ -88,6 +88,21 @@ tbd
 tbd
 
 ## License
-Copyright (c) 2018 Neue Zürcher Zeitung. All rights reserved.
+Copyright (c) 2019 Neue Zürcher Zeitung. All rights reserved.
 
 This software is published under the MIT license.
+
+img[src*="#text-after-number"] {
+   width:150px;
+   height:100px;
+}
+
+img[src*="#show-more-button"] {
+   width:150px;
+   height:100px;
+}
+
+img[src*="#card-layout"] {
+   width:150px;
+   height:100px;
+}
