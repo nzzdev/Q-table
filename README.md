@@ -85,7 +85,23 @@ Card-Layout is an option to display large tables well-arranged on mobile. There 
 - The column headers will then be hidden and each cell will display the `:before` selector containing its column header (e.g. `Header1`)
 
 ### Minibars
-tbd
+<img src="/doc/minibars.png" align="right" width=427 height=202>
+Minibars are a visual feature to display the difference between numbers in the table. Minibars are only useable on `numeric` columns. The minibars won't be displayed in Card-Layout.
+
+##### Implementation details serverside
+- The `option-availability` route will check if there are at least 3 columns and check if at least one if them is `numeric`
+- Once the option will be shown, the `dynamic-enum` route will read all `numeric` columns and display them in the option
+- **Important**: The `minibar`-property of the `context`-object will always return an `object`, when not active it'll be empty
+- 
+
+
+
+
+
+
+
+##### Implementation details frontend
+
 
 ### Footnotes
 tbd
