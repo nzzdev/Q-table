@@ -55,6 +55,11 @@ tbd
 tbd
 
 ### Collapsable table
+This is a feature to shorten large tables in the article and make them collapsable.
+
+<image>
+
+##### Implementation details
 - When rendering the rows, the renderingInfoScript `getShowMoreButtonScript()` will check how many rows the table contains
 - If the table will be displayed as Card-Layout and contains more than 6 rows, the first 3 rows will be displayed, the rest will be hidden
 - If the table will be displayed with the Card-Layout and contains more than 15 rows, the frist 10 will be displayed, the reest will be hidden
@@ -64,7 +69,13 @@ tbd
 
 
 ### Card-Layout
-- Card-Layout is an option to display large tables well-arranged on mobile
+Card-Layout is an option to display large tables well-arranged on mobile. There are 2 options to use it:
+- Only show the Card-Layout in the mobile view
+- Show the Card-Layout in every view
+
+<image>
+
+##### Implementation details
 - The Card-Layout renderingInfoScript contains an `EventListener` on the event `resize` which calculates the current size of the graphic
 - When the graphic is smaller than `400px`, the renderingInfoScript `applyCardLayoutClassFunction` adds the class `q-table--card-layout` to the `dataObject` and replaces all its styles
 - The column headers will then be hidden and each cell will display the `:before` selector containing its column header (e.g. `Header1`)
