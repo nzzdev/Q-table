@@ -1,4 +1,4 @@
-# Q Table
+# Q Table [![Build Status](https://travis-ci.com/nzzdev/Q-table.svg?token=g43MZxbtUcZ6QyxqUoJM&branch=dev)](https://travis-ci.com/nzzdev/Q-table)
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/nzzdev/Q-table.svg?token=70f2c40b32fd66edccfe705c14e1443e8e403768fadc870f4f22f749877c522b&ts=1549974271422)](https://greenkeeper.io/)
 
@@ -55,12 +55,12 @@ tbd
 tbd
 
 ### Collapsable table
-
 - When rendering the rows, the renderingInfoScript `getShowMoreButtonScript()` will check how many rows the table contains
 - If the table will be displayed as Card-Layout and contains more than 6 rows, the first 3 rows will be displayed, the rest will be hidden
 - If the table will be displayed with the Card-Layout and contains more than 15 rows, the frist 10 will be displayed, the reest will be hidden
 - If there are rows hidden, a new element will be created with the class `q-table_show-more-button` assigned
-- Clicking on the button will either run the function `showRowsFunction()` or `hideRowsFunction()`
+- Clicking on the button will either call the function `showRowsFunction()` or `hideRowsFunction()`
+- When calling the `hideRowsFunction`, the table will be collapsed again and with the function `scrollIntoView()` scrolled back to the top of the table
 
 
 ### Card-Layout
