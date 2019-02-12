@@ -46,18 +46,19 @@ The tool structure follows the general structure of each Q tool. Further informa
 - We want define rules based on the type of the column (Number, Text, Minibar)
 
 #### Rules for spacing
-tbd
-###### Card-Layout
-tbd
-###### Minibars
-tbd
-###### Footnotes
-tbd
+###### Text after number
+The spacing between text and number is by default pretty small, that's why we handle this by our own
+
+![Text after number](https://user-images.githubusercontent.com/7341342/52629728-a8111f80-2eba-11e9-9980-6db1211cfdef.png)
+
+##### Implementation details
+There's a CSS rule which contains that if the table doesn't use Card-Layout, the cell is not `q-talble-minibar-header` and the following cell is not `q-table__cell--numeric` then the `padding-left` will be `20px`.
+
 
 ### Collapsable table
 This is a feature to shorten large tables in the article and make them collapsable.
 
-<image>
+![Show more button](https://user-images.githubusercontent.com/7341342/52629726-a8111f80-2eba-11e9-9194-4597c030cb26.png)
 
 ##### Implementation details
 - When rendering the rows, the renderingInfoScript `getShowMoreButtonScript()` will check how many rows the table contains
@@ -73,7 +74,7 @@ Card-Layout is an option to display large tables well-arranged on mobile. There 
 - Only show the Card-Layout in the mobile view
 - Show the Card-Layout in every view
 
-<image>
+![Card-Layout](https://user-images.githubusercontent.com/7341342/52629727-a8111f80-2eba-11e9-90ee-cd957a4c66cd.png)
 
 ##### Implementation details
 - The Card-Layout renderingInfoScript contains an `EventListener` on the event `resize` which calculates the current size of the graphic
