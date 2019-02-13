@@ -11,8 +11,8 @@ cache:
 install:
   - npm install
 before_script:
-  - export DOCKER_IMAGE_NAME="q-table"
-  - export DOCKER_TAG=$(echo $TRAVIS_BRANCH | sed -e 's/\//_/g')
+  - DOCKER_IMAGE_NAME="q-table"
+  - DOCKER_TAG=${TRAVIS_BRANCH/\//_}
 script:
   - npm run build
   - npm run test
