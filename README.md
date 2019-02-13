@@ -1,5 +1,7 @@
 # Q Table
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/nzzdev/Q-table.svg?token=70f2c40b32fd66edccfe705c14e1443e8e403768fadc870f4f22f749877c522b&ts=1549974271422)](https://greenkeeper.io/)
+
 **Maintainer**: [manuelroth](https://github.com/manuelroth)
 
 Q Table is one tool of the Q toolbox to create tables.
