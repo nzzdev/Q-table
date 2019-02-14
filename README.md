@@ -5,21 +5,28 @@
 Q Table is one tool of the Q toolbox to create tables.
 Test it in the [demo](https://editor.q.tools).
 
+## Table of contents
+ 
 - [Installation](#installation)
 - [Development](#development)
 - [Testing](#testing)
 - [Implementation details](#implementation-details)
 - [Features](#features)
+  - [Spacing](#spacing)
+  - [Collapsable table](#collapsable-table)
+  - [Card-Layout](#card-layout)
+  - [Minibars](#minibars)
+  - [Footnotes](#footnotes)
 - [License](#license)
 
-## Installation
+## Installation [to the top](#table-of-contents)
 
 ```bash
 $ npm install
 $ npm run build
 ```
 
-## Development
+## Development [to the top](#table-of-contents)
 
 Install the [Q cli](https://github.com/nzzdev/Q-cli) and start the Q dev server:
 
@@ -32,7 +39,7 @@ Run the Q tool:
 $ node index.js
 ```
 
-## Testing
+## Testing [to the top](#table-of-contents)
 The testing framework used in this repository is [Code](https://github.com/hapijs/code).
 
 Run the tests:
@@ -40,10 +47,10 @@ Run the tests:
 $ npm run test
 ```
 
-## Implementation details
+## Implementation details [to the top](#table-of-contents)
 The tool structure follows the general structure of each Q tool. Further information can be found in [Q server documentation - Developing tools](https://nzzdev.github.io/Q-server/developing-tools.html).
 
-## Features
+## Features [to the top](#table-of-contents)
 
 ### Spacing
 
@@ -53,11 +60,11 @@ The tool structure follows the general structure of each Q tool. Further informa
 - We want define rules based on the type of the column (Number, Text, Minibar)
 
 #### Rules for spacing
-###### Text after number
 There's a CSS rule which contains that if the table doesn't use Card-Layout, the cell is not `q-talble-minibar-header` and the following cell is not `q-table__cell--numeric` then the `padding-left` will be `20px`.
+Further spacing rules will be explained in the other features.
 
 
-### Collapsable table
+### Collapsable table [to the top](#table-of-contents)
 <img src="/doc/show-more-button.png" align="right" width=300 height=306>
 This is a feature to shorten large tables in the article and make them collapsable.
 
@@ -70,7 +77,7 @@ This is a feature to shorten large tables in the article and make them collapsab
 - When calling the `hideRowsFunction`, the table will be collapsed again and with the function `scrollIntoView()` scrolled back to the top of the table
 
 
-### Card-Layout
+### Card-Layout [to the top](#table-of-contents)
 <img src="/doc/card-layout.png" align="right" width=300 height=355>
 
 Card-Layout is an option to display large tables well-arranged on mobile. There are 2 options to use it:
@@ -82,7 +89,7 @@ Card-Layout is an option to display large tables well-arranged on mobile. There 
 - When the graphic is smaller than `400px`, the renderingInfoScript `applyCardLayoutClassFunction` adds the class `q-table--card-layout` to the `dataObject` and replaces all its styles
 - The column headers will then be hidden and each cell will display the `:before` selector containing its column header (e.g. `Header1`)
 
-### Minibars
+### Minibars [to the top](#table-of-contents)
 <img src="/doc/minibars.png" align="right" width=427 height=202>
 Minibars are a visual feature to display the difference between numbers in the table. Minibars are only useable on numeric columns. The minibars won't be displayed in Card-Layout.
 
@@ -123,7 +130,7 @@ Minibars are a visual feature to display the difference between numbers in the t
 - The function `renderMinibarsFunction()` then loads the elements of the column `selectedColumn` and `minibarColumn` which then will passed to the function `handleMinibarsMinWidthFunctionName()`
 - The function `handleMinibarsMinWidthFunctionName()` then either removes or adds `q-table-minibar-cell-mobile` or `q-table-minibar--mixed-mobile` to the cell according to the `type` of the table which can be read out on the dataset `data-minibar` on each cell
 
-### Footnotes
+### Footnotes [to the top](#table-of-contents)
 <img src="/doc/footnotes.png" align="right" width=302 height=437>
 
 Footnotes are a feature to display annotations in the table and the sources in the footer of the table.
@@ -168,14 +175,13 @@ Footnotes are a feature to display annotations in the table and the sources in t
 ]
 ```
 
- 
 ##### Implementation details frontend
 - The `value` of the cell will be displayed inside a `span`-element with the class `q-table-annotation`
 - The `span`-element has the dataset `data-annotation` and the value `cell.footnote.value` applied to it
 - With the `:after`-selector, the dataset `data-annotation` will then be applied after the value
 - For the sources of the annotations the `footnotes` array applied to the `context` will be looped and displayed in the footer
 
-## License
+## License [to the top](#table-of-contents)
 Copyright (c) 2019 Neue Zürcher Zeitung. All rights reserved.
 
 This software is published under the MIT license.
