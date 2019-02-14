@@ -97,7 +97,7 @@ Minibars are a visual feature to display the difference between numbers in the t
 - The cell can have 3 types: `positive`, when the cell contains a positive number, `negative` when the cell contains a negative number or `empty` when there's no content in the cell
 - The function `getMinibarValue()` then calculates the length of the minibar based on the `type` of the table and max-value of the selected column
 - Then the color of the minibars will be adjusted. By default the sophie-colors `s-viz-color-diverging-2-2` for `positive` and `s-viz-color-diverging-2-1` for `negative` colors will be used. If the user has the role `poweruser`, he can set the colors by himself. One way by the `className` of the sophie-colors or the `colorCode` which are simple hex codes of colors
-- In the end the `getMinibarContext()` function will return an object like this
+- In the end the `getMinibarContext()` function will return an object like this:
 ```javascript
 {
   values: [
@@ -124,7 +124,56 @@ Minibars are a visual feature to display the difference between numbers in the t
 - The function `handleMinibarsMinWidthFunctionName()` then either removes or adds `q-table-minibar-cell-mobile` or `q-table-minibar--mixed-mobile` to the cell according to the `type` of the table which can be read out on the dataset `data-minibar` on each cell
 
 ### Footnotes
-tbd
+<img src="/doc/footnotes.png" align="right" width=302 height=437>
+
+Footnotes are a feature to display annotations in the table and the sources in the footer of the table.
+
+##### Implementation details serverside
+- The function `getFilteredMetaDataFootnotes()` will filter and sort all footnotes from `item.data.metaData`. The function will always return an object, when not used the object will be empty
+- Those footnotes will then be passed to the function `getTableData()`
+- Once the `tableData` is adjusted in `getTableData()`, there's a check if footnotes are set
+- If there are footnotes, they will be passed to the function `appendFootnoteAnnotationsToTableData()` along with `tableData` and `options`
+- In `appendFootnoteAnnotationsToTableData()` the `footnoteClass` will be calculated and determined if extra spacing is used or not 
+- If there's a footnote in a cell where: The value is a number, minibar or a minibar follows or it's the last column. If one of the circumstances listed applies, then it'll be checked how many footnotes there are. If there are less than 10 footnotes the class `q-table-col-footnotes-single` will be used, if there are more 10 and more the class `q-table-col-footnotes-double`will be used. 
+- Because the title in the Card-Layout is already set by the `:before`-selector, it's not possible to apply the annotation with this selector as well. Therefore we have to add the unicode to the dataset `data-label` when the Card-Layout is set so we map the footnote annoation value to the `unicode`. **Important**: The mapping of the value is from **1** to **9**.
+- After applying the annotations to the `tableData`, the function `appendFootnoteAnnotationsToTableData()` should return an object like this:
+```javascript
+[
+  [
+    {
+      type: "numeric",
+      value: "Rank",
+      classes: [],
+      footnote: {
+        value: 1,
+        unicode: "¹",
+        class: null
+      }
+    },
+  ],
+  [
+    {
+      type: "numeric",
+      value: "3",
+      classes: [
+        "q-table-col-footnotes-cardlayout-single"
+      ],
+      footnote: {
+        value: 2,
+        unicode: "²",
+        class: null
+      }
+    }
+  ],
+]
+```
+
+ 
+##### Implementation details frontend
+- The `value` of the cell will be displayed inside a `span`-element with the class `q-table-annotation`
+- The `span`-element has the dataset `data-annotation` and the value `cell.footnote.value` applied to it
+- With the `:after`-selector, the dataset `data-annotation` will then be applied after the value
+- For the sources of the annotations the `footnotes` array applied to the `context` will be looped and displayed in the footer
 
 ## License
 Copyright (c) 2019 Neue Zürcher Zeitung. All rights reserved.
