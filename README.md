@@ -19,6 +19,7 @@ Test it in the [demo](https://editor.q.tools).
 ## Installation
 
 ```bash
+$ git clone git@github.com:nzzdev/Q-table.git
 $ npm install
 $ npm run build
 ```
