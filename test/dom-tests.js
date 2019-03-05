@@ -85,6 +85,60 @@ lab.experiment("column headers", () => {
   })
 })
 
+lab.experiment("cardlayout", () => {
+  it("shows the cardlayout in mobile width", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/cardlayout.json"),
+        toolRuntimeConfig: { size: { width: [350, "<"] } }
+      }
+    });
+
+    return elementCount(
+      response.result.markup,
+      ".q-table--card-layout"
+    ).then(value => {
+      expect(value).to.be.equal(1);
+    });
+  })
+  it("shows the cardlayout in article width", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/cardlayout.json"),
+        toolRuntimeConfig: { size: { width: [500, ">"] } }
+      }
+    });
+
+    return elementCount(
+      response.result.markup,
+      ".q-table--card-layout"
+    ).then(value => {
+      expect(value).to.be.equal(1);
+    });
+  })
+  it("shows the cardlayout in full width", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/cardlayout.json"),
+        toolRuntimeConfig: { size: { width: [800, ">"] } }
+      }
+    });
+
+    return elementCount(
+      response.result.markup,
+      ".q-table--card-layout"
+    ).then(value => {
+      expect(value).to.be.equal(1);
+    });
+  })
+})
+
 
 lab.experiment("minibars", () => {
   it("shows the same markup for positive minibars", async () => {
