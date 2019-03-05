@@ -139,6 +139,43 @@ lab.experiment("cardlayout", () => {
   })
 })
 
+lab.experiment("cardlayout on mobile", () => {
+  it("shows the cardlayout in mobile width", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/cardlayout-mobile.json"),
+        toolRuntimeConfig: { size: { width: [400, "<"] } }
+      }
+    });
+
+    expect(response.result.scripts[1].content.includes('applyCardLayoutClass')).to.be.equal(true);
+  })
+  it("doesn't show the cardlayout in article width", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/cardlayout-mobile.json"),
+        toolRuntimeConfig: { size: { width: [500, ">"] } }
+      }
+    });
+
+    expect(response.result.scripts[1].content.includes('applyCardLayoutClass')).to.be.equal(true);
+  })
+  it("doesn't show the cardlayout in full width", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/cardlayout-mobile.json"),
+        toolRuntimeConfig: { size: { width: [800, ">"] } }
+      }
+    });
+    expect(response.result.scripts[1].content.includes('applyCardLayoutClass')).to.be.equal(true);
+  })
+})
 
 lab.experiment("minibars", () => {
   it("shows the same markup for positive minibars", async () => {
