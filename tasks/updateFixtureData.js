@@ -98,7 +98,16 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/footnote-mixed-minibars.json`,
     require(`${fixtureDataDirectory}/footnote-mixed-minibars.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/cardlayout.json`,
+    require(`${fixtureDataDirectory}/cardlayout.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/cardlayout-mobile.json`,
+    require(`${fixtureDataDirectory}/cardlayout-mobile.json`)
   ]
+
 ];
 
 // register migration scripts here in order of version,
@@ -119,7 +128,7 @@ fixtureData.forEach(item => {
       fs.writeFile(
         item[0].split("../")[1],
         JSON.stringify(item[1], null, 2),
-        function(err) {
+        function (err) {
           if (err) {
             return console.log(err);
           }
