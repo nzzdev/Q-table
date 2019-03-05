@@ -47,6 +47,45 @@ function elementCount(markup, selector) {
   });
 }
 
+lab.experiment("column headers", () => {
+  it("shows column headers", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/four-column.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    return elementCount(
+      response.result.markup,
+      ".q-table-cell--head"
+    ).then(value => {
+      expect(value).to.be.equal(4);
+    });
+  })
+
+  it("doesn't show column headers", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/four-column-no-header.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    return elementCount(
+      response.result.markup,
+      ".q-table-cell--head"
+    ).then(value => {
+      expect(value).to.be.equal(0);
+    });
+  })
+})
+
+
 lab.experiment("minibars", () => {
   it("shows the same markup for positive minibars", async () => {
     const workingMinibarsMarkup = `<div class=\"s-q-item q-table\"id=\"q_table_someid_\"style=\"opacity: 0;\"><h3 class=\"s-q-item__title\">FIXTURE: minibars with negative values</h3><div class=\"s-q-item__subtitle s-font-note\">State by state breakdown</div><table class=\"q-table__table\"><thead class=\"s-font-note s-font-note--strong\"><th class=\"q-table__cell q-table-cell--head q-table__cell--text\"></th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2016</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2017</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\"colspan=\"2\"id=\"q-table-minibar-header\">+/- %</th></thead><tbody class=\"s-font-note\"><tr><td data-label=\" \n  \n    \n  \"class=\"q-table__cell q-table__cell--text\">Auftragseingang</td><td data-label=\"2016 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 375</td><td data-label=\"2017 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 989</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 46.15384615384615%; background-color:;\"></div></td><td data-label=\"+/- % \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-6</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Umsatz</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">9683</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">10 178</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 38.46153846153846%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-5</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Ebit-Mage (%)</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--empty s-viz-color-one-5\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Cashflow aus Geschäftstätigkeite</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">929</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">810</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 100%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-13</td></tr></tbody></table><div class=\"s-q-item__footer\">Quelle: The Centers for Disease Control and Prevention</div></div>`;
