@@ -1,5 +1,6 @@
 const clone = require("clone");
 const isNumeric = require("./data.js").isNumeric;
+const Array2D = require("array2d");
 const miniBarTypes = {
   positive: "positive",
   negative: "negative",
@@ -20,23 +21,22 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
   let dataCopy = clone(data);
   dataCopy[0] = dataCopy[0].map(cell => (cell = "")); // first row is always header so ignore it
 
-  dataCopy.map(row => {
-    let value = row[selectedColumnIndex];
+  Array2D.forColumn(dataCopy, selectedColumnIndex, cell => {
     let type = miniBarTypes.positive;
 
-    if (value < 0) {
+    if (cell < 0) {
       type = miniBarTypes.negative;
       typeAmount.negatives++;
-    } else if (value > 0) {
+    } else if (cell > 0) {
       type = miniBarTypes.positive;
       typeAmount.positives++;
     } else {
       type = miniBarTypes.empty;
     }
 
-    if (isNumeric(value) || parseFloat(value)) {
-      minibarsWithType.numbers.push(parseFloat(value));
-      minibarsWithType.items.push({ value: parseFloat(value), type });
+    if (isNumeric(cell) || parseFloat(cell)) {
+      minibarsWithType.numbers.push(parseFloat(cell));
+      minibarsWithType.items.push({ value: parseFloat(cell), type });
     } else {
       minibarsWithType.items.push({ value: null, type });
     }

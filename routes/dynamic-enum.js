@@ -1,6 +1,5 @@
 const Boom = require("boom");
 const Joi = require("joi");
-const clone = require("clone");
 const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 
 function getMiniBarEnum(item) {

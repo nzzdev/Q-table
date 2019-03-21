@@ -106,8 +106,11 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/cardlayout-mobile.json`,
     require(`${fixtureDataDirectory}/cardlayout-mobile.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/lots-of-data.json`,
+    require(`${fixtureDataDirectory}/lots-of-data.json`)
   ]
-
 ];
 
 // register migration scripts here in order of version,
@@ -128,7 +131,7 @@ fixtureData.forEach(item => {
       fs.writeFile(
         item[0].split("../")[1],
         JSON.stringify(item[1], null, 2),
-        function (err) {
+        function(err) {
           if (err) {
             return console.log(err);
           }
