@@ -98,6 +98,18 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/footnote-mixed-minibars.json`,
     require(`${fixtureDataDirectory}/footnote-mixed-minibars.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/cardlayout.json`,
+    require(`${fixtureDataDirectory}/cardlayout.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/cardlayout-mobile.json`,
+    require(`${fixtureDataDirectory}/cardlayout-mobile.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/lots-of-data.json`,
+    require(`${fixtureDataDirectory}/lots-of-data.json`)
   ]
 ];
 

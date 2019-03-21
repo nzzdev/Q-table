@@ -1,0 +1,64 @@
+{
+  "title": "FIXTURE: cardlayout on mobile",
+  "subtitle": "Subtitle",
+  "data": {
+    "table": [
+      [
+        "Kennzahlen",
+        "2016",
+        "2017",
+        "+/-"
+      ],
+      [
+        "Umsatz",
+        "66.2",
+        "70.4",
+        "6"
+      ],
+      [
+        "Betriebsergebnis Ebit",
+        "7.9",
+        "",
+        "-19"
+      ],
+      [
+        "Ebit-Marge (%)",
+        "11.9",
+        "9.1",
+        null
+      ],
+      [
+        "Konzernergebnis",
+        "6.30",
+        "4.10",
+        "-35"
+      ],
+      [
+        "Cashflow aus Geschäftstätigkeit",
+        "8",
+        "5.80",
+        "-28"
+      ],
+      [
+        "Eigenkapitalquote (%)",
+        "72.3",
+        "71.8",
+        null
+      ],
+      [
+        "Nettoliquidität",
+        "42.30",
+        "41.80",
+        "-1"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [],
+  "options": {
+    "cardLayout": false,
+    "cardLayoutIfSmall": true
+  }
+}
