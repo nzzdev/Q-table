@@ -25,30 +25,38 @@ function isNumeric(cell) {
   return cell && !Number.isNaN(parseFloat(cell));
 }
 
-function isColumnNumeric(data, columnIndex) {
+function getColumnsType(data) {
+  const columns = [];
+  const table = clone(data).slice(1);
   let isColumnNumeric = false;
-  for (let row of clone(data).slice(1)) {
-    if (
-      isNumeric(row[columnIndex]) === true ||
-      row[columnIndex] === null ||
-      row[columnIndex] === "" ||
-      row[columnIndex] === "-"
-    ) {
-      // if the cell is empty or is a hyphen(-), we treat it as potentially numeric here
-      isColumnNumeric = true;
-    } else {
-      return false;
+  // go through every column of table
+  for (var i = 0; i <= table[0].length; i++) {
+    for (let row of table) {
+      if (
+        isNumeric(row[i]) === true ||
+        row[i] === null ||
+        row[i] === "" ||
+        row[i] === "-"
+      ) {
+        // if the cell is empty or is a hyphen(-), we treat it as potentially numeric here
+        isColumnNumeric = true;
+      } else {
+        isColumnNumeric = false;
+        break;
+      }
     }
+    columns.push({ isNumeric: isColumnNumeric });
   }
-  return isColumnNumeric;
+  return columns;
 }
 
 function getNumericColumns(data) {
-  let numericColumns = [];
+  const columns = getColumnsType(data);
+  const numericColumns = [];
   // data[0].length is undefined when creating a new item
   if (data[0] !== undefined) {
     for (var i = 0; i <= data[0].length; i++) {
-      if (isColumnNumeric(data, i)) {
+      if (columns[i].isNumeric) {
         numericColumns.push({ title: data[0][i], index: i });
       }
     }
@@ -57,11 +65,12 @@ function getNumericColumns(data) {
 }
 
 function getTableData(data, footnotes, options) {
+  const columns = getColumnsType(data);
   let tableData = data.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       let type = "text";
       let value = cell;
-      if (isColumnNumeric(data, columnIndex)) {
+      if (columns[columnIndex].isNumeric) {
         type = "numeric";
         // do not format the header row, empty cells or a hyphen(-)
         if (rowIndex > 0 && cell !== null && cell !== "" && cell != "-") {
