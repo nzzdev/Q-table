@@ -31,17 +31,10 @@ function getColumnsType(data) {
   const table = clone(data).slice(1);
 
   Array2D.eachColumn(table, (column, columnIndex) => {
-    let isColumnNumeric = false;
-    Array2D.forColumn(table, columnIndex, cell => {
-      if (
-        isNumeric(cell) === true ||
-        cell === null ||
-        cell === "" ||
-        cell === "-"
-      ) {
-        // if the cell is empty or is a hyphen(-), we treat it as potentially numeric here
-        isColumnNumeric = true;
-      }
+    let isColumnNumeric = column.every(cell => {
+      return (
+        isNumeric(cell) === true || cell === null || cell === "" || cell === "-"
+      );
     });
     columns.push({ isNumeric: isColumnNumeric });
   });

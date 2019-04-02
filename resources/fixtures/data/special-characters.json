@@ -1,0 +1,40 @@
+{
+  "data": {
+    "table": [
+      [null, "Resultat", "xGoals", null],
+      ["Russland - Saudiarabien", "5:0", "1,8 : 0,2", null],
+      ["Südkorea - Deutschland", "2:0", "1,3 : 2,7", "↻"],
+      ["England - Panama", "6:1", "2,8 : 1,1", null],
+      ["Australien - Peru", "0:2", "1,0 : 0,2", "↻"],
+      ["Island - Kroatien", "1:2", "2,2 : 0,7", "↻"],
+      ["Nigeria - Island", "2:0", "0,9 : 1,3", "↻"],
+      ["Russland - Ägypten", "3:1", "1,2 : 1,4", "↻"]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": null
+    }
+  },
+  "title": "FIXTURE: special characters",
+  "notes": "↻ = Das Spiel wäre anders ausgegangen, wenn beide Teams gleich viel aus ihren Chancen gemacht hätten.",
+  "subtitle": "Spiele mit der grössten Abweichung zwischen erwartetem und effektivem Resultat"
+}
