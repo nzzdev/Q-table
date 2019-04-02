@@ -161,9 +161,9 @@ lab.experiment("dynamic enum endpoint", () => {
 });
 
 lab.experiment("fixture data endpoint", () => {
-  it("returns 28 fixture data items for /fixtures/data", async () => {
+  it("returns 29 fixture data items for /fixtures/data", async () => {
     const response = await server.inject("/fixtures/data");
     expect(response.statusCode).to.be.equal(200);
-    expect(response.result.length).to.be.equal(28);
+    expect(response.result.length).to.be.equal(29);
   });
 });

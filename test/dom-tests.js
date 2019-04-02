@@ -40,6 +40,13 @@ function element(markup, selector) {
   });
 }
 
+function elements(markup, selector) {
+  return new Promise((resolve, reject) => {
+    const dom = new JSDOM(markup);
+    resolve(dom.window.document.querySelectorAll(selector));
+  });
+}
+
 function elementCount(markup, selector) {
   return new Promise((resolve, reject) => {
     const dom = new JSDOM(markup);
@@ -97,6 +104,25 @@ lab.experiment("cell values", () => {
     return elementCount(response.result.markup, ".q-table__cell--text").then(
       value => {
         expect(value).to.be.equals(32);
+      }
+    );
+  });
+
+  it("should display > 10000 show formatted", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/formatted-numbers.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    return elements(response.result.markup, ".q-table__cell--numeric").then(
+      elements => {
+        elements.forEach(element => {
+          expect(element.innerHTML.includes(" ")).to.be.equals(true);
+        });
       }
     );
   });
