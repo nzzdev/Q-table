@@ -58,13 +58,12 @@ lab.experiment("column headers", () => {
       }
     });
 
-    return elementCount(
-      response.result.markup,
-      ".q-table-cell--head"
-    ).then(value => {
-      expect(value).to.be.equal(4);
-    });
-  })
+    return elementCount(response.result.markup, ".q-table-cell--head").then(
+      value => {
+        expect(value).to.be.equal(4);
+      }
+    );
+  });
 
   it("doesn't show column headers", async () => {
     const response = await server.inject({
@@ -76,14 +75,32 @@ lab.experiment("column headers", () => {
       }
     });
 
-    return elementCount(
-      response.result.markup,
-      ".q-table-cell--head"
-    ).then(value => {
-      expect(value).to.be.equal(0);
+    return elementCount(response.result.markup, ".q-table-cell--head").then(
+      value => {
+        expect(value).to.be.equal(0);
+      }
+    );
+  });
+});
+
+lab.experiment("cell values", () => {
+  it("should display special characters as text", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/special-characters.json"),
+        toolRuntimeConfig: {}
+      }
     });
-  })
-})
+
+    return elementCount(response.result.markup, ".q-table__cell--text").then(
+      value => {
+        expect(value).to.be.equals(32);
+      }
+    );
+  });
+});
 
 lab.experiment("cardlayout", () => {
   it("shows the cardlayout in mobile width", async () => {
@@ -96,13 +113,12 @@ lab.experiment("cardlayout", () => {
       }
     });
 
-    return elementCount(
-      response.result.markup,
-      ".q-table--card-layout"
-    ).then(value => {
-      expect(value).to.be.equal(1);
-    });
-  })
+    return elementCount(response.result.markup, ".q-table--card-layout").then(
+      value => {
+        expect(value).to.be.equal(1);
+      }
+    );
+  });
   it("shows the cardlayout in article width", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
@@ -113,13 +129,12 @@ lab.experiment("cardlayout", () => {
       }
     });
 
-    return elementCount(
-      response.result.markup,
-      ".q-table--card-layout"
-    ).then(value => {
-      expect(value).to.be.equal(1);
-    });
-  })
+    return elementCount(response.result.markup, ".q-table--card-layout").then(
+      value => {
+        expect(value).to.be.equal(1);
+      }
+    );
+  });
   it("shows the cardlayout in full width", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
@@ -130,14 +145,13 @@ lab.experiment("cardlayout", () => {
       }
     });
 
-    return elementCount(
-      response.result.markup,
-      ".q-table--card-layout"
-    ).then(value => {
-      expect(value).to.be.equal(1);
-    });
-  })
-})
+    return elementCount(response.result.markup, ".q-table--card-layout").then(
+      value => {
+        expect(value).to.be.equal(1);
+      }
+    );
+  });
+});
 
 lab.experiment("cardlayout on mobile", () => {
   it("shows the cardlayout in mobile width", async () => {
@@ -150,8 +164,10 @@ lab.experiment("cardlayout on mobile", () => {
       }
     });
 
-    expect(response.result.scripts[1].content.includes('applyCardLayoutClass')).to.be.equal(true);
-  })
+    expect(
+      response.result.scripts[1].content.includes("applyCardLayoutClass")
+    ).to.be.equal(true);
+  });
   it("doesn't show the cardlayout in article width", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
@@ -162,8 +178,10 @@ lab.experiment("cardlayout on mobile", () => {
       }
     });
 
-    expect(response.result.scripts[1].content.includes('applyCardLayoutClass')).to.be.equal(true);
-  })
+    expect(
+      response.result.scripts[1].content.includes("applyCardLayoutClass")
+    ).to.be.equal(true);
+  });
   it("doesn't show the cardlayout in full width", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
@@ -173,9 +191,11 @@ lab.experiment("cardlayout on mobile", () => {
         toolRuntimeConfig: { size: { width: [800, ">"] } }
       }
     });
-    expect(response.result.scripts[1].content.includes('applyCardLayoutClass')).to.be.equal(true);
-  })
-})
+    expect(
+      response.result.scripts[1].content.includes("applyCardLayoutClass")
+    ).to.be.equal(true);
+  });
+});
 
 lab.experiment("minibars", () => {
   it("shows the same markup for positive minibars", async () => {
@@ -268,10 +288,7 @@ lab.experiment("minibars", () => {
       }
     });
 
-    return elementCount(
-      response.result.markup,
-      "td"
-    ).then(value => {
+    return elementCount(response.result.markup, "td").then(value => {
       expect(value).to.be.equal(28);
     });
   });
