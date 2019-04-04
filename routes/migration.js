@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const Boom = require("boom");
 
 // register migration scripts here in order of version,
 // i.e. list the smallest version first
