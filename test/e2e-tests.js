@@ -104,7 +104,7 @@ lab.experiment("rendering-info/web", () => {
 });
 
 lab.experiment("migration endpoint", () => {
-  it("returns 200 for /migration", async () => {
+  it("returns 304 for /migration", async () => {
     const request = {
       method: "POST",
       url: "/migration",
@@ -113,14 +113,57 @@ lab.experiment("migration endpoint", () => {
       }
     };
     const response = await server.inject(request);
-    expect(response.statusCode).to.be.equal(200);
+    expect(response.statusCode).to.be.equal(304);
+  });
+});
+
+lab.experiment("option availability endpoint", () => {
+  it("returns true for option availability of selectedColumn", async () => {
+    const request = {
+      method: "POST",
+      url: "/option-availability/selectedColumn",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-mixed.json")
+      }
+    };
+    const response = await server.inject(request);
+    expect(response.result.available).to.be.equal(true);
+  });
+
+  it("returns false for option availability of selectedColumn", async () => {
+    const request = {
+      method: "POST",
+      url: "/option-availability/selectedColumn",
+      payload: {
+        item: require("../resources/fixtures/data/two-column.json")
+      }
+    };
+    const response = await server.inject(request);
+    expect(response.result.available).to.be.equal(false);
+  });
+});
+
+lab.experiment("dynamic enum endpoint", () => {
+  it("returns enums of selectedColumn", async () => {
+    const request = {
+      method: "POST",
+      url: "/dynamic-enum/selectedColumn",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-negative.json")
+      }
+    };
+    const response = await server.inject(request);
+    expect(response.result).to.be.equal({
+      enum: [null, 1, 2, 3],
+      enum_titles: ["keine", "2016", "2017", "+/- %"]
+    });
   });
 });
 
 lab.experiment("fixture data endpoint", () => {
-  it("returns 24 fixture data items for /fixtures/data", async () => {
+  it("returns 29 fixture data items for /fixtures/data", async () => {
     const response = await server.inject("/fixtures/data");
     expect(response.statusCode).to.be.equal(200);
-    expect(response.result.length).to.be.equal(26);
+    expect(response.result.length).to.be.equal(29);
   });
 });

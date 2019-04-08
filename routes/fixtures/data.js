@@ -27,7 +27,10 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/footnotes-negative-minibars.json`),
   require(`${fixtureDataDirectory}/footnotes-mixed-minibars.json`),
   require(`${fixtureDataDirectory}/cardlayout.json`),
-  require(`${fixtureDataDirectory}/cardlayout-mobile.json`)
+  require(`${fixtureDataDirectory}/cardlayout-mobile.json`),
+  require(`${fixtureDataDirectory}/lots-of-data.json`),
+  require(`${fixtureDataDirectory}/special-characters.json`),
+  require(`${fixtureDataDirectory}/formatted-numbers.json`)
 ];
 
 module.exports = {
