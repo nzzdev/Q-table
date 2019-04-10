@@ -1,16 +1,12 @@
-const querystring = require("querystring");
 const fs = require("fs");
 const path = require("path");
 
-const Joi = require("joi");
 const Boom = require("boom");
-
 const UglifyJS = require("uglify-js");
 
 const resourcesDir = __dirname + "/../../resources/";
 const helpersDir = __dirname + "/../../helpers/";
 const viewsDir = __dirname + "/../../views/";
-const scriptsDir = __dirname + "/../../scripts/";
 const stylesDir = __dirname + "/../../styles/";
 
 // setup nunjucks environment
