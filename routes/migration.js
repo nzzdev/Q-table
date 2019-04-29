@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require("@hapi/joi");
 
 // register migration scripts here in order of version,
 // i.e. list the smallest version first

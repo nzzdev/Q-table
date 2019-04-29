@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 const UglifyJS = require("uglify-js");
 
 const resourcesDir = __dirname + "/../../resources/";

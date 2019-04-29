@@ -1,5 +1,5 @@
-const fs = require('fs');
-const Hapi = require('hapi');
+const fs = require("fs");
+const Hapi = require("@hapi/hapi");
 
 const server = Hapi.server({
   port: process.env.PORT || 3000,
@@ -8,24 +8,24 @@ const server = Hapi.server({
   }
 });
 
-const routes = require('./routes/routes.js');
+const routes = require("./routes/routes.js");
 
 async function init() {
-  await server.register(require('inert'));
+  await server.register(require("@hapi/inert"));
 
   server.route(routes);
-  
+
   await server.start();
-  console.log('server running ', server.info.uri)
+  console.log("server running ", server.info.uri);
 }
 
 init();
 
 async function gracefullyStop() {
-  console.log('stopping hapi server');
+  console.log("stopping hapi server");
   try {
     await server.stop({ timeout: 10000 });
-    console.log('hapi server stopped');
+    console.log("hapi server stopped");
   } catch (err) {
     console.log(err);
     process.exit(1);
@@ -34,5 +34,5 @@ async function gracefullyStop() {
 }
 
 // listen on SIGINT and SIGTERM signal and gracefully stop the server
-process.on('SIGINT', gracefullyStop);
-process.on('SIGTERM', gracefullyStop);
+process.on("SIGINT", gracefullyStop);
+process.on("SIGTERM", gracefullyStop);
