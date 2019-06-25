@@ -9,7 +9,7 @@
     "update-local-fixtureData": "node tasks/updateFixtureData.js"
   },
   "author": "Beni Buess <beni.buess@nzz.ch>",
-  "license": "",
+  "license": "MIT",
   "dependencies": {
     "@hapi/hapi": "^18.3.1",
     "@hapi/boom": "^7.4.2",
