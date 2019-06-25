@@ -1,6 +1,6 @@
-const Lab = require("lab");
-const Code = require("code");
-const Hapi = require("hapi");
+const Lab = require("@hapi/lab");
+const Code = require("@hapi/code");
+const Hapi = require("@hapi/hapi");
 const lab = (exports.lab = Lab.script());
 
 const expect = Code.expect;
@@ -104,7 +104,7 @@ lab.experiment("rendering-info/web", () => {
 });
 
 lab.experiment("migration endpoint", () => {
-  it("returns 200 for /migration", async () => {
+  it("returns 304 for /migration", async () => {
     const request = {
       method: "POST",
       url: "/migration",
@@ -113,7 +113,7 @@ lab.experiment("migration endpoint", () => {
       }
     };
     const response = await server.inject(request);
-    expect(response.statusCode).to.be.equal(200);
+    expect(response.statusCode).to.be.equal(304);
   });
 });
 
