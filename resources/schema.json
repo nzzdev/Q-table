@@ -83,7 +83,7 @@
               }
             }
           }
-        }  
+        }
       }
     },
     "sources": {
@@ -155,7 +155,7 @@
         "minibar": {
           "title": "Minibars",
           "type": "object",
-          "Q:options" : {
+          "Q:options": {
             "availabilityChecks": [
               {
                 "type": "ToolEndpoint",
@@ -180,17 +180,17 @@
               "Q:options": {
                 "availabilityChecks": [
                   {
-                    "type": "ToolEndpoint",  
+                    "type": "ToolEndpoint",
                     "config": {
                       "endpoint": "option-availability/selectedColumn",
                       "fields": ["options", "data"]
                     }
                   }
                 ],
-                "dynamicEnum": {
-                  "type": "ToolEndpoint",  
+                "dynamicSchema": {
+                  "type": "ToolEndpoint",
                   "config": {
-                    "endpoint": "dynamic-enum/selectedColumn",
+                    "endpoint": "dynamic-schema/selectedColumn",
                     "fields": ["options", "data"]
                   }
                 }
@@ -211,9 +211,9 @@
                   }
                 ]
               }
-            },  
+            },
             "barColor": {
-              "title": "Farben manuell festlegen", 
+              "title": "Farben manuell festlegen",
               "type": "object",
               "Q:options": {
                 "availabilityChecks": [
@@ -286,7 +286,7 @@
                       "Q:options": {
                         "placeholder": "s-viz-color-two-3"
                       }
-                    }, 
+                    },
                     "colorCode": {
                       "title": "Farbcode",
                       "type": "string",
@@ -302,7 +302,5 @@
       }
     }
   },
-  "required": [
-    "title", "data"
-  ]
+  "required": ["title", "data"]
 }
