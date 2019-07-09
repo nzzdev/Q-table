@@ -67,7 +67,9 @@ module.exports = {
     }
   },
   handler: async function(request, h) {
-    const renderingInfo = {};
+    const renderingInfo = {
+      polyfills: ["Promise"]
+    };
 
     renderingInfo.stylesheets = [
       {
