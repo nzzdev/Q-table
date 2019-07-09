@@ -82,6 +82,12 @@ module.exports = {
       item.options.hideTableHeader
     );
 
+    const minibarsAvailable = await request.server.inject({
+      url: "/option-availability/selectedColumn",
+      method: "POST",
+      payload: { item: item }
+    });
+
     const context = {
       item: item,
       tableData: dataHelpers.getTableData(
@@ -89,7 +95,9 @@ module.exports = {
         footnotes,
         item.options
       ),
-      minibar: minibarHelpers.getMinibarContext(item.options, itemDataCopy),
+      minibar: minibarsAvailable.result.available
+        ? minibarHelpers.getMinibarContext(item.options, itemDataCopy)
+        : {},
       footnotes: footnotes,
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
@@ -168,9 +176,7 @@ module.exports = {
       (item.options.cardLayout === false &&
         item.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
-      (item.options.minibar !== undefined &&
-        item.options.minibar !== null &&
-        item.options.minibar.selectedColumn !== null)
+      Object.keys(context.minibar).length !== 0
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context)
@@ -194,11 +200,7 @@ module.exports = {
       });
     }
 
-    if (
-      item.options.minibar !== undefined &&
-      item.options.minibar !== null &&
-      item.options.minibar.selectedColumn !== null
-    ) {
+    if (Object.keys(context.minibar).length !== 0) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getMinibarsScript(context)
       });
