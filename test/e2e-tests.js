@@ -143,20 +143,23 @@ lab.experiment("option availability endpoint", () => {
   });
 });
 
-lab.experiment("dynamic enum endpoint", () => {
+lab.experiment("dynamic schema endpoint", () => {
   it("returns enums of selectedColumn", async () => {
     const request = {
       method: "POST",
-      url: "/dynamic-enum/selectedColumn",
+      url: "/dynamic-schema/selectedColumn",
       payload: {
         item: require("../resources/fixtures/data/minibars-negative.json")
       }
     };
     const response = await server.inject(request);
-    expect(response.result).to.be.equal({
-      enum: [null, 1, 2, 3],
-      enum_titles: ["keine", "2016", "2017", "+/- %"]
-    });
+    expect(response.result.enum).to.be.equal([null, 1, 2, 3]);
+    expect(response.result["Q:options"].enum_titles).to.be.equal([
+      "keine",
+      "2016",
+      "2017",
+      "+/- %"
+    ]);
   });
 });
 
