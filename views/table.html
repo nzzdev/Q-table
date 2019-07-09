@@ -3,43 +3,45 @@
   <h3 class="s-q-item__title">{{ item.title }}</h3>{% endif %} {%- if item.subtitle and item.subtitle !== '' %}
   <div class="s-q-item__subtitle s-font-note">{{ item.subtitle }}</div>
   {%- endif %}
-  <table class="q-table__table">
-    {%- if item.options.hideTableHeader !== true %}
-    <thead class="s-font-note s-font-note--strong">
-      {%- for head in tableData[0] %}
-      <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} {{head.classes.join(" ")}}"
-      {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
-      colspan="2" id="q-table-minibar-header"
-      {% elif minibar.type === "mixed" and item.options.minibar.selectedColumn+1 === loop.index %}
-      id="q-table-minibar-header"
-      {% endif %}>
-        {%- if head.footnote %}
-          <span data-annotation="{{ head.footnote.value }}" class="q-table-annotation">{{ head.value }}</span>
-        {% else %}
-          {{ head.value }}
-        {%- endif %}          
-      </th> 
-      {%- endfor %}
-    </thead>
-    {%- endif %}
-    <tbody class="s-font-note">
-      {%- for row in tableData.slice(1) %}
-      {% set row_loop = loop %}
-      <tr {% if numberOfRowsToHide and loop.index >= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
-        {%- for cell in row %}
-          {% if minibar.type==="positive" %}
-            {% include "./cells/minibar-positive.html" %}
-          {% elif minibar.type==="negative" %}
-            {% include "./cells/minibar-negative.html" %}
-          {% elif minibar.type==="mixed" %}
-            {% include "./cells/minibar-mixed.html" %}
+  <div style="overflow-x: auto">
+    <table class="q-table__table">
+      {%- if item.options.hideTableHeader !== true %}
+      <thead class="s-font-note s-font-note--strong">
+        {%- for head in tableData[0] %}
+        <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} {{head.classes.join(" ")}}"
+        {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
+        colspan="2" id="q-table-minibar-header"
+        {% elif minibar.type === "mixed" and item.options.minibar.selectedColumn+1 === loop.index %}
+        id="q-table-minibar-header"
+        {% endif %}>
+          {%- if head.footnote %}
+            <span data-annotation="{{ head.footnote.value }}" class="q-table-annotation">{{ head.value }}</span>
           {% else %}
-            {% include "./cells/cell.html" %}
-          {% endif %}
+            {{ head.value }}
+          {%- endif %}          
+        </th> 
         {%- endfor %}
-      </tr>
-      {%- endfor %}
-    </tbody>
-  </table>
+      </thead>
+      {%- endif %}
+      <tbody class="s-font-note">
+        {%- for row in tableData.slice(1) %}
+        {% set row_loop = loop %}
+        <tr {% if numberOfRowsToHide and loop.index >= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
+          {%- for cell in row %}
+            {% if minibar.type==="positive" %}
+              {% include "./cells/minibar-positive.html" %}
+            {% elif minibar.type==="negative" %}
+              {% include "./cells/minibar-negative.html" %}
+            {% elif minibar.type==="mixed" %}
+              {% include "./cells/minibar-mixed.html" %}
+            {% else %}
+              {% include "./cells/cell.html" %}
+            {% endif %}
+          {%- endfor %}
+        </tr>
+        {%- endfor %}
+      </tbody>
+    </table>
+  </div>
   {% include "./footer.html" %}
 </div>
