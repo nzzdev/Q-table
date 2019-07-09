@@ -30,10 +30,14 @@ function getColumnsType(data) {
   const columns = [];
   const table = clone(data).slice(1);
 
-  Array2D.eachColumn(table, (column, columnIndex) => {
+  Array2D.eachColumn(table, column => {
+    let columnEmpty = column.every(cell => {
+      return cell === null || cell === "" || cell === "-";
+    });
     let isColumnNumeric = column.every(cell => {
       return (
-        isNumeric(cell) === true || cell === null || cell === "" || cell === "-"
+        !columnEmpty &&
+        (isNumeric(cell) || cell === null || cell === "" || cell === "-")
       );
     });
     columns.push({ isNumeric: isColumnNumeric });
