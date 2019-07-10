@@ -9,7 +9,7 @@
       <thead class="s-font-note s-font-note--strong">
         {%- for head in tableData[0] %}
         <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} {{head.classes.join(" ")}}"
-        {%- if item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
+        {%- if minibar.type !== undefined and item.options.minibar.selectedColumn === loop.index0 and item.options.minibar.selectedColumn != null and minibar.type !== "mixed" and not initWithCardLayout %}
         colspan="2" id="q-table-minibar-header"
         {% elif minibar.type === "mixed" and item.options.minibar.selectedColumn+1 === loop.index %}
         id="q-table-minibar-header"
