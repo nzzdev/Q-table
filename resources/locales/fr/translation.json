@@ -7,9 +7,16 @@
   "Quelle": "Source",
   "Url": "Url",
   "Anmerkungen": "Remarques",
+  "Optionen": "Options",
   "Spaltenüberschriften ausblenden": "Masquer les en-têtes",
   "Card-Layout": "Mise en page",
   "Card-Layout für Mobile": "Mise en page pour mobile",
-  "Der Titel bringt die Kernaussage der Tabelle auf den Punkt&#46;":
-    "Le titre apporte le message de base du table au point."
+  "Spalte auswählen": "Sélectionnez la colonne",
+  "Farben manuell festlegen": "Définir les couleurs manuellement",
+  "Farben invertieren": "Inverser les couleurs",
+  "Positive Werte": "Valeurs positives",
+  "Negative Werte": "Valeurs négatives",
+  "CSS-Klassenname": "Nom de la classe CSS",
+  "Farbcode": "Code couleur",
+  "Der Titel bringt die Kernaussage der Tabelle auf den Punkt&#46;": "Le titre apporte le message de base du table au point."
 }
