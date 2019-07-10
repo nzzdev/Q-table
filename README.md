@@ -218,7 +218,7 @@ Minibars are a visual feature to display the difference between numbers in the t
 ###### Implementation details serverside
 
 - The `option-availability` route will check if there are at least 3 columns and check if at least one if them is `numeric`
-- Once the option will be shown, the `dynamic-enum` route will read all `numeric` columns and display them in the option
+- Once the option will be shown, the `dynamic-schema` route will read all `numeric` columns and display them in the option
 - **Important**: The function `getMinibarContext()` will always return an object, when minibars aren't used the object is empty
 - The function `getMinibarContext()` uses a copy of `item.data` since the data will be altered
 - If minibars will be used, the function `getMinibarData()` with the parameters `data` and `minibarOptions` will be called

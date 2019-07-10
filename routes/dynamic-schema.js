@@ -23,7 +23,7 @@ function getMiniBarEnumTitles(item) {
 
 module.exports = {
   method: "POST",
-  path: "/dynamic-enum/{optionName}",
+  path: "/dynamic-schema/{optionName}",
   options: {
     validate: {
       payload: Joi.object()
@@ -31,10 +31,13 @@ module.exports = {
     cors: true
   },
   handler: function(request, h) {
+    const item = request.payload.item;
     if (request.params.optionName === "selectedColumn") {
       return {
-        enum: getMiniBarEnum(request.payload.item),
-        enum_titles: getMiniBarEnumTitles(request.payload.item)
+        enum: getMiniBarEnum(item),
+        "Q:options": {
+          enum_titles: getMiniBarEnumTitles(item)
+        }
       };
     }
     return Boom.badRequest();
