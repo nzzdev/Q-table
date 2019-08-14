@@ -30,7 +30,8 @@ module.exports = {
       if (item.data.table.length !== 0) {
         if (
           !item.options.cardLayout &&
-          getNumericColumns(item.data.table).length >= 2
+          item.data.table[0].length >= 3 &&
+          getNumericColumns(item.data.table).length >= 1
         ) {
           isAvailable = true;
         }
