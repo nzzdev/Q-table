@@ -23,15 +23,4 @@
 
     {%- endfor %}
   {%- endif %}
-  {%- if footnotes.length > 0 %}
-    {%- for footnote in footnotes -%}
-      <div class="q-table-footer-footnote">
-        <span class="q-table-footnote-index"
-        {%- if loop.index >= 10 -%}
-          style="width: 9px!important"
-        {%- endif -%}>
-        {{loop.index}}</span><span class="q-table-footnote-text"> {{footnote.data.footnote}}</span>
-      </div>
-    {%- endfor -%}
-  {%- endif -%}
 </div>
