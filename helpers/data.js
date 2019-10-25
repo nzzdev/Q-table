@@ -8,7 +8,8 @@ const appendFootnoteAnnotationsToTableData = require("./footnotes.js")
 
 const formatLocale = d3.format.formatLocale({
   decimal: ",",
-  thousands: " ", // this is a viertelgeviert U+2005
+  thousands: " ", // this is a viertelgeviert U+2005,
+  minus: "—", // this is a em-dash U+2014
   grouping: [3]
 });
 
