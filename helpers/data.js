@@ -6,10 +6,13 @@ const Array2D = require("array2d");
 const appendFootnoteAnnotationsToTableData = require("./footnotes.js")
   .appendFootnoteAnnotationsToTableData;
 
+const fourPerEmSpace = "\u2005";
+const enDash = "\u2013";
+
 const formatLocale = d3.format.formatLocale({
   decimal: ",",
-  thousands: " ", // this is a viertelgeviert U+2005,
-  minus: "–", // this is a em-dash U+2013
+  thousands: fourPerEmSpace,
+  minus: enDash,
   grouping: [3]
 });
 
@@ -73,13 +76,13 @@ function getTableData(data, footnotes, options) {
       let value = cell;
       if (columns[columnIndex].isNumeric) {
         type = "numeric";
-        // do not format the header row, empty cells, a hyphen(-) or a dash (–)
+        // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
         if (
           rowIndex > 0 &&
           cell !== null &&
           cell !== "" &&
           cell != "-" &&
-          cell != "–"
+          cell != enDash
         ) {
           if (Math.abs(parseFloat(cell)) >= 10000) {
             value = formatGrouping(cell);
