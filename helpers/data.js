@@ -6,9 +6,13 @@ const Array2D = require("array2d");
 const appendFootnoteAnnotationsToTableData = require("./footnotes.js")
   .appendFootnoteAnnotationsToTableData;
 
+const fourPerEmSpace = "\u2005";
+const enDash = "\u2013";
+
 const formatLocale = d3.format.formatLocale({
   decimal: ",",
-  thousands: " ", // this is a viertelgeviert U+2005
+  thousands: fourPerEmSpace,
+  minus: enDash,
   grouping: [3]
 });
 
@@ -32,12 +36,16 @@ function getColumnsType(data) {
 
   Array2D.eachColumn(table, column => {
     let columnEmpty = column.every(cell => {
-      return cell === null || cell === "" || cell === "-";
+      return cell === null || cell === "" || cell === "-" || cell === "–";
     });
     let isColumnNumeric = column.every(cell => {
       return (
         !columnEmpty &&
-        (isNumeric(cell) || cell === null || cell === "" || cell === "-")
+        (isNumeric(cell) ||
+          cell === null ||
+          cell === "" ||
+          cell === "-" ||
+          cell === "–")
       );
     });
     columns.push({ isNumeric: isColumnNumeric });
@@ -68,8 +76,14 @@ function getTableData(data, footnotes, options) {
       let value = cell;
       if (columns[columnIndex].isNumeric) {
         type = "numeric";
-        // do not format the header row, empty cells or a hyphen(-)
-        if (rowIndex > 0 && cell !== null && cell !== "" && cell != "-") {
+        // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
+        if (
+          rowIndex > 0 &&
+          cell !== null &&
+          cell !== "" &&
+          cell != "-" &&
+          cell != enDash
+        ) {
           if (Math.abs(parseFloat(cell)) >= 10000) {
             value = formatGrouping(cell);
           } else {
