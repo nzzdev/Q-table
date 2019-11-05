@@ -126,6 +126,44 @@ lab.experiment("cell values", () => {
       }
     );
   });
+
+  it("should display < -10000 show formatted", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/formatted-numbers-negative.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    return elements(response.result.markup, ".q-table__cell--numeric").then(
+      elements => {
+        elements.forEach(element => {
+          expect(element.innerHTML.includes(" ")).to.be.equals(true);
+        });
+      }
+    );
+  });
+
+  it("should display > 1000 when column contains >10000", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/formatted-numbers-mixed.json"),
+        toolRuntimeConfig: {}
+      }
+    });
+
+    return elements(response.result.markup, ".q-table__cell--numeric").then(
+      elements => {
+        elements.forEach(element => {
+          expect(element.innerHTML.includes(" ")).to.be.equals(true);
+        });
+      }
+    );
+  });
 });
 
 lab.experiment("cardlayout", () => {
