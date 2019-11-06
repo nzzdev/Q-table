@@ -1,0 +1,22 @@
+{
+  "title": "FIXTURE: four column numeric card layout for small mixed",
+  "subtitle": "Subtitle",
+  "data": {
+    "table": [
+      ["Kennzahlen", "2016", "2017"],
+      ["Umsatz", "12000", "100"],
+      ["Betriebsergebnis Ebit", "79123", "2000"],
+      ["Ebit-Marge (%)", "12332", "300"],
+      ["Konzernergebnis", "12331", "4000"],
+      ["Cashflow aus Geschäftstätigkeit", "99999", "10000"]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [],
+  "options": {
+    "cardLayout": false,
+    "cardLayoutIfSmall": true
+  }
+}

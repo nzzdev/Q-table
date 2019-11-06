@@ -30,7 +30,9 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/cardlayout-mobile.json`),
   require(`${fixtureDataDirectory}/lots-of-data.json`),
   require(`${fixtureDataDirectory}/special-characters.json`),
-  require(`${fixtureDataDirectory}/formatted-numbers.json`)
+  require(`${fixtureDataDirectory}/formatted-numbers.json`),
+  require(`${fixtureDataDirectory}/formatted-numbers-mixed.json`),
+  require(`${fixtureDataDirectory}/formatted-numbers-negative.json`)
 ];
 
 module.exports = {
