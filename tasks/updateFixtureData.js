@@ -110,6 +110,18 @@ const fixtureData = [
   [
     `${fixtureDataDirectory}/lots-of-data.json`,
     require(`${fixtureDataDirectory}/lots-of-data.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/formatted-number.json`,
+    require(`${fixtureDataDirectory}/formatted-number.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/formatted-number-mixed.json`,
+    require(`${fixtureDataDirectory}/formatted-number-mixed.json`)
+  ],
+  [
+    `${fixtureDataDirectory}/formatted-number-negative.json`,
+    require(`${fixtureDataDirectory}/formatted-number-negative.json`)
   ]
 ];
 

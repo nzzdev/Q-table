@@ -35,6 +35,7 @@ function getColumnsType(data) {
   const table = clone(data).slice(1);
 
   Array2D.eachColumn(table, column => {
+    let withFormating = false;
     let columnEmpty = column.every(cell => {
       return cell === null || cell === "" || cell === "-" || cell === "–";
     });
@@ -48,7 +49,11 @@ function getColumnsType(data) {
           cell === "–")
       );
     });
-    columns.push({ isNumeric: isColumnNumeric });
+    if (isColumnNumeric) {
+      const numbersOfColumn = column.map(number => isNumeric(number) ? parseFloat(number) : null);
+      withFormating = Math.max(...numbersOfColumn) >= 10000 || Math.min(...numbersOfColumn) <= -10000
+    }
+    columns.push({ isNumeric: isColumnNumeric, withFormating });
   });
   return columns;
 }
@@ -84,7 +89,7 @@ function getTableData(data, footnotes, options) {
           cell != "-" &&
           cell != enDash
         ) {
-          if (Math.abs(parseFloat(cell)) >= 10000) {
+          if (columns[columnIndex].withFormating) {
             value = formatGrouping(cell);
           } else {
             value = formatNoGrouping(cell);
