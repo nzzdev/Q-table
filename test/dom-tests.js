@@ -1,6 +1,7 @@
 const Lab = require("@hapi/lab");
 const Code = require("@hapi/code");
 const Hapi = require("@hapi/hapi");
+const Joi = require("@hapi/joi");
 const lab = (exports.lab = Lab.script());
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -19,9 +20,10 @@ before(async () => {
     server = Hapi.server({
       port: process.env.PORT || 3000,
       routes: {
-        cors: true
-      }
+        cors: true,
+      },
     });
+    server.validator(Joi);
     server.route(routes);
   } catch (err) {
     expect(err).to.not.exist();
@@ -61,12 +63,12 @@ lab.experiment("column headers", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/four-column.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(response.result.markup, ".q-table-cell--head").then(
-      value => {
+      (value) => {
         expect(value).to.be.equal(4);
       }
     );
@@ -78,12 +80,12 @@ lab.experiment("column headers", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/four-column-no-header.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(response.result.markup, ".q-table-cell--head").then(
-      value => {
+      (value) => {
         expect(value).to.be.equal(0);
       }
     );
@@ -97,12 +99,12 @@ lab.experiment("cell values", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/special-characters.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(response.result.markup, ".q-table__cell--text").then(
-      value => {
+      (value) => {
         expect(value).to.be.equals(32);
       }
     );
@@ -114,13 +116,13 @@ lab.experiment("cell values", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/formatted-numbers.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elements(response.result.markup, ".q-table__cell--numeric").then(
-      elements => {
-        elements.forEach(element => {
+      (elements) => {
+        elements.forEach((element) => {
           expect(element.innerHTML.includes(" ")).to.be.equals(true);
         });
       }
@@ -133,13 +135,13 @@ lab.experiment("cell values", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/formatted-numbers-negative.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elements(response.result.markup, ".q-table__cell--numeric").then(
-      elements => {
-        elements.forEach(element => {
+      (elements) => {
+        elements.forEach((element) => {
           expect(element.innerHTML.includes(" ")).to.be.equals(true);
         });
       }
@@ -152,13 +154,13 @@ lab.experiment("cell values", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/formatted-numbers-mixed.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elements(response.result.markup, ".q-table__cell--numeric").then(
-      elements => {
-        elements.forEach(element => {
+      (elements) => {
+        elements.forEach((element) => {
           expect(element.innerHTML.includes(" ")).to.be.equals(true);
         });
       }
@@ -173,12 +175,12 @@ lab.experiment("cardlayout", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/cardlayout.json"),
-        toolRuntimeConfig: { size: { width: [350, "<"] } }
-      }
+        toolRuntimeConfig: { size: { width: [350, "<"] } },
+      },
     });
 
     return elementCount(response.result.markup, ".q-table--card-layout").then(
-      value => {
+      (value) => {
         expect(value).to.be.equal(1);
       }
     );
@@ -189,12 +191,12 @@ lab.experiment("cardlayout", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/cardlayout.json"),
-        toolRuntimeConfig: { size: { width: [500, ">"] } }
-      }
+        toolRuntimeConfig: { size: { width: [500, ">"] } },
+      },
     });
 
     return elementCount(response.result.markup, ".q-table--card-layout").then(
-      value => {
+      (value) => {
         expect(value).to.be.equal(1);
       }
     );
@@ -205,12 +207,12 @@ lab.experiment("cardlayout", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/cardlayout.json"),
-        toolRuntimeConfig: { size: { width: [800, ">"] } }
-      }
+        toolRuntimeConfig: { size: { width: [800, ">"] } },
+      },
     });
 
     return elementCount(response.result.markup, ".q-table--card-layout").then(
-      value => {
+      (value) => {
         expect(value).to.be.equal(1);
       }
     );
@@ -224,8 +226,8 @@ lab.experiment("cardlayout on mobile", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/cardlayout-mobile.json"),
-        toolRuntimeConfig: { size: { width: [400, "<"] } }
-      }
+        toolRuntimeConfig: { size: { width: [400, "<"] } },
+      },
     });
 
     expect(
@@ -238,8 +240,8 @@ lab.experiment("cardlayout on mobile", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/cardlayout-mobile.json"),
-        toolRuntimeConfig: { size: { width: [500, ">"] } }
-      }
+        toolRuntimeConfig: { size: { width: [500, ">"] } },
+      },
     });
 
     expect(
@@ -252,8 +254,8 @@ lab.experiment("cardlayout on mobile", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/cardlayout-mobile.json"),
-        toolRuntimeConfig: { size: { width: [800, ">"] } }
-      }
+        toolRuntimeConfig: { size: { width: [800, ">"] } },
+      },
     });
     expect(
       response.result.scripts[1].content.includes("applyCardLayoutClass")
@@ -263,15 +265,15 @@ lab.experiment("cardlayout on mobile", () => {
 
 lab.experiment("minibars", () => {
   it("shows the same markup for positive minibars", async () => {
-    const workingMinibarsMarkup = `<div class=\"s-q-item q-table\"id=\"q_table_someid_\"style=\"opacity: 0;\"><h3 class=\"s-q-item__title\">FIXTURE: minibars with negative values</h3><div class=\"s-q-item__subtitle s-font-note\">State by state breakdown</div><div style=\"overflow-x: auto\"><table class=\"q-table__table\"><thead class=\"s-font-note s-font-note--strong\"><th class=\"q-table__cell q-table-cell--head q-table__cell--text\"></th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2016</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2017</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\"colspan=\"2\"id=\"q-table-minibar-header\">+/- %</th></thead><tbody class=\"s-font-note\"><tr><td data-label=\" \n  \n    \n  \"class=\"q-table__cell q-table__cell--text\">Auftragseingang</td><td data-label=\"2016 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 375</td><td data-label=\"2017 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 989</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 46.15384615384615%; background-color:;\"></div></td><td data-label=\"+/- % \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–6</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Umsatz</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">9 683</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">10 178</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 38.46153846153846%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–5</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Ebit-Mage (%)</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--empty s-viz-color-one-5\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Cashflow aus Geschäftstätigkeite</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">929</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">810</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 100%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–13</td></tr></tbody></table></div><div class=\"s-q-item__footer\">Quelle: The Centers for Disease Control and Prevention</div></div>`;
+    const workingMinibarsMarkup = `<div class=\"s-q-item q-table\"id=\"q_table_someid_\"style=\"opacity: 0;\"><h3 class=\"s-q-item__title\">FIXTURE: minibars with negative values</h3><div class=\"s-q-item__subtitle\">State by state breakdown</div><div style=\"overflow-x: auto\"><table class=\"q-table__table\"><thead class=\"s-font-note s-font-note--strong\"><th class=\"q-table__cell q-table-cell--head q-table__cell--text\"></th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2016</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2017</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\"colspan=\"2\"id=\"q-table-minibar-header\">+/- %</th></thead><tbody class=\"s-font-note\"><tr><td data-label=\" \n  \n    \n  \"class=\"q-table__cell q-table__cell--text\">Auftragseingang</td><td data-label=\"2016 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 375</td><td data-label=\"2017 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 989</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 46.15384615384615%; background-color:;\"></div></td><td data-label=\"+/- % \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–6</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Umsatz</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">9 683</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">10 178</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 38.46153846153846%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–5</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Ebit-Mage (%)</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--empty s-viz-color-one-5\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Cashflow aus Geschäftstätigkeite</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">929</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">810</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 100%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–13</td></tr></tbody></table></div><div class=\"s-q-item__footer\">Quelle: The Centers for Disease Control and Prevention</div></div>`;
 
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/minibars-negative.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const html = response.result.markup.replace(
@@ -283,22 +285,22 @@ lab.experiment("minibars", () => {
       collapseWhitespace: true,
       removeComments: true,
       removeTagWhitespace: true,
-      useShortDoctype: true
+      useShortDoctype: true,
     });
 
     expect(resultResp).to.be.equals(workingMinibarsMarkup);
   });
 
   it("shows the same markup for negative minibars", async () => {
-    const workingMinibarsMarkup = `<div class=\"s-q-item q-table\"id=\"q_table_someid_\"style=\"opacity: 0;\"><h3 class=\"s-q-item__title\">FIXTURE: minibars with negative values</h3><div class=\"s-q-item__subtitle s-font-note\">State by state breakdown</div><div style=\"overflow-x: auto\"><table class=\"q-table__table\"><thead class=\"s-font-note s-font-note--strong\"><th class=\"q-table__cell q-table-cell--head q-table__cell--text\"></th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2016</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2017</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\"colspan=\"2\"id=\"q-table-minibar-header\">+/- %</th></thead><tbody class=\"s-font-note\"><tr><td data-label=\" \n  \n    \n  \"class=\"q-table__cell q-table__cell--text\">Auftragseingang</td><td data-label=\"2016 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 375</td><td data-label=\"2017 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 989</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 46.15384615384615%; background-color:;\"></div></td><td data-label=\"+/- % \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–6</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Umsatz</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">9 683</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">10 178</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 38.46153846153846%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–5</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Ebit-Mage (%)</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--empty s-viz-color-one-5\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Cashflow aus Geschäftstätigkeite</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">929</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">810</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 100%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–13</td></tr></tbody></table></div><div class=\"s-q-item__footer\">Quelle: The Centers for Disease Control and Prevention</div></div>`;
+    const workingMinibarsMarkup = `<div class=\"s-q-item q-table\"id=\"q_table_someid_\"style=\"opacity: 0;\"><h3 class=\"s-q-item__title\">FIXTURE: minibars with negative values</h3><div class=\"s-q-item__subtitle\">State by state breakdown</div><div style=\"overflow-x: auto\"><table class=\"q-table__table\"><thead class=\"s-font-note s-font-note--strong\"><th class=\"q-table__cell q-table-cell--head q-table__cell--text\"></th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2016</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2017</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\"colspan=\"2\"id=\"q-table-minibar-header\">+/- %</th></thead><tbody class=\"s-font-note\"><tr><td data-label=\" \n  \n    \n  \"class=\"q-table__cell q-table__cell--text\">Auftragseingang</td><td data-label=\"2016 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 375</td><td data-label=\"2017 \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric\">10 989</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 46.15384615384615%; background-color:;\"></div></td><td data-label=\"+/- % \n  \n    \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–6</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Umsatz</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">9 683</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">10 178</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 38.46153846153846%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–5</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Ebit-Mage (%)</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--empty s-viz-color-one-5\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">-</td></tr><tr><td data-label=\" \n  \"class=\"q-table__cell q-table__cell--text\">Cashflow aus Geschäftstätigkeite</td><td data-label=\"2016 \n  \"class=\"q-table__cell q-table__cell--numeric\">929</td><td data-label=\"2017 \n  \"class=\"q-table__cell q-table__cell--numeric\">810</td><td class=\"q-table-minibar-cell\"data-minibar=\"negative\"style=\"padding-left: 12px; padding-right: 0px !important;\"><div class=\"q-table-minibar-bar--negative s-viz-color-one-5\"style=\"width: 100%; background-color:;\"></div></td><td data-label=\"+/- % \n  \"class=\"q-table__cell q-table__cell--numeric q-table-minibar-cell--value\"data-minibar=\"negative\"style=\"padding-right: 12px;\">–13</td></tr></tbody></table></div><div class=\"s-q-item__footer\">Quelle: The Centers for Disease Control and Prevention</div></div>`;
 
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/minibars-negative.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const html = response.result.markup.replace(
@@ -310,21 +312,21 @@ lab.experiment("minibars", () => {
       collapseWhitespace: true,
       removeComments: true,
       removeTagWhitespace: true,
-      useShortDoctype: true
+      useShortDoctype: true,
     });
 
     expect(resultResp).to.be.equals(workingMinibarsMarkup);
   });
 
   it("shows the same markup for mixed minibars", async () => {
-    const workingMinibarsMarkup = `<div class=\"s-q-item q-table\"id=\"q_table_someid_\"style=\"opacity: 0;\"><h3 class=\"s-q-item__title\">FIXTURE: minibars with positive and negative values</h3><div class=\"s-q-item__subtitle s-font-note\">State by state breakdown</div><div style=\"overflow-x: auto\"><table class=\"q-table__table\"><thead class=\"s-font-note s-font-note--strong\"><th class=\"q-table__cell q-table-cell--head q-table__cell--text\"></th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2016</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2017</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\"id=\"q-table-minibar-header\">+/- %</th></thead><tbody class=\"s-font-note\"><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Auftragseingang</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">10 375</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">10 989</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"positive\"class=\"q-table-minibar-alignment--positive q-table__cell q-table__cell--numeric\">6</div><div data-minibar=\"positive\"class=\"q-table-minibar-bar--positive q-table-minibar--positive s-viz-color-diverging-2-2\"style=\"width: 23.076923076923077%;background-color:;\"></div></td></tr><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Umsatz</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">9 683</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">10 178</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"positive\"class=\"q-table-minibar-alignment--positive q-table__cell q-table__cell--numeric\">5</div><div data-minibar=\"positive\"class=\"q-table-minibar-bar--positive q-table-minibar--positive s-viz-color-diverging-2-2\"style=\"width: 19.23076923076923%;background-color:;\"></div></td></tr><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Ebit-Mage (%)</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"empty\"class=\"q-table-minibar-alignment--empty q-table__cell q-table__cell--numeric\">-</div></td></tr><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Cashflow aus Geschäftstätigkeite</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">929</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">810</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"negative\"class=\"q-table-minibar-alignment--negative q-table__cell q-table__cell--numeric\">–13</div><div data-minibar=\"negative\"class=\"q-table-minibar-bar--negative q-table-minibar--negative s-viz-color-diverging-2-1\"style=\"width: 50%;background-color:;\"></div></td></tr></tbody></table></div><div class=\"s-q-item__footer\">Quelle: The Centers for Disease Control and Prevention</div></div>`;
+    const workingMinibarsMarkup = `<div class=\"s-q-item q-table\"id=\"q_table_someid_\"style=\"opacity: 0;\"><h3 class=\"s-q-item__title\">FIXTURE: minibars with positive and negative values</h3><div class=\"s-q-item__subtitle\">State by state breakdown</div><div style=\"overflow-x: auto\"><table class=\"q-table__table\"><thead class=\"s-font-note s-font-note--strong\"><th class=\"q-table__cell q-table-cell--head q-table__cell--text\"></th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2016</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\">2017</th><th class=\"q-table__cell q-table-cell--head q-table__cell--numeric\"id=\"q-table-minibar-header\">+/- %</th></thead><tbody class=\"s-font-note\"><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Auftragseingang</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">10 375</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">10 989</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"positive\"class=\"q-table-minibar-alignment--positive q-table__cell q-table__cell--numeric\">6</div><div data-minibar=\"positive\"class=\"q-table-minibar-bar--positive q-table-minibar--positive s-viz-color-diverging-2-2\"style=\"width: 23.076923076923077%;background-color:;\"></div></td></tr><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Umsatz</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">9 683</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">10 178</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"positive\"class=\"q-table-minibar-alignment--positive q-table__cell q-table__cell--numeric\">5</div><div data-minibar=\"positive\"class=\"q-table-minibar-bar--positive q-table-minibar--positive s-viz-color-diverging-2-2\"style=\"width: 19.23076923076923%;background-color:;\"></div></td></tr><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Ebit-Mage (%)</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">11,7</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"empty\"class=\"q-table-minibar-alignment--empty q-table__cell q-table__cell--numeric\">-</div></td></tr><tr><td data-label=\" \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--text\">Cashflow aus Geschäftstätigkeite</td><td data-label=\"2016 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">929</td><td data-label=\"2017 \"data-minibar=\"mixed\"class=\"q-table__cell q-table__cell--numeric\">810</td><td data-label=\"+/- % \"data-minibar=\"mixed\"class=\"q-table__cell q-table-minibar--mixed\"><div data-minibar=\"negative\"class=\"q-table-minibar-alignment--negative q-table__cell q-table__cell--numeric\">–13</div><div data-minibar=\"negative\"class=\"q-table-minibar-bar--negative q-table-minibar--negative s-viz-color-diverging-2-1\"style=\"width: 50%;background-color:;\"></div></td></tr></tbody></table></div><div class=\"s-q-item__footer\">Quelle: The Centers for Disease Control and Prevention</div></div>`;
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/minibars-mixed.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const html = response.result.markup.replace(
@@ -336,7 +338,7 @@ lab.experiment("minibars", () => {
       collapseWhitespace: true,
       removeComments: true,
       removeTagWhitespace: true,
-      useShortDoctype: true
+      useShortDoctype: true,
     });
 
     expect(resultResp).to.be.equals(workingMinibarsMarkup);
@@ -348,11 +350,11 @@ lab.experiment("minibars", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/four-column.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
-    return elementCount(response.result.markup, "td").then(value => {
+    return elementCount(response.result.markup, "td").then((value) => {
       expect(value).to.be.equal(28);
     });
   });
@@ -365,8 +367,8 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/display-footnotes.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const dom = new JSDOM(response.result.markup);
@@ -376,7 +378,7 @@ lab.experiment("footnotes", () => {
 
     let annotationIndexes = [];
 
-    annotations.forEach(annotation => {
+    annotations.forEach((annotation) => {
       annotationIndexes.push(annotation.dataset.annotation);
     });
 
@@ -389,8 +391,8 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/display-footnotes.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const dom = new JSDOM(response.result.markup);
@@ -400,30 +402,30 @@ lab.experiment("footnotes", () => {
 
     let arrayOfFootnotes = [];
 
-    footnotes.forEach(footnote => {
+    footnotes.forEach((footnote) => {
       arrayOfFootnotes.push({
         index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
-        text: footnote.childNodes[2].innerHTML.replace("\n        ", "")
+        text: footnote.childNodes[2].innerHTML.replace("\n        ", ""),
       });
     });
 
     expect(arrayOfFootnotes).to.be.equal([
       {
         index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann"
+        text: " Frisch verheiratet, früher Hanspeter Mustermann",
       },
       {
         index: "2",
-        text: " Verhalten in letzter Spalte"
+        text: " Verhalten in letzter Spalte",
       },
       {
         index: "3",
-        text: " Frisch verheiratet, früher Peter Vorderbach"
+        text: " Frisch verheiratet, früher Peter Vorderbach",
       },
       {
         index: "4",
-        text: " Frisch verheiratet, früher Ralf Hinterbach"
-      }
+        text: " Frisch verheiratet, früher Ralf Hinterbach",
+      },
     ]);
   });
 
@@ -433,8 +435,8 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const dom = new JSDOM(response.result.markup);
@@ -457,8 +459,8 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/hide-footnotes-in-header.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const dom = new JSDOM(response.result.markup);
@@ -484,14 +486,14 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/display-footnotes-before-minibar.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(
       response.result.markup,
       ".q-table-col-footnotes-single"
-    ).then(value => {
+    ).then((value) => {
       expect(value).to.be.equal(12);
     });
   });
@@ -502,14 +504,14 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/display-alot-of-footnotes.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(
       response.result.markup,
       ".q-table-col-footnotes-double"
-    ).then(value => {
+    ).then((value) => {
       expect(value).to.be.equal(12);
     });
   });
@@ -520,14 +522,14 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(
       response.result.markup,
       ".q-table-col-footnotes-cardlayout-single"
-    ).then(value => {
+    ).then((value) => {
       expect(value).to.be.equal(20);
     });
   });
@@ -538,14 +540,14 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/footnotes-positive-minibars.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(
       response.result.markup,
       ".q-table-col-footnotes-single"
-    ).then(value => {
+    ).then((value) => {
       expect(value).to.be.equal(16);
     });
   });
@@ -556,14 +558,14 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/footnotes-negative-minibars.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(
       response.result.markup,
       ".q-table-col-footnotes-single"
-    ).then(value => {
+    ).then((value) => {
       expect(value).to.be.equal(16);
     });
   });
@@ -574,14 +576,14 @@ lab.experiment("footnotes", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/footnotes-mixed-minibars.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     return elementCount(
       response.result.markup,
       ".q-table-col-footnotes-single"
-    ).then(value => {
+    ).then((value) => {
       expect(value).to.be.equal(18);
     });
   });
@@ -591,41 +593,41 @@ lab.experiment("footnotes", () => {
     item.data.metaData.cells = [
       {
         data: {
-          test: "test"
+          test: "test",
         },
         rowIndex: 1,
-        colIndex: 2
+        colIndex: 2,
       },
       {
         data: {
-          test1: "test1"
+          test1: "test1",
         },
         rowIndex: 2,
-        colIndex: 1
+        colIndex: 1,
       },
       {
         data: {
-          test2: "test2"
+          test2: "test2",
         },
         rowIndex: 3,
-        colIndex: 1
+        colIndex: 1,
       },
       {
         data: {
           footnote: "test3",
-          multipleData: true
+          multipleData: true,
         },
         rowIndex: 4,
-        colIndex: 1
-      }
+        colIndex: 1,
+      },
     ];
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
       method: "POST",
       payload: {
         item: item,
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
 
     const dom = new JSDOM(response.result.markup);
@@ -633,7 +635,7 @@ lab.experiment("footnotes", () => {
       "span.q-table-annotation"
     );
     let annotationIndexes = [];
-    annotations.forEach(annotation => {
+    annotations.forEach((annotation) => {
       annotationIndexes.push(annotation.dataset.annotation);
     });
 

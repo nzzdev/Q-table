@@ -1,12 +1,14 @@
-const fs = require("fs");
 const Hapi = require("@hapi/hapi");
+const Joi = require("@hapi/joi");
 
 const server = Hapi.server({
   port: process.env.PORT || 3000,
   routes: {
-    cors: true
-  }
+    cors: true,
+  },
 });
+
+server.validator(Joi);
 
 const routes = require("./routes/routes.js");
 

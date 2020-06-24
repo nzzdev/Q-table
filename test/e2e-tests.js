@@ -1,6 +1,7 @@
 const Lab = require("@hapi/lab");
 const Code = require("@hapi/code");
 const Hapi = require("@hapi/hapi");
+const Joi = require("@hapi/joi");
 const lab = (exports.lab = Lab.script());
 
 const expect = Code.expect;
@@ -17,9 +18,10 @@ before(async () => {
     server = Hapi.server({
       port: process.env.PORT || 3000,
       routes: {
-        cors: true
-      }
+        cors: true,
+      },
     });
+    server.validator(Joi);
     server.route(routes);
   } catch (err) {
     expect(err).to.not.exist();
@@ -49,8 +51,8 @@ lab.experiment("rendering-info/web", () => {
       method: "POST",
       payload: {
         item: require("../resources/fixtures/data/four-column-no-header.json"),
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
     expect(response.statusCode).to.be.equal(200);
     expect(response.result.markup).startsWith(
@@ -63,7 +65,7 @@ lab.experiment("rendering-info/web", () => {
   it("returns 400 if no payload given", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
-      method: "POST"
+      method: "POST",
     });
     expect(response.statusCode).to.be.equal(400);
   });
@@ -73,8 +75,8 @@ lab.experiment("rendering-info/web", () => {
       url: "/rendering-info/web?_id=someid",
       method: "POST",
       payload: {
-        item: require("../resources/fixtures/data/four-column-no-header.json")
-      }
+        item: require("../resources/fixtures/data/four-column-no-header.json"),
+      },
     });
     expect(response.statusCode).to.be.equal(400);
   });
@@ -84,8 +86,8 @@ lab.experiment("rendering-info/web", () => {
       url: "/rendering-info/web?_id=someid",
       method: "POST",
       payload: {
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
     expect(response.statusCode).to.be.equal(400);
   });
@@ -96,8 +98,8 @@ lab.experiment("rendering-info/web", () => {
       method: "POST",
       payload: {
         item: { foo: "bar" },
-        toolRuntimeConfig: {}
-      }
+        toolRuntimeConfig: {},
+      },
     });
     expect(response.statusCode).to.be.equal(400);
   });
@@ -109,8 +111,8 @@ lab.experiment("migration endpoint", () => {
       method: "POST",
       url: "/migration",
       payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json")
-      }
+        item: require("../resources/fixtures/data/minibars-negative.json"),
+      },
     };
     const response = await server.inject(request);
     expect(response.statusCode).to.be.equal(304);
@@ -123,8 +125,8 @@ lab.experiment("option availability endpoint", () => {
       method: "POST",
       url: "/option-availability/selectedColumn",
       payload: {
-        item: require("../resources/fixtures/data/minibars-mixed.json")
-      }
+        item: require("../resources/fixtures/data/minibars-mixed.json"),
+      },
     };
     const response = await server.inject(request);
     expect(response.result.available).to.be.equal(true);
@@ -135,8 +137,8 @@ lab.experiment("option availability endpoint", () => {
       method: "POST",
       url: "/option-availability/selectedColumn",
       payload: {
-        item: require("../resources/fixtures/data/two-column.json")
-      }
+        item: require("../resources/fixtures/data/two-column.json"),
+      },
     };
     const response = await server.inject(request);
     expect(response.result.available).to.be.equal(false);
@@ -149,8 +151,8 @@ lab.experiment("dynamic schema endpoint", () => {
       method: "POST",
       url: "/dynamic-schema/selectedColumn",
       payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json")
-      }
+        item: require("../resources/fixtures/data/minibars-negative.json"),
+      },
     };
     const response = await server.inject(request);
     expect(response.result.enum).to.be.equal([null, 1, 2, 3]);
@@ -158,7 +160,7 @@ lab.experiment("dynamic schema endpoint", () => {
       "keine",
       "2016",
       "2017",
-      "+/- %"
+      "+/- %",
     ]);
   });
 });
