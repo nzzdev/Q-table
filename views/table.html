@@ -1,7 +1,7 @@
 <div class="s-q-item q-table {% if initWithCardLayout %}q-table--card-layout{% endif %}" id="{{ id }}" style="opacity: 0;">
   {% if displayOptions.hideTitle !== true %}
   <h3 class="s-q-item__title">{{ item.title }}</h3>{% endif %} {%- if item.subtitle and item.subtitle !== '' %}
-  <div class="s-q-item__subtitle s-font-note">{{ item.subtitle }}</div>
+  <div class="s-q-item__subtitle">{{ item.subtitle }}</div>
   {%- endif %}
   <div style="overflow-x: auto">
     <table class="q-table__table">
