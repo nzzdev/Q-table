@@ -271,6 +271,8 @@ tr.q-table-state-visible {
 
 .q-table-annotation {
   position: relative;
+  display: block;
+  width: 100%;
 }
 
 .q-table-annotation::after {

@@ -12,25 +12,25 @@
   "license": "MIT",
   "dependencies": {
     "@hapi/boom": "^9.1.0",
-    "@hapi/hapi": "^19.1.1",
-    "@hapi/inert": "^6.0.1",
+    "@hapi/hapi": "^19.2.0",
+    "@hapi/inert": "^6.0.2",
     "@hapi/joi": "^17.1.1",
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.3",
     "array2d": "0.0.5",
     "clone": "^2.1.2",
     "d3-format": "^1.4.4",
-    "nunjucks": "^3.2.1",
-    "uglify-js": "^3.10.0"
+    "nunjucks": "^3.2.2",
+    "uglify-js": "^3.10.1"
   },
   "devDependencies": {
-    "@hapi/code": "^8.0.1",
-    "@hapi/lab": "^22.0.4",
-    "autoprefixer": "^9.8.4",
+    "@hapi/code": "^8.0.2",
+    "@hapi/lab": "^22.0.5",
+    "autoprefixer": "^9.8.6",
     "cssnano": "^4.1.10",
     "html-minifier": "^4.0.0",
-    "jsdom": "^16.2.2",
+    "jsdom": "^16.4.0",
     "postcss": "^7.0.32",
     "postcss-import": "^12.0.1",
-    "sass": "^1.26.9"
+    "sass": "^1.26.10"
   }
 }
