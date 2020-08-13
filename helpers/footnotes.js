@@ -92,20 +92,6 @@ function getFilteredMetaDataFootnotes(metaData, hideTableHeader) {
       return a.colIndex - b.colIndex;
     });
 
-  if (filteredFootnotes.length > 0) {
-    let uniqueFootnotes = getUniqueFootnotes(filteredFootnotes);
-
-    filteredFootnotes.forEach((footnote) => {
-      let unique = uniqueFootnotes.find(
-        (uniqueFootnote) =>
-          uniqueFootnote.data.footnote === footnote.data.footnote
-      );
-      if (unique) {
-        footnote.index = unique.index;
-      }
-    });
-  }
-
   return filteredFootnotes;
 }
 
@@ -122,4 +108,5 @@ function getUniqueFootnotes(footnotes) {
 module.exports = {
   appendFootnoteAnnotationsToTableData,
   getFilteredMetaDataFootnotes,
+  getUniqueFootnotes,
 };

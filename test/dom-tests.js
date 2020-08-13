@@ -458,18 +458,6 @@ lab.experiment("footnotes", () => {
         index: "1",
         text: " Frisch verheiratet, früher Hanspeter Mustermann",
       },
-      {
-        index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann",
-      },
-      {
-        index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann",
-      },
-      {
-        index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann",
-      },
     ]);
   });
 
