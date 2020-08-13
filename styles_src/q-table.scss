@@ -47,7 +47,9 @@ td.q-table__cell--numeric {
   }
 }
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
-.q-table:not(.q-table--card-layout) .q-table__cell--numeric:not(#q-table-minibar-header) + .q-table__cell:not(.q-table__cell--numeric){
+.q-table:not(.q-table--card-layout)
+  .q-table__cell--numeric:not(#q-table-minibar-header)
+  + .q-table__cell:not(.q-table__cell--numeric) {
   padding-left: 20px;
 }
 
@@ -114,47 +116,53 @@ td.q-table__cell--numeric {
     border-bottom: 0;
   }
 
-  .q-table-minibar-cell, .q-table-minibar-bar--negative, .q-table-minibar-bar--positive {
-    display:none!important;
+  .q-table-minibar-cell,
+  .q-table-minibar-bar--negative,
+  .q-table-minibar-bar--positive {
+    display: none !important;
   }
-  
+
   .q-table-minibar-cell--value {
     background-color: white;
-    display: block!important;
-  } 
-  
+    display: block !important;
+  }
+
   .q-table-minibar--mixed {
     background-color: white;
-    width: 100%!important;
+    width: 100% !important;
   }
-  
+
   .q-table-minibar-alignment--positive {
     float: none;
-    width: 100%!important;
+    width: 100% !important;
   }
-  
+
   .q-table-minibar-alignment--empty {
-    text-align: right!important;
+    text-align: right !important;
   }
-  
+
   .q-table-minibar-alignment--negative {
-    text-align: right!important;
+    text-align: right !important;
     float: none;
     left: 0;
   }
-  
-  .q-table-col-footnotes-cardlayout-single {
-    margin-right: 7px!important;
 
-    .q-table-minibar-alignment--negative, .q-table-minibar-alignment--empty, .q-table-minibar-alignment--positive {
+  .q-table-col-footnotes-cardlayout-single {
+    margin-right: 7px !important;
+
+    .q-table-minibar-alignment--negative,
+    .q-table-minibar-alignment--empty,
+    .q-table-minibar-alignment--positive {
       padding-right: 7px;
     }
-  } 
-  
-  .q-table-col-footnotes-cardlayout-double {
-    margin-right: 14px!important;
+  }
 
-    .q-table-minibar-alignment--negative, .q-table-minibar-alignment--empty, .q-table-minibar-alignment--positive {
+  .q-table-col-footnotes-cardlayout-double {
+    margin-right: 14px !important;
+
+    .q-table-minibar-alignment--negative,
+    .q-table-minibar-alignment--empty,
+    .q-table-minibar-alignment--positive {
       padding-right: 14px;
     }
   }
@@ -185,7 +193,7 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar--mixed {
-  background-color:rgba(200, 200, 200, 0.15);
+  background-color: rgba(200, 200, 200, 0.15);
   min-width: 180px;
   padding-right: 12px !important;
   padding-left: 12px !important;
@@ -196,7 +204,7 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar-cell {
-  background-color:rgba(200, 200, 200, 0.15);
+  background-color: rgba(200, 200, 200, 0.15);
   min-width: 140px;
 }
 
@@ -205,7 +213,7 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar-cell--value {
-  background-color:rgba(200, 200, 200, 0.15);
+  background-color: rgba(200, 200, 200, 0.15);
 }
 
 .q-table-minibar-bar--positive {
@@ -231,7 +239,7 @@ tr.q-table-state-visible {
   height: 17px;
 }
 
-.q-table-minibar-bar--negative::before{
+.q-table-minibar-bar--negative::before {
   content: "";
   border-right: 0.5px solid #393855;
   position: absolute;
@@ -265,7 +273,7 @@ tr.q-table-state-visible {
   position: relative;
 }
 
-.q-table-annotation:after {
+.q-table-annotation::after {
   content: attr(data-annotation);
   position: absolute;
   color: #6e6e7e;
@@ -283,11 +291,11 @@ tr.q-table-state-visible {
 
 .q-table-col-footnotes {
   &-single {
-    padding-right: 8px!important;
+    padding-right: 8px !important;
   }
 
   &-double {
-    padding-right: 16px!important;
+    padding-right: 16px !important;
   }
 }
 
