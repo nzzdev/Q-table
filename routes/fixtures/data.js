@@ -19,7 +19,7 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/minibars-custom-className.json`),
   require(`${fixtureDataDirectory}/minibars-custom-colorCode.json`),
   require(`${fixtureDataDirectory}/display-footnotes.json`),
-  require(`${fixtureDataDirectory}/display-similar-footnotes.json`),
+  require(`${fixtureDataDirectory}/display-merged-footnotes.json`),
   require(`${fixtureDataDirectory}/display-footnotes-before-minibar.json`),
   require(`${fixtureDataDirectory}/display-alot-of-footnotes.json`),
   require(`${fixtureDataDirectory}/hide-footnotes-in-header.json`),

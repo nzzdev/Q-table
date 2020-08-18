@@ -72,8 +72,8 @@ const fixtureData = [
     require(`${fixtureDataDirectory}/display-footnotes.json`),
   ],
   [
-    `${fixtureDataDirectory}/display-similar-footnotes.json`,
-    require(`${fixtureDataDirectory}/display-similar-footnotes.json`),
+    `${fixtureDataDirectory}/display-merged-footnotes.json`,
+    require(`${fixtureDataDirectory}/display-merged-footnotes.json`),
   ],
   [
     `${fixtureDataDirectory}/display-footnotes-before-minibar.json`,

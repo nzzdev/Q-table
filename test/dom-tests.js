@@ -429,12 +429,12 @@ lab.experiment("footnotes", () => {
     ]);
   });
 
-  it("shows multiple similar footnotes in footer of table with right index", async () => {
+  it("shows merged footnotes in footer of table with right index", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
       method: "POST",
       payload: {
-        item: require("../resources/fixtures/data/display-similar-footnotes.json"),
+        item: require("../resources/fixtures/data/display-merged-footnotes.json"),
         toolRuntimeConfig: {},
       },
     });
