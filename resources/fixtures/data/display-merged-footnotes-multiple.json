@@ -1,5 +1,5 @@
 {
-  "title": "FIXTURE: display merged footnotes",
+  "title": "FIXTURE: display multiple merged footnotes",
   "data": {
     "table": [
       ["Rank", "Name", "Medien", "Forschung"],
@@ -38,6 +38,27 @@
           },
           "rowIndex": 1,
           "colIndex": 3
+        },
+        {
+          "data": {
+            "footnote": "Frisch verheiratet, früher Hanspeter Musterfrau"
+          },
+          "rowIndex": 2,
+          "colIndex": 2
+        },
+        {
+          "data": {
+            "footnote": "Frisch verheiratet, früher Hanspeter Musterfrau"
+          },
+          "rowIndex": 2,
+          "colIndex": 3
+        },
+        {
+          "data": {
+            "footnote": "Frisch verheiratet, früher Hanspeter Musterfrau"
+          },
+          "rowIndex": 3,
+          "colIndex": 2
         }
       ]
     }
