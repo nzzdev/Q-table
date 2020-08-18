@@ -135,7 +135,7 @@ Footnotes are a feature to display annotations in the table and the sources in t
 ###### Implementation details serverside
 
 - The function `getFilteredMetaDataFootnotes()` will filter and sort all footnotes from `item.data.metaData`. The function will always return an object, when not used the object will be empty.
-- Withing `getFilteredMetaDataFootnotes()`, the function `getUniqueFootnotes()` will return an array without mutiple similar footnotes. The indexes of multiple similar footnotes then will be replaced.
+- Within `getFilteredMetaDataFootnotes()`, the function `getUniqueFootnotes()` will merge footnotes with the same content. The indexes of multiple same footnotes will be replaced.
 - Those footnotes will then be passed to the function `getTableData()`
 - Once the `tableData` is adjusted in `getTableData()`, there's a check if footnotes are set
 - If there are footnotes, they will be passed to the function `appendFootnoteAnnotationsToTableData()` along with `tableData` and `options`
