@@ -11,12 +11,13 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     9: "\u2079",
   };
   let spacings = [];
+  let flattenedFootnotes = getFlattenedFootnotes(footnotes);
 
-  footnotes.forEach((footnote) => {
+  flattenedFootnotes.forEach((footnote) => {
     let footnoteClass = getClass(
       options,
       footnote,
-      footnotes.length,
+      flattenedFootnotes.length,
       tableData[footnote.rowIndex][footnote.colIndex].type,
       tableData[footnote.rowIndex].length - 1
     );
@@ -28,8 +29,8 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     }
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
-      value: footnote.index,
-      unicode: unicodes[footnote.index],
+      value: footnote.value,
+      unicode: unicodes[footnote.value],
       class: footnoteClass,
     };
   });
@@ -47,7 +48,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     if (options.cardLayout || options.cardLayoutIfSmall) {
       if (!options.hideTableHeader && index !== 0) {
         row.forEach((cell) => {
-          footnotes.length >= 10
+          flattenedFootnotes.length >= 10
             ? cell.classes.push("q-table-col-footnotes-cardlayout-double")
             : cell.classes.push("q-table-col-footnotes-cardlayout-single");
         });
@@ -76,8 +77,8 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
   return null;
 }
 
-function getFilteredMetaDataFootnotes(metaData, hideTableHeader) {
-  let filteredFootnotes = metaData.cells
+function getFootnotes(metaData, hideTableHeader) {
+  let footnotes = metaData.cells
     .filter((cell) => {
       if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
         return false;
@@ -91,22 +92,52 @@ function getFilteredMetaDataFootnotes(metaData, hideTableHeader) {
       }
       return a.colIndex - b.colIndex;
     });
-
-  return filteredFootnotes;
+  return getStructuredFootnotes(footnotes);
 }
 
-function getUniqueFootnotes(footnotes) {
-  let uniquteFootnotes = footnotes.filter(
-    (v, i, a) => a.findIndex((t) => t.data.footnote === v.data.footnote) === i
-  );
-  uniquteFootnotes.forEach((footnote, index) => {
-    footnote.index = index + 1;
+function getStructuredFootnotes(footnotes) {
+  let structuredFootnotes = [];
+  footnotes.forEach((footnote) => {
+    let existingFootnote = structuredFootnotes.find(
+      (filterFootnote) => footnote.data.footnote === filterFootnote.value
+    );
+
+    if (existingFootnote) {
+      existingFootnote.coords.push({
+        colIndex: footnote.colIndex,
+        rowIndex: footnote.rowIndex,
+      });
+    } else {
+      structuredFootnotes.push({
+        value: footnote.data.footnote,
+        index: structuredFootnotes.length + 1,
+        coords: [
+          {
+            colIndex: footnote.colIndex,
+            rowIndex: footnote.rowIndex,
+          },
+        ],
+      });
+    }
   });
-  return uniquteFootnotes;
+  return structuredFootnotes;
+}
+
+function getFlattenedFootnotes(footnotes) {
+  let flattenedFootnotes = [];
+  footnotes.forEach((footnote) => {
+    footnote.coords.forEach((coord) => {
+      flattenedFootnotes.push({
+        value: footnote.index,
+        colIndex: coord.colIndex,
+        rowIndex: coord.rowIndex,
+      });
+    });
+  });
+  return flattenedFootnotes;
 }
 
 module.exports = {
   appendFootnoteAnnotationsToTableData,
-  getFilteredMetaDataFootnotes,
-  getUniqueFootnotes,
+  getFootnotes,
 };

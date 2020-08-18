@@ -79,25 +79,10 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
-    const footnotes = footnoteHelpers.getFilteredMetaDataFootnotes(
+    const footnotes = footnoteHelpers.getFootnotes(
       item.data.metaData,
       item.options.hideTableHeader
     );
-    let uniqueFootnotes = [];
-
-    if (footnotes.length > 0) {
-      uniqueFootnotes = footnoteHelpers.getUniqueFootnotes(footnotes);
-
-      footnotes.forEach((footnote) => {
-        let unique = uniqueFootnotes.find(
-          (uniqueFootnote) =>
-            uniqueFootnote.data.footnote === footnote.data.footnote
-        );
-        if (unique) {
-          footnote.index = unique.index;
-        }
-      });
-    }
     const minibarsAvailable = await request.server.inject({
       url: "/option-availability/selectedColumn",
       method: "POST",
@@ -114,7 +99,7 @@ module.exports = {
       minibar: minibarsAvailable.result.available
         ? minibarHelpers.getMinibarContext(item.options, itemDataCopy)
         : {},
-      footnotes: uniqueFootnotes,
+      footnotes: footnotes,
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       id: `q_table_${request.query._id}_${Math.floor(
