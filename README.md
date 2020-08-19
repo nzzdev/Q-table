@@ -130,16 +130,16 @@ This is a feature to shorten large tables in the article and make them collapsab
 
 <img src="/doc/footnotes.png" align="right" width=302 height=437>
 
-Footnotes are a feature to display annotations in the table and the sources in the footer of the table. It uses the `metaData` feature of [Q-Editor](https://github.com/nzzdev/Q-editor/blob/d27d6f9e88a982b10e9e812139712026a7971977/client/src/elements/schema-editor/schema-editor-table.js)
+Footnotes are a feature to display annotations in the table and the sources in the footer of the table. It uses the `metaData` feature of [Q-Editor](https://github.com/nzzdev/Q-editor/blob/d27d6f9e88a982b10e9e812139712026a7971977/client/src/elements/schema-editor/schema-editor-table.js). Similar footnotes will be merged together.
 
 ###### Implementation details serverside
 
-- The function `getFilteredMetaDataFootnotes()` will filter and sort all footnotes from `item.data.metaData`. The function will always return an object, when not used the object will be empty.
-- Within `getFilteredMetaDataFootnotes()`, the function `getUniqueFootnotes()` will merge footnotes with the same content. The indexes of multiple same footnotes will be replaced.
+- The function `getFootnotes()` will filter and sort all footnotes from `item.data.metaData`. Additional the data will be transitioned, that there will be listed only unique footnotes, with an array of coordinates, where the footnote will be placed. The function will always return an object, when not used the object will be empty.
 - Those footnotes will then be passed to the function `getTableData()`
 - Once the `tableData` is adjusted in `getTableData()`, there's a check if footnotes are set
 - If there are footnotes, they will be passed to the function `appendFootnoteAnnotationsToTableData()` along with `tableData` and `options`
 - In `appendFootnoteAnnotationsToTableData()` the `footnoteClass` will be calculated and determined if extra spacing is used or not
+- Before appending the footnotes to the `tableData`, the footnotes array will be flattened and prepared to ease to complexity.
 - [This](https://github.com/nzzdev/Q-table/blob/e4fbf189ce8c1191cdfad2fac60ee9677cc8eda7/helpers/footnotes.js#L62-L75) is the matrix how we apply spacing classes to the cell
 - Because the title in the Card-Layout is already set by the `::before` pseudo element, it's not possible to apply the annotation with this selector as well. Therefore we have to add the unicode to the dataset `data-label` when the Card-Layout is set so we map the footnote annoation value to the `unicode`. **Important**: The mapping of the value is from **1** to **9**.
 - After applying the annotations to the `tableData`, the function `appendFootnoteAnnotationsToTableData()` should return an object like this:
