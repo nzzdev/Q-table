@@ -1,0 +1,67 @@
+{
+  "title": "FIXTURE: display merged footnotes",
+  "data": {
+    "table": [
+      ["Rank", "Name", "Medien", "Forschung"],
+      ["1", "Hanspeter Musterfrau", "250", "0"],
+      ["2", "Fridolin Hanspeter", "240", "3"],
+      ["3", "Ruedi Müller", "200", "4"],
+      ["4", "Peter Hinterbach", "190", "0"],
+      ["5", "Ralf Vorderbach", "150", "10"]
+    ],
+    "metaData": {
+      "cells": [
+        {
+          "data": {
+            "footnote": "Frisch verheiratet, früher Hanspeter Mustermann"
+          },
+          "rowIndex": 1,
+          "colIndex": 1
+        },
+        {
+          "data": {
+            "footnote": "Frisch verheiratet, früher Hanspeter Mustermann"
+          },
+          "rowIndex": 4,
+          "colIndex": 1
+        },
+        {
+          "data": {
+            "footnote": "Frisch verheiratet, früher Hanspeter Mustermann"
+          },
+          "rowIndex": 5,
+          "colIndex": 1
+        },
+        {
+          "data": {
+            "footnote": "Frisch verheiratet, früher Hanspeter Mustermann"
+          },
+          "rowIndex": 1,
+          "colIndex": 3
+        }
+      ]
+    }
+  },
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": null
+    }
+  },
+  "tool": "table",
+  "subtitle": "Einfluss auf Medien und Forschung"
+}

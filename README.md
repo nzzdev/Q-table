@@ -1,4 +1,4 @@
-# Q Table [![Build Status](https://travis-ci.com/nzzdev/Q-table.svg?token=g43MZxbtUcZ6QyxqUoJM&branch=dev)](https://travis-ci.com/nzzdev/Q-table) 
+# Q Table [![Build Status](https://travis-ci.com/nzzdev/Q-table.svg?token=g43MZxbtUcZ6QyxqUoJM&branch=dev)](https://travis-ci.com/nzzdev/Q-table)
 
 **Maintainer**: [philipkueng](https://github.com/philipkueng)
 
@@ -134,7 +134,8 @@ Footnotes are a feature to display annotations in the table and the sources in t
 
 ###### Implementation details serverside
 
-- The function `getFilteredMetaDataFootnotes()` will filter and sort all footnotes from `item.data.metaData`. The function will always return an object, when not used the object will be empty
+- The function `getFilteredMetaDataFootnotes()` will filter and sort all footnotes from `item.data.metaData`. The function will always return an object, when not used the object will be empty.
+- Within `getFilteredMetaDataFootnotes()`, the function `getUniqueFootnotes()` will merge footnotes with the same content. The indexes of multiple same footnotes will be replaced.
 - Those footnotes will then be passed to the function `getTableData()`
 - Once the `tableData` is adjusted in `getTableData()`, there's a check if footnotes are set
 - If there are footnotes, they will be passed to the function `appendFootnoteAnnotationsToTableData()` along with `tableData` and `options`
@@ -153,9 +154,9 @@ Footnotes are a feature to display annotations in the table and the sources in t
       footnote: {
         value: 1,
         unicode: "¹",
-        class: null
-      }
-    }
+        class: null,
+      },
+    },
   ],
   [
     {
@@ -165,10 +166,10 @@ Footnotes are a feature to display annotations in the table and the sources in t
       footnote: {
         value: 2,
         unicode: "²",
-        class: null
-      }
-    }
-  ]
+        class: null,
+      },
+    },
+  ],
 ];
 ```
 

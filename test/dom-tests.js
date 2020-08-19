@@ -429,6 +429,74 @@ lab.experiment("footnotes", () => {
     ]);
   });
 
+  it("shows merged footnotes in footer of table with right index", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-merged-footnotes.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const footnotes = dom.window.document.querySelectorAll(
+      "div.q-table-footer-footnote"
+    );
+
+    let arrayOfFootnotes = [];
+
+    footnotes.forEach((footnote) => {
+      arrayOfFootnotes.push({
+        index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
+        text: footnote.childNodes[2].innerHTML.replace("\n        ", ""),
+      });
+    });
+
+    expect(arrayOfFootnotes).to.be.equal([
+      {
+        index: "1",
+        text: " Frisch verheiratet, früher Hanspeter Mustermann",
+      },
+    ]);
+  });
+
+  it("shows multiple merged footnotes in footer of table with right index", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/display-merged-footnotes-multiple.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const footnotes = dom.window.document.querySelectorAll(
+      "div.q-table-footer-footnote"
+    );
+
+    let arrayOfFootnotes = [];
+
+    footnotes.forEach((footnote) => {
+      arrayOfFootnotes.push({
+        index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
+        text: footnote.childNodes[2].innerHTML.replace("\n        ", ""),
+      });
+    });
+
+    expect(arrayOfFootnotes).to.be.equal([
+      {
+        index: "1",
+        text: " Frisch verheiratet, früher Hanspeter Mustermann",
+      },
+      {
+        index: "2",
+        text: " Frisch verheiratet, früher Hanspeter Musterfrau",
+      },
+    ]);
+  });
+
   it("shows annotation of footnotes in header of cardlayout", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",

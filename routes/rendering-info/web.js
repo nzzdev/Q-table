@@ -27,7 +27,7 @@ const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 // hence we fetch the JSON schema...
 const schemaString = JSON.parse(
   fs.readFileSync(resourcesDir + "schema.json", {
-    encoding: "utf-8"
+    encoding: "utf-8",
   })
 );
 const Ajv = require("ajv");
@@ -61,33 +61,32 @@ module.exports = {
   options: {
     validate: {
       options: {
-        allowUnknown: true
+        allowUnknown: true,
       },
-      payload: validatePayload
-    }
+      payload: validatePayload,
+    },
   },
-  handler: async function(request, h) {
+  handler: async function (request, h) {
     const renderingInfo = {
-      polyfills: ["Promise"]
+      polyfills: ["Promise"],
     };
 
     renderingInfo.stylesheets = [
       {
-        name: styleHashMap["q-table"]
-      }
+        name: styleHashMap["q-table"],
+      },
     ];
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
-    const footnotes = footnoteHelpers.getFilteredMetaDataFootnotes(
+    const footnotes = footnoteHelpers.getFootnotes(
       item.data.metaData,
       item.options.hideTableHeader
     );
-
     const minibarsAvailable = await request.server.inject({
       url: "/option-availability/selectedColumn",
       method: "POST",
-      payload: { item: item }
+      payload: { item: item },
     });
 
     const context = {
@@ -106,7 +105,7 @@ module.exports = {
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
       )}`.replace(/-/g, ""),
-      width: getExactPixelWidth(request.payload.toolRuntimeConfig)
+      width: getExactPixelWidth(request.payload.toolRuntimeConfig),
     };
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
@@ -181,7 +180,7 @@ module.exports = {
       Object.keys(context.minibar).length !== 0
     ) {
       renderingInfo.scripts.push({
-        content: renderingInfoScripts.getDefaultScript(context)
+        content: renderingInfoScripts.getDefaultScript(context),
       });
     }
 
@@ -192,19 +191,19 @@ module.exports = {
       item.options.cardLayoutIfSmall === true
     ) {
       renderingInfo.scripts.push({
-        content: renderingInfoScripts.getCardLayoutScript(context)
+        content: renderingInfoScripts.getCardLayoutScript(context),
       });
     }
 
     if (possibleToHaveToHideRows) {
       renderingInfo.scripts.push({
-        content: renderingInfoScripts.getShowMoreButtonScript(context)
+        content: renderingInfoScripts.getShowMoreButtonScript(context),
       });
     }
 
     if (Object.keys(context.minibar).length !== 0) {
       renderingInfo.scripts.push({
-        content: renderingInfoScripts.getMinibarsScript(context)
+        content: renderingInfoScripts.getMinibarsScript(context),
       });
     }
 
@@ -214,5 +213,5 @@ module.exports = {
     }
 
     return renderingInfo;
-  }
+  },
 };
