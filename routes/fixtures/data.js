@@ -19,6 +19,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/minibars-custom-className.json`),
   require(`${fixtureDataDirectory}/minibars-custom-colorCode.json`),
   require(`${fixtureDataDirectory}/display-footnotes.json`),
+  require(`${fixtureDataDirectory}/display-merged-footnotes.json`),
+  require(`${fixtureDataDirectory}/display-merged-footnotes-multiple.json`),
   require(`${fixtureDataDirectory}/display-footnotes-before-minibar.json`),
   require(`${fixtureDataDirectory}/display-alot-of-footnotes.json`),
   require(`${fixtureDataDirectory}/hide-footnotes-in-header.json`),
@@ -32,7 +34,7 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/special-characters.json`),
   require(`${fixtureDataDirectory}/formatted-numbers.json`),
   require(`${fixtureDataDirectory}/formatted-numbers-mixed.json`),
-  require(`${fixtureDataDirectory}/formatted-numbers-negative.json`)
+  require(`${fixtureDataDirectory}/formatted-numbers-negative.json`),
 ];
 
 module.exports = {
@@ -40,9 +42,9 @@ module.exports = {
   method: "GET",
   options: {
     tags: ["api"],
-    cors: true
+    cors: true,
   },
   handler: (request, h) => {
     return fixtureData;
-  }
+  },
 };

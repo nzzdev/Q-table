@@ -8,29 +8,30 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     6: "\u2076",
     7: "\u2077",
     8: "\u2078",
-    9: "\u2079"
+    9: "\u2079",
   };
   let spacings = [];
+  let flattenedFootnotes = getFlattenedFootnotes(footnotes);
 
-  footnotes.forEach((footnote, index) => {
+  flattenedFootnotes.forEach((footnote) => {
     let footnoteClass = getClass(
       options,
       footnote,
-      footnotes.length,
+      flattenedFootnotes.length,
       tableData[footnote.rowIndex][footnote.colIndex].type,
       tableData[footnote.rowIndex].length - 1
     );
     if (footnoteClass) {
       spacings.push({
         colIndex: footnote.colIndex,
-        class: footnoteClass
+        class: footnoteClass,
       });
     }
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
-      value: index + 1,
-      unicode: unicodes[index + 1],
-      class: footnoteClass
+      value: footnote.value,
+      unicode: unicodes[footnote.value],
+      class: footnoteClass,
     };
   });
 
@@ -38,7 +39,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   tableData.forEach((row, index) => {
     // assign class when not cardlayout but cardlayoutifsmall
     if (!options.cardLayout || options.cardLayoutIfSmall) {
-      spacings.forEach(spacing => {
+      spacings.forEach((spacing) => {
         row[spacing.colIndex].classes.push(spacing.class);
       });
     }
@@ -46,8 +47,8 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     // assign class when cardlayout or cardlayoutifsmall is active
     if (options.cardLayout || options.cardLayoutIfSmall) {
       if (!options.hideTableHeader && index !== 0) {
-        row.forEach(cell => {
-          footnotes.length >= 10
+        row.forEach((cell) => {
+          flattenedFootnotes.length >= 10
             ? cell.classes.push("q-table-col-footnotes-cardlayout-double")
             : cell.classes.push("q-table-col-footnotes-cardlayout-single");
         });
@@ -76,9 +77,9 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
   return null;
 }
 
-function getFilteredMetaDataFootnotes(metaData, hideTableHeader) {
-  return metaData.cells
-    .filter(cell => {
+function getFootnotes(metaData, hideTableHeader) {
+  let footnotes = metaData.cells
+    .filter((cell) => {
       if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
         return false;
       }
@@ -91,9 +92,52 @@ function getFilteredMetaDataFootnotes(metaData, hideTableHeader) {
       }
       return a.colIndex - b.colIndex;
     });
+  return getStructuredFootnotes(footnotes);
+}
+
+function getStructuredFootnotes(footnotes) {
+  let structuredFootnotes = [];
+  footnotes.forEach((footnote) => {
+    let existingFootnote = structuredFootnotes.find(
+      (filterFootnote) => footnote.data.footnote === filterFootnote.value
+    );
+
+    if (existingFootnote) {
+      existingFootnote.coords.push({
+        colIndex: footnote.colIndex,
+        rowIndex: footnote.rowIndex,
+      });
+    } else {
+      structuredFootnotes.push({
+        value: footnote.data.footnote,
+        index: structuredFootnotes.length + 1,
+        coords: [
+          {
+            colIndex: footnote.colIndex,
+            rowIndex: footnote.rowIndex,
+          },
+        ],
+      });
+    }
+  });
+  return structuredFootnotes;
+}
+
+function getFlattenedFootnotes(footnotes) {
+  let flattenedFootnotes = [];
+  footnotes.forEach((footnote) => {
+    footnote.coords.forEach((coord) => {
+      flattenedFootnotes.push({
+        value: footnote.index,
+        colIndex: coord.colIndex,
+        rowIndex: coord.rowIndex,
+      });
+    });
+  });
+  return flattenedFootnotes;
 }
 
 module.exports = {
-  appendFootnoteAnnotationsToTableData: appendFootnoteAnnotationsToTableData,
-  getFilteredMetaDataFootnotes: getFilteredMetaDataFootnotes
+  appendFootnoteAnnotationsToTableData,
+  getFootnotes,
 };
