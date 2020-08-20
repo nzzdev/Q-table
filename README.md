@@ -130,7 +130,7 @@ This is a feature to shorten large tables in the article and make them collapsab
 
 <img src="/doc/footnotes.png" align="right" width=302 height=437>
 
-Footnotes are a feature to display annotations in the table and the sources in the footer of the table. It uses the `metaData` feature of [Q-Editor](https://github.com/nzzdev/Q-editor/blob/d27d6f9e88a982b10e9e812139712026a7971977/client/src/elements/schema-editor/schema-editor-table.js). Similar footnotes will be merged together.
+Footnotes are a feature to display annotations in the table and the sources in the footer of the table. It uses the `metaData` feature of [Q-Editor](https://github.com/nzzdev/Q-editor/blob/d27d6f9e88a982b10e9e812139712026a7971977/client/src/elements/schema-editor/schema-editor-table.js). Footnotes with the same text will be merged together.
 
 ###### Implementation details serverside
 
