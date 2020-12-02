@@ -129,7 +129,7 @@ function getMinibarData(data, minibarOptions) {
 function getPositiveColor(type) {
   let color;
   if (type === "mixed") {
-    color = "s-viz-color-diverging-2-2";
+    color = "s-viz-color-diverging-2-3";
   } else {
     color = "s-viz-color-one-5";
   }
