@@ -13,10 +13,6 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
     items: [],
     numbers: []
   };
-  let typeAmount = {
-    positives: 0,
-    negatives: 0
-  };
 
   let dataCopy = clone(data);
   dataCopy[0] = dataCopy[0].map(cell => (cell = "")); // first row is always header so ignore it
@@ -26,10 +22,8 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
 
     if (cell < 0) {
       type = miniBarTypes.negative;
-      typeAmount.negatives++;
     } else if (cell > 0) {
       type = miniBarTypes.positive;
-      typeAmount.positives++;
     } else {
       type = miniBarTypes.empty;
     }
@@ -42,7 +36,7 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
     }
   });
 
-  minibarsWithType.type = getMinibarType(typeAmount);
+  minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
   return minibarsWithType;
 }
 
@@ -94,10 +88,10 @@ function getMinibarValue(type, value, min, max) {
   }
 }
 
-function getMinibarType(types) {
-  if (types.positives > 0 && types.negatives === 0) {
+function getMinibarType(numbers) {
+  if (numbers.every(n => {return n > 0;})) {
     return miniBarTypes.positive;
-  } else if (types.negatives > 0 && types.positives === 0) {
+  } else if (numbers.every(n => {return n < 0;})) {
     return miniBarTypes.negative;
   } else {
     return miniBarTypes.mixed;
