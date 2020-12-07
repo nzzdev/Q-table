@@ -217,9 +217,88 @@ function getMinibarsScript(context) {
   `;
 }
 
+function getSearchTextBoxScript(context) {
+  const dataObject = `window.${context.id}Data`;
+  const searchTextBoxCreateElement = `searchTextBoxCreateElement${context.id}`;
+  const searchTextBoxHideRows = `searchTextBoxHideRows${context.id}`;
+  const searchTextBoxShowRows = `searchTextBoxShowRows${context.id}`;
+
+  return `
+    function ${searchTextBoxHideRows}() {
+      ${dataObject}.showMoreButtonElement.style.display = '';
+
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
+          rowElement.classList.remove('q-table-state-visible');
+          rowElement.classList.add('q-table-state-hidden');
+        }
+      });
+      ${dataObject}.showMoreButtonElement.textContent = 'Alle ' + ${dataObject}.numberOfRows + ' anzeigen';
+      ${dataObject}.rowVisibilityState = 'hidden';
+    }
+
+    function ${searchTextBoxShowRows}() {
+      ${dataObject}.showMoreButtonElement.style.display = 'none';
+
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        rowElement.classList.remove('q-table-state-hidden');
+        rowElement.classList.add('q-table-state-visible');
+      });
+      ${dataObject}.showMoreButtonElement.textContent = "Tabelle zuklappen";
+      ${dataObject}.rowVisibilityState = 'visible';
+    }
+
+    function ${searchTextBoxCreateElement}() {
+      // If there is no ShowMoreButton, don't add the search box
+      if (${dataObject}.showMoreButtonElement === undefined) return;
+
+      // Create the SearchTextBox
+      ${dataObject}.searchTextBoxElement = document.createElement('input');
+      ${dataObject}.searchTextBoxElement.classList.add('s-input-field');
+      ${dataObject}.searchTextBoxElement.setAttribute('type', 'search');
+      ${dataObject}.searchTextBoxElement.setAttribute('placeholder', 'Bitte Suche eingeben');
+      ${dataObject}.element.insertBefore(${dataObject}.searchTextBoxElement, ${dataObject}.element.querySelector(".s-q-item__subtitle").nextSibling);
+
+      ${dataObject}.searchTextBoxElement.addEventListener('input', function(event) {
+        var filter = event.target.value.toUpperCase();
+
+        if (filter.length == 0) {
+          // No filter = show only x rows
+          ${searchTextBoxHideRows}();
+          return;
+        } else if (filter.length == 1) {
+          // 1 char typed = show all rows
+          ${searchTextBoxShowRows}();
+          return;
+        }
+        
+        // More than 1 char typed = start filtering!
+        ${dataObject}.tableElement.querySelectorAll('tbody tr .q-table__cell--text').forEach(
+          function(cellElement, index) {
+            txtValue = cellElement.innerText.toUpperCase();
+
+            if (txtValue.indexOf(filter) > -1) {
+              cellElement.parentElement.classList.remove('q-table-state-hidden');
+              cellElement.parentElement.classList.add('q-table-state-visible');
+            } else {
+              cellElement.parentElement.classList.remove('q-table-state-visible');
+              cellElement.parentElement.classList.add('q-table-state-hidden');
+            }
+          }
+        );
+      });
+    }
+
+    window.q_domready.then(function() {
+      ${searchTextBoxCreateElement}();
+    });
+  `;
+}
+
 module.exports = {
   getDefaultScript: getDefaultScript,
   getCardLayoutScript: getCardLayoutScript,
   getShowMoreButtonScript: getShowMoreButtonScript,
-  getMinibarsScript: getMinibarsScript
+  getMinibarsScript: getMinibarsScript,
+  getSearchTextBoxScript: getSearchTextBoxScript
 };

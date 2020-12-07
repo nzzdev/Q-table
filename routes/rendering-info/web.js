@@ -199,6 +199,9 @@ module.exports = {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getShowMoreButtonScript(context),
       });
+      renderingInfo.scripts.push({
+        content: renderingInfoScripts.getSearchTextBoxScript(context),
+      });
     }
 
     if (Object.keys(context.minibar).length !== 0) {
