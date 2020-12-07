@@ -89,9 +89,9 @@ function getMinibarValue(type, value, min, max) {
 }
 
 function getMinibarType(numbers) {
-  if (numbers.every(n => {return n > 0;})) {
+  if (numbers.every(number => {return number > 0;})) {
     return miniBarTypes.positive;
-  } else if (numbers.every(n => {return n < 0;})) {
+  } else if (numbers.every(number => {return number < 0;})) {
     return miniBarTypes.negative;
   } else {
     return miniBarTypes.mixed;
