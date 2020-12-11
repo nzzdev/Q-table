@@ -199,8 +199,11 @@ module.exports = {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getShowMoreButtonScript(context),
       });
+    }
+
+    if (item.options.showTableSearch) {
       renderingInfo.scripts.push({
-        content: renderingInfoScripts.getSearchTextBoxScript(context),
+        content: renderingInfoScripts.getSearchFormInputScript(context),
       });
     }
 

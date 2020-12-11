@@ -131,6 +131,22 @@
           "type": "boolean",
           "default": false
         },
+        "showTableSearch": {
+          "title": "Tabellensuche anzeigen",
+          "type": "boolean",
+          "default": false,
+          "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "config": {
+                  "endpoint": "option-availability/showTableSearch",
+                  "fields": ["options", "data"]
+                }
+              }
+            ]
+          }
+        },
         "cardLayout": {
           "title": "Card-Layout",
           "type": "boolean",
