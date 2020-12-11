@@ -711,3 +711,39 @@ lab.experiment("footnotes", () => {
     expect(response.statusCode).to.be.equal(200);
   });
 });
+
+lab.experiment("table search", () => {
+  it("shows table search", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/table-search-show.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    return elementCount(response.result.markup, ".search-form-input").then(
+      (value) => {
+        expect(value).to.be.equal(1);
+      }
+    );
+  });
+
+  it("doesn't show table search", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/table-search-hidden.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    return elementCount(response.result.markup, ".search-form-input").then(
+      (value) => {
+        expect(value).to.be.equal(0);
+      }
+    );
+  });
+});

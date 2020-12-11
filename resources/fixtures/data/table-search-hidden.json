@@ -1,0 +1,442 @@
+{
+    "title": "FIXTURE: table search hide",
+    "data": {
+      "table": [
+        [
+          "Country",
+          "Number"
+        ],
+        [
+          "Somalia",
+          "-0.1459"
+        ],
+        [
+          "Honduras",
+          "0.2758"
+        ],
+        [
+          "Malawi",
+          "-0.0534"
+        ],
+        [
+          "Comoros",
+          "0.0111"
+        ],
+        [
+          "Greece",
+          "-0.1775"
+        ],
+        [
+          "Turkmenistan",
+          "0.0803"
+        ],
+        [
+          "Panama",
+          "0.0164"
+        ],
+        [
+          "Austria",
+          "-0.0462"
+        ],
+        [
+          "Saint Barthélemy",
+          "-0.0247"
+        ],
+        [
+          "Kazakhstan",
+          "-0.0067"
+        ],
+        [
+          "Azerbaijan",
+          "0.044"
+        ],
+        [
+          "Netherlands",
+          "0.2486"
+        ],
+        [
+          "Yemen",
+          "-0.106"
+        ],
+        [
+          "Sint Maarten",
+          "0.4218"
+        ],
+        [
+          "Svalbard and Jan Mayen Islands",
+          "-0.1107"
+        ],
+        [
+          "Belarus",
+          "-0.4466"
+        ],
+        [
+          "China",
+          "-0.4345"
+        ],
+        [
+          "Congo (Brazzaville)",
+          "-0.1386"
+        ],
+        [
+          "Belgium",
+          "-0.0206"
+        ],
+        [
+          "Guam",
+          "-0.1694"
+        ],
+        [
+          "Egypt",
+          "-0.3251"
+        ],
+        [
+          "Turkmenistan",
+          "-0.0347"
+        ],
+        [
+          "Vanuatu",
+          "0.0464"
+        ],
+        [
+          "Mali",
+          "-0.4237"
+        ],
+        [
+          "Slovenia",
+          "0.2262"
+        ],
+        [
+          "Mongolia",
+          "-0.1295"
+        ],
+        [
+          "Paraguay",
+          "0.39"
+        ],
+        [
+          "Zambia",
+          "0.2487"
+        ],
+        [
+          "Timor-Leste",
+          "0.3767"
+        ],
+        [
+          "Singapore",
+          "0.0347"
+        ],
+        [
+          "China",
+          "0.4352"
+        ],
+        [
+          "Dominican Republic",
+          "0.032"
+        ],
+        [
+          "Sint Maarten",
+          "0.0558"
+        ],
+        [
+          "Iran",
+          "-0.2898"
+        ],
+        [
+          "Azerbaijan",
+          "-0.4263"
+        ],
+        [
+          "Isle of Man",
+          "0.0565"
+        ],
+        [
+          "Trinidad and Tobago",
+          "0.0105"
+        ],
+        [
+          "Malta",
+          "0.0858"
+        ],
+        [
+          "Iraq",
+          "0.1162"
+        ],
+        [
+          "Ghana",
+          "0.0011"
+        ],
+        [
+          "Morocco",
+          "0.3071"
+        ],
+        [
+          "Greece",
+          "-0.5361"
+        ],
+        [
+          "Poland",
+          "0.2016"
+        ],
+        [
+          "Bolivia",
+          "-0.7247"
+        ],
+        [
+          "Anguilla",
+          "-0.1922"
+        ],
+        [
+          "Saint Vincent and The Grenadines",
+          "0.0358"
+        ],
+        [
+          "Tokelau",
+          "0.021"
+        ],
+        [
+          "Chad",
+          "-0.1331"
+        ],
+        [
+          "India",
+          "-0.0073"
+        ],
+        [
+          "Tajikistan",
+          "0.1737"
+        ],
+        [
+          "Saint Barthélemy",
+          "0.1724"
+        ],
+        [
+          "Egypt",
+          "-0.5759"
+        ],
+        [
+          "Nepal",
+          "0.2836"
+        ],
+        [
+          "Saint Pierre and Miquelon",
+          "0.3836"
+        ],
+        [
+          "Cyprus",
+          "0.253"
+        ],
+        [
+          "Seychelles",
+          "-0.2235"
+        ],
+        [
+          "Samoa",
+          "0.4766"
+        ],
+        [
+          "Gibraltar",
+          "-0.5111"
+        ],
+        [
+          "Georgia",
+          "-0.0481"
+        ],
+        [
+          "Moldova",
+          "0.2778"
+        ],
+        [
+          "United Arab Emirates",
+          "0.0571"
+        ],
+        [
+          "Bonaire, Sint Eustatius and Saba",
+          "-0.0598"
+        ],
+        [
+          "Mongolia",
+          "-0.1613"
+        ],
+        [
+          "Maldives",
+          "-0.1707"
+        ],
+        [
+          "Lebanon",
+          "-0.2072"
+        ],
+        [
+          "Ethiopia",
+          "0.0483"
+        ],
+        [
+          "Hungary",
+          "0.529"
+        ],
+        [
+          "Slovakia",
+          "-0.0181"
+        ],
+        [
+          "Afghanistan",
+          "-0.1582"
+        ],
+        [
+          "Kyrgyzstan",
+          "-0.2432"
+        ],
+        [
+          "Uganda",
+          "-0.3201"
+        ],
+        [
+          "Malawi",
+          "-0.2205"
+        ],
+        [
+          "Serbia",
+          "0.2737"
+        ],
+        [
+          "Liberia",
+          "0.1353"
+        ],
+        [
+          "Japan",
+          "0.5669"
+        ],
+        [
+          "Mayotte",
+          "0.5685"
+        ],
+        [
+          "Papua New Guinea",
+          "-0.1687"
+        ],
+        [
+          "Curaçao",
+          "0.43"
+        ],
+        [
+          "Mexico",
+          "0.2183"
+        ],
+        [
+          "Myanmar",
+          "-0.0774"
+        ],
+        [
+          "Puerto Rico",
+          "0.099"
+        ],
+        [
+          "Martinique",
+          "-0.028"
+        ],
+        [
+          "Tanzania",
+          "-0.0047"
+        ],
+        [
+          "American Samoa",
+          "-0.5019"
+        ],
+        [
+          "Saint Barthélemy",
+          "-0.2906"
+        ],
+        [
+          "French Guiana",
+          "0.4136"
+        ],
+        [
+          "Slovenia",
+          "0.2494"
+        ],
+        [
+          "Somalia",
+          "0.2739"
+        ],
+        [
+          "French Polynesia",
+          "-0.0177"
+        ],
+        [
+          "Montserrat",
+          "0.1914"
+        ],
+        [
+          "Syria",
+          "-0.0182"
+        ],
+        [
+          "Ireland",
+          "-0.1243"
+        ],
+        [
+          "Panama",
+          "-0.003"
+        ],
+        [
+          "Pitcairn Islands",
+          "0.1128"
+        ],
+        [
+          "Sint Maarten",
+          "-0.2559"
+        ],
+        [
+          "Virgin Islands, British",
+          "0.1381"
+        ],
+        [
+          "Saint Kitts and Nevis",
+          "0.1776"
+        ],
+        [
+          "South Sudan",
+          "0.2227"
+        ],
+        [
+          "Bahamas",
+          "-0.112"
+        ],
+        [
+          "Kuwait",
+          "0.0461"
+        ]
+      ],
+      "metaData": {
+        "cells": []
+      }
+    },
+    "sources": [
+      {
+        "link": {},
+        "text": "The Very Important Center For Very Important Data"
+      }
+    ],
+    "options": {
+      "hideTableHeader": false,
+      "showTableSearch": false,
+      "cardLayout": false,
+      "cardLayoutIfSmall": true,
+      "minibar": {
+        "invertColors": false,
+        "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+        },
+        "selectedColumn": null
+      }
+    },
+    "tool": "table",
+    "subtitle": "Very important data country by country"
+  }
