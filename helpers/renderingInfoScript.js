@@ -219,12 +219,9 @@ function getMinibarsScript(context) {
 
 function getSearchFormInputScript(context) {
   const dataObject = `window.${context.id}Data`;
-  const searchFormInputAddEventListener = `searchFormInputAddEventListener${context.id}`;
-  const searchFormInputClearAddEventListener = `searchFormInputClearAddEventListener${context.id}`;
+  const searchFormInputAddEventListeners = `searchFormInputAddEventListeners${context.id}`;
   const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
   const searchFormInputShowRows = `searchFormInputShowRows${context.id}`;
-  const searchFormInputClearHide = `searchFormInputClearHide${context.id}`;
-  const searchFormInputClearShow = `searchFormInputClearShow${context.id}`;
   const filterRows = `filterRows${context.id}`;
 
   return `
@@ -252,14 +249,6 @@ function getSearchFormInputScript(context) {
       ${dataObject}.rowVisibilityState = 'visible';
     }
 
-    function ${searchFormInputClearHide}() {
-      document.querySelector('.search-form-input-clear').classList.add('hidden');
-    }
-      
-    function ${searchFormInputClearShow}() {
-      document.querySelector('.search-form-input-clear').classList.remove('hidden');
-    }
-
     function ${filterRows}(filter) {
       filter = filter.toUpperCase();
       
@@ -280,37 +269,31 @@ function getSearchFormInputScript(context) {
       );
     }
 
-    function ${searchFormInputAddEventListener}() {
-      document.querySelector('.search-form-input').addEventListener('input', function(event) {
+    function ${searchFormInputAddEventListeners}() {
+      document.querySelector('#search-form-input').addEventListener('input', function(event) {
         var filter = event.target.value;
 
         if (filter.length == 0) {
           // No filter = show only x rows
           ${searchFormInputHideRows}();
-          ${searchFormInputClearHide}();
         } else if (filter.length == 1) {
           // 1 char typed = show all rows
           ${searchFormInputShowRows}();
-          ${searchFormInputClearShow}();
         } else {
           ${filterRows}(filter);
         }
       });
-    }
 
-    function ${searchFormInputClearAddEventListener}() {
-      document.querySelector('.search-form-input-clear').addEventListener('click', function(event) {
-        document.querySelector('.search-form-input').value = '';
-        
-        ${searchFormInputShowRows}();
-        ${searchFormInputHideRows}();
-        ${searchFormInputClearHide}();
+      document.querySelector('#search-form-input').addEventListener('search', function(event) {
+        if (event.target.value == '') {
+          ${searchFormInputShowRows}();
+          ${searchFormInputHideRows}();
+        }
       });
     }
 
     window.q_domready.then(function() {
-      ${searchFormInputAddEventListener}();
-      ${searchFormInputClearAddEventListener}();
+      ${searchFormInputAddEventListeners}();
     });
   `;
 }
