@@ -4,6 +4,13 @@
   <div class="s-q-item__subtitle">{{ item.subtitle }}</div>
   {%- endif %}
   <div style="overflow-x: auto">
+    {%- if item.options.showTableSearch === true %}
+    <div class="search-form">
+      <label for="search-form-input" class="hidden">Suchen</label>
+      <input id="search-form-input" class="search-form-input search-form-input-magnifier s-input-field" type="text" placeholder="Bitte Suche eingeben" maxlength="20" value="" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" style="height:46px;">
+      <div class="search-form-input-clear hidden" style="height:46px;width:46px;"></div>
+    </div>
+    {%- endif %}
     <table class="q-table__table">
       {%- if item.options.hideTableHeader !== true %}
       <thead class="s-font-note s-font-note--strong">

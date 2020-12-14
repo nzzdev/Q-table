@@ -217,14 +217,18 @@ function getMinibarsScript(context) {
   `;
 }
 
-function getSearchTextBoxScript(context) {
+function getSearchFormInputScript(context) {
   const dataObject = `window.${context.id}Data`;
-  const searchTextBoxCreateElement = `searchTextBoxCreateElement${context.id}`;
-  const searchTextBoxHideRows = `searchTextBoxHideRows${context.id}`;
-  const searchTextBoxShowRows = `searchTextBoxShowRows${context.id}`;
+  const searchFormInputAddEventListener = `searchFormInputAddEventListener${context.id}`;
+  const searchFormInputClearAddEventListener = `searchFormInputClearAddEventListener${context.id}`;
+  const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
+  const searchFormInputShowRows = `searchFormInputShowRows${context.id}`;
+  const searchFormInputClearHide = `searchFormInputClearHide${context.id}`;
+  const searchFormInputClearShow = `searchFormInputClearShow${context.id}`;
+  const filterRows = `filterRows${context.id}`;
 
   return `
-    function ${searchTextBoxHideRows}() {
+    function ${searchFormInputHideRows}() {
       ${dataObject}.showMoreButtonElement.style.display = '';
 
       ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
@@ -237,7 +241,7 @@ function getSearchTextBoxScript(context) {
       ${dataObject}.rowVisibilityState = 'hidden';
     }
 
-    function ${searchTextBoxShowRows}() {
+    function ${searchFormInputShowRows}() {
       ${dataObject}.showMoreButtonElement.style.display = 'none';
 
       ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
@@ -248,49 +252,65 @@ function getSearchTextBoxScript(context) {
       ${dataObject}.rowVisibilityState = 'visible';
     }
 
-    function ${searchTextBoxCreateElement}() {
-      // If there is no ShowMoreButton, don't add the search box
-      if (${dataObject}.showMoreButtonElement === undefined) return;
+    function ${searchFormInputClearHide}() {
+      document.querySelector('.search-form-input-clear').classList.add('hidden');
+    }
+      
+    function ${searchFormInputClearShow}() {
+      document.querySelector('.search-form-input-clear').classList.remove('hidden');
+    }
 
-      // Create the SearchTextBox
-      ${dataObject}.searchTextBoxElement = document.createElement('input');
-      ${dataObject}.searchTextBoxElement.classList.add('s-input-field');
-      ${dataObject}.searchTextBoxElement.setAttribute('type', 'search');
-      ${dataObject}.searchTextBoxElement.setAttribute('placeholder', 'Bitte Suche eingeben');
-      ${dataObject}.element.insertBefore(${dataObject}.searchTextBoxElement, ${dataObject}.element.querySelector(".s-q-item__subtitle").nextSibling);
+    function ${filterRows}(filter) {
+      filter = filter.toUpperCase();
+      
+      if (filter.length < 2) return;
 
-      ${dataObject}.searchTextBoxElement.addEventListener('input', function(event) {
-        var filter = event.target.value.toUpperCase();
+      ${dataObject}.tableElement.querySelectorAll('tbody tr .q-table__cell--text').forEach(
+        function(cellElement, index) {
+          txtValue = cellElement.innerText.toUpperCase();
+
+          if (txtValue.indexOf(filter) > -1) {
+            cellElement.parentElement.classList.remove('q-table-state-hidden');
+            cellElement.parentElement.classList.add('q-table-state-visible');
+          } else {
+            cellElement.parentElement.classList.remove('q-table-state-visible');
+            cellElement.parentElement.classList.add('q-table-state-hidden');
+          }
+        }
+      );
+    }
+
+    function ${searchFormInputAddEventListener}() {
+      document.querySelector('.search-form-input').addEventListener('input', function(event) {
+        var filter = event.target.value;
 
         if (filter.length == 0) {
           // No filter = show only x rows
-          ${searchTextBoxHideRows}();
-          return;
+          ${searchFormInputHideRows}();
+          ${searchFormInputClearHide}();
         } else if (filter.length == 1) {
           // 1 char typed = show all rows
-          ${searchTextBoxShowRows}();
-          return;
+          ${searchFormInputShowRows}();
+          ${searchFormInputClearShow}();
+        } else {
+          ${filterRows}(filter);
         }
-        
-        // More than 1 char typed = start filtering!
-        ${dataObject}.tableElement.querySelectorAll('tbody tr .q-table__cell--text').forEach(
-          function(cellElement, index) {
-            txtValue = cellElement.innerText.toUpperCase();
+      });
+    }
 
-            if (txtValue.indexOf(filter) > -1) {
-              cellElement.parentElement.classList.remove('q-table-state-hidden');
-              cellElement.parentElement.classList.add('q-table-state-visible');
-            } else {
-              cellElement.parentElement.classList.remove('q-table-state-visible');
-              cellElement.parentElement.classList.add('q-table-state-hidden');
-            }
-          }
-        );
+    function ${searchFormInputClearAddEventListener}() {
+      document.querySelector('.search-form-input-clear').addEventListener('click', function(event) {
+        document.querySelector('.search-form-input').value = '';
+        
+        ${searchFormInputShowRows}();
+        ${searchFormInputHideRows}();
+        ${searchFormInputClearHide}();
       });
     }
 
     window.q_domready.then(function() {
-      ${searchTextBoxCreateElement}();
+      ${searchFormInputAddEventListener}();
+      ${searchFormInputClearAddEventListener}();
     });
   `;
 }
@@ -300,5 +320,5 @@ module.exports = {
   getCardLayoutScript: getCardLayoutScript,
   getShowMoreButtonScript: getShowMoreButtonScript,
   getMinibarsScript: getMinibarsScript,
-  getSearchTextBoxScript: getSearchTextBoxScript
+  getSearchFormInputScript: getSearchFormInputScript
 };
