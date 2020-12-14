@@ -723,7 +723,7 @@ lab.experiment("table search", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".search-form-input").then(
+    return elementCount(response.result.markup, "#search-form-input").then(
       (value) => {
         expect(value).to.be.equal(1);
       }
@@ -740,7 +740,7 @@ lab.experiment("table search", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".search-form-input").then(
+    return elementCount(response.result.markup, "#search-form-input").then(
       (value) => {
         expect(value).to.be.equal(0);
       }
