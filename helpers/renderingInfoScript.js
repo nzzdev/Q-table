@@ -256,9 +256,9 @@ function getSearchFormInputScript(context) {
 
       ${dataObject}.tableElement.querySelectorAll('tbody tr .q-table__cell--text').forEach(
         function(cellElement, index) {
-          txtValue = cellElement.innerText.toUpperCase();
-
-          if (txtValue.indexOf(filter) > -1) {
+          textCellValue = cellElement.innerText.toUpperCase();
+          
+          if (textCellValue.indexOf(filter) > -1) {
             cellElement.parentElement.classList.remove('q-table-state-hidden');
             cellElement.parentElement.classList.add('q-table-state-visible');
           } else {
@@ -270,11 +270,11 @@ function getSearchFormInputScript(context) {
     }
 
     function ${searchFormInputAddEventListeners}() {
-      document.querySelector('#search-form-input').addEventListener('input', function(event) {
+      document.querySelector('.search-form-input').addEventListener('input', function(event) {
         var filter = event.target.value;
 
         if (filter.length == 0) {
-          // No filter = show only x rows
+          // No filter = show default view with show more button (15 rows)
           ${searchFormInputHideRows}();
         } else if (filter.length == 1) {
           // 1 char typed = show all rows
@@ -284,7 +284,7 @@ function getSearchFormInputScript(context) {
         }
       });
 
-      document.querySelector('#search-form-input').addEventListener('search', function(event) {
+      document.querySelector('.search-form-input').addEventListener('search', function(event) {
         if (event.target.value == '') {
           ${searchFormInputShowRows}();
           ${searchFormInputHideRows}();
