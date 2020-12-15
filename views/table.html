@@ -3,7 +3,7 @@
   <h3 class="s-q-item__title">{{ item.title }}</h3>{% endif %} {%- if item.subtitle and item.subtitle !== '' %}
   <div class="s-q-item__subtitle">{{ item.subtitle }}</div>
   {%- endif %}
-  <div style="overflow-x: auto;padding: 0 1px">
+  <div style="overflow-x: auto;padding: 0 1px;">
     {%- if item.options.showTableSearch === true %}
     <label for="search-form-input" hidden>Suchen</label>
     <input id="search-form-input" class="s-input-field" type="search" placeholder="Bitte Suche eingeben" maxlength="20" value="" autocapitalize="off" autocomplete="off" spellcheck="false">
