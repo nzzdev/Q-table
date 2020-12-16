@@ -102,6 +102,7 @@ module.exports = {
       footnotes: footnotes,
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
+      noInteraction: request.payload.toolRuntimeConfig.noInteraction,
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
       )}`.replace(/-/g, ""),
@@ -201,7 +202,10 @@ module.exports = {
       });
     }
 
-    if (item.options.showTableSearch) {
+    if (
+      context.noInteraction !== true &&
+      item.options.showTableSearch === true
+    ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getSearchFormInputScript(context),
       });
