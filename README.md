@@ -192,7 +192,7 @@ This feature makes large tables searchable.
 - By default the table is collapsed and the `q-table_show-more-button` is visible at the bottom of the table ([see Collapsable table](#collapsable-table)).
 - When the user starts typing, all rows will be made visible and the `q-table_show-more-button` disappears.
 - The actual search function triggers, as soon as the user types the second character.
-- At the moment only `q-table__cell--text` cells are searched.
+- The filter searches through text-based columns only.
 - When the user deletes his input, the table collapses and the `q-table_show-more-button` will be visible again.
 
 [to the top](#table-of-contents)
