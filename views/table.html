@@ -5,7 +5,9 @@
   {%- endif %}
   <div style="overflow-x: auto;">
     {%- if noInteraction !== true and item.options.showTableSearch === true %}
-    <input class="search-form-input s-input-field" type="search" placeholder="Bitte Suche eingeben" maxlength="20" value="" autocapitalize="off" autocomplete="off" spellcheck="false" aria-label="Suchen">
+    <div class="search-form" style="padding: 0 1px">
+      <input class="search-form-input s-input-field" type="search" placeholder="Bitte Suche eingeben" maxlength="20" value="" autocapitalize="off" autocomplete="off" spellcheck="false" aria-label="Suchen">
+    </div>
     {%- endif %}
     <table class="q-table__table">
       {%- if item.options.hideTableHeader !== true %}
