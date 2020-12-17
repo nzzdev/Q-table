@@ -270,7 +270,7 @@ function getSearchFormInputScript(context) {
     }
 
     function ${searchFormInputAddEventListeners}() {
-      document.querySelector('.search-form-input').addEventListener('input', function(event) {
+      document.querySelector('.q-table__search__input').addEventListener('input', function(event) {
         var filter = event.target.value;
 
         if (filter.length == 0) {
@@ -284,7 +284,7 @@ function getSearchFormInputScript(context) {
         }
       });
 
-      document.querySelector('.search-form-input').addEventListener('search', function(event) {
+      document.querySelector('.q-table__search__input').addEventListener('search', function(event) {
         if (event.target.value == '') {
           ${searchFormInputShowRows}();
           ${searchFormInputHideRows}();
