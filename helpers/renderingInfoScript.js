@@ -273,21 +273,14 @@ function getSearchFormInputScript(context) {
       document.querySelector('.q-table__search__input').addEventListener('input', function(event) {
         var filter = event.target.value;
 
-        if (filter.length == 0) {
-          // No filter = show default view with show more button (15 rows)
-          ${searchFormInputHideRows}();
-        } else if (filter.length == 1) {
-          // 1 char typed = show all rows
+        if (filter.length < 2) {
+          // Always make all rows visible again
           ${searchFormInputShowRows}();
+
+          // No filter = show default view with show more button (15 rows)
+          if (filter.length == 0) ${searchFormInputHideRows}();
         } else {
           ${filterRows}(filter);
-        }
-      });
-
-      document.querySelector('.q-table__search__input').addEventListener('search', function(event) {
-        if (event.target.value == '') {
-          ${searchFormInputShowRows}();
-          ${searchFormInputHideRows}();
         }
       });
     }
