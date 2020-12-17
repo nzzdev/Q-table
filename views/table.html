@@ -28,7 +28,7 @@
         {%- endfor %}
       </thead>
       {%- endif %}
-      <tbody class="s-font-note">
+      <tbody class="s-font-note s-font-note--tabularnums">
         {%- for row in tableData.slice(1) %}
         {% set row_loop = loop %}
         <tr {% if numberOfRowsToHide and loop.index >= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
