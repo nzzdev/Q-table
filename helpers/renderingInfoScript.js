@@ -250,20 +250,35 @@ function getSearchFormInputScript(context) {
     }
 
     function ${filterRows}(filter) {
+      var foundString = false;
       filter = filter.toUpperCase();
-      
+
       if (filter.length < 2) return;
 
-      ${dataObject}.tableElement.querySelectorAll('tbody tr .q-table__cell--text').forEach(
-        function(cellElement, index) {
-          textCellValue = cellElement.innerText.toUpperCase();
+      // Loop through all table rows
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(
+        function(rowElement) {
+
+          foundString = false;
           
-          if (textCellValue.indexOf(filter) > -1) {
-            cellElement.parentElement.classList.remove('q-table-state-hidden');
-            cellElement.parentElement.classList.add('q-table-state-visible');
+          // Loop through all text cells
+          rowElement.querySelectorAll('.q-table__cell--text').forEach(
+            function(textCellElement) {
+              textCellValue = textCellElement.innerText.toUpperCase();
+
+              if (textCellValue.indexOf(filter) > -1) {
+                foundString = true;
+                return;
+              }
+            }
+          )
+
+          if (foundString) {
+            rowElement.classList.remove('q-table-state-hidden');
+            rowElement.classList.add('q-table-state-visible');
           } else {
-            cellElement.parentElement.classList.remove('q-table-state-visible');
-            cellElement.parentElement.classList.add('q-table-state-hidden');
+            rowElement.classList.remove('q-table-state-visible');
+            rowElement.classList.add('q-table-state-hidden');
           }
         }
       );
