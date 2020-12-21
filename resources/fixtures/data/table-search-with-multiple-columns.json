@@ -1,0 +1,143 @@
+{
+  "title": "FIXTURE: table search with multiple columns",
+  "data": {
+    "table": [
+      [
+        "Country",
+        "City",
+        "Company"
+      ],
+      [
+        "Italy",
+        "Bondo",
+        "Nisi Sem Consulting"
+      ],
+      [
+        "Austria",
+        "Traiskirchen",
+        "In Incorporated"
+      ],
+      [
+        "Italy",
+        "Romano d'Ezzelino",
+        "Lacus LLP"
+      ],
+      [
+        "France",
+        "Nancy",
+        "Nam Company"
+      ],
+      [
+        "France",
+        "Liévin",
+        "Sit Amet Ornare Foundation"
+      ],
+      [
+        "Germany",
+        "Greifswald",
+        "Magna Tellus Faucibus PC"
+      ],
+      [
+        "Germany",
+        "Rostock",
+        "Vulputate Risus Institute"
+      ],
+      [
+        "Italy",
+        "Jerzu",
+        "Sapien Nunc Corporation"
+      ],
+      [
+        "Italy",
+        "Salvirola",
+        "Suspendisse Sagittis Nullam Limited"
+      ],
+      [
+        "France",
+        "Besançon",
+        "Adipiscing Foundation"
+      ],
+      [
+        "Italy",
+        "Monghidoro",
+        "Ac Arcu Nunc Limited"
+      ],
+      [
+        "Austria",
+        "Graz",
+        "Dictum Limited"
+      ],
+      [
+        "France",
+        "Brive-la-Gaillarde",
+        "Ut Company"
+      ],
+      [
+        "Italy",
+        "Melazzo",
+        "Non Feugiat Institute"
+      ],
+      [
+        "Austria",
+        "St. Pölten",
+        "Nunc Quisque Ornare Corp."
+      ],
+      [
+        "France",
+        "Colmar",
+        "Sed Facilisis Foundation"
+      ],
+      [
+        "Germany",
+        "Karlsruhe",
+        "In Associates"
+      ],
+      [
+        "Germany",
+        "Grimma",
+        "Suscipit Nonummy Corp."
+      ],
+      [
+        "Austria",
+        "Bad Ischl",
+        "Adipiscing LLC"
+      ],
+      [
+        "Italy",
+        "Romano d'Ezzelino",
+        "Lacus LLP"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [
+    {
+      "link": {},
+      "text": "The Very Important Center For Very Important Data"
+    }
+  ],
+  "options": {
+    "hideTableHeader": false,
+    "showTableSearch": true,
+    "cardLayout": false,
+    "cardLayoutIfSmall": true,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+      "positive": {
+        "className": "",
+        "colorCode": ""
+      },
+      "negative": {
+        "className": "",
+        "colorCode": ""
+      }
+      },
+      "selectedColumn": null
+    }
+  },
+  "tool": "table",
+  "subtitle": "Very important data country by country"
+}
