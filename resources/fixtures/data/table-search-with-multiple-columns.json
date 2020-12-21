@@ -3,109 +3,130 @@
   "data": {
     "table": [
       [
-        "Country",
-        "City",
-        "Company"
+        "Country 1",
+        "Value 1",
+        "Country 2",
+        "Value 2"
       ],
       [
-        "Italy",
-        "Bondo",
-        "Nisi Sem Consulting"
-      ],
-      [
-        "Austria",
-        "Traiskirchen",
-        "In Incorporated"
-      ],
-      [
-        "Italy",
-        "Romano d'Ezzelino",
-        "Lacus LLP"
-      ],
-      [
-        "France",
-        "Nancy",
-        "Nam Company"
-      ],
-      [
-        "France",
-        "Liévin",
-        "Sit Amet Ornare Foundation"
-      ],
-      [
-        "Germany",
-        "Greifswald",
-        "Magna Tellus Faucibus PC"
-      ],
-      [
-        "Germany",
-        "Rostock",
-        "Vulputate Risus Institute"
-      ],
-      [
-        "Italy",
-        "Jerzu",
-        "Sapien Nunc Corporation"
-      ],
-      [
-        "Italy",
-        "Salvirola",
-        "Suspendisse Sagittis Nullam Limited"
-      ],
-      [
-        "France",
-        "Besançon",
-        "Adipiscing Foundation"
-      ],
-      [
-        "Italy",
-        "Monghidoro",
-        "Ac Arcu Nunc Limited"
+        "Netherlands",
+        "orange",
+        "Netherlands",
+        "green"
       ],
       [
         "Austria",
-        "Graz",
-        "Dictum Limited"
-      ],
-      [
-        "France",
-        "Brive-la-Gaillarde",
-        "Ut Company"
+        "red",
+        "Netherlands",
+        "yellow"
       ],
       [
         "Italy",
-        "Melazzo",
-        "Non Feugiat Institute"
-      ],
-      [
-        "Austria",
-        "St. Pölten",
-        "Nunc Quisque Ornare Corp."
-      ],
-      [
+        "red",
         "France",
-        "Colmar",
-        "Sed Facilisis Foundation"
+        "red"
       ],
       [
-        "Germany",
-        "Karlsruhe",
-        "In Associates"
-      ],
-      [
-        "Germany",
-        "Grimma",
-        "Suscipit Nonummy Corp."
-      ],
-      [
-        "Austria",
-        "Bad Ischl",
-        "Adipiscing LLC"
+        "Netherlands",
+        "yellow",
+        "Spain",
+        "orange"
       ],
       [
         "Italy",
-        "Romano d'Ezzelino",
-        "Lacus LLP"
+        "yellow",
+        "Germany",
+        "orange"
+      ],
+      [
+        "Italy",
+        "orange",
+        "Belgium",
+        "yellow"
+      ],
+      [
+        "Poland",
+        "green",
+        "Poland",
+        "orange"
+      ],
+      [
+        "Italy",
+        "orange",
+        "Germany",
+        "red"
+      ],
+      [
+        "Belgium",
+        "yellow",
+        "Spain",
+        "green"
+      ],
+      [
+        "Spain",
+        "green",
+        "Germany",
+        "orange"
+      ],
+      [
+        "Poland",
+        "red",
+        "Poland",
+        "green"
+      ],
+      [
+        "Italy",
+        "yellow",
+        "Poland",
+        "orange"
+      ],
+      [
+        "Netherlands",
+        "yellow",
+        "Italy",
+        "green"
+      ],
+      [
+        "Belgium",
+        "green",
+        "Belgium",
+        "orange"
+      ],
+      [
+        "Germany",
+        "yellow",
+        "Spain",
+        "orange"
+      ],
+      [
+        "France",
+        "green",
+        "Italy",
+        "orange"
+      ],
+      [
+        "Poland",
+        "green",
+        "Poland",
+        "orange"
+      ],
+      [
+        "Germany",
+        "yellow",
+        "Austria",
+        "orange"
+      ],
+      [
+        "Italy",
+        "orange",
+        "Austria",
+        "orange"
+      ],
+      [
+        "France",
+        "orange",
+        "Netherlands",
+        "yellow"
       ]
     ],
     "metaData": {
