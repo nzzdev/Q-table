@@ -258,7 +258,6 @@ function getSearchFormInputScript(context) {
       // Loop through all table rows
       ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(
         function(rowElement) {
-
           foundString = false;
           
           // Loop through all text cells
@@ -285,7 +284,7 @@ function getSearchFormInputScript(context) {
     }
 
     function ${searchFormInputAddEventListeners}() {
-      document.querySelector('.q-table__search__input').addEventListener('input', function(event) {
+      ${dataObject}.element.querySelector('.q-table__search__input').addEventListener('input', function(event) {
         var filter = event.target.value;
 
         if (filter.length < 2) {
