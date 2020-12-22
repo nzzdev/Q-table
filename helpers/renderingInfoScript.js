@@ -217,9 +217,98 @@ function getMinibarsScript(context) {
   `;
 }
 
+function getSearchFormInputScript(context) {
+  const dataObject = `window.${context.id}Data`;
+  const searchFormInputAddEventListeners = `searchFormInputAddEventListeners${context.id}`;
+  const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
+  const searchFormInputShowRows = `searchFormInputShowRows${context.id}`;
+  const filterRows = `filterRows${context.id}`;
+
+  return `
+    function ${searchFormInputHideRows}() {
+      ${dataObject}.showMoreButtonElement.style.display = '';
+
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
+          rowElement.classList.remove('q-table-state-visible');
+          rowElement.classList.add('q-table-state-hidden');
+        }
+      });
+      ${dataObject}.showMoreButtonElement.textContent = 'Alle ' + ${dataObject}.numberOfRows + ' anzeigen';
+      ${dataObject}.rowVisibilityState = 'hidden';
+    }
+
+    function ${searchFormInputShowRows}() {
+      ${dataObject}.showMoreButtonElement.style.display = 'none';
+
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        rowElement.classList.remove('q-table-state-hidden');
+        rowElement.classList.add('q-table-state-visible');
+      });
+      ${dataObject}.showMoreButtonElement.textContent = "Tabelle zuklappen";
+      ${dataObject}.rowVisibilityState = 'visible';
+    }
+
+    function ${filterRows}(filter) {
+      var foundString = false;
+      filter = filter.toUpperCase();
+
+      if (filter.length < 2) return;
+
+      // Loop through all table rows
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(
+        function(rowElement) {
+          foundString = false;
+          
+          // Loop through all text cells
+          rowElement.querySelectorAll('.q-table__cell--text').forEach(
+            function(textCellElement) {
+              textCellValue = textCellElement.innerText.toUpperCase();
+
+              if (textCellValue.indexOf(filter) > -1) {
+                foundString = true;
+                return;
+              }
+            }
+          )
+
+          if (foundString) {
+            rowElement.classList.remove('q-table-state-hidden');
+            rowElement.classList.add('q-table-state-visible');
+          } else {
+            rowElement.classList.remove('q-table-state-visible');
+            rowElement.classList.add('q-table-state-hidden');
+          }
+        }
+      );
+    }
+
+    function ${searchFormInputAddEventListeners}() {
+      ${dataObject}.element.querySelector('.q-table__search__input').addEventListener('input', function(event) {
+        var filter = event.target.value;
+
+        if (filter.length < 2) {
+          // Always make all rows visible again
+          ${searchFormInputShowRows}();
+
+          // No filter = show default view with show more button (15 rows)
+          if (filter.length == 0) ${searchFormInputHideRows}();
+        } else {
+          ${filterRows}(filter);
+        }
+      });
+    }
+
+    window.q_domready.then(function() {
+      ${searchFormInputAddEventListeners}();
+    });
+  `;
+}
+
 module.exports = {
   getDefaultScript: getDefaultScript,
   getCardLayoutScript: getCardLayoutScript,
   getShowMoreButtonScript: getShowMoreButtonScript,
-  getMinibarsScript: getMinibarsScript
+  getMinibarsScript: getMinibarsScript,
+  getSearchFormInputScript: getSearchFormInputScript
 };

@@ -1,0 +1,164 @@
+{
+  "title": "FIXTURE: table search with multiple columns",
+  "data": {
+    "table": [
+      [
+        "Country 1",
+        "Value 1",
+        "Country 2",
+        "Value 2"
+      ],
+      [
+        "Netherlands",
+        "orange",
+        "Netherlands",
+        "green"
+      ],
+      [
+        "Austria",
+        "red",
+        "Netherlands",
+        "yellow"
+      ],
+      [
+        "Italy",
+        "red",
+        "France",
+        "red"
+      ],
+      [
+        "Netherlands",
+        "yellow",
+        "Spain",
+        "orange"
+      ],
+      [
+        "Italy",
+        "yellow",
+        "Germany",
+        "orange"
+      ],
+      [
+        "Italy",
+        "orange",
+        "Belgium",
+        "yellow"
+      ],
+      [
+        "Poland",
+        "green",
+        "Poland",
+        "orange"
+      ],
+      [
+        "Italy",
+        "orange",
+        "Germany",
+        "red"
+      ],
+      [
+        "Belgium",
+        "yellow",
+        "Spain",
+        "green"
+      ],
+      [
+        "Spain",
+        "green",
+        "Germany",
+        "orange"
+      ],
+      [
+        "Poland",
+        "red",
+        "Poland",
+        "green"
+      ],
+      [
+        "Italy",
+        "yellow",
+        "Poland",
+        "orange"
+      ],
+      [
+        "Netherlands",
+        "yellow",
+        "Italy",
+        "green"
+      ],
+      [
+        "Belgium",
+        "green",
+        "Belgium",
+        "orange"
+      ],
+      [
+        "Germany",
+        "yellow",
+        "Spain",
+        "orange"
+      ],
+      [
+        "France",
+        "green",
+        "Italy",
+        "orange"
+      ],
+      [
+        "Poland",
+        "green",
+        "Poland",
+        "orange"
+      ],
+      [
+        "Germany",
+        "yellow",
+        "Austria",
+        "orange"
+      ],
+      [
+        "Italy",
+        "orange",
+        "Austria",
+        "orange"
+      ],
+      [
+        "France",
+        "orange",
+        "Netherlands",
+        "yellow"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [
+    {
+      "link": {},
+      "text": "The Very Important Center For Very Important Data"
+    }
+  ],
+  "options": {
+    "hideTableHeader": false,
+    "showTableSearch": true,
+    "cardLayout": false,
+    "cardLayoutIfSmall": true,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+      "positive": {
+        "className": "",
+        "colorCode": ""
+      },
+      "negative": {
+        "className": "",
+        "colorCode": ""
+      }
+      },
+      "selectedColumn": null
+    }
+  },
+  "tool": "table",
+  "subtitle": "Very important data country by country"
+}

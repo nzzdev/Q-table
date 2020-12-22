@@ -131,6 +131,18 @@ const fixtureData = [
     `${fixtureDataDirectory}/formatted-number-negative.json`,
     require(`${fixtureDataDirectory}/formatted-number-negative.json`),
   ],
+  [
+    `${fixtureDataDirectory}/table-search-hidden.json`,
+    require(`${fixtureDataDirectory}/table-search-hidden.json`),
+  ],
+  [
+    `${fixtureDataDirectory}/table-search-show.json`,
+    require(`${fixtureDataDirectory}/table-search-show.json`),
+  ],
+  [
+    `${fixtureDataDirectory}/table-search-with-multiple-columns.json`,
+    require(`${fixtureDataDirectory}/table-search-with-multiple-columns.json`),
+  ],
 ];
 
 // register migration scripts here in order of version,

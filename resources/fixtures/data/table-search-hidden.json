@@ -1,0 +1,122 @@
+{
+  "title": "FIXTURE: table search hide",
+  "data": {
+    "table": [
+      [
+        "Country",
+        "Number"
+      ],
+      [
+        "Somalia",
+        "-0.1459"
+      ],
+      [
+        "Honduras",
+        "0.2758"
+      ],
+      [
+        "Malawi",
+        "-0.0534"
+      ],
+      [
+        "Comoros",
+        "0.0111"
+      ],
+      [
+        "Greece",
+        "-0.1775"
+      ],
+      [
+        "Turkmenistan",
+        "0.0803"
+      ],
+      [
+        "Panama",
+        "0.0164"
+      ],
+      [
+        "Austria",
+        "-0.0462"
+      ],
+      [
+        "Saint Barthélemy",
+        "-0.0247"
+      ],
+      [
+        "Kazakhstan",
+        "-0.0067"
+      ],
+      [
+        "Azerbaijan",
+        "0.044"
+      ],
+      [
+        "Netherlands",
+        "0.2486"
+      ],
+      [
+        "Yemen",
+        "-0.106"
+      ],
+      [
+        "Sint Maarten",
+        "0.4218"
+      ],
+      [
+        "Svalbard and Jan Mayen Islands",
+        "-0.1107"
+      ],
+      [
+        "Belarus",
+        "-0.4466"
+      ],
+      [
+        "China",
+        "-0.4345"
+      ],
+      [
+        "Congo (Brazzaville)",
+        "-0.1386"
+      ],
+      [
+        "Belgium",
+        "-0.0206"
+      ],
+      [
+        "Poland",
+        "0.2016"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [
+    {
+      "link": {},
+      "text": "The Very Important Center For Very Important Data"
+    }
+  ],
+  "options": {
+    "hideTableHeader": false,
+    "showTableSearch": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": true,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+      "positive": {
+        "className": "",
+        "colorCode": ""
+      },
+      "negative": {
+        "className": "",
+        "colorCode": ""
+      }
+      },
+      "selectedColumn": null
+    }
+  },
+  "tool": "table",
+  "subtitle": "Very important data country by country"
+}

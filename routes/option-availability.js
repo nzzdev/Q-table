@@ -21,6 +21,12 @@ module.exports = {
       };
     }
 
+    if (request.params.optionName === "showTableSearch") {
+      return {
+        available: (item.data.table.length > 16)
+      };
+    }
+
     if (
       request.params.optionName === "minibars" ||
       request.params.optionName === "selectedColumn"
