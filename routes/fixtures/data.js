@@ -35,6 +35,9 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/formatted-numbers.json`),
   require(`${fixtureDataDirectory}/formatted-numbers-mixed.json`),
   require(`${fixtureDataDirectory}/formatted-numbers-negative.json`),
+  require(`${fixtureDataDirectory}/table-search-hidden.json`),
+  require(`${fixtureDataDirectory}/table-search-show.json`),
+  require(`${fixtureDataDirectory}/table-search-with-multiple-columns.json`),
 ];
 
 module.exports = {

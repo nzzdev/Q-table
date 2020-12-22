@@ -3,7 +3,12 @@
   <h3 class="s-q-item__title">{{ item.title }}</h3>{% endif %} {%- if item.subtitle and item.subtitle !== '' %}
   <div class="s-q-item__subtitle">{{ item.subtitle }}</div>
   {%- endif %}
-  <div style="overflow-x: auto">
+  <div style="overflow-x: auto;">
+    {%- if noInteraction !== true and item.options.showTableSearch === true %}
+    <div class="q-table__search">
+      <input class="q-table__search__input s-input-field" type="search" placeholder="Bitte Suche eingeben" maxlength="20" value="" autocapitalize="off" autocomplete="off" spellcheck="false" aria-label="Suchen">
+    </div>
+    {%- endif %}
     <table class="q-table__table">
       {%- if item.options.hideTableHeader !== true %}
       <thead class="s-font-note s-font-note--strong">

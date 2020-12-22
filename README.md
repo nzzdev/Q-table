@@ -182,6 +182,21 @@ Footnotes are a feature to display annotations in the table and the sources in t
 
 [to the top](#table-of-contents)
 
+#### Table search
+
+<img src="/doc/table-search.png" align="right" width=300 height=400>
+
+This feature makes large tables searchable.
+
+###### Implementation details
+- By default the table is collapsed and the `q-table_show-more-button` is visible at the bottom of the table ([see Collapsable table](#collapsable-table)).
+- When the user starts typing, all rows will be made visible and the `q-table_show-more-button` disappears.
+- The actual search function triggers, as soon as the user types the second character.
+- The filter searches through text-based columns only.
+- When the user deletes his input, the table collapses and the `q-table_show-more-button` will be visible again.
+
+[to the top](#table-of-contents)
+
 ### Options
 
 #### hideTableHeader
@@ -191,6 +206,16 @@ This options allows to hide the header of each column. By default it's `false`
 ###### Implementation details
 
 - If the options is used, the table-header [won't be rendered](https://github.com/nzzdev/Q-table/blob/e4fbf189ce8c1191cdfad2fac60ee9677cc8eda7/views/table.html#L7-L24)
+
+[to the top](#table-of-contents)
+
+#### showTableSearch
+
+This option allows to show or hide the table search feature. The option is only available, when there are more than 16 rows in the table. Default value is `false`.
+
+###### Implementation details
+
+- If the option is used, the input element for the table search won't be rendered.
 
 [to the top](#table-of-contents)
 
