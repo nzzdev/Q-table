@@ -79,8 +79,11 @@ function getTableData(data, footnotes, options) {
     let cells = row.map((cell, columnIndex) => {
       let type = "text";
       let value = cell;
+      let classes = [];
       if (columns[columnIndex].isNumeric) {
         type = "numeric";
+        classes.push('s-font-note--tabularnums');
+
         // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
         if (
           rowIndex > 0 &&
@@ -100,7 +103,7 @@ function getTableData(data, footnotes, options) {
       return {
         type: type,
         value: value,
-        classes: []
+        classes: classes
       };
     });
     tableData.push(cells);
