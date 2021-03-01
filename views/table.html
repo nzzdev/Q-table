@@ -4,7 +4,7 @@
   <div class="s-q-item__subtitle">{{ item.subtitle }}</div>
   {%- endif %}
   <div style="overflow-x: auto;">
-    {%- if noInteraction !== true and item.options.showTableSearch === true %}
+    {%- if noInteraction !== true and item.options.showTableSearch === true and tableData.length > 16 %}
     <div class="q-table__search">
       <input class="q-table__search__input s-input-field" type="search" placeholder="Bitte Suche eingeben" maxlength="20" value="" autocapitalize="off" autocomplete="off" spellcheck="false" aria-label="Suchen">
     </div>

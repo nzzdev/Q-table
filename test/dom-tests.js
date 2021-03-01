@@ -746,4 +746,21 @@ lab.experiment("table search", () => {
       }
     );
   });
+
+  it("doesn't show table search if property is true but not enough elements", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/hyphen-sign-as-number.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    return elementCount(response.result.markup, ".q-table__search__input").then(
+      (value) => {
+        expect(value).to.be.equal(0);
+      }
+    );
+  })
 });
