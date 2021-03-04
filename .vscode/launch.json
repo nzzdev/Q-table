@@ -8,13 +8,15 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/index.js"
+      "program": "${workspaceFolder}/index.js",
+      "runtimeVersion": "12.17.0"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "run 2e2 test",
-      "program": "${workspaceFolder}/test/e2e-tests.js"
+      "program": "${workspaceFolder}/test/e2e-tests.js",
+      "runtimeVersion": "12.17.0",
     }
   ]
 }

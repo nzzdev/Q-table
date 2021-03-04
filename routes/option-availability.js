@@ -47,6 +47,26 @@ module.exports = {
       };
     }
 
+    if (
+      request.params.optionName === "heatmap" || 
+      request.params.optionName === "selectedColumn"
+    ) {
+      let isAvailable = false;
+
+      if (item.data.table.length !== 0) {
+        if (
+          !item.options.cardLayout &&
+          item.data.table[0].length >= 3 &&
+          getNumericColumns(item.data.table).length >= 1 
+        ) {
+          isAvailable = true;
+        }
+      }
+      return {
+        available: isAvailable
+      };
+    }
+
     if (request.params.optionName === "barColor") {
       let isAvailable = false;
       if (item.options.minibar !== null && item.options.minibar !== undefined) {

@@ -314,6 +314,52 @@
               }
             }
           }
+        },
+        "heatmap": {
+          "title": "Heatmap",
+          "type": "object",
+          "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "config": {
+                  "endpoint": "option-availability/heatmap",
+                  "fields": ["options", "data"]
+                }
+              }
+            ]
+          },
+          "properties": {
+            "selectedColumn": {
+              "title": "Spalte auswählen",
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/selectedColumn",
+                      "fields": ["options", "data"]
+                    }
+                  }
+                ],
+                "dynamicSchema": {
+                  "type": "ToolEndpoint",
+                  "config": {
+                    "endpoint": "dynamic-schema/selectedColumnHeatmap",
+                    "fields": ["options", "data"]
+                  }
+                }
+              }
+            }
+          }
          }
       }
     }

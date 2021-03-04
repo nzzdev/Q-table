@@ -40,6 +40,15 @@ module.exports = {
         }
       };
     }
+
+    if (request.params.optionName === "selectedColumnHeatmap") {
+      return {
+        enum: getMiniBarEnum(item),
+        "Q:options": {
+          enum_titles: getMiniBarEnumTitles(item)
+        }
+      };
+    }
     return Boom.badRequest();
   }
 };
