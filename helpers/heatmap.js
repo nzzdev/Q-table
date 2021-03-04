@@ -1,9 +1,13 @@
 const clone = require("clone");
 const array2d = require("array2d");
 
-// function getDataWithoutHeaderRow(data) {
-//     return data.slice(1);
-// }
+function hasCustomBuckets(bucketType) {
+    return bucketType === "custom";
+}
+
+function getDataWithoutHeaderRow(data) {
+    return data.slice(1);
+}
 
 // function getUniqueCategoriesCount(data) {
 //     return getUniqueCategoriesObject(data).categories.length;
@@ -239,8 +243,10 @@ function getNumberBuckets(numericalOptions) {
 // }
 
 module.exports = {
+    getDataWithoutHeaderRow,
     getCustomBucketBorders,
     getNumberBuckets,
+    hasCustomBuckets
 };
 
     // getMaxDigitsAfterCommaInData,
@@ -250,6 +256,6 @@ module.exports = {
     // getNumericalValues,
     // getNonNullNumericalValues,
     // getMetaData,
-        // getDataWithoutHeaderRow,
+
     // getUniqueCategoriesObject,
     // getUniqueCategoriesCount,

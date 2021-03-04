@@ -4,6 +4,8 @@ const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 const getMinibarNumbersWithType = require("../helpers/minibars.js")
   .getMinibarNumbersWithType;
 
+const hasCustomBuckets = require("../helpers/heatmap.js").hasCustomBuckets;
+
 module.exports = {
   method: "POST",
   path: "/option-availability/{optionName}",
@@ -13,23 +15,24 @@ module.exports = {
     },
     cors: true
   },
-  handler: function(request, h) {
+  handler: function (request, h) {
     const item = request.payload.item;
-    if (request.params.optionName === "cardLayoutIfSmall") {
+    const optionName = request.params.optionName;
+    if (optionName === "cardLayoutIfSmall") {
       return {
         available: !item.options.cardLayout
       };
     }
 
-    if (request.params.optionName === "showTableSearch") {
+    if (optionName === "showTableSearch") {
       return {
         available: (item.data.table.length > 16)
       };
     }
 
     if (
-      request.params.optionName === "minibars" ||
-      request.params.optionName === "selectedColumn"
+      optionName === "minibars" ||
+      optionName === "selectedColumn"
     ) {
       let isAvailable = false;
 
@@ -48,8 +51,8 @@ module.exports = {
     }
 
     if (
-      request.params.optionName === "heatmap" || 
-      request.params.optionName === "selectedColumn"
+      optionName === "heatmap" ||
+      optionName === "selectedColumn"
     ) {
       let isAvailable = false;
 
@@ -57,7 +60,7 @@ module.exports = {
         if (
           !item.options.cardLayout &&
           item.data.table[0].length >= 3 &&
-          getNumericColumns(item.data.table).length >= 1 
+          getNumericColumns(item.data.table).length >= 1
         ) {
           isAvailable = true;
         }
@@ -67,7 +70,13 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "barColor") {
+    if (optionName === "customBuckets") {
+      return {
+        available: hasCustomBuckets(item.options.numericalOptions.bucketType),
+      };
+    }
+
+    if (optionName === "barColor") {
       let isAvailable = false;
       if (item.options.minibar !== null && item.options.minibar !== undefined) {
         isAvailable =
@@ -80,7 +89,7 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "barColorPositive") {
+    if (optionName === "barColorPositive") {
       let isAvailable = false;
       if (item.options.minibar != null && item.options.minibar != undefined) {
         if (
@@ -100,7 +109,7 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "barColorNegative") {
+    if (optionName === "barColorNegative") {
       let isAvailable = false;
       if (item.options.minibar != null && item.options.minibar != undefined) {
         if (
@@ -120,7 +129,7 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "invertColors") {
+    if (optionName === "invertColors") {
       let isAvailable = false;
       if (item.options.minibar != null && item.options.minibar != undefined) {
         if (
