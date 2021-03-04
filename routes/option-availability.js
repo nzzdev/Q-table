@@ -76,6 +76,12 @@ module.exports = {
       };
     }
 
+    if (optionName === "numberBuckets") {
+      return {
+        available: !hasCustomBuckets(item.options.numericalOptions.bucketType),
+      };
+    }
+
     if (optionName === "barColor") {
       let isAvailable = false;
       if (item.options.minibar !== null && item.options.minibar !== undefined) {

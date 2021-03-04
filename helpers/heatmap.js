@@ -9,36 +9,36 @@ function getDataWithoutHeaderRow(data) {
     return data.slice(1);
 }
 
-// function getUniqueCategoriesCount(data) {
-//     return getUniqueCategoriesObject(data).categories.length;
-// }
+function getUniqueCategoriesCount(data) {
+    return getUniqueCategoriesObject(data).categories.length;
+}
 
-// function getUniqueCategoriesObject(data, customCategoriesOrder) {
-//     let hasNullValues = false;
-//     const values = data
-//         .map((row) => {
-//             return row[1];
-//         })
-//         .filter((value) => {
-//             if (value !== null && value !== "") {
-//                 return true;
-//             }
-//             hasNullValues = true;
-//             return false;
-//         });
-//     let sortedValues = getSortedValues(values);
+function getUniqueCategoriesObject(data, customCategoriesOrder) {
+    let hasNullValues = false;
+    const values = data
+        .map((row) => {
+            return row[1];
+        })
+        .filter((value) => {
+            if (value !== null && value !== "") {
+                return true;
+            }
+            hasNullValues = true;
+            return false;
+        });
+    let sortedValues = getSortedValues(values);
 
-//     // If the user has set a custom order, sort the categories accordingly
-//     if (customCategoriesOrder) {
-//         sortedValues.sort(
-//             function (a, b) {
-//                 return customCategoriesOrder.map(c => c.category).indexOf(a) -
-//                     customCategoriesOrder.map(c => c.category).indexOf(b);
-//             });
-//     }
+    // If the user has set a custom order, sort the categories accordingly
+    if (customCategoriesOrder) {
+        sortedValues.sort(
+            function (a, b) {
+                return customCategoriesOrder.map(c => c.category).indexOf(a) -
+                    customCategoriesOrder.map(c => c.category).indexOf(b);
+            });
+    }
 
-//     return { hasNullValues, categories: [...new Set(sortedValues)] };
-// }
+    return { hasNullValues, categories: [...new Set(sortedValues)] };
+}
 
 // function getSortedValues(values) {
 //     // Create a counter object on array
@@ -246,7 +246,9 @@ module.exports = {
     getDataWithoutHeaderRow,
     getCustomBucketBorders,
     getNumberBuckets,
-    hasCustomBuckets
+    hasCustomBuckets,
+    getUniqueCategoriesObject,
+    getUniqueCategoriesCount,
 };
 
     // getMaxDigitsAfterCommaInData,
@@ -257,5 +259,3 @@ module.exports = {
     // getNonNullNumericalValues,
     // getMetaData,
 
-    // getUniqueCategoriesObject,
-    // getUniqueCategoriesCount,
