@@ -149,7 +149,7 @@ lab.experiment("dynamic schema endpoint", () => {
   it("returns enums of selectedColumn", async () => {
     const request = {
       method: "POST",
-      url: "/dynamic-schema/selectedColumn",
+      url: "/dynamic-schema/selectedColumnMinibar",
       payload: {
         item: require("../resources/fixtures/data/minibars-negative.json"),
       },

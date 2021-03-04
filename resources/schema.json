@@ -206,7 +206,7 @@
                 "dynamicSchema": {
                   "type": "ToolEndpoint",
                   "config": {
-                    "endpoint": "dynamic-schema/selectedColumn",
+                    "endpoint": "dynamic-schema/selectedColumnMinibar",
                     "fields": ["options", "data"]
                   }
                 }
@@ -314,7 +314,7 @@
               }
             }
           }
-        }
+         }
       }
     }
   },

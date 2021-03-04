@@ -32,7 +32,7 @@ module.exports = {
   },
   handler: function(request, h) {
     const item = request.payload.item;
-    if (request.params.optionName === "selectedColumn") {
+    if (request.params.optionName === "selectedColumnMinibar") {
       return {
         enum: getMiniBarEnum(item),
         "Q:options": {
