@@ -38,6 +38,40 @@ function getOptionEnumTitles(item, type) {
   }
 }
 
+function getScaleEnumWithTitles(numericalOptions) {
+  let enumValues = ["sequential"];
+  let enumTitles = ["Sequentiell"];
+
+  let bucketNumber = 0;
+  if (numericalOptions.bucketType === "custom") {
+    if (numericalOptions.customBuckets) {
+      const buckets = numericalOptions.customBuckets.split(",");
+      bucketNumber = buckets.length - 1;
+    }
+  } else {
+    bucketNumber = numericalOptions.numberBuckets;
+  }
+
+  // Add valid bucket borders to enum as diverging values
+  for (let i = 1; i < bucketNumber; i++) {
+    enumValues.push(`border-${i}`);
+    enumTitles.push(`Divergierend ab Grenze ${i}`);
+  }
+
+  // Add valid buckets to enum as diverging values
+  for (let i = 1; i < bucketNumber - 1; i++) {
+    enumValues.push(`bucket-${i}`);
+    enumTitles.push(`Divergierend ab Bucket ${i + 1}`);
+  }
+
+  return {
+    enum: enumValues,
+    "Q:options": {
+      enum_titles: enumTitles,
+    },
+  };
+}
+
 module.exports = {
   method: "POST",
   path: "/dynamic-schema/{optionName}",
@@ -49,6 +83,7 @@ module.exports = {
   },
   handler: function (request, h) {
     const item = request.payload.item;
+    const optionName = request.params.optionName;
     if (request.params.optionName === "selectedColumnMinibar") {
       return {
         enum: getOptionEnum(item, "minibar"),
@@ -58,13 +93,17 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "selectedColumnHeatmap") {
+    if (optionName === "selectedColumnHeatmap") {
       return {
         enum: getOptionEnum(item, "heatmap"),
         "Q:options": {
           enum_titles: getOptionEnumTitles(item, "heatmap")
         }
       };
+    }
+
+    if (optionName === "scale") {
+      return getScaleEnumWithTitles(item.options.numericalOptions);
     }
     return Boom.badRequest();
   }
