@@ -6,5 +6,6 @@ module.exports = [
   require("./health.js"),
   require("./migration.js"),
   require("./locales.js"),
-  require("./fixtures/data.js")
+  require("./fixtures/data.js"),
+  require("./notifications/numberBucketsOutOfColorScale.js"),
 ].concat(require("./schema.js"));
