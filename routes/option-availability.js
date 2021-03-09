@@ -32,7 +32,7 @@ module.exports = {
 
     if (
       optionName === "minibars" ||
-      optionName === "selectedColumn"
+      optionName === "selectedColumnMinibar"
     ) {
       let isAvailable = false;
 
@@ -50,82 +50,63 @@ module.exports = {
       };
     }
 
-    if (optionName === "barColor") {
-      let isAvailable = false;
-      if (item.options.minibar !== null && item.options.minibar !== undefined) {
-        isAvailable =
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined;
+    // properties minibar
+    if (item.options.minibar !== null &&
+      item.options.minibar !== undefined) {
+
+      if (optionName === "barColor") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        return {
+          available: isAvailable
+        };
       }
 
-      return {
-        available: isAvailable
-      };
-    }
-
-    if (optionName === "barColorPositive") {
-      let isAvailable = false;
-      if (item.options.minibar != null && item.options.minibar != undefined) {
-        if (
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined
-        ) {
+      if (optionName === "barColorPositive") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        if (isAvailable) {
           let type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;
-
           isAvailable = type === "mixed" || type === "positive";
         }
+        return {
+          available: isAvailable
+        };
       }
-      return {
-        available: isAvailable
-      };
-    }
 
-    if (optionName === "barColorNegative") {
-      let isAvailable = false;
-      if (item.options.minibar != null && item.options.minibar != undefined) {
-        if (
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined
-        ) {
+      if (optionName === "barColorNegative") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        if (isAvailable) {
           let type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;
-
           isAvailable = type === "mixed" || type === "negative";
         }
+        return {
+          available: isAvailable
+        };
       }
-      return {
-        available: isAvailable
-      };
-    }
 
-    if (optionName === "invertColors") {
-      let isAvailable = false;
-      if (item.options.minibar != null && item.options.minibar != undefined) {
-        if (
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined
-        ) {
+      if (optionName === "invertColors") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        if (isAvailable) {
           let type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;
-
           isAvailable = type === "mixed";
         }
+        return {
+          available: isAvailable
+        };
       }
-      return {
-        available: isAvailable
-      };
     }
 
     if (
       optionName === "heatmap" ||
-      optionName === "selectedColumn"
+      optionName === "selectedColumnHeatmap"
     ) {
       let isAvailable = false;
 
@@ -143,32 +124,45 @@ module.exports = {
       };
     }
 
-    if (optionName === "noValuesInCell" || optionName === "bucketType" || optionName === "customBuckets" || optionName === "numberBuckets" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme") {
-      return item.options.heatmap !== null && item.options.heaetmap !== undefined;
-    }
+    // properties heatmap 
+    if (item.options.heatmap !== null &&
+      item.options.heatmap !== undefined) {
 
-    if (optionName === "customBuckets") {
-      let isAvailable = false;
-      if (item.options.heatmap !== null && item.options.heaetmap !== undefined) {
-        isAvailable = hasCustomBuckets(item.options.numericalOptions.bucketType);
+      if (optionName === "noValuesInCell" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme") {
+        return {
+          available: item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined
+        };
       }
-      return isAvailable;
-    }
 
-    if (optionName === "numberBuckets") {
-      let isAvailable = false;
-      if (item.options.heatmap !== null && item.options.heaetmap !== undefined) {
-        isAvailable = !hasCustomBuckets(item.options.numericalOptions.bucketType);
+      if (optionName === "customBuckets") {
+        let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
+        if (isAvailable) {
+          isAvailable = hasCustomBuckets(item.options.heatmap.bucketType);
+        }
+        return {
+          available: isAvailable
+        };
       }
-      return isAvailable;
-    }
 
-    if (optionName === "customColors") {
-      let isAvailable = false;
-      if (item.options.heatmap !== null && item.options.heaetmap !== undefined) {
-        isAvailable = item.options.numericalOptions.scale === "sequential";
+      if (optionName === "numberBuckets") {
+        let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
+        if (isAvailable) {
+          isAvailable = !hasCustomBuckets(item.options.heatmap.bucketType);
+        }
+        return {
+          available: isAvailable
+        };
       }
-      return isAvailable;
+
+      if (optionName === "customColors") {
+        let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
+        if (isAvailable) {
+          isAvailable = item.options.heatmap.scale === "sequential"
+        }
+        return {
+          available: isAvailable
+        };
+      }
     }
 
     return Boom.badRequest();

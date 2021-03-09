@@ -123,7 +123,7 @@ lab.experiment("option availability endpoint", () => {
   it("returns true for option availability of selectedColumn", async () => {
     const request = {
       method: "POST",
-      url: "/option-availability/selectedColumn",
+      url: "/option-availability/selectedColumnMinibar",
       payload: {
         item: require("../resources/fixtures/data/minibars-mixed.json"),
       },
@@ -135,7 +135,7 @@ lab.experiment("option availability endpoint", () => {
   it("returns false for option availability of selectedColumn", async () => {
     const request = {
       method: "POST",
-      url: "/option-availability/selectedColumn",
+      url: "/option-availability/selectedColumnMinibar",
       payload: {
         item: require("../resources/fixtures/data/two-column.json"),
       },

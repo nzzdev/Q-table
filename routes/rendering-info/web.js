@@ -84,7 +84,7 @@ module.exports = {
       item.options.hideTableHeader
     );
     const minibarsAvailable = await request.server.inject({
-      url: "/option-availability/selectedColumn",
+      url: "/option-availability/selectedColumnMinibar",
       method: "POST",
       payload: { item: item },
     });

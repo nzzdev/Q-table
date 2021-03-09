@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const dataHelpers = require("../../helpers/heatmap.js");
+const heatmapHelpers = require("../../helpers/heatmap.js");
 
 const sequentialScaleMax = 7;
 const divergingScaleMax = sequentialScaleMax * 2;
@@ -20,12 +20,12 @@ module.exports = {
     handler: function (request, h) {
         try {
             const item = request.payload.item;
+            const heatmap = item.options.heatmap;
 
+            const scale = item.options.scale;
 
-            const scale = item.options.numericalOptions.scale;
-
-            let numberBuckets = dataHelpers.getNumberBuckets(
-                item.options.numericalOptions
+            let numberBuckets = heatmapHelpers.getNumberBuckets(
+                heatmap
             );
 
             if (scale === "sequential") {

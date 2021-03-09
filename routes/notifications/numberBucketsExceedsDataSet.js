@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const dataHelpers = require("../../helpers/heatmap.js");
+const heatmapHelpers = require("../../helpers/heatmap.js");
 
 module.exports = {
     method: "POST",
@@ -18,15 +18,15 @@ module.exports = {
         try {
             const item = request.payload.item;
             // removing the header row first
-            item.data = dataHelpers.getDataWithoutHeaderRow(item.data);
+            item.data = heatmapHelpers.getDataWithoutHeaderRow(item.data);
 
             if (
-                item.options.numericalOptions.bucketType !== "custom"
+                item.options.bucketType !== "custom"
             ) {
-                const numberUniqueValues = dataHelpers.getUniqueCategoriesCount(
+                const numberUniqueValues = heatmapHelpers.getUniqueCategoriesCount(
                     item.data
                 );
-                const numberBuckets = item.options.numericalOptions.numberBuckets;
+                const numberBuckets = item.options.numberBuckets;
 
                 if (numberBuckets > numberUniqueValues) {
                     return {

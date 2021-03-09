@@ -209,7 +209,7 @@
                   {
                     "type": "ToolEndpoint",
                     "config": {
-                      "endpoint": "option-availability/selectedColumn",
+                      "endpoint": "option-availability/selectedColumnMinibar",
                       "fields": [
                         "options",
                         "data"
@@ -377,7 +377,7 @@
                   {
                     "type": "ToolEndpoint",
                     "config": {
-                      "endpoint": "option-availability/selectedColumn",
+                      "endpoint": "option-availability/selectedColumnHeatmap",
                       "fields": [
                         "options",
                         "data"
@@ -471,7 +471,7 @@
                     "config": {
                       "endpoint": "option-availability/customBuckets",
                       "fields": [
-                        "options.numericalOptions.bucketType"
+                        "options"
                       ]
                     }
                   }
@@ -506,7 +506,7 @@
                     "config": {
                       "endpoint": "option-availability/numberBuckets",
                       "fields": [
-                        "options.numericalOptions.bucketType"
+                        "options"
                       ]
                     }
                   }
@@ -539,7 +539,7 @@
                   "config": {
                     "endpoint": "dynamic-schema/scale",
                     "fields": [
-                      "options.numericalOptions"
+                      "options"
                     ]
                   }
                 },
@@ -568,7 +568,7 @@
                   "config": {
                     "endpoint": "dynamic-schema/colorScheme",
                     "fields": [
-                      "options.numericalOptions.scale"
+                      "options"
                     ]
                   }
                 },
@@ -611,7 +611,7 @@
                   "config": {
                     "endpoint": "dynamic-schema/colorOverwrites",
                     "fields": [
-                      "options.numericalOptions"
+                      "options"
                     ]
                   }
                 },
@@ -662,7 +662,7 @@
                         "config": {
                           "endpoint": "dynamic-schema/colorOverwritesItem",
                           "fields": [
-                            "options.numericalOptions"
+                            "options"
                           ]
                         }
                       }

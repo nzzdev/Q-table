@@ -39,42 +39,36 @@ function getOptionEnumTitles(item, type) {
   }
 }
 
-function getScaleEnumWithTitles(numericalOptions) {
+function getScaleEnumWithTitles(heatmap) {
   let enumValues = ["sequential"];
   let enumTitles = ["Sequentiell"];
 
-  // let bucketNumber = 0;
-  // if (numericalOptions.bucketType === "custom") {
-  //   if (numericalOptions.customBuckets) {
-  //     const buckets = numericalOptions.customBuckets.split(",");
-  //     bucketNumber = buckets.length - 1;
-  //   }
-  // } else {
-  //   bucketNumber = numericalOptions.numberBuckets;
-  // }
+  let bucketNumber = 0;
+  if (heatmap.bucketType === "custom") {
+    if (heatmap.customBuckets) {
+      const buckets = heatmap.customBuckets.split(",");
+      bucketNumber = buckets.length - 1;
+    }
+  } else {
+    bucketNumber = heatmap.numberBuckets;
+  }
 
-  // // Add valid bucket borders to enum as diverging values
-  // for (let i = 1; i < bucketNumber; i++) {
-  //   enumValues.push(`border-${i}`);
-  //   enumTitles.push(`Divergierend ab Grenze ${i}`);
-  // }
+  // Add valid bucket borders to enum as diverging values
+  for (let i = 1; i < bucketNumber; i++) {
+    enumValues.push(`border-${i}`);
+    enumTitles.push(`Divergierend ab Grenze ${i}`);
+  }
 
-  // // Add valid buckets to enum as diverging values
-  // for (let i = 1; i < bucketNumber - 1; i++) {
-  //   enumValues.push(`bucket-${i}`);
-  //   enumTitles.push(`Divergierend ab Bucket ${i + 1}`);
-  // }
+  // Add valid buckets to enum as diverging values
+  for (let i = 1; i < bucketNumber - 1; i++) {
+    enumValues.push(`bucket-${i}`);
+    enumTitles.push(`Divergierend ab Bucket ${i + 1}`);
+  }
 
-  // return {
-  //   enum: [enumValues],
-  //   "Q:options": {
-  //     enum_titles: enumTitles,
-  //   },
-  // };
   return {
-    enum: [],
+    enum: [enumValues],
     "Q:options": {
-      enum_titles: [],
+      enum_titles: enumTitles,
     },
   };
 }
@@ -107,10 +101,10 @@ function getColorSchemeEnumWithTitles(scale) {
   };
 }
 
-function getColorOverwriteEnumAndTitles(numericalOptions) {
+function getColorOverwriteEnumAndTitles(heatmap) {
   try {
     let enumValues = [null];
-    const numberItems = getNumberBuckets(numericalOptions);
+    const numberItems = getNumberBuckets(heatmap);
     for (let index = 0; index < numberItems; index++) {
       enumValues.push(index + 1);
     }
@@ -158,16 +152,16 @@ module.exports = {
     }
 
     if (optionName === "scale") {
-      return getScaleEnumWithTitles(item.options.numericalOptions);
+      return getScaleEnumWithTitles(item.options.heatmap);
     }
 
     if (optionName === "colorScheme") {
-      return getColorSchemeEnumWithTitles(item.options.numericalOptions.scale);
+      return getColorSchemeEnumWithTitles(item.options.heatmap.scale);
     }
 
-    if (optionName === "colorOverwritesItem") {
+    if (optionName === "colorOverwrites") {
       return getColorOverwriteEnumAndTitles(
-        item.options.numericalOptions
+        item.options.heatmap
       );
     }
 
