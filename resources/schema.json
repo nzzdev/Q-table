@@ -400,7 +400,20 @@
             "noValuesInCell": {
               "title": "Beschriftung der Werte in der Zelle entfernen",
               "type": "boolean",
-              "default": false
+              "default": false,
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/noValuesInCell",
+                      "fields": [
+                        "options"
+                      ]
+                    }
+                  }
+                ]
+              }
             },
             "bucketType": {
               "title": "Bucketing Methode",
@@ -413,6 +426,17 @@
                 "custom"
               ],
               "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/bucketType",
+                      "fields": [
+                        "options"
+                      ]
+                    }
+                  }
+                ],
                 "enum_titles": [
                   "Jenks Natural Breaks",
                   "Quantile",
@@ -518,7 +542,18 @@
                       "options.numericalOptions"
                     ]
                   }
-                }
+                },
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/scale",
+                      "fields": [
+                        "options"
+                      ]
+                    }
+                  }
+                ]
               },
               "default": "sequential"
             },
@@ -536,7 +571,18 @@
                       "options.numericalOptions.scale"
                     ]
                   }
-                }
+                },
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/colorScheme",
+                      "fields": [
+                        "options"
+                      ]
+                    }
+                  }
+                ]
               }
             },
             "colorOverwrites": {
@@ -547,7 +593,7 @@
                   {
                     "type": "UserHasRole",
                     "config": {
-                      "role": "expert-choropleth"
+                      "role": "expert-table"
                     }
                   },
                   {
@@ -555,7 +601,7 @@
                     "config": {
                       "endpoint": "option-availability/customColors",
                       "fields": [
-                        "options.numericalOptions.scale"
+                        "options"
                       ]
                     }
                   }
@@ -565,7 +611,6 @@
                   "config": {
                     "endpoint": "dynamic-schema/colorOverwrites",
                     "fields": [
-                      "options.choroplethType",
                       "options.numericalOptions"
                     ]
                   }
@@ -617,7 +662,6 @@
                         "config": {
                           "endpoint": "dynamic-schema/colorOverwritesItem",
                           "fields": [
-                            "options.choroplethType",
                             "options.numericalOptions"
                           ]
                         }

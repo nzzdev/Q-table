@@ -50,38 +50,6 @@ module.exports = {
       };
     }
 
-    if (
-      optionName === "heatmap" ||
-      optionName === "selectedColumn"
-    ) {
-      let isAvailable = false;
-
-      if (item.data.table.length !== 0) {
-        if (
-          !item.options.cardLayout &&
-          item.data.table[0].length >= 3 &&
-          getNumericColumns(item.data.table).length >= 1
-        ) {
-          isAvailable = true;
-        }
-      }
-      return {
-        available: isAvailable
-      };
-    }
-
-    if (optionName === "customBuckets") {
-      return {
-        available: hasCustomBuckets(item.options.numericalOptions.bucketType),
-      };
-    }
-
-    if (optionName === "numberBuckets") {
-      return {
-        available: !hasCustomBuckets(item.options.numericalOptions.bucketType),
-      };
-    }
-
     if (optionName === "barColor") {
       let isAvailable = false;
       if (item.options.minibar !== null && item.options.minibar !== undefined) {
@@ -153,6 +121,54 @@ module.exports = {
       return {
         available: isAvailable
       };
+    }
+
+    if (
+      optionName === "heatmap" ||
+      optionName === "selectedColumn"
+    ) {
+      let isAvailable = false;
+
+      if (item.data.table.length !== 0) {
+        if (
+          !item.options.cardLayout &&
+          item.data.table[0].length >= 3 &&
+          getNumericColumns(item.data.table).length >= 1
+        ) {
+          isAvailable = true;
+        }
+      }
+      return {
+        available: isAvailable
+      };
+    }
+
+    if (optionName === "noValuesInCell" || optionName === "bucketType" || optionName === "customBuckets" || optionName === "numberBuckets" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme") {
+      return item.options.heatmap !== null && item.options.heaetmap !== undefined;
+    }
+
+    if (optionName === "customBuckets") {
+      let isAvailable = false;
+      if (item.options.heatmap !== null && item.options.heaetmap !== undefined) {
+        isAvailable = hasCustomBuckets(item.options.numericalOptions.bucketType);
+      }
+      return isAvailable;
+    }
+
+    if (optionName === "numberBuckets") {
+      let isAvailable = false;
+      if (item.options.heatmap !== null && item.options.heaetmap !== undefined) {
+        isAvailable = !hasCustomBuckets(item.options.numericalOptions.bucketType);
+      }
+      return isAvailable;
+    }
+
+    if (optionName === "customColors") {
+      let isAvailable = false;
+      if (item.options.heatmap !== null && item.options.heaetmap !== undefined) {
+        isAvailable = item.options.numericalOptions.scale === "sequential";
+      }
+      return isAvailable;
     }
 
     return Boom.badRequest();
