@@ -110,7 +110,7 @@ module.exports = {
     ) {
       let isAvailable = false;
 
-      if (item.data.table.length !== 0) {
+      if (item.data.table.length > 2) {
         if (
           !item.options.cardLayout &&
           item.data.table[0].length >= 3 &&

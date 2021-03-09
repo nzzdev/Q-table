@@ -66,7 +66,7 @@ function getScaleEnumWithTitles(heatmap) {
   }
 
   return {
-    enum: [enumValues],
+    enum: enumValues,
     "Q:options": {
       enum_titles: enumTitles,
     },
