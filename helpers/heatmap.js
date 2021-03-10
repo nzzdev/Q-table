@@ -63,7 +63,7 @@ function getNumberBuckets(heatmap) {
 function getHeatmapContext(options, data) {
     let heatmap = {};
     let heatmapLegend = {};
-    if (options.heatmap !== null && options.heatmap !== undefined) {
+    if (options.heatmap !== null && options.heatmap !== undefined && options.heatmap.selectedColumn !== null && options.heatmap.selectedColumn !== undefined) {
         heatmapLegend = legendHelpers.getHeatmapLegend(data, options.heatmap)
     }
     return heatmapLegend;
