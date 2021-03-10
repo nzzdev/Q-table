@@ -1,14 +1,9 @@
 const clone = require("clone");
 const array2d = require("array2d");
-const dataHelpers = require("./data.js");
 const legendHelpers = require("./heatmapLegend.js");
 
 function hasCustomBuckets(bucketType) {
     return bucketType === "custom";
-}
-
-function getDataWithoutHeaderRow(data) {
-    return data.slice(1);
 }
 
 function getUniqueCategoriesCount(data) {
@@ -75,7 +70,6 @@ function getHeatmapContext(options, data) {
 }
 
 module.exports = {
-    getDataWithoutHeaderRow,
     getCustomBucketBorders,
     getNumberBuckets,
     hasCustomBuckets,

@@ -32,7 +32,7 @@ function isNumeric(cell) {
 
 function getColumnsType(data) {
   const columns = [];
-  const table = clone(data).slice(1);
+  const table = getDataWithoutHeaderRow(data);
 
   Array2D.eachColumn(table, column => {
     let withFormating = false;
@@ -145,6 +145,10 @@ function getMetaData(values, numberValues) {
   };
 }
 
+function getDataWithoutHeaderRow(data) {
+  return data.slice(1);
+}
+
 module.exports = {
   getTableData: getTableData,
   getNumericColumns: getNumericColumns,
@@ -152,4 +156,5 @@ module.exports = {
   getNumericalValuesByColumn,
   getNonNullValues,
   getMetaData,
+  getDataWithoutHeaderRow,
 };

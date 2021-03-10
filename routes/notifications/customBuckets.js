@@ -19,12 +19,9 @@ module.exports = {
         try {
             const item = request.payload.item;
             // removing the header row first
-            item.data = heatmapHelpers.getDataWithoutHeaderRow(item.data);
+            item.data = dataHelpers.getDataWithoutHeaderRow(item.data);
 
-            if (
-                item.options.heatmap.choroplethType === "numerical" &&
-                item.options.heatmap.bucketType === "custom"
-            ) {
+            if (item.options.heatmap.bucketType === "custom") {
                 const bucketBorders = heatmapHelpers.getCustomBucketBorders(
                     item.options.heatmap.customBuckets
                 );
