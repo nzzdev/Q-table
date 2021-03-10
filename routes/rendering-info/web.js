@@ -20,6 +20,7 @@ const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
 const dataHelpers = require(`${helpersDir}data.js`);
 const footnoteHelpers = require(`${helpersDir}footnotes.js`);
 const minibarHelpers = require(`${helpersDir}minibars.js`);
+const heatmapHelpers = require(`${helpersDir}heatmap.js`);
 
 const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
@@ -89,6 +90,12 @@ module.exports = {
       payload: { item: item },
     });
 
+    const heatmapAvailable = await request.server.inject({
+      url: "/option-availability/selectedColumnHeatmap",
+      method: "POST",
+      payload: { item: item },
+    });
+
     const context = {
       item: item,
       tableData: dataHelpers.getTableData(
@@ -100,6 +107,9 @@ module.exports = {
         ? minibarHelpers.getMinibarContext(item.options, itemDataCopy)
         : {},
       footnotes: footnotes,
+      heatmap: heatmapAvailable.result.available
+        ? heatmapHelpers.getHeatmapContext(item.options, itemDataCopy)
+        : {},
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       noInteraction: request.payload.toolRuntimeConfig.noInteraction,
@@ -108,6 +118,8 @@ module.exports = {
       )}`.replace(/-/g, ""),
       width: getExactPixelWidth(request.payload.toolRuntimeConfig),
     };
+
+    console.log(context.heatmap);
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
     if (

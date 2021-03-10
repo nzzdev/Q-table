@@ -20,6 +20,7 @@
     "clone": "^2.1.2",
     "d3-format": "^1.4.5",
     "nunjucks": "^3.2.2",
+    "simple-statistics": "^7.6.0",
     "uglify-js": "^3.12.2"
   },
   "devDependencies": {

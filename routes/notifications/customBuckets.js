@@ -1,4 +1,5 @@
 const Joi = require("@hapi/joi");
+const dataHelpers = require("../../helpers/data.js");
 const heatmapHelpers = require("../../helpers/heatmap.js");
 
 module.exports = {
@@ -27,9 +28,9 @@ module.exports = {
                 const bucketBorders = heatmapHelpers.getCustomBucketBorders(
                     item.options.heatmap.customBuckets
                 );
-                const values = heatmapHelpers.getNumericalValues(item.data);
-                const numberValues = heatmapHelpers.getNonNullNumericalValues(values);
-                const metaData = heatmapHelpers.getMetaData(values, numberValues);
+                const values = dataHelpers.getNumericalValuesByColumn(item.data, item.options.heatmap.selectedColumn);
+                const numberValues = dataHelpers.getNonNullValues(values);
+                const metaData = dataHelpers.getMetaData(values, numberValues);
 
                 if (
                     bucketBorders[0] > metaData.minValue ||

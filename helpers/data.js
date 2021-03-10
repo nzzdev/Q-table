@@ -120,8 +120,36 @@ function getTableData(data, footnotes, options) {
   return tableData;
 }
 
+function getNumericalValuesByColumn(data, column) {
+  return data.map((row) => {
+    if (row[column] !== null) {
+      if (row[column].match(/^[+-]?\d+(\.\d+)?$/) === null) {
+        throw new Error("value is not a valid floating point number");
+      }
+      return parseFloat(row[column]);
+    }
+    return row[column];
+  });
+}
+
+function getNonNullValues(values) {
+  return values.filter((value) => value !== null);
+}
+
+function getMetaData(values, numberValues) {
+  return {
+    hasNullValues: values.find((value) => value === null) !== undefined,
+    hasZeroValues: numberValues.find((value) => value === 0) !== undefined,
+    maxValue: Math.max(...numberValues),
+    minValue: Math.min(...numberValues)
+  };
+}
+
 module.exports = {
   getTableData: getTableData,
   getNumericColumns: getNumericColumns,
-  isNumeric: isNumeric
+  isNumeric: isNumeric,
+  getNumericalValuesByColumn,
+  getNonNullValues,
+  getMetaData,
 };
