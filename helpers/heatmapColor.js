@@ -64,19 +64,6 @@ function getBucketTextColor(customColor, colorClassData) {
   }
 }
 
-function getCategoryTextColor(colorScheme, customColor) {
-  if (customColor !== undefined && customColor.textColor !== undefined) {
-    return customColor.textColor === "light"
-      ? "s-color-gray-1"
-      : "s-color-gray-9";
-  } else {
-    if (["one", "five", "seven", "nine", "eleven"].includes(colorScheme)) {
-      return "s-color-gray-1";
-    }
-  }
-  return "s-color-gray-9";
-}
-
 function getBucketColor(numberBuckets, index, scale, colorOptions) {
   const colorScheme = colorOptions.colorScheme;
   const customColor = colorOptions.colorOverwrites.get(index);
@@ -84,9 +71,8 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
   let textColor = "";
 
   if (scale === "sequential") {
-    colorClass = `s-viz-color-sequential-${colorScheme}-${numberBuckets}-${
-      numberBuckets - index
-    }`;
+    colorClass = `s-viz-color-sequential-${colorScheme}-${numberBuckets}-${numberBuckets - index
+      }`;
 
     textColor = getBucketTextColor(customColor, {
       scale,
@@ -153,22 +139,41 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
   };
 }
 
-function getCategoryColor(index, customColorMap) {
-  const customColor = customColorMap.get(index);
-  const colorScheme = digitWords[index];
-  const colorClass = `s-viz-color-${colorScheme}-5`;
-  return {
-    colorClass,
-    customColor:
-      customColor !== undefined && customColor.color !== undefined
-        ? customColor.color
-        : "",
-    textColor: getCategoryTextColor(colorScheme, customColor),
-  };
+function getColor(value, legendData) {
+  if (value === null || value === undefined) {
+    return {
+      colorClass: "s-color-gray-4",
+      customColor: "",
+      textColor: "s-color-gray-6",
+    };
+  }
+  const buckets = legendData.buckets;
+  const bucket = buckets.find((bucket, index) => {
+    if (index === 0) {
+      return value <= bucket.to;
+    } else if (index === buckets.length - 1) {
+      return bucket.from < value;
+    } else {
+      return bucket.from < value && value <= bucket.to;
+    }
+  });
+  if (bucket) {
+    return {
+      colorClass: bucket.color.colorClass,
+      customColor: bucket.color.customColor,
+      textColor: bucket.color.textColor,
+    };
+  } else {
+    return {
+      colorClass: "s-color-gray-4",
+      customColor: "",
+      textColor: "s-color-gray-6",
+    };
+  }
 }
 
 module.exports = {
   digitWords,
   getBucketColor,
-  getCategoryColor,
+  getColor,
 };

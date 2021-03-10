@@ -80,6 +80,7 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
+    const dataWithoutHeaderRow = dataHelpers.getDataWithoutHeaderRow(itemDataCopy);
     const footnotes = footnoteHelpers.getFootnotes(
       item.data.metaData,
       item.options.hideTableHeader
@@ -108,7 +109,7 @@ module.exports = {
         : {},
       footnotes: footnotes,
       heatmap: heatmapAvailable.result.available
-        ? heatmapHelpers.getHeatmapContext(item.options, itemDataCopy)
+        ? heatmapHelpers.getHeatmapContext(item.options.heatmap, dataWithoutHeaderRow)
         : {},
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
@@ -118,8 +119,6 @@ module.exports = {
       )}`.replace(/-/g, ""),
       width: getExactPixelWidth(request.payload.toolRuntimeConfig),
     };
-
-    console.log(context.heatmap);
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
     if (

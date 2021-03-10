@@ -1,6 +1,8 @@
 const clone = require("clone");
 const array2d = require("array2d");
+const dataHelpers = require("./data.js");
 const legendHelpers = require("./heatmapLegend.js");
+const colorHelpers = require("./heatmapColor.js");
 
 function hasCustomBuckets(bucketType) {
     return bucketType === "custom";
@@ -59,14 +61,18 @@ function getNumberBuckets(heatmap) {
     }
 }
 
-
-function getHeatmapContext(options, data) {
-    let heatmap = {};
-    let heatmapLegend = {};
-    if (options.heatmap !== null && options.heatmap !== undefined && options.heatmap.selectedColumn !== null && options.heatmap.selectedColumn !== undefined) {
-        heatmapLegend = legendHelpers.getHeatmapLegend(data, options.heatmap)
+function getHeatmapContext(heatmap, data) {
+    if (heatmap !== null && heatmap !== undefined && heatmap.selectedColumn !== null && heatmap.selectedColumn !== undefined) {
+        let colors = [];
+        let legendData = legendHelpers.getHeatmapLegend(data, heatmap);
+        let valuesByRow = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn)
+        valuesByRow.map(value => {
+            let color = colorHelpers.getColor(value, legendData);
+            colors = [...colors, color];
+        })
+        return { ...colors }
     }
-    return heatmapLegend;
+    return {}; // return empty object when option not selected
 }
 
 module.exports = {

@@ -121,6 +121,26 @@ function getColorOverwriteEnumAndTitles(heatmap) {
   }
 }
 
+function getColorOverwriteEnumAndTitlesNumerical(heatmap) {
+  try {
+    let enumValues = [null];
+    const numberItems = getNumberBuckets(heatmap);
+    for (let index = 0; index < numberItems; index++) {
+      enumValues.push(index + 1);
+    }
+    return {
+      enum: enumValues,
+      "Q:options": {
+        enum_titles: enumValues.map((value) =>
+          value === null ? "" : `${value}. Bucket `
+        ),
+      },
+    };
+  } catch {
+    return {};
+  }
+}
+
 module.exports = {
   method: "POST",
   path: "/dynamic-schema/{optionName}",
@@ -161,6 +181,12 @@ module.exports = {
 
     if (optionName === "colorOverwrites") {
       return getColorOverwriteEnumAndTitles(
+        item.options.heatmap
+      );
+    }
+
+    if (optionName === "colorOverwritesItem") {
+      return getColorOverwriteEnumAndTitlesNumerical(
         item.options.heatmap
       );
     }
