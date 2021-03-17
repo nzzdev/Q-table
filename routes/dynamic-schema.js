@@ -1,56 +1,61 @@
 const Boom = require("@hapi/boom");
 const Joi = require("@hapi/joi");
-const getNumericColumns = require("../helpers/data.js").getNumericColumns;
-const getNumberBuckets = require("../helpers/heatmap.js").getNumberBuckets;
+const dataHelpers = require("../helpers/data.js");
+const heatmapHelpers = require("../helpers/heatmap.js");
 
-function getOptionEnum(item, type) {
+function getMinibarEnum(item) {
   if (item.data.table.length < 1) {
     return [null];
   }
 
-  if (type === "minibar") {
-    // todo: filter if heatmap is set 
-    return [null].concat(
-      ...getNumericColumns(item.data.table).map(col => col.index)
-    );
-  } else if (type === "heatmap") {
-    // todo: filter if minibar is set 
-    return [null].concat(
-      ...getNumericColumns(item.data.table).map(col => col.index)
-    );
-  }
+  return [null].concat(
+    ...dataHelpers.getNumericColumns(item.data.table).map(col => col.index)
+  );
+
 }
 
-function getOptionEnumTitles(item, type) {
+function getMinibarEnumTitles(item) {
   if (item.data.table.length < 1) {
     return ["keine"];
   }
 
-  if (type === "minibar") {
-    // todo: filter if heatmap is set 
-    return ["keine"].concat(
-      ...getNumericColumns(item.data.table).map(col => col.title)
-    );
-  } else if (type === "heatmap") {
-    // todo: filter if minibar is set 
-    return ["keine"].concat(
-      ...getNumericColumns(item.data.table).map(col => col.title)
-    );
-  }
+  return ["keine"].concat(
+    ...dataHelpers.getNumericColumns(item.data.table).map(col => col.title)
+  );
 }
 
-function getScaleEnumWithTitles(heatmap) {
+function getHeatmapEnum(item) {
+  if (item.data.table.length < 1) {
+    return [null];
+  }
+
+  return [null].concat(
+    ...dataHelpers.getCategoricalColumns(item.data.table).map(col => col.index)
+  );
+}
+
+function getHeatmapEnumTitles(item) {
+  if (item.data.table.length < 1) {
+    return ["keine"];
+  }
+
+  return ["keine"].concat(
+    ...dataHelpers.getCategoricalColumns(item.data.table).map(col => col.title)
+  );
+}
+
+function getScaleEnumWithTitles(numericalOptions) {
   let enumValues = ["sequential"];
   let enumTitles = ["Sequentiell"];
 
   let bucketNumber = 0;
-  if (heatmap.bucketType === "custom") {
-    if (heatmap.customBuckets) {
-      const buckets = heatmap.customBuckets.split(",");
+  if (numericalOptions.bucketType === "custom") {
+    if (numericalOptions.customBuckets) {
+      const buckets = numericalOptions.customBuckets.split(",");
       bucketNumber = buckets.length - 1;
     }
   } else {
-    bucketNumber = heatmap.numberBuckets;
+    bucketNumber = numericalOptions.numberBuckets;
   }
 
   // Add valid bucket borders to enum as diverging values
@@ -73,8 +78,8 @@ function getScaleEnumWithTitles(heatmap) {
   };
 }
 
-function getColorSchemeEnumWithTitles(scale) {
-  if (scale === "sequential") {
+function getColorSchemeEnumWithTitles(numericalOptions) {
+  if (numericalOptions.scale === "sequential") {
     return {
       enum: ["one", "two", "three", "female", "male"],
       "Q:options": {
@@ -101,10 +106,31 @@ function getColorSchemeEnumWithTitles(scale) {
   };
 }
 
-function getColorOverwriteEnumAndTitles(heatmap) {
+function getMaxItemsNumerical(numericalOptions) {
+  return {
+    maxItems: heatmapHelpers.getNumberBuckets(numericalOptions),
+  };
+}
+
+function getMaxItemsCategorical(data) {
+  try {
+    // removing the header row first
+    data = dataHelpers.getDataWithoutHeaderRow(data);
+
+    return {
+      maxItems: dataHelpers.getUniqueCategoriesCount(data),
+    };
+  } catch {
+    return {
+      maxItems: undefined,
+    };
+  }
+}
+
+function getColorOverwriteEnumAndTitlesNumerical(heatmap) {
   try {
     let enumValues = [null];
-    const numberItems = getNumberBuckets(heatmap);
+    const numberItems = getNumberBuckets(heatmap.numericalOption);
     for (let index = 0; index < numberItems; index++) {
       enumValues.push(index + 1);
     }
@@ -121,24 +147,22 @@ function getColorOverwriteEnumAndTitles(heatmap) {
   }
 }
 
-function getColorOverwriteEnumAndTitlesNumerical(heatmap) {
-  try {
-    let enumValues = [null];
-    const numberItems = getNumberBuckets(heatmap);
-    for (let index = 0; index < numberItems; index++) {
-      enumValues.push(index + 1);
-    }
-    return {
-      enum: enumValues,
-      "Q:options": {
-        enum_titles: enumValues.map((value) =>
-          value === null ? "" : `${value}. Bucket `
-        ),
-      },
-    };
-  } catch {
-    return {};
+function getColorOverwriteEnumAndTitlesCategorical(data, customCategoriesOrder) {
+  data = dataHelpers.getDataWithoutHeaderRow(data);
+  let enumValues = [null];
+  const categories = heatmapHelpers.getUniqueCategoriesObject(data, customCategoriesOrder).categories;
+  const numberItems = categories.length;
+  for (let index = 0; index < numberItems; index++) {
+    enumValues.push(index + 1);
   }
+  return {
+    enum: enumValues,
+    "Q:options": {
+      enum_titles: [""].concat(
+        categories.map((category, index) => `${index + 1} - ${category}`)
+      ),
+    },
+  };
 }
 
 module.exports = {
@@ -155,40 +179,46 @@ module.exports = {
     const optionName = request.params.optionName;
     if (optionName === "selectedColumnMinibar") {
       return {
-        enum: getOptionEnum(item, "minibar"),
+        enum: getMinibarEnum(item),
         "Q:options": {
-          enum_titles: getOptionEnumTitles(item, "minibar")
+          enum_titles: getMinibarEnumTitles(item)
         }
       };
     }
 
     if (optionName === "selectedColumnHeatmap") {
       return {
-        enum: getOptionEnum(item, "heatmap"),
+        enum: getHeatmapEnum(item),
         "Q:options": {
-          enum_titles: getOptionEnumTitles(item, "heatmap")
+          enum_titles: getHeatmapEnumTitles(item)
         }
       };
     }
 
     if (optionName === "scale") {
-      return getScaleEnumWithTitles(item.options.heatmap);
+      return getScaleEnumWithTitles(item.options.heatmap.numericalOptions);
     }
 
     if (optionName === "colorScheme") {
-      return getColorSchemeEnumWithTitles(item.options.heatmap.scale);
+      return getColorSchemeEnumWithTitles(item.options.heatmap.numericalOptions);
     }
 
     if (optionName === "colorOverwrites") {
-      return getColorOverwriteEnumAndTitles(
-        item.options.heatmap
-      );
+      if (item.options.heatmap.heatmapType === "numerical") {
+        return getMaxItemsNumerical(item.options.heatmap.numericalOptions);
+      } else {
+        return getMaxItemsCategorical(item.data);
+      }
     }
 
     if (optionName === "colorOverwritesItem") {
-      return getColorOverwriteEnumAndTitlesNumerical(
-        item.options.heatmap
-      );
+      if (item.options.heatmap.heatmapType === "numerical") {
+        return getColorOverwriteEnumAndTitlesNumerical(
+          item.options.heatmap
+        );
+      } else {
+        return getColorOverwriteEnumAndTitlesCategorical(item.data, item.options.heatmap.categoricalOptions.customCategoriesOrder);
+      }
     }
 
     return Boom.badRequest();

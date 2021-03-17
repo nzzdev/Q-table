@@ -1,5 +1,4 @@
 const dataHelpers = require("./data.js");
-const heatmapHelpers = require("./heatmap.js");
 const colorHelpers = require("./heatmapColor.js");
 const simpleStatistics = require("simple-statistics");
 
@@ -13,11 +12,11 @@ function getBucketsForLegend(
   maxValue,
   customColorMap
 ) {
-  const bucketType = heatmap.bucketType;
-  const numberBuckets = heatmap.numberBuckets;
-  const scale = heatmap.scale;
+  const bucketType = heatmap.numericalOptions.bucketType;
+  const numberBuckets = heatmap.numericalOptions.numberBuckets;
+  const scale = heatmap.numericalOptions.scale;
   const colorOptions = {
-    colorScheme: heatmap.colorScheme,
+    colorScheme: heatmap.numericalOptions.colorScheme,
     colorOverwrites: customColorMap,
   };
 
@@ -148,26 +147,13 @@ function getCustomBuckets(heatmap, scale, colorOptions) {
   }
 }
 
-function getCustomColorMap(colorOverwrites) {
-  if (colorOverwrites === undefined) {
-    colorOverwrites = [];
-  }
-
-  return new Map(
-    colorOverwrites.map(({ position, color, textColor }) => [
-      position - 1,
-      { color, textColor },
-    ])
-  );
-}
-
 function hasSingleValueBucket(legendData) {
   const firstBucket = legendData.buckets[0];
   return firstBucket.from === firstBucket.to;
 }
 
-function getHeatmapLegend(data, heatmap) {
-  const customColorMap = getCustomColorMap(heatmap.colorOverwrites);
+function getNumericalLegend(data, heatmap) {
+  const customColorMap = colorHelpers.getCustomColorMap(heatmap.numericalOptions.colorOverwrites);
   const values = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn);
   const nonNullValues = dataHelpers.getNonNullValues(values);
   const metaData = dataHelpers.getMetaData(
@@ -175,7 +161,10 @@ function getHeatmapLegend(data, heatmap) {
     nonNullValues
   );
 
-  const legendData = { ...metaData };
+  const legendData = {
+    type: "numerical",
+    ...metaData,
+  };
 
   legendData.buckets = getBucketsForLegend(
     nonNullValues,
@@ -190,7 +179,7 @@ function getHeatmapLegend(data, heatmap) {
   // for all bucket types we calculate the resulting buckets out of given data set
   // custom bucketing need a special handling of min/max values because the first and the last
   // custom bucket value could be lower/higher than min/max
-  if (heatmap.bucketType === "custom") {
+  if (heatmap.numericalOptions.bucketType === "custom") {
     // if first custom bucket value is less than min value in given data set
     // we set min value of legend to starting value of custom buckets
     const minBucketValue = legendData.buckets[0].from;
@@ -207,6 +196,31 @@ function getHeatmapLegend(data, heatmap) {
   return legendData;
 }
 
+function getCategoricalLegend(data, heatmap) {
+  const legendData = {
+    type: "categorical",
+  };
+
+  const customColorMap = colorHelpers.getCustomColorMap(heatmap.categoricalOptions.colorOverwrites);
+  const categoryObject = dataHelpers.getUniqueCategoriesObject(data, heatmap.categoricalOptions.customCategoriesOrder);
+
+  let categories = [];
+  categoryObject.categories.forEach((label, index) => {
+    categories.push({
+      label,
+      color: colorHelpers.getCategoryColor(index, customColorMap),
+    });
+  });
+
+  legendData.hasNullValues = categoryObject.hasNullValues;
+  legendData.categories = categories;
+
+  return legendData;
+}
+
+
+
 module.exports = {
-  getHeatmapLegend,
+  getNumericalLegend,
+  getCategoricalLegend,
 };

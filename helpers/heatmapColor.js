@@ -64,6 +64,19 @@ function getBucketTextColor(customColor, colorClassData) {
   }
 }
 
+function getCategoryTextColor(colorScheme, customColor) {
+  if (customColor !== undefined && customColor.textColor !== undefined) {
+    return customColor.textColor === "light"
+      ? "s-color-gray-1"
+      : "s-color-gray-9";
+  } else {
+    if (["one", "five", "seven", "nine", "eleven"].includes(colorScheme)) {
+      return "s-color-gray-1";
+    }
+  }
+  return "s-color-gray-9";
+}
+
 function getBucketColor(numberBuckets, index, scale, colorOptions) {
   const colorScheme = colorOptions.colorScheme;
   const customColor = colorOptions.colorOverwrites.get(index);
@@ -147,33 +160,79 @@ function getColor(value, legendData) {
       textColor: "s-color-gray-6",
     };
   }
-  const buckets = legendData.buckets;
-  const bucket = buckets.find((bucket, index) => {
-    if (index === 0) {
-      return value <= bucket.to;
-    } else if (index === buckets.length - 1) {
-      return bucket.from < value;
+  if (legendData.type === "numerical") {
+    const buckets = legendData.buckets;
+    const bucket = buckets.find((bucket, index) => {
+      if (index === 0) {
+        return value <= bucket.to;
+      } else if (index === buckets.length - 1) {
+        return bucket.from < value;
+      } else {
+        return bucket.from < value && value <= bucket.to;
+      }
+    });
+    if (bucket) {
+      return {
+        colorClass: bucket.color.colorClass,
+        customColor: bucket.color.customColor,
+        textColor: bucket.color.textColor,
+      };
     } else {
-      return bucket.from < value && value <= bucket.to;
+      return {
+        colorClass: "s-color-gray-4",
+        customColor: "",
+        textColor: "s-color-gray-6",
+      };
     }
-  });
-  if (bucket) {
-    return {
-      colorClass: bucket.color.colorClass,
-      customColor: bucket.color.customColor,
-      textColor: bucket.color.textColor,
-    };
   } else {
-    return {
-      colorClass: "s-color-gray-4",
-      customColor: "",
-      textColor: "s-color-gray-6",
-    };
+    const categories = legendData.categories;
+    const category = categories.find((category) => category.label === value);
+    if (category) {
+      return {
+        colorClass: category.color.colorClass,
+        customColor: category.color.customColor,
+        textColor: category.color.textColor,
+      };
+    } else {
+      return {
+        colorClass: "s-color-gray-4",
+        customColor: "",
+      };
+    }
   }
+}
+
+function getCustomColorMap(colorOverwrites) {
+  if (colorOverwrites === undefined) {
+    colorOverwrites = [];
+  }
+
+  return new Map(
+    colorOverwrites.map(({ position, color, textColor }) => [
+      position - 1,
+      { color, textColor },
+    ])
+  );
+}
+
+function getCategoryColor(index, customColorMap) {
+  const customColor = customColorMap.get(index);
+  const colorScheme = digitWords[index];
+  const colorClass = `s-viz-color-${colorScheme}-5`;
+  return {
+    colorClass,
+    customColor:
+      customColor !== undefined && customColor.color !== undefined
+        ? customColor.color
+        : "",
+    textColor: getCategoryTextColor(colorScheme, customColor),
+  };
 }
 
 module.exports = {
   digitWords,
   getBucketColor,
   getColor,
+  getCategoryColor,
+  getCustomColorMap,
 };

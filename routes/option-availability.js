@@ -114,7 +114,7 @@ module.exports = {
         if (
           !item.options.cardLayout &&
           item.data.table[0].length >= 3 &&
-          getNumericColumns(item.data.table).length >= 1
+          item.data.table.length >= 1
         ) {
           isAvailable = true;
         }
@@ -128,7 +128,18 @@ module.exports = {
     if (item.options.heatmap !== null &&
       item.options.heatmap !== undefined) {
 
-      if (optionName === "noValuesInCell" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme") {
+      if (optionName === "isNumerical") {
+        return {
+          available: item.options.heatmap.heatmapType === "numerical",
+        };
+      }
+      if (optionName === "isCategorical") {
+        return {
+          available: item.options.heatmap.heatmapType === "categorical",
+        };
+      }
+
+      if (optionName === "heatmapType" || optionName === "noValuesInCell" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme" || optionName === "customCategoriesOrder") {
         return {
           available: item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined
         };
@@ -137,7 +148,7 @@ module.exports = {
       if (optionName === "customBuckets") {
         let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = hasCustomBuckets(item.options.heatmap.bucketType);
+          isAvailable = hasCustomBuckets(item.options.heatmap.numericalOptions.bucketType);
         }
         return {
           available: isAvailable
@@ -147,7 +158,7 @@ module.exports = {
       if (optionName === "numberBuckets") {
         let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = !hasCustomBuckets(item.options.heatmap.bucketType);
+          isAvailable = !hasCustomBuckets(item.options.heatmap.numericalOptions.bucketType);
         }
         return {
           available: isAvailable
@@ -157,7 +168,7 @@ module.exports = {
       if (optionName === "customColors") {
         let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = item.options.heatmap.scale === "sequential"
+          isAvailable = item.options.heatmap.numericalOptions.scale === "sequential"
         }
         return {
           available: isAvailable

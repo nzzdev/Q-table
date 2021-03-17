@@ -1,42 +1,10 @@
-const clone = require("clone");
-const array2d = require("array2d");
 const dataHelpers = require("./data.js");
 const legendHelpers = require("./heatmapLegend.js");
 const colorHelpers = require("./heatmapColor.js");
+const methodBoxHelpers = require("./heatmapMethodBox.js");
 
 function hasCustomBuckets(bucketType) {
     return bucketType === "custom";
-}
-
-function getUniqueCategoriesCount(data) {
-    return getUniqueCategoriesObject(data).categories.length;
-}
-
-function getUniqueCategoriesObject(data, customCategoriesOrder) {
-    let hasNullValues = false;
-    const values = data
-        .map((row) => {
-            return row[1];
-        })
-        .filter((value) => {
-            if (value !== null && value !== "") {
-                return true;
-            }
-            hasNullValues = true;
-            return false;
-        });
-    let sortedValues = getSortedValues(values);
-
-    // If the user has set a custom order, sort the categories accordingly
-    if (customCategoriesOrder) {
-        sortedValues.sort(
-            function (a, b) {
-                return customCategoriesOrder.map(c => c.category).indexOf(a) -
-                    customCategoriesOrder.map(c => c.category).indexOf(b);
-            });
-    }
-
-    return { hasNullValues, categories: [...new Set(sortedValues)] };
 }
 
 function getCustomBucketBorders(customBuckets) {
@@ -48,11 +16,11 @@ function getCustomBucketBorders(customBuckets) {
 
 function getNumberBuckets(heatmap) {
     try {
-        if (heatmap.bucketType !== "custom") {
-            return heatmap.numberBuckets;
+        if (heatmap.numericalOptions.bucketType !== "custom") {
+            return heatmap.numericalOptions.numberBuckets;
         } else {
             const bucketBorderValues = getCustomBucketBorders(
-                heatmap.customBuckets
+                heatmap.numericalOptions.customBuckets
             );
             return bucketBorderValues.length - 1; // min value is part of border values and has to be excluded here
         }
@@ -62,24 +30,47 @@ function getNumberBuckets(heatmap) {
 }
 
 function getHeatmapContext(heatmap, data) {
+    let heatmapContext = {};
     if (heatmap !== null && heatmap !== undefined && heatmap.selectedColumn !== null && heatmap.selectedColumn !== undefined) {
         let colors = [];
-        let legendData = legendHelpers.getHeatmapLegend(data, heatmap);
-        let valuesByRow = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn)
-        valuesByRow.map(value => {
-            let color = colorHelpers.getColor(value, legendData);
-            colors = [...colors, color];
-        })
-        return { ...colors }
+        if (heatmap.heatmapType === "numerical") {
+            heatmapContext.legendData = legendHelpers.getNumericalLegend(
+                data,
+                heatmap
+            );
+
+            heatmapContext.methodBox = methodBoxHelpers.getMethodBoxInfo(
+                heatmap.numericalOptions.bucketType
+            );
+
+            let valuesByColumn = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn);
+            valuesByColumn.map((val, index) => {
+                let color = colorHelpers.getColor(index, heatmapContext.legendData);
+                colors = [...colors, color];
+            })
+        } else {
+            heatmapContext.legendData = legendHelpers.getCategoricalLegend(
+                data,
+                heatmap
+            );
+
+            console.log(heatmapContext.legendData)
+
+            let categoriesByColumn = dataHelpers.getCategoricalValuesByColumn(data, heatmap.selectedColumn);
+            categoriesByColumn.map(category => {
+                let color = colorHelpers.getColor(category, heatmapContext.legendData);
+                colors = [...colors, color];
+            });
+        }
+        heatmapContext = { ...heatmap, colors };
     }
-    return {}; // return empty object when option not selected
+    return heatmapContext;
 }
+
 
 module.exports = {
     getCustomBucketBorders,
     getNumberBuckets,
     hasCustomBuckets,
-    getUniqueCategoriesObject,
-    getUniqueCategoriesCount,
     getHeatmapContext,
 };

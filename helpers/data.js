@@ -72,6 +72,18 @@ function getNumericColumns(data) {
   return numericColumns;
 }
 
+function getCategoricalColumns(data) {
+  const columns = getColumnsType(data);
+  const categoricalColumns = [];
+  // data[0].length is undefined when creating a new item
+  if (data[0] !== undefined) {
+    Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
+      categoricalColumns.push({ title: cell, index: columnIndex });
+    });
+  }
+  return categoricalColumns;
+}
+
 function getTableData(data, footnotes, options) {
   const columns = getColumnsType(data);
   let tableData = [];
@@ -132,6 +144,12 @@ function getNumericalValuesByColumn(data, column) {
   });
 }
 
+function getCategoricalValuesByColumn(data, column) {
+  return data.map((row) => {
+    return row[column];
+  });
+}
+
 function getNonNullValues(values) {
   return values.filter((value) => value !== null);
 }
@@ -149,12 +167,59 @@ function getDataWithoutHeaderRow(data) {
   return data.slice(1);
 }
 
+function getUniqueCategoriesCount(data) {
+  return getUniqueCategoriesObject(data).categories.length;
+}
+
+function getUniqueCategoriesObject(data, customCategoriesOrder) {
+  let hasNullValues = false;
+  const values = data
+    .map((row) => {
+      return row[1];
+    })
+    .filter((value) => {
+      if (value !== null && value !== "") {
+        return true;
+      }
+      hasNullValues = true;
+      return false;
+    });
+  let sortedValues = getSortedValues(values);
+
+  // If the user has set a custom order, sort the categories accordingly
+  if (customCategoriesOrder) {
+    sortedValues.sort(
+      function (a, b) {
+        return customCategoriesOrder.map(c => c.category).indexOf(a) -
+          customCategoriesOrder.map(c => c.category).indexOf(b);
+      });
+  }
+
+  return { hasNullValues, categories: [...new Set(sortedValues)] };
+}
+
+function getSortedValues(values) {
+  // Create a counter object on array
+  let counter = values.reduce((counter, key) => {
+    counter[key] = 1 + counter[key] || 1;
+    return counter;
+  }, {});
+
+  // Sort counter by values
+  let sortedCounter = Object.entries(counter).sort((a, b) => b[1] - a[1]);
+  return sortedCounter.map((x) => x[0]);
+}
+
 module.exports = {
   getTableData: getTableData,
-  getNumericColumns: getNumericColumns,
+  getNumericColumns,
+  getCategoricalColumns,
   isNumeric: isNumeric,
   getNumericalValuesByColumn,
+  getCategoricalValuesByColumn,
   getNonNullValues,
   getMetaData,
   getDataWithoutHeaderRow,
+  getUniqueCategoriesCount,
+  getUniqueCategoriesObject,
 };
