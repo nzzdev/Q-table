@@ -106,9 +106,9 @@ function getColorSchemeEnumWithTitles(numericalOptions) {
   };
 }
 
-function getMaxItemsNumerical(numericalOptions) {
+function getMaxItemsNumerical(heatmap) {
   return {
-    maxItems: heatmapHelpers.getNumberBuckets(numericalOptions),
+    maxItems: heatmapHelpers.getNumberBuckets(heatmap),
   };
 }
 
@@ -205,9 +205,9 @@ module.exports = {
 
     if (optionName === "colorOverwrites") {
       if (item.options.heatmap.heatmapType === "numerical") {
-        return getMaxItemsNumerical(item.options.heatmap.numericalOptions);
+        return getMaxItemsNumerical(item.options.heatmap);
       } else {
-        return getMaxItemsCategorical(item.data);
+        return getMaxItemsCategorical(item.data.table);
       }
     }
 
@@ -217,7 +217,7 @@ module.exports = {
           item.options.heatmap
         );
       } else {
-        return getColorOverwriteEnumAndTitlesCategorical(item.data, item.options.heatmap.categoricalOptions.customCategoriesOrder);
+        return getColorOverwriteEnumAndTitlesCategorical(item.data.table, item.options.heatmap.categoricalOptions.customCategoriesOrder);
       }
     }
 

@@ -18,13 +18,13 @@ module.exports = {
         try {
             const item = request.payload.item;
             // removing the header row first
-            item.data = heatmapHelpers.getDataWithoutHeaderRow(item.data);
+            item.data.table = heatmapHelpers.getDataWithoutHeaderRow(item.data.table);
 
             if (
                 item.options.bucketType !== "custom"
             ) {
                 const numberUniqueValues = heatmapHelpers.getUniqueCategoriesCount(
-                    item.data
+                    item.data.table
                 );
                 const numberBuckets = item.options.numberBuckets;
 

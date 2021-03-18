@@ -19,13 +19,13 @@ module.exports = {
         try {
             const item = request.payload.item;
             // removing the header row first
-            item.data = dataHelpers.getDataWithoutHeaderRow(item.data);
+            item.data.table = dataHelpers.getDataWithoutHeaderRow(item.data.table);
 
             if (item.options.heatmap.bucketType === "custom") {
                 const bucketBorders = heatmapHelpers.getCustomBucketBorders(
                     item.options.heatmap.customBuckets
                 );
-                const values = dataHelpers.getNumericalValuesByColumn(item.data, item.options.heatmap.selectedColumn);
+                const values = dataHelpers.getNumericalValuesByColumn(item.data.table, item.options.heatmap.selectedColumn);
                 const numberValues = dataHelpers.getNonNullValues(values);
                 const metaData = dataHelpers.getMetaData(values, numberValues);
 

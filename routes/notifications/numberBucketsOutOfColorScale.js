@@ -20,53 +20,56 @@ module.exports = {
     handler: function (request, h) {
         try {
             const item = request.payload.item;
-            const heatmap = item.options.heatmap;
 
-            const scale = item.options.scale;
+            if (item.options.heatmap.heatmapType === "numerical") {
+                const scale = item.options.heatmap.numericalOptions.scale;
 
-            let numberBuckets = heatmapHelpers.getNumberBuckets(
-                heatmap
-            );
-
-            if (scale === "sequential") {
-                if (numberBuckets > sequentialScaleMax) {
-                    return {
-                        message: {
-                            title: "notifications.numberBucketsOutOfColorScale.title",
-                            body: "notifications.numberBucketsOutOfColorScale.body",
-                        },
-                    };
-                }
-            } else {
-                const divergingSpecification = scale.split("-");
-                const divergingIndex = parseInt(divergingSpecification[1]);
-
-                const numberBucketsLeft = divergingIndex;
-                let numberBucketsRight = numberBuckets - divergingIndex;
-
-                if (divergingSpecification[0] === "bucket") {
-                    numberBucketsRight -= 1;
-                }
-
-                const numberBucketsBiggerSide = Math.max(
-                    numberBucketsLeft,
-                    numberBucketsRight
+                let numberBuckets = heatmapHelpers.getNumberBuckets(
+                    item.options.heatmap
                 );
 
-                let scaleSize = numberBucketsBiggerSide * 2;
-                if (divergingSpecification[0] === "bucket") {
-                    scaleSize += 1;
-                }
+                if (scale === "sequential") {
+                    if (numberBuckets > sequentialScaleMax) {
+                        return {
+                            message: {
+                                title: "notifications.numberBucketsOutOfColorScale.title",
+                                body: "notifications.numberBucketsOutOfColorScale.body",
+                            },
+                        };
+                    }
+                } else {
+                    const divergingSpecification = scale.split("-");
+                    const divergingIndex = parseInt(divergingSpecification[1]);
 
-                if (scaleSize > divergingScaleMax) {
-                    return {
-                        message: {
-                            title: "notifications.numberBucketsOutOfColorScale.title",
-                            body: "notifications.numberBucketsOutOfColorScale.body",
-                        },
-                    };
+                    const numberBucketsLeft = divergingIndex;
+                    let numberBucketsRight = numberBuckets - divergingIndex;
+
+                    if (divergingSpecification[0] === "bucket") {
+                        numberBucketsRight -= 1;
+                    }
+
+                    const numberBucketsBiggerSide = Math.max(
+                        numberBucketsLeft,
+                        numberBucketsRight
+                    );
+
+                    let scaleSize = numberBucketsBiggerSide * 2;
+                    if (divergingSpecification[0] === "bucket") {
+                        scaleSize += 1;
+                    }
+
+                    if (scaleSize > divergingScaleMax) {
+                        return {
+                            message: {
+                                title: "notifications.numberBucketsOutOfColorScale.title",
+                                body: "notifications.numberBucketsOutOfColorScale.body",
+                            },
+                        };
+                    }
                 }
             }
+
+            return null;
         } catch (err) {
             return null;
         }

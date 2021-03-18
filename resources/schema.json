@@ -655,7 +655,8 @@
                       "config": {
                         "endpoint": "dynamic-schema/colorOverwrites",
                         "fields": [
-                          "options"
+                          "options",
+                          "data"
                         ]
                       }
                     },
