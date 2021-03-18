@@ -150,7 +150,7 @@ function getColorOverwriteEnumAndTitlesNumerical(heatmap) {
 function getColorOverwriteEnumAndTitlesCategorical(data, customCategoriesOrder) {
   data = dataHelpers.getDataWithoutHeaderRow(data);
   let enumValues = [null];
-  const categories = heatmapHelpers.getUniqueCategoriesObject(data, customCategoriesOrder).categories;
+  const categories = dataHelpers.getUniqueCategoriesObject(data, customCategoriesOrder).categories;
   const numberItems = categories.length;
   for (let index = 0; index < numberItems; index++) {
     enumValues.push(index + 1);

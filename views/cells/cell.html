@@ -1,17 +1,26 @@
-<td {% if item.options.hideTableHeader !==true %}
-  data-label="{{ tableData[0][loop.index0].value }}{% if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 %}{{tableData[0][loop.index0].footnote.unicode}}{% endif %}"
-  {% endif %} {% if item.options.heatmap.selectedColumn===loop.index0 and item.options.heatmap.selectedColumn !=null and
-  not initWithCardLayout %}
-  class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}} {{heatmap.colors[row_loop.index-1].colorClass}}"
-  style="background-color: currentColor;" {% else %}
-  class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}}" {% endif %}>
+<td   
+  {% if item.options.hideTableHeader !== true -%} 
+    data-label="{{ tableData[0][loop.index0].value }}
+    {%- if (item.options.cardLayout or item.options.cardLayoutIfSmall) and tableData[0][loop.index0].footnote !== null and row_loop.index0 === 0 -%}
+      {{tableData[0][loop.index0].footnote.unicode}}
+    {%- endif -%}"
+  {% endif %} 
+  {% if item.options.heatmap.selectedColumn===loop.index0 and item.options.heatmap.selectedColumn !=null and not initWithCardLayout %}
+    {% if heatmap.colors[row_loop.index-1].customColor %} 
+      class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}}" style="background-color: {{heatmap.colors[row_loop.index-1].customColor}};" 
+    {% else %}
+      class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}} {{heatmap.colors[row_loop.index-1].colorClass}}" style="background-color: currentColor;" 
+    {% endif %}
+  {% else %}
+    class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}}" 
+  {% endif %}>
 
   {%- if cell.footnote %}
-  <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">
+    <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">
   {% elif item.options.heatmap.selectedColumn===loop.index0 and item.options.heatmap.selectedColumn !=null and not initWithCardLayout %}
-  <span class="{{ heatmap.colors[row_loop.index-1].textColor }}">
+    <span class="{{ heatmap.colors[row_loop.index-1].textColor }}">
   {% else %}
-  <span>
+    <span>
   {%- endif %}
   {{ cell.value }}</span>
 </td>

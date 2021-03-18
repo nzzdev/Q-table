@@ -54,8 +54,6 @@ function getHeatmapContext(heatmap, data) {
                 heatmap
             );
 
-            console.log(heatmapContext.legendData)
-
             let categoriesByColumn = dataHelpers.getCategoricalValuesByColumn(data, heatmap.selectedColumn);
             categoriesByColumn.map(category => {
                 let color = colorHelpers.getColor(category, heatmapContext.legendData);
