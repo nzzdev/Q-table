@@ -165,6 +165,23 @@ function getColorOverwriteEnumAndTitlesCategorical(data, customCategoriesOrder) 
   };
 }
 
+function getCustomCategoriesOrderEnumAndTitlesCategorical(data) {
+  try {
+    data = dataHelpers.getDataWithoutHeaderRow(data);
+    const categories = dataHelpers.getUniqueCategoriesObject(data).categories;
+
+    return {
+      enum: categories,
+      "Q:options": {
+        enum_titles: categories
+      },
+    };
+  } catch (ex) {
+    console.log(ex);
+    return {};
+  }
+}
+
 module.exports = {
   method: "POST",
   path: "/dynamic-schema/{optionName}",
@@ -219,6 +236,14 @@ module.exports = {
       } else {
         return getColorOverwriteEnumAndTitlesCategorical(item.data.table, item.options.heatmap.categoricalOptions.customCategoriesOrder);
       }
+    }
+
+    if (optionName === "customCategoriesOrder") {
+      return getMaxItemsCategorical(item.data);
+    }
+
+    if (optionName === "customCategoriesOrderItem") {
+      return getCustomCategoriesOrderEnumAndTitlesCategorical(item.data.table);
     }
 
     return Boom.badRequest();
