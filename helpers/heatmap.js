@@ -44,8 +44,8 @@ function getHeatmapContext(heatmap, data) {
             );
 
             let valuesByColumn = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn);
-            valuesByColumn.map((val, index) => {
-                let color = colorHelpers.getColor(index, heatmapContext.legendData);
+            valuesByColumn.map(value => {
+                let color = colorHelpers.getColor(value, heatmapContext.legendData);
                 colors = [...colors, color];
             })
         } else {
