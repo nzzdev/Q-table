@@ -38,6 +38,8 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/table-search-hidden.json`),
   require(`${fixtureDataDirectory}/table-search-show.json`),
   require(`${fixtureDataDirectory}/table-search-with-multiple-columns.json`),
+  require(`${fixtureDataDirectory}/heatmap-categorical.json`),
+  require(`${fixtureDataDirectory}/heatmap-numerical.json`),
 ];
 
 module.exports = {

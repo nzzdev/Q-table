@@ -1,0 +1,188 @@
+{
+    "title": "FIXTURE: Heatmap numerical",
+    "data": {
+        "table": [
+            [
+                "ID",
+                "Wert",
+                "Wert2"
+            ],
+            [
+                "Aargau",
+                "1",
+                "1"
+            ],
+            [
+                "Appenzell Ausserrhoden",
+                "2",
+                "2"
+            ],
+            [
+                "Appenzell Innerrhoden",
+                "3",
+                "3"
+            ],
+            [
+                "Basel-Landschaft",
+                "4",
+                "4"
+            ],
+            [
+                "Basel-Stadt",
+                "5",
+                "5"
+            ],
+            [
+                "Bern",
+                "6",
+                "6"
+            ],
+            [
+                "Freiburg",
+                "7",
+                "7"
+            ],
+            [
+                "Genf",
+                "8",
+                "8"
+            ],
+            [
+                "Glarus",
+                "9",
+                "9"
+            ],
+            [
+                "Graubünden",
+                "10",
+                "10"
+            ],
+            [
+                "Jura",
+                "11",
+                "11"
+            ],
+            [
+                "Luzern",
+                "12",
+                "12"
+            ],
+            [
+                "Neuenburg",
+                "13",
+                "13"
+            ],
+            [
+                "Nidwalden",
+                "14",
+                "14"
+            ],
+            [
+                "Obwalden",
+                "15",
+                "15"
+            ],
+            [
+                "Schaffhausen",
+                "16",
+                "16"
+            ],
+            [
+                "Schwyz",
+                "17",
+                "17"
+            ],
+            [
+                "Solothurn",
+                "18",
+                "18"
+            ],
+            [
+                "St. Gallen",
+                "19",
+                "19"
+            ],
+            [
+                "Tessin",
+                "20",
+                "20"
+            ],
+            [
+                "Thurgau",
+                "21",
+                "21"
+            ],
+            [
+                "Uri",
+                "22",
+                "22"
+            ],
+            [
+                "Waadt",
+                "23",
+                "23"
+            ],
+            [
+                "Wallis",
+                "24",
+                "24"
+            ],
+            [
+                "Zug",
+                "25",
+                "25"
+            ],
+            [
+                "Zürich",
+                "26",
+                "26"
+            ]
+        ],
+        "metaData": {
+            "cells": [
+                {
+                    "data": {},
+                    "rowIndex": 4,
+                    "colIndex": 1
+                }
+            ]
+        }
+    },
+    "sources": [],
+    "options": {
+        "hideTableHeader": false,
+        "showTableSearch": false,
+        "cardLayout": false,
+        "cardLayoutIfSmall": false,
+        "minibar": {
+            "invertColors": false,
+            "barColor": {
+                "positive": {
+                    "className": "",
+                    "colorCode": ""
+                },
+                "negative": {
+                    "className": "",
+                    "colorCode": ""
+                }
+            },
+            "selectedColumn": null
+        },
+        "heatmap": {
+            "noValuesInCell": false,
+            "heatmapType": "numerical",
+            "numericalOptions": {
+                "bucketType": "ckmeans",
+                "numberBuckets": 7,
+                "scale": "sequential",
+                "colorScheme": "three",
+                "colorOverwrites": []
+            },
+            "categoricalOptions": {
+                "colorOverwrites": [],
+                "customCategoriesOrder": []
+            },
+            "selectedColumn": 2
+        }
+    }
+}
