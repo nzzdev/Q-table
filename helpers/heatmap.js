@@ -60,7 +60,7 @@ function getHeatmapContext(heatmap, data) {
                 colors = [...colors, color];
             });
         }
-        heatmapContext = { ...heatmap, colors };
+        heatmapContext = { ...heatmapContext, ...heatmap, colors };
     }
     return heatmapContext;
 }
