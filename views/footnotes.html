@@ -1,0 +1,10 @@
+{%- for footnote in footnotes -%}
+    <div class="q-table-footer-footnote s-font-note-s">
+        {%- if loop.index >= 10 -%}
+            <span class="q-table-footnote-index" style="width: 9px!important">{{footnote.index}}</span>
+        {% else %}
+            <span class="q-table-footnote-index">{{footnote.index}}</span>
+        {%- endif -%}
+        <span class="q-table-footnote-text">{{footnote.value}}</span>
+    </div>
+{%- endfor -%}
