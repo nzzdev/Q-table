@@ -1,32 +1,38 @@
 {% if heatmap.heatmapType === "numerical" %}
-<div class="q-table__heatmap-legend">
-    <div class="q-table__heatmap-legend-container">
-        <div class="q-table__heatmap-legend-value-container">
-            <span
-                class="q-table__heatmap-legend-value-container--minVal s-font-note s-font-note--tabularnums">{{heatmap.legendData.minValue}}</span>
-            <span class="q-table__heatmap-legend-value-container--maxVal
-   s-font-note s-font-note--tabularnums">{{heatmap.legendData.maxValue}}</span>
-        </div>
-        <div class="q-table__heatmap-legend-border-container">
-            <svg class="q-table__heatmap-legend-buckets">
-                <g>
-                    {% for bucket in heatmap.legendData.buckets %}
-                    {% set bucket_loop = loop %}
-                    <rect class="q-table__heatmap-legend-bucket" style="fill: red" width="13%" height="14"
-                        x="{{10 * bucket_loop.index}}%" y="10" />
-                    {% endfor %}
-                </g>
-            </svg>
-            <div class="q-table__heatmap-legend-borders s-color-gray-6"></div>
+    <!-- display numerical legend -->
+    <div class="q-table__heatmap-legend">
+        <div class="q-table__heatmap-legend-container">
+            <div class="q-table__heatmap-legend-value-container">
+                <span
+                    class="q-table__heatmap-legend-value-container--minVal s-font-note s-font-note--tabularnums">{{heatmap.legendData.minValue}}</span>
+                <span class="q-table__heatmap-legend-value-container--maxVal
+    s-font-note s-font-note--tabularnums">{{heatmap.legendData.maxValue}}</span>
+            </div>
+            <div class="q-table__heatmap-legend-border-container">
+                <svg class="q-table__heatmap-legend-buckets">
+                    <g>
+                        {% for bucket in heatmap.legendData.buckets %}
+                            {% set bucket_loop = loop %}
+                            {% set bucket_width = ((bucket.to - bucket.from) * 100) / (heatmap.legendData.maxValue - heatmap.legendData.minValue) %}
+                            {% set aspectXValue = ((bucket.from - heatmap.legendData.minValue) * 100) / (heatmap.legendData.maxValue - heatmap.legendData.minValue) %}
+                            {% if bucket.color.customColor %}
+                                <rect class="q-table__heatmap-legend-bucket" style="color: {{bucket.color.customColor}}" width="{{bucket_width}}%" height="16" x="{{aspectXValue}}%" y="12" />
+                            {% else %}
+                                <rect class="q-table__heatmap-legend-bucket {{bucket.color.colorClass}}" width="{{bucket_width}}%" height="16" x="{{aspectXValue}}%" y="12" />
+                            {%- endif -%}
+                        {% endfor %}
+                    </g>
+                </svg>
+                <div class="q-table__heatmap-legend-borders s-color-gray-6"></div>
+            </div>
         </div>
     </div>
-</div>
 {% else %}
-<!-- display categorical legend -->
-<div class="q-table__heatmap-legend">
-    <div class="s-legend-icon-label">
-        {% for category in heatmap.legendData.categories %}
-            {% set category_loop = loop %}
+    <!-- display categorical legend -->
+    <div class="q-table__heatmap-legend">
+        <div class="s-legend-icon-label">
+            {% for category in heatmap.legendData.categories %}
+                {% set category_loop = loop %}
                 {% if category.color.customColor %}
                     <div class="s-legend-item-label__item" style="color: {{category.color.customColor}}">
                 {% else %}
@@ -36,7 +42,7 @@
                         <div class="s-legend-item-label__item__label">{{category.label}}</div>
                     </div>
             {% endfor %}
+            </div>
         </div>
     </div>
-</div>
 {% endif %}
