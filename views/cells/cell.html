@@ -5,7 +5,7 @@
       {{tableData[0][loop.index0].footnote.unicode}}
     {%- endif -%}"
   {% endif %} 
-  {% if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !=null and not initWithCardLayout %}
+  {% if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null and not initWithCardLayout %}
     {% if heatmap.colors[row_loop.index-1].customColor %} 
       class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}}" style="background-color: {{heatmap.colors[row_loop.index-1].customColor}};" 
     {% else %}
@@ -17,7 +17,7 @@
 
   {%- if cell.footnote %}
     <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">
-  {% elif heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !=null and not initWithCardLayout %}
+  {% elif heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null and not initWithCardLayout %}
     <span class="{{ heatmap.colors[row_loop.index-1].textColor }}">
   {% else %}
     <span>

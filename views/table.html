@@ -11,53 +11,16 @@
         maxlength="20" value="" autocapitalize="off" autocomplete="off" spellcheck="false" aria-label="Suchen">
     </div>
     {%- endif %}
-    {% if heatmap.selectedColumn !=null and not initWithCardLayout %}
-    {% if heatmap.heatmapType === "numerical" %}
-    <div class="q-table__heatmap-legend">
-      <div class="q-table__heatmap-legend-container">
-        <div class="q-table__heatmap-legend-value-container">
-          <span
-            class="q-table__heatmap-legend-value-container--minVal s-font-note s-font-note--tabularnums">{{heatmap.legendData.minValue}}</span>
-          <span
-            class="q-table__heatmap-legend-value-container--maxVal
-             s-font-note s-font-note--tabularnums">{{heatmap.legendData.maxValue}}</span>
-        </div>
-        <div class="q-table__heatmap-legend-border-container">
-          <svg class="q-table__heatmap-legend-buckets">
-            <g>
-              {% for bucket in heatmap.legendData.buckets %}
-              {% set bucket_loop = loop %}
-              <rect class="q-table__heatmap-legend-bucket" style="fill: red" width="13%" height="14"
-                x="{{10 * bucket_loop.index}}%" y="10" />
-              {% endfor %}
-            </g>
-          </svg>
-          <div class="q-table__heatmap-legend-borders s-color-gray-6"></div>
-        </div>
-      </div>
-    </div>
-    {% else %}
-    <!-- display categorical legend -->
-    <div class="q-table__heatmap-legend">
-      <div class="s-legend-icon-label">
-        {% for category in heatmap.legendData.categories %}
-        <div class="s-legend-item-label__item {getColorClass(category)}" style="color: red">
-          <div class="s-legend-item-label__item__icon
-                    s-legend-item-label__item__icon--default"></div>
-          <div class="s-legend-item-label__item__label">{{category.label}}</div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-    {%- endif %}
+    {%- if heatmap.selectedColumn !==null and heatmap.selectedColumn !==undefined and not initWithCardLayout -%}
+      {% include "./legend.html" %}
+    {%- endif -%}
     <table class="q-table__table">
       {%- if item.options.hideTableHeader !== true %}
       <thead class="s-font-note s-font-note--strong">
         {%- for head in tableData[0] %}
         <th class="q-table__cell q-table-cell--head q-table__cell--{{ head.type }} {{head.classes.join(" ")}}" {%- if
           minibar.type !==undefined and item.options.minibar.selectedColumn===loop.index0 and
-          item.options.minibar.selectedColumn !=null and minibar.type !=="mixed" and not initWithCardLayout %}
+          item.options.minibar.selectedColumn !==null and minibar.type !=="mixed" and not initWithCardLayout %}
           colspan="2" id="q-table-minibar-header" {% elif minibar.type==="mixed" and
           item.options.minibar.selectedColumn+1===loop.index %} id="q-table-minibar-header" {% endif %}>
           {%- if head.footnote %}
@@ -72,7 +35,8 @@
       <tbody class="s-font-note">
         {%- for row in tableData.slice(1) %}
         {% set row_loop = loop %}
-        <tr {% if numberOfRowsToHide and loop.index>= (tableData.length - numberOfRowsToHide) %}style="display: none;"{% endif %}>
+        <tr {% if numberOfRowsToHide and loop.index>= (tableData.length - numberOfRowsToHide) %}style="display: none;"{%
+          endif %}>
           {%- for cell in row %}
           {% if minibar.type==="positive" %}
           {% include "./cells/minibar-positive.html" %}

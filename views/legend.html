@@ -1,0 +1,43 @@
+{% if heatmap.heatmapType === "numerical" %}
+<div class="q-table__heatmap-legend">
+    <div class="q-table__heatmap-legend-container">
+        <div class="q-table__heatmap-legend-value-container">
+            <span
+                class="q-table__heatmap-legend-value-container--minVal s-font-note s-font-note--tabularnums">{{heatmap.legendData.minValue}}</span>
+            <span class="q-table__heatmap-legend-value-container--maxVal
+   s-font-note s-font-note--tabularnums">{{heatmap.legendData.maxValue}}</span>
+        </div>
+        <div class="q-table__heatmap-legend-border-container">
+            <svg class="q-table__heatmap-legend-buckets">
+                <g>
+                    {% for bucket in heatmap.legendData.buckets %}
+                    {% set bucket_loop = loop %}
+                    <rect class="q-table__heatmap-legend-bucket" style="fill: red" width="13%" height="14"
+                        x="{{10 * bucket_loop.index}}%" y="10" />
+                    {% endfor %}
+                </g>
+            </svg>
+            <div class="q-table__heatmap-legend-borders s-color-gray-6"></div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- display categorical legend -->
+<div class="q-table__heatmap-legend">
+    <div class="s-legend-icon-label">
+        {% for category in heatmap.legendData.categories %}
+        {% set category_loop = loop %}
+        {% if heatmap.colors[category_loop.index-1].customColor %}
+        <div class="s-legend-item-label__item" style="color: {{heatmap.colors[category_loop.index-1].customColor}}">
+            {% else %}
+            <div class="s-legend-item-label__item {{heatmap.colors[category_loop.index-1].colorClass}}">
+                {% endif %}
+                <div class="s-legend-item-label__item__icon
+            s-legend-item-label__item__icon--default"></div>
+                <div class="s-legend-item-label__item__label">{{category.label}}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
