@@ -1,6 +1,6 @@
 {% if heatmap.heatmapType === "numerical" %}
     <!-- display numerical legend -->
-    <div class="q-table__heatmap-legend">
+    <div class="q-table__heatmap-legend--numerical">
         <div class="q-table__heatmap-legend-container">
             <div class="q-table__heatmap-legend-value-container">
                 <span
@@ -9,7 +9,7 @@
     s-font-note s-font-note--tabularnums">{{heatmap.legendData.maxValue}}</span>
             </div>
             <div class="q-table__heatmap-legend-border-container">
-                <svg class="q-table__heatmap-legend-buckets">
+                <svg class="q-table__heatmap-legend">
                     <g>
                         {% for bucket in heatmap.legendData.buckets %}
                             {% set bucket_loop = loop %}
@@ -29,7 +29,7 @@
     </div>
 {% else %}
     <!-- display categorical legend -->
-    <div class="q-table__heatmap-legend">
+    <div class="q-table__heatmap-legend--categorical">
         <div class="s-legend-icon-label">
             {% for category in heatmap.legendData.categories %}
                 {% set category_loop = loop %}
@@ -40,8 +40,8 @@
                 {% endif %}
                         <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default"></div>
                         <div class="s-legend-item-label__item__label">{{category.label}}</div>
-                    </div>
-            {% endfor %}
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
