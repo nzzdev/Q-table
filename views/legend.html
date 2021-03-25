@@ -26,16 +26,15 @@
 <div class="q-table__heatmap-legend">
     <div class="s-legend-icon-label">
         {% for category in heatmap.legendData.categories %}
-        {% set category_loop = loop %}
-        {% if heatmap.colors[category_loop.index-1].customColor %}
-        <div class="s-legend-item-label__item" style="color: {{heatmap.colors[category_loop.index-1].customColor}}">
-            {% else %}
-            <div class="s-legend-item-label__item {{heatmap.colors[category_loop.index-1].colorClass}}">
+            {% set category_loop = loop %}
+                {% if category.color.customColor %}
+                    <div class="s-legend-item-label__item" style="color: {{category.color.customColor}}">
+                {% else %}
+                    <div class="s-legend-item-label__item {{category.color.colorClass}}">
                 {% endif %}
-                <div class="s-legend-item-label__item__icon
-            s-legend-item-label__item__icon--default"></div>
-                <div class="s-legend-item-label__item__label">{{category.label}}</div>
-            </div>
+                        <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default"></div>
+                        <div class="s-legend-item-label__item__label">{{category.label}}</div>
+                    </div>
             {% endfor %}
         </div>
     </div>
