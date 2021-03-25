@@ -308,3 +308,70 @@ tr.q-table-state-visible {
 .q-table-footer-footnote {
   margin-top: 4px;
 }
+
+.q-table__heatmap {
+  &-legend {
+    height: 32px;
+    width: 100%;
+  
+    &-bucket {
+      fill: currentColor;
+    }
+
+    &-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-border-container {
+      position: relative;
+    }
+  
+    &-borders {
+      position: absolute;
+      height: 28px;
+      top: 0px;
+      border-right: 0.5px solid currentColor;
+      border-left: 0.5px solid currentColor;
+      width: 100%;
+    }
+
+    &-value-container {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+  
+      &--minVal {
+        margin-left: 2px;
+      }
+  
+      &--maxVal {
+        margin-right: 2px;
+      }
+    }
+
+    &-info {
+      
+      &--single-bucket {
+        margin-right: 16px;
+      }
+
+      &-icon {
+        margin-right: 8px;
+
+        &--interactive {
+          margin-top: -2px;
+        }
+      
+        &--static {
+          margin-top: 1px;
+        }
+      }
+    }  
+
+    &--numerical {
+      display: flex;
+      justify-content: flex-start;
+    }
+  }
+}
