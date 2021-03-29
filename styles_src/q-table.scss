@@ -373,6 +373,13 @@ tr.q-table-state-visible {
     &--numerical {
       display: flex;
       justify-content: flex-start;
+      margin-top: 16px;
+      margin-bottom: 12px;
+    }
+
+    &--categorical {
+      margin-top: 16px;
+      margin-bottom: 12px;
     }
   }
 }
