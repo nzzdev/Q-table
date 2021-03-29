@@ -397,24 +397,6 @@
                 }
               }
             },
-            "noValuesInCell": {
-              "title": "Beschriftung der Werte in der Zelle entfernen",
-              "type": "boolean",
-              "default": false,
-              "Q:options": {
-                "availabilityChecks": [
-                  {
-                    "type": "ToolEndpoint",
-                    "config": {
-                      "endpoint": "option-availability/noValuesInCell",
-                      "fields": [
-                        "options"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
             "heatmapType": {
               "title": "Heatmaptyp",
               "type": "string",

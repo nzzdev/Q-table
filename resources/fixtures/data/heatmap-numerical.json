@@ -169,7 +169,6 @@
             "selectedColumn": null
         },
         "heatmap": {
-            "noValuesInCell": false,
             "heatmapType": "numerical",
             "numericalOptions": {
                 "bucketType": "ckmeans",

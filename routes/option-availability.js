@@ -139,7 +139,7 @@ module.exports = {
         };
       }
 
-      if (optionName === "heatmapType" || optionName === "noValuesInCell" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme" || optionName === "customCategoriesOrder") {
+      if (optionName === "heatmapType" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme" || optionName === "customCategoriesOrder") {
         return {
           available: item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined
         };
