@@ -210,6 +210,59 @@ function getSortedValues(values) {
   return sortedCounter.map((x) => x[0]);
 }
 
+function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
+  let maxDigitsAfterComma = 0;
+  data.forEach((row) => {
+    const digitsAfterComma = getDigitsAfterComma(row[rowIndex]);
+    maxDigitsAfterComma = Math.max(maxDigitsAfterComma, digitsAfterComma);
+  });
+  return maxDigitsAfterComma;
+}
+
+function getDigitsAfterComma(value) {
+  try {
+    if (value !== undefined && value !== null) {
+      const valueParts = value.toString().split(".");
+      if (valueParts.length > 1) {
+        return valueParts[1].length;
+      }
+    }
+    return 0;
+  } catch (e) {
+    return 0; // if something goes wrong we just return 0 digits after comma
+  }
+}
+
+function getFormattedValue(formattingOptions, value) {
+  if (value === null) {
+    return value;
+  }
+
+  let formatSpecifier = ",";
+
+  // if we have float values in data set we extend all float values
+  // to max number of positions after comma, e.g. format specifier
+  // could be ",.2f" for 2 positions after comma
+  if (formattingOptions.maxDigitsAfterComma) {
+    formatSpecifier = `,.${formattingOptions.maxDigitsAfterComma}f`;
+  }
+
+  // if we have number >= 10 000 we add a space after each 3 digits
+  if (value >= Math.pow(10, 4)) {
+    return formatLocale.format(formatSpecifier)(value);
+  } else {
+    return formatLocaleSmall.format(formatSpecifier)(value);
+  }
+}
+
+function getFormattedValueForBuckets(formattingOptions, value) {
+  if (formattingOptions.roundingBucketBorders) {
+    return getFormattedValue(formattingOptions, value);
+  }
+  return getFormattedValue({}, value);
+}
+
+
 module.exports = {
   getTableData: getTableData,
   getNumericColumns,
@@ -222,4 +275,7 @@ module.exports = {
   getDataWithoutHeaderRow,
   getUniqueCategoriesCount,
   getUniqueCategoriesObject,
+  getMaxDigitsAfterCommaInDataByRow,
+  getFormattedValue,
+  getFormattedValueForBuckets,
 };

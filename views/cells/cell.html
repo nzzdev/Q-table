@@ -22,5 +22,9 @@
   {% else %}
     <span>
   {%- endif %}
-  {{ cell.value }}</span>
+  {%- if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null %}
+    {{cell.value}}  
+  {% else %}
+    {{ cell.value }}</span>
+  {%- endif %}
 </td>
