@@ -39,14 +39,25 @@ function getHeatmapContext(heatmap, data) {
                 heatmap
             );
 
+            let formattingOptions = {
+                maxDigitsAfterComma: dataHelpers.getMaxDigitsAfterCommaInDataByRow(
+                    data, heatmap.selectedColumn
+                ),
+                roundingBucketBorders: heatmap.numericalOptions.bucketType !== "custom"
+            };
+
             heatmapContext.methodBox = methodBoxHelpers.getMethodBoxInfo(
                 heatmap.numericalOptions.bucketType
             );
 
             let valuesByColumn = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn);
+            heatmapContext.formattedValues = [];
+            heatmapContext.methodBox.formattedValues = [];
             valuesByColumn.map(value => {
                 let color = colorHelpers.getColor(value, heatmapContext.legendData);
                 colors = [...colors, color];
+                heatmapContext.formattedValues = [...heatmapContext.formattedValues, dataHelpers.getFormattedValue(formattingOptions, value)];
+                heatmapContext.methodBox.formattedValues = [...heatmapContext.methodBox.formattedValues, dataHelpers.getFormattedValueForBuckets(formattingOptions, value)];
             })
         } else {
             heatmapContext.legendData = legendHelpers.getCategoricalLegend(

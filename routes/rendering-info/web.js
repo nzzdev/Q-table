@@ -148,18 +148,6 @@ module.exports = {
       context.numberOfRowsToHide = undefined;
     }
 
-    if (Object.keys(context.heatmap).length !== 0) {
-      context.heatmap.formattingOptions = {
-        maxDigitsAfterComma: dataHelpers.getMaxDigitsAfterCommaInDataByRow(
-          item.data.table, context.heatmap.selectedColumn
-        ),
-        roundingBucketBorders:
-          item.options.heatmap.numericalOptions.bucketType !== "custom"
-            ? true
-            : false,
-      };
-    }
-
     renderingInfo.markup = nunjucksEnv.render(
       path.join(viewsDir, "table.html"),
       context

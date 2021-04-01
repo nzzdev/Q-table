@@ -16,6 +16,12 @@ const formatLocale = d3.format.formatLocale({
   grouping: [3]
 });
 
+
+const formatLocaleSmall = d3.format.formatLocale({
+  decimal: ",",
+  minus: enDash,
+});
+
 const formatGrouping = formatLocale.format(",");
 const formatNoGrouping = formatLocale.format("");
 
