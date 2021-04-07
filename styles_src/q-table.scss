@@ -310,6 +310,106 @@ tr.q-table-state-visible {
   margin-top: 4px;
 }
 
+.q-table-methods {
+  &-link {
+    margin-top: 8px;
+
+    display: flex;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      opacity: 0.6;
+    }
+
+    & svg {
+      height: 10px;
+      width: 10px;
+    }
+
+    &-icon-close,
+    &-icon-plus {
+      display: flex;
+      align-self: center;
+    }
+
+    &-icon-plus.hidden {
+      display: none;
+    }
+
+    &-icon-close.hidden {
+      display: none;
+    }
+
+    &-text {
+      margin-left: 4px;
+    }
+  }
+
+  &-description {
+    margin-top: 4px;
+  }
+
+  &-circle {
+    position: relative;
+    box-sizing: content-box;
+    width: 7px;
+    height: 7px;
+    margin: 2px 8px 2px 2px;
+    border: 1px solid;
+    border-radius: 50%;
+
+    &--circle-fill {
+      background-color: currentColor;
+    }
+
+    &-static {
+      margin-right: 8px;
+    }
+  }
+
+  &-box {
+    &-static {
+      margin-right: 20px;
+    }
+  }
+
+  &-article {
+    &-container {
+      margin-top: 4px;
+    }
+
+    &-link {
+      color: #05032d;
+    }
+  }
+
+  &-container {
+    margin-top: 8px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f2;
+    padding: 8px;
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  &-legend {
+    &-table {
+      table-layout: auto !important;
+
+      tr {
+        text-align: right;
+      }
+
+      td {
+        width: auto !important;
+      }
+    }
+  }
+}
+
 .q-table__heatmap {
   &-legend {
     height: 32px;

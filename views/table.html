@@ -24,9 +24,9 @@
           colspan="2" id="q-table-minibar-header" {% elif minibar.type==="mixed" and
           item.options.minibar.selectedColumn+1===loop.index %} id="q-table-minibar-header" {% endif %}>
           {%- if head.footnote %}
-          <span data-annotation="{{ head.footnote.value }}" class="q-table-annotation">{{ head.value }}</span>
+            <span data-annotation="{{ head.footnote.value }}" class="q-table-annotation">{{ head.value }}</span>
           {% else %}
-          {{ head.value }}
+            {{ head.value }}
           {%- endif %}
         </th>
         {%- endfor %}
@@ -54,7 +54,10 @@
     </table>
   </div>
   {%- if footnotes.length > 0 %}
-  {% include "./footnotes.html" %}  
+    {% include "./footnotes.html" %}
+  {%- endif -%}
+  {%- if heatmap.methodBox !== undefined and heatmap.methodBox !== null -%}
+    {% include "./methodBox/methodBox.html" %}
   {%- endif -%}
   {% include "./footer.html" %}
 </div>

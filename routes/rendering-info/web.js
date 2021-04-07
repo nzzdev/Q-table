@@ -228,6 +228,12 @@ module.exports = {
       });
     }
 
+    if (Object.keys(context.heatmap).length !== 0) {
+      renderingInfo.scripts.push({
+        content: renderingInfoScripts.getHeatmapScript(context),
+      });
+    }
+
     // minify the scripts
     for (let script of renderingInfo.scripts) {
       script.content = UglifyJS.minify(script.content).code;

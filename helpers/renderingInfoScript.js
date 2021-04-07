@@ -127,7 +127,7 @@ function getShowMoreButtonScript(context) {
       ${dataObject}.showMoreButtonElement.classList.add('s-button--secondary');
       ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button');
       ${dataObject}.showMoreButtonElement.setAttribute('type', 'button');
-      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer"));
+      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer")); //todo: appendChild because there is a new element between footer and table (methodbox)
 
       ${dataObject}.showMoreButtonElement.addEventListener('click', function(event) {
         if (${dataObject}.rowVisibilityState === 'hidden') {
@@ -150,9 +150,8 @@ function getMinibarsScript(context) {
   const dataObject = `window.${context.id}Data`;
   const getColumnFunctionName = `getColumn${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
-  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${
-    context.id
-  }`;
+  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${context.id
+    }`;
 
   return `
     function ${getColumnFunctionName}(table, col) {
@@ -305,10 +304,134 @@ function getSearchFormInputScript(context) {
   `;
 }
 
+function getHeatmapScript(context) {
+
+  const dataObject = `window.${context.id}Data`;
+  const setupMethodBox = `setupMethodBox${context.id}`;
+  const prepareMethodBoxElements = `prepareMethodBoxElements${context.id}`;
+  const setVisibilityOfElements = `setVisibilityOfElements${context.id}`;
+  const addEventListenerToMethodBoxToggle = `addEventListenerToMethodBoxToggle${context.id}`;
+  const handleClickOnMethodBoxToogle = `handleClickOnMethodBoxToogle${context.id}`;
+  const addEventListenerToMethodBoxArticleLink = `addEventListenerToMethodBoxArticleLink${context.id}`;
+  const handleClickOnMethodBoxArticleLink = `handleClickOnMethodBoxArticleLink${context.id}`;
+
+  return `
+
+  function ${prepareMethodBoxElements}() {
+    ${dataObject}.methodBoxToggleElement = ${dataObject}.element.querySelector(
+      ".q-table-methods-link"
+    );
+    ${dataObject}.methodBoxContainerElement = ${dataObject}.element.querySelector(
+      ".q-table-methods-container"
+    );
+    ${dataObject}.methodBoxOpenIcon = ${dataObject}.element.querySelector(
+      ".q-table-methods-link-icon-plus"
+    );
+    ${dataObject}.methodBoxCloseIcon = ${dataObject}.element.querySelector(
+      ".q-table-methods-link-icon-close"
+    );
+    ${dataObject}.methodBoxArticleLink = ${dataObject}.element.querySelector(
+      ".q-table-methods-article-container"
+    );
+  }
+
+  function ${setVisibilityOfElements}() {
+    if (${dataObject}.isMethodBoxVisible) {
+      if (${dataObject}.methodBoxContainerElement) {
+        ${dataObject}.methodBoxContainerElement.classList.remove("hidden");
+      }
+      if (${dataObject}.methodBoxOpenIcon) {
+        ${dataObject}.methodBoxOpenIcon.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxCloseIcon) {
+        ${dataObject}.methodBoxCloseIcon.classList.remove("hidden");
+      }
+    } else {
+      if (${dataObject}.methodBoxContainerElement) {
+        ${dataObject}.methodBoxContainerElement.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxCloseIcon) {
+        ${dataObject}.methodBoxCloseIcon.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxOpenIcon) {
+        ${dataObject}.methodBoxOpenIcon.classList.remove("hidden");
+      }
+    }
+  }
+
+  function ${addEventListenerToMethodBoxToggle}() {
+    if (${dataObject}.methodBoxToggleElement) {
+      ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
+        ${handleClickOnMethodBoxToogle}(event);
+      });
+    }
+  }
+
+
+  function ${handleClickOnMethodBoxToogle}(event) {
+    const eventDetail = {
+      eventInfo: {
+        componentName: "q-table",
+        eventAction: ${dataObject}.isMethodBoxVisible
+          ? "close-methods-box"
+          : "open-methods-box",
+        eventNonInteractive: false,
+      },
+    };
+
+    ${dataObject}.isMethodBoxVisible = !${dataObject}.isMethodBoxVisible;
+    ${setVisibilityOfElements}();
+
+    const trackingEvent = new CustomEvent("q-tracking-event", {
+      bubbles: true,
+      detail: eventDetail,
+    });
+    event.target.dispatchEvent(trackingEvent);
+  }
+
+  function ${addEventListenerToMethodBoxArticleLink}() {
+    if (${dataObject}.methodBoxArticleLink) {
+      ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
+        ${handleClickOnMethodBoxArticleLink}(event);
+      });
+    }
+  }
+
+  function ${handleClickOnMethodBoxArticleLink}(event) {
+    const eventDetail = {
+      eventInfo: {
+        componentName: "q-table",
+        eventAction: "open-method-box-article-link",
+        eventNonInteractive: false,
+      },
+    };
+
+    const trackingEvent = new CustomEvent("q-tracking-event", {
+      bubbles: true,
+      detail: eventDetail,
+    });
+    event.target.dispatchEvent(trackingEvent);
+  }
+
+
+  function ${setupMethodBox}() {
+    ${prepareMethodBoxElements}();
+    ${setVisibilityOfElements}();
+    ${addEventListenerToMethodBoxToggle}();
+    ${addEventListenerToMethodBoxArticleLink}();
+  }
+
+  window.q_domready.then(function() {
+    ${setupMethodBox}();    
+  });
+  `;
+}
+
 module.exports = {
-  getDefaultScript: getDefaultScript,
-  getCardLayoutScript: getCardLayoutScript,
-  getShowMoreButtonScript: getShowMoreButtonScript,
-  getMinibarsScript: getMinibarsScript,
-  getSearchFormInputScript: getSearchFormInputScript
+  getDefaultScript,
+  getCardLayoutScript,
+  getShowMoreButtonScript,
+  getMinibarsScript,
+  getSearchFormInputScript,
+  getHeatmapScript,
 };
