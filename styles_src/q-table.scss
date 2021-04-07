@@ -21,34 +21,37 @@ td.q-table__cell--numeric {
 
 // the high specificty is needed because nzz frontends apply lots of highly specific table styles we need to overwrite
 // this will change in the future and allow us to lower the specificity here again
-.q-table {
-  table {
+.q-table {  
+  table:not(.q-table-methods-legend-table) {
     border-collapse: collapse;
     border: none;
     margin: 0;
     padding: 0;
     width: 100%;
     table-layout: auto;
-    empty-cells: show;
+    empty-cells: show; 
+
+    th, td {
+      padding: 10px 4px;
+      vertical-align: top;
+      border: none !important;
+      font-size: unset;
+      line-height: unset;
+      font-weight: unset;
+    }
+    
+    thead {
+      background: unset;
+    }
+
+    tbody tr,
+    thead tr {
+      border-width: 0 0 1px 0;
+      border-style: solid;
+      border-color: #e9e9ee;
+    }
   }
-  table thead {
-    background: unset;
-  }
-  table tbody tr,
-  table thead tr {
-    border-width: 0 0 1px 0;
-    border-style: solid;
-    border-color: #e9e9ee;
-  }
-  table th,
-  table td {
-    padding: 10px 4px;
-    vertical-align: top;
-    border: none !important;
-    font-size: unset;
-    line-height: unset;
-    font-weight: unset;
-  }
+
 }
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
 .q-table:not(.q-table--card-layout)
