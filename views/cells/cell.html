@@ -23,7 +23,11 @@
     <span>
   {%- endif %}
   {%- if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null %}
-    {{heatmap.formattedValues[row_loop.index0]}}  
+    {% if heatmap.heatmapType === "numerical" %}
+      {{heatmap.formattedValues[row_loop.index0]}}  
+    {% else %}  
+      {{cell.value}}  
+    {%- endif %}  
   {% else %}
     {{ cell.value }}</span>
   {%- endif %}
