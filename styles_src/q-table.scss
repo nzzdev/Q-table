@@ -425,6 +425,14 @@ tr.q-table-state-visible {
     &-container {
       display: flex;
       flex-direction: column;
+
+      &--desktop {
+        width: 100%;
+      }
+
+      &--fullwidth {
+        width: 640px;
+      }
     }
 
     &-border-container {
@@ -478,6 +486,10 @@ tr.q-table-state-visible {
       justify-content: flex-start;
       margin-top: 16px;
       margin-bottom: 12px;
+    }
+
+    &--fullwidth {
+      justify-content: center;
     }
 
     &--categorical {

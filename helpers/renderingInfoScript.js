@@ -37,6 +37,11 @@ function getCardLayoutScript(context) {
     renderMinibarsFunction = `renderMinibars${context.id}()`;
   }
 
+  let renderHeatmapNumericalLegendFunction = "";
+  if (context.heatmap && context.heatmap.heatmapType === "numerical") {
+    renderHeatmapNumericalLegendFunction = `renderHeatmapNumericalLegend${context.id}(${dataObject}.width)`;
+  }
+
   return `
     ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");
     ${dataObject}.isCardLayout = ${dataObject}.isCardLayout || undefined;
@@ -76,6 +81,7 @@ function getCardLayoutScript(context) {
           ${dataObject}.width = newWidth;
           ${applyCardLayoutClassFunctionName}();
           ${renderMinibarsFunction};
+          ${renderHeatmapNumericalLegendFunction};
         }
       });
     }, 250));
@@ -307,17 +313,18 @@ function getSearchFormInputScript(context) {
 function getHeatmapScript(context) {
 
   const dataObject = `window.${context.id}Data`;
-  const setupMethodBox = `setupMethodBox${context.id}`;
-  const prepareMethodBoxElements = `prepareMethodBoxElements${context.id}`;
-  const setVisibilityOfElements = `setVisibilityOfElements${context.id}`;
-  const addEventListenerToMethodBoxToggle = `addEventListenerToMethodBoxToggle${context.id}`;
-  const handleClickOnMethodBoxToogle = `handleClickOnMethodBoxToogle${context.id}`;
-  const addEventListenerToMethodBoxArticleLink = `addEventListenerToMethodBoxArticleLink${context.id}`;
-  const handleClickOnMethodBoxArticleLink = `handleClickOnMethodBoxArticleLink${context.id}`;
+  const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;
+  const prepareMethodBoxElementsFunctionName = `prepareMethodBoxElements${context.id}`;
+  const setVisibilityOfElementsFunctionName = `setVisibilityOfElements${context.id}`;
+  const renderHeatmapNumericalLegendFunctionName = `renderHeatmapNumericalLegend${context.id}`;
+  const addEventListenerToMethodBoxToggleFunctionName = `addEventListenerToMethodBoxToggle${context.id}`;
+  const handleClickOnMethodBoxToogleFunctionName = `handleClickOnMethodBoxToogle${context.id}`;
+  const addEventListenerToMethodBoxArticleLinkFunctionName = `addEventListenerToMethodBoxArticleLink${context.id}`;
+  const handleClickOnMethodBoxArticleLinkFunctionName = `handleClickOnMethodBoxArticleLink${context.id}`;
 
   return `
 
-  function ${prepareMethodBoxElements}() {
+  function ${prepareMethodBoxElementsFunctionName}() {
     ${dataObject}.methodBoxToggleElement = ${dataObject}.element.querySelector(
       ".q-table-methods-link"
     );
@@ -335,7 +342,7 @@ function getHeatmapScript(context) {
     );
   }
 
-  function ${setVisibilityOfElements}() {
+  function ${setVisibilityOfElementsFunctionName}() {
     if (${dataObject}.isMethodBoxVisible) {
       if (${dataObject}.methodBoxContainerElement) {
         ${dataObject}.methodBoxContainerElement.classList.remove("hidden");
@@ -359,16 +366,16 @@ function getHeatmapScript(context) {
     }
   }
 
-  function ${addEventListenerToMethodBoxToggle}() {
+  function ${addEventListenerToMethodBoxToggleFunctionName}() {
     if (${dataObject}.methodBoxToggleElement) {
       ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
-        ${handleClickOnMethodBoxToogle}(event);
+        ${handleClickOnMethodBoxToogleFunctionName}(event);
       });
     }
   }
 
 
-  function ${handleClickOnMethodBoxToogle}(event) {
+  function ${handleClickOnMethodBoxToogleFunctionName}(event) {
     const eventDetail = {
       eventInfo: {
         componentName: "q-table",
@@ -380,7 +387,7 @@ function getHeatmapScript(context) {
     };
 
     ${dataObject}.isMethodBoxVisible = !${dataObject}.isMethodBoxVisible;
-    ${setVisibilityOfElements}();
+    ${setVisibilityOfElementsFunctionName}();
 
     const trackingEvent = new CustomEvent("q-tracking-event", {
       bubbles: true,
@@ -389,15 +396,15 @@ function getHeatmapScript(context) {
     event.target.dispatchEvent(trackingEvent);
   }
 
-  function ${addEventListenerToMethodBoxArticleLink}() {
+  function ${addEventListenerToMethodBoxArticleLinkFunctionName}() {
     if (${dataObject}.methodBoxArticleLink) {
       ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
-        ${handleClickOnMethodBoxArticleLink}(event);
+        ${handleClickOnMethodBoxArticleLinkFunctionName}(event);
       });
     }
   }
 
-  function ${handleClickOnMethodBoxArticleLink}(event) {
+  function ${handleClickOnMethodBoxArticleLinkFunctionName}(event) {
     const eventDetail = {
       eventInfo: {
         componentName: "q-table",
@@ -413,16 +420,33 @@ function getHeatmapScript(context) {
     event.target.dispatchEvent(trackingEvent);
   }
 
+  function ${renderHeatmapNumericalLegendFunctionName}(width) {
+    console.log(width);
+    var legend = ${dataObject}.element.querySelector(".q-table__heatmap-legend--numerical");
+    var legendContainer = ${dataObject}.element.querySelector(".q-table__heatmap-legend-container");
+    console.log(legend);
+    if (width <= 640) {
+      legend.classList.remove("q-table__heatmap-legend--fullwidth")
+      legendContainer.classList.add("q-table__heatmap-legend-container--desktop"); 
+      legendContainer.classList.remove("q-table__heatmap-legend-container--fullwidth"); 
+    } else {
+      legend.classList.add("q-table__heatmap-legend--fullwidth")
+      legendContainer.classList.remove("q-table__heatmap-legend-container--desktop"); 
+      legendContainer.classList.add("q-table__heatmap-legend-container--fullwidth"); 
+    }
+  }
 
-  function ${setupMethodBox}() {
-    ${prepareMethodBoxElements}();
-    ${setVisibilityOfElements}();
-    ${addEventListenerToMethodBoxToggle}();
-    ${addEventListenerToMethodBoxArticleLink}();
+
+  function ${setupMethodBoxFunctionName}() {
+    ${prepareMethodBoxElementsFunctionName}();
+    ${setVisibilityOfElementsFunctionName}();
+    ${renderHeatmapNumericalLegendFunctionName}(${dataObject}.element.getBoundingClientRect().width);
+    ${addEventListenerToMethodBoxToggleFunctionName}();
+    ${addEventListenerToMethodBoxArticleLinkFunctionName}();
   }
 
   window.q_domready.then(function() {
-    ${setupMethodBox}();    
+    ${setupMethodBoxFunctionName}();
   });
   `;
 }
