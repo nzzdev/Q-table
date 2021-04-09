@@ -130,9 +130,10 @@ module.exports = {
 
       if (optionName === "isNumerical") {
         return {
-          available: item.options.heatmap.heatmapType === "numerical",
+          available: item.options.heatmap.selectedColumn && item.options.heatmap.heatmapType === "numerical",
         };
       }
+
       if (optionName === "isCategorical") {
         return {
           available: item.options.heatmap.heatmapType === "categorical",
