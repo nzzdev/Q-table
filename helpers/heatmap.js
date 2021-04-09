@@ -30,50 +30,72 @@ function getNumberBuckets(heatmap) {
 }
 
 function getHeatmapContext(heatmap, data) {
-    let heatmapContext = {};
-    if (heatmap !== null && heatmap !== undefined && heatmap.selectedColumn !== null && heatmap.selectedColumn !== undefined) {
-        let colors = [];
-        if (heatmap.heatmapType === "numerical") {
-            heatmapContext.legendData = legendHelpers.getNumericalLegend(
-                data,
-                heatmap
-            );
+    try {
+        let heatmapContext = {};
+        if (heatmap !== null && heatmap !== undefined && heatmap.selectedColumn !== null && heatmap.selectedColumn !== undefined) {
+            let colors = [];
+            if (heatmap.heatmapType === "numerical") {
+                heatmapContext.legendData = legendHelpers.getNumericalLegend(
+                    data,
+                    heatmap
+                );
 
-            let formattingOptions = {
-                maxDigitsAfterComma: dataHelpers.getMaxDigitsAfterCommaInDataByRow(
-                    data, heatmap.selectedColumn
-                ),
-                roundingBucketBorders: heatmap.numericalOptions.bucketType !== "custom"
-            };
+                console.log('----')
+                console.log('legendData:')
+                console.table(heatmapContext.legendData);
 
-            heatmapContext.methodBox = methodBoxHelpers.getMethodBoxInfo(
-                heatmap.numericalOptions.bucketType
-            );
 
-            let valuesByColumn = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn);
-            heatmapContext.formattedValues = [];
-            heatmapContext.methodBox.formattedValues = [];
-            valuesByColumn.map(value => {
-                let color = colorHelpers.getColor(value, heatmapContext.legendData);
-                colors = [...colors, color];
-                heatmapContext.formattedValues = [...heatmapContext.formattedValues, dataHelpers.getFormattedValue(formattingOptions, value)];
-                heatmapContext.methodBox.formattedValues = [...heatmapContext.methodBox.formattedValues, dataHelpers.getFormattedValueForBuckets(formattingOptions, value)];
-            })
-        } else {
-            heatmapContext.legendData = legendHelpers.getCategoricalLegend(
-                data,
-                heatmap
-            );
+                let formattingOptions = {
+                    maxDigitsAfterComma: dataHelpers.getMaxDigitsAfterCommaInDataByRow(
+                        data, heatmap.selectedColumn
+                    ),
+                    roundingBucketBorders: heatmap.numericalOptions.bucketType !== "custom"
+                };
 
-            let categoriesByColumn = dataHelpers.getCategoricalValuesByColumn(data, heatmap.selectedColumn);
-            categoriesByColumn.map(category => {
-                let color = colorHelpers.getColor(category, heatmapContext.legendData);
-                colors = [...colors, color];
-            });
+                heatmapContext.methodBox = methodBoxHelpers.getMethodBoxInfo(
+                    heatmap.numericalOptions.bucketType
+                );
+
+                console.log('----')
+                console.log('methodBox:')
+                console.table(heatmapContext.methodBox);
+
+
+                let valuesByColumn = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn);
+                heatmapContext.formattedValues = [];
+                heatmapContext.methodBox.formattedValues = [];
+                valuesByColumn.map(value => {
+                    let color = colorHelpers.getColor(value, heatmapContext.legendData);
+                    colors = [...colors, color];
+                    heatmapContext.formattedValues = [...heatmapContext.formattedValues, dataHelpers.getFormattedValue(formattingOptions, value)];
+                    heatmapContext.methodBox.formattedValues = [...heatmapContext.methodBox.formattedValues, dataHelpers.getFormattedValueForBuckets(formattingOptions, value)];
+                })
+                console.log('----')
+                console.log('formattedValues:')
+                console.table(heatmapContext.formattedValues);
+
+            } else {
+                heatmapContext.legendData = legendHelpers.getCategoricalLegend(
+                    data,
+                    heatmap
+                );
+
+                let categoriesByColumn = dataHelpers.getCategoricalValuesByColumn(data, heatmap.selectedColumn);
+                categoriesByColumn.map(category => {
+                    let color = colorHelpers.getColor(category, heatmapContext.legendData);
+                    colors = [...colors, color];
+                });
+            }
+            console.log('----')
+            console.log('heatmapContext:')
+            console.table(heatmapContext);
+            heatmapContext = { ...heatmapContext, ...heatmap, colors };
         }
-        heatmapContext = { ...heatmapContext, ...heatmap, colors };
+        console.log('successfully return heatmapContexty');
+        return heatmapContext;
+    } catch (ex) {
+        console.log(ex);
     }
-    return heatmapContext;
 }
 
 

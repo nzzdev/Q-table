@@ -12,9 +12,7 @@ function getMethodBoxInfo(bucketType) {
     const methodBoxText = methodBoxTextConfig[bucketType];
     return {
         text: methodBoxText || "",
-        article: process.env.METHOD_BOX_ARTICLE
-            ? JSON.parse(process.env.METHOD_BOX_ARTICLE)
-            : null,
+        article: { "title": "Mehr zur Datenberechnung der NZZ", "url": "https://www.nzz.ch/ld.1580452" }
     };
 }
 

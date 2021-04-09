@@ -421,10 +421,8 @@ function getHeatmapScript(context) {
   }
 
   function ${renderHeatmapNumericalLegendFunctionName}(width) {
-    console.log(width);
     var legend = ${dataObject}.element.querySelector(".q-table__heatmap-legend--numerical");
     var legendContainer = ${dataObject}.element.querySelector(".q-table__heatmap-legend-container");
-    console.log(legend);
     if (width <= 640) {
       legend.classList.remove("q-table__heatmap-legend--fullwidth")
       legendContainer.classList.add("q-table__heatmap-legend-container--desktop"); 
