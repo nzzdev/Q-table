@@ -166,10 +166,10 @@ function getColorOverwriteEnumAndTitlesCategorical(data, heatmap) {
   };
 }
 
-function getCustomCategoriesOrderEnumAndTitlesCategorical(data) {
+function getCustomCategoriesOrderEnumAndTitlesCategorical(data, heatmap) {
   try {
     data = dataHelpers.getDataWithoutHeaderRow(data);
-    const categories = dataHelpers.getUniqueCategoriesObject(data).categories;
+    const categories = dataHelpers.getUniqueCategoriesObject(data, heatmap).categories;
 
     return {
       enum: categories,
@@ -244,7 +244,7 @@ module.exports = {
     }
 
     if (optionName === "customCategoriesOrderItem") {
-      return getCustomCategoriesOrderEnumAndTitlesCategorical(item.data.table);
+      return getCustomCategoriesOrderEnumAndTitlesCategorical(item.data.table, item.options.heatmap);
     }
 
     return Boom.badRequest();

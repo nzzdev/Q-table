@@ -873,7 +873,8 @@
                             "config": {
                               "endpoint": "dynamic-schema/customCategoriesOrderItem",
                               "fields": [
-                                "data"
+                                "data",
+                                "options"
                               ]
                             }
                           }
