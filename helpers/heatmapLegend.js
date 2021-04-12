@@ -202,7 +202,7 @@ function getCategoricalLegend(data, heatmap) {
   };
 
   const customColorMap = colorHelpers.getCustomColorMap(heatmap.categoricalOptions.colorOverwrites);
-  const categoryObject = dataHelpers.getUniqueCategoriesObject(data, heatmap.categoricalOptions.customCategoriesOrder);
+  const categoryObject = dataHelpers.getUniqueCategoriesObject(data, heatmap);
 
   let categories = [];
   categoryObject.categories.forEach((label, index) => {

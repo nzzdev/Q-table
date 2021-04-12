@@ -147,10 +147,11 @@ function getColorOverwriteEnumAndTitlesNumerical(heatmap) {
   }
 }
 
-function getColorOverwriteEnumAndTitlesCategorical(data, customCategoriesOrder) {
+function getColorOverwriteEnumAndTitlesCategorical(data, heatmap) {
   data = dataHelpers.getDataWithoutHeaderRow(data);
+  let customCategoriesOrder = heatmap.categoricalOptions.customCategoriesOrder;
   let enumValues = [null];
-  const categories = dataHelpers.getUniqueCategoriesObject(data, customCategoriesOrder).categories;
+  const categories = dataHelpers.getUniqueCategoriesObject(data, heatmap).categories;
   const numberItems = categories.length;
   for (let index = 0; index < numberItems; index++) {
     enumValues.push(index + 1);
@@ -234,7 +235,7 @@ module.exports = {
           item.options.heatmap
         );
       } else {
-        return getColorOverwriteEnumAndTitlesCategorical(item.data.table, item.options.heatmap.categoricalOptions.customCategoriesOrder);
+        return getColorOverwriteEnumAndTitlesCategorical(item.data.table, item.options.heatmap);
       }
     }
 

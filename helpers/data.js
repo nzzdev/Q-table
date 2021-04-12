@@ -177,11 +177,12 @@ function getUniqueCategoriesCount(data) {
   return getUniqueCategoriesObject(data).categories.length;
 }
 
-function getUniqueCategoriesObject(data, customCategoriesOrder) {
+function getUniqueCategoriesObject(data, heatmap) {
   let hasNullValues = false;
+  let customCategoriesOrder = heatmap.categoricalOptions.customCategoriesOrder;
   const values = data
     .map((row) => {
-      return row[1];
+      return row[heatmap.selectedColumn];
     })
     .filter((value) => {
       if (value !== null && value !== "") {
