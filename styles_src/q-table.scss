@@ -417,6 +417,24 @@ tr.q-table-state-visible {
   &-legend {
     height: 32px;
     width: 100%;
+
+    &-info {
+      &--single-bucket {
+        margin-right: 16px;
+      }
+      
+      &-icon {
+        &--interactive {
+          margin-top: -2px;
+        }
+      
+        &--no-interactive {
+          margin-top: 1px;
+        }
+      
+        margin-right: 8px;
+      }
+    }
   
     &-bucket {
       fill: currentColor;
@@ -484,6 +502,7 @@ tr.q-table-state-visible {
     &--numerical {
       display: flex;
       justify-content: flex-start;
+      flex-direction: column;
       margin-top: 16px;
       margin-bottom: 12px;
     }

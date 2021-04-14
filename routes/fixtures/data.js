@@ -40,6 +40,7 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/table-search-with-multiple-columns.json`),
   require(`${fixtureDataDirectory}/heatmap-categorical.json`),
   require(`${fixtureDataDirectory}/heatmap-numerical.json`),
+  require(`${fixtureDataDirectory}/heatmap-single-value-bucket.json`),
 ];
 
 module.exports = {

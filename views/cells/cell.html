@@ -24,7 +24,11 @@
   {%- endif -%}
   {%- if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null %}
     {%- if heatmap.heatmapType === "numerical" -%}
-      {{heatmap.formattedValues[row_loop.index0]}}  
+      {%- if heatmap.formattedValues[row_loop.index0] === null or heatmap.formattedValues[row_loop.index0] === undefined  -%}
+        --
+      {%- else -%}
+        {{heatmap.formattedValues[row_loop.index0]}}  
+      {%- endif -%}    
     {%- else -%}  
       {{cell.value}}  
     {%- endif -%}  

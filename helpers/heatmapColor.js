@@ -155,8 +155,8 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
 function getColor(value, legendData) {
   if (value === null || value === undefined) {
     return {
-      colorClass: "s-color-gray-4",
-      customColor: "",
+      colorClass: "",
+      customColor: "#fff",
       textColor: "s-color-gray-6",
     };
   }

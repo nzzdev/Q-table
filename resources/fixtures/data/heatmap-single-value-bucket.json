@@ -1,5 +1,5 @@
 {
-    "title": "FIXTURE: Heatmap categorical",
+    "title": "FIXTURE: Heatmap single value bucket",
     "data": {
         "table": [
             [
@@ -9,133 +9,133 @@
             ],
             [
                 "Aargau",
-                "etwas",
-                "etwas"
+                "8.2",
+                "8.2"
             ],
             [
                 "Appenzell Ausserrhoden",
-                null,
-                "etwas"
+                "6.0",
+                "6.0"
             ],
             [
                 "Appenzell Innerrhoden",
-                "etwas",
-                "etwas"
+                "5.8",
+                "5.8"
             ],
             [
                 "Basel-Landschaft",
-                "etwas anderes",
-                "etwas anderes"
+                null,
+                null
             ],
             [
                 "Basel-Stadt",
-                "etwas",
-                "etwas"
+                "2.8",
+                "2.8"
             ],
             [
                 "Bern",
-                "etwas",
-                "etwas"
+                null,
+                null
             ],
             [
                 "Freiburg",
-                "etwas ganz anderes",
-                "etwas ganz anderes"
+                null,
+                null
             ],
             [
                 "Genf",
-                "etwas anderes",
-                "etwas anderes"
+                null,
+                null
             ],
             [
                 "Glarus",
-                "etwas",
-                "etwas"
+                "3.6",
+                "3.6"
             ],
             [
                 "Graubünden",
-                "etwas",
-                "etwas"
+                "3.2",
+                "3.2"
             ],
             [
                 "Jura",
-                "etwas",
-                "etwas"
+                "3.5",
+                "3.5"
             ],
             [
                 "Luzern",
-                "etwas anderes",
-                "etwas anderes"
+                "4.8",
+                "4.8"
             ],
             [
                 "Neuenburg",
-                "etwas anderes",
-                "etwas anderes"
+                "2.7",
+                "2.7"
             ],
             [
                 "Nidwalden",
-                "etwas",
-                "etwas"
+                null,
+                null
             ],
             [
                 "Obwalden",
-                "etwas",
-                "etwas"
+                null,
+                null
             ],
             [
                 "Schaffhausen",
-                "etwas",
-                "etwas"
+                null,
+                null
             ],
             [
                 "Schwyz",
-                "etwas",
-                "etwas"
+                "4.9",
+                "4.9"
             ],
             [
                 "Solothurn",
-                "etwas ganz anderes",
-                "etwas ganz anderes"
+                "7.9",
+                "7.9"
             ],
             [
                 "St. Gallen",
-                "etwas ganz anderes",
-                "etwas ganz anderes"
+                "5.2",
+                "5.2"
             ],
             [
                 "Tessin",
-                "etwas",
-                "etwas"
+                "6.2",
+                "6.2"
             ],
             [
                 "Thurgau",
-                "etwas",
-                "etwas"
+                "0.8",
+                "0.8"
             ],
             [
                 "Uri",
-                "etwas",
-                "etwas"
+                "3.9",
+                "3.9"
             ],
             [
                 "Waadt",
-                "etwas",
-                "etwas"
+                null,
+                null
             ],
             [
                 "Wallis",
-                "etwas",
-                "etwas"
+                "3.4",
+                "3.4"
             ],
             [
                 "Zug",
-                "etwas",
-                "etwas"
+                "2.3",
+                "2.3"
             ],
             [
                 "Zürich",
-                "etwas ganz anderes",
-                "etwas ganz anderes"
+                null,
+                null
             ]
         ],
         "metaData": {
@@ -145,7 +145,7 @@
     "sources": [],
     "options": {
         "hideTableHeader": false,
-        "showTableSearch": true,
+        "showTableSearch": false,
         "cardLayout": false,
         "cardLayoutIfSmall": false,
         "minibar": {
@@ -163,7 +163,7 @@
             "selectedColumn": null
         },
         "heatmap": {
-            "heatmapType": "categorical",
+            "heatmapType": "numerical",
             "numericalOptions": {
                 "bucketType": "ckmeans",
                 "numberBuckets": 5,
@@ -173,13 +173,11 @@
             },
             "categoricalOptions": {
                 "colorOverwrites": [],
-                "customCategoriesOrder": [
-                    {
-                        "category": "etwas ganz anderes"
-                    }
-                ]
+                "customCategoriesOrder": []
             },
             "selectedColumn": 1
         }
-    }
+    },
+    "department": "Visuals",
+    "publication": "nzz"
 }

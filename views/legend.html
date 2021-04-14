@@ -1,48 +1,104 @@
 {% if heatmap.heatmapType === "numerical" %}
-    <!-- display numerical legend -->
-    <div class="q-table__heatmap-legend--numerical">
-        <div class="q-table__heatmap-legend-container q-table__heatmap-legend-container--desktop">
-            <div class="q-table__heatmap-legend-value-container">
-                <span
-                    class="q-table__heatmap-legend-value-container--minVal s-font-note s-font-note--tabularnums">{{heatmap.legendData.minValue}}</span>
-                <span class="q-table__heatmap-legend-value-container--maxVal
-    s-font-note s-font-note--tabularnums">{{heatmap.legendData.maxValue}}</span>
-            </div>
-            <div class="q-table__heatmap-legend-border-container">
-                <svg class="q-table__heatmap-legend">
-                    <g>
-                        {% for bucket in heatmap.legendData.buckets %}
-                            {% set bucket_loop = loop %}
-                            {% set bucket_width = ((bucket.to - bucket.from) * 100) / (heatmap.legendData.maxValue - heatmap.legendData.minValue) %}
-                            {% set aspectXValue = ((bucket.from - heatmap.legendData.minValue) * 100) / (heatmap.legendData.maxValue - heatmap.legendData.minValue) %}
-                            {% if bucket.color.customColor %}
-                                <rect class="q-table__heatmap-legend-bucket" style="color: {{bucket.color.customColor}}" width="{{bucket_width}}%" height="16" x="{{aspectXValue}}%" y="12" />
-                            {% else %}
-                                <rect class="q-table__heatmap-legend-bucket {{bucket.color.colorClass}}" width="{{bucket_width}}%" height="16" x="{{aspectXValue}}%" y="12" />
-                            {%- endif -%}
-                        {% endfor %}
-                    </g>
-                </svg>
-                <div class="q-table__heatmap-legend-borders s-color-gray-6"></div>
-            </div>
+<!-- display numerical legend -->
+<div class="q-table__heatmap-legend--numerical">
+    <div class="s-legend-icon-label q-table__heatmap-legend-container q-table__heatmap-legend-container--desktop">
+        <div class="q-table__heatmap-legend-value-container">
+            <span class="q-table__heatmap-legend-value-container--minVal s-font-note s-font-note--tabularnums">{{heatmap.legendData.minValue}}</span>
+            <span class="q-table__heatmap-legend-value-container--maxVal s-font-note s-font-note--tabularnums">{{heatmap.legendData.maxValue}}</span>
+        </div>
+        <div class="q-table__heatmap-legend-border-container">
+            <svg class="q-table__heatmap-legend">
+                <g>
+                    {% for bucket in heatmap.legendData.buckets %}
+                        {% set bucket_loop = loop %}
+                        {% set bucket_width = ((bucket.to - bucket.from) * 100) / (heatmap.legendData.maxValue -heatmap.legendData.minValue) %}
+                        {% set aspectXValue = ((bucket.from - heatmap.legendData.minValue) * 100) / (heatmap.legendData.maxValue - heatmap.legendData.minValue) %}
+                        {% if bucket.color.customColor %}
+                            <rect class="q-table__heatmap-legend-bucket" style="color: {{bucket.color.customColor}}" width="{{bucket_width}}%" height="16" x="{{aspectXValue}}%" y="12" />
+                        {% else %}
+                            <rect class="q-table__heatmap-legend-bucket {{bucket.color.colorClass}}" width="{{bucket_width}}%" height="16" x="{{aspectXValue}}%" y="12" />
+                        {%- endif -%}
+                    {% endfor %}
+                </g>
+            </svg>
+            <div class="q-table__heatmap-legend-borders s-color-gray-6"></div>
         </div>
     </div>
-{% else %}
-    <!-- display categorical legend -->
-    <div class="q-table__heatmap-legend--categorical">
+    {%- if heatmap.legendData.hasSingleValueBucket or heatmap.legendData.hasNullValues -%}
         <div class="s-legend-icon-label">
-            {% for category in heatmap.legendData.categories %}
-                {% set category_loop = loop %}
-                {% if category.color.customColor %}
-                    <div class="s-legend-item-label__item" style="color: {{category.color.customColor}}">
-                {% else %}
-                    <div class="s-legend-item-label__item {{category.color.colorClass}}">
-                {% endif %}
-                        <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default"></div>
-                        <div class="s-legend-item-label__item__label">{{category.label}}</div>
+            {%- if heatmap.legendData.hasSingleValueBucket -%}
+                <div class="s-legend-item-label__item q-table__heatmap-legend-info--single-bucket">
+                    <svg width="11" height="11" 
+                    {%- if noInteraction -%}
+                        class="s-legend-item-label__item__icon q-table__heatmap-legend-info-icon q-table__heatmap-legend-info-icon--no-interactive">
+                    {%- else -%}
+                        class="s-legend-item-label__item__icon q-table__heatmap-legend-info-icon q-table__heatmap-legend-info-icon--interactive">
+                    {%- endif -%}
+                        <rect width="11" height="11"
+                        {% if heatmap.legendData.buckets[0].color.customColor %}
+                            class="q-table__heatmap-legend-bucket" style="color: {{heatmap.legendData.buckets[0].color.customColor}}" />
+                        {% else %}
+                            class="q-table__heatmap-legend-bucket {{heatmap.legendData.buckets[0].color.colorClass}}" />
+                        {% endif %}
+                    </svg>
+                    <div class="s-legend-item-label__item__label s-font-note--tabularnums">
+                        = {{heatmap.legendData.buckets[0].from}}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endif %}
+            {%- if heatmap.legendData.hasNullValues -%}
+                <div class="s-legend-item-label__item q-table__heatmap-legend-info--no-data ">
+                    <svg width="11" height="11" 
+                    {%- if noInteraction -%}
+                        class="s-legend-item-label__item__icon q-table__heatmap-legend-info-icon q-table__heatmap-legend-info-icon--no-interactive">
+                    {%- else -%}
+                        class="s-legend-item-label__item__icon q-table__heatmap-legend-info-icon q-table__heatmap-legend-info-icon--interactive">
+                    {%- endif -%}
+                        <rect
+                        width="11"
+                        height="11"
+                        class="s-color-gray-4"
+                        fill="white"
+                        stroke="currentColor"
+                        stroke-width="2" />
+                    </svg>
+                    <div class="s-legend-item-label__item__label">Keine Daten</div>
+                </div>
+            {% endif %} 
         </div>
+    {% endif %} 
+</div>
+{% else %}
+<!-- display categorical legend -->
+<div class="q-table__heatmap-legend--categorical">
+    <div class="s-legend-icon-label">
+        {% for category in heatmap.legendData.categories %}
+        {% set category_loop = loop %}
+        {% if category.color.customColor %}
+            <div class="s-legend-item-label__item" style="color: {{category.color.customColor}}">
+        {% else %}
+            <div class="s-legend-item-label__item {{category.color.colorClass}}">
+        {% endif %}
+                <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default"></div>
+                <div class="s-legend-item-label__item__label">{{category.label}}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {%- if heatmap.legendData.hasNullValues %}
+            <div class="s-legend-icon-label">
+                <div class="s-legend-item-label__item">
+                    <svg width="11" height="11" 
+                    {% if noInteraction %} 
+                        class="s-legend-item-label__item__icon q-table__heatmap-legend-info-icon q-table__heatmap-legend-info-icon--no-interactive">
+                    {% else %}
+                        class="s-legend-item-label__item__icon q-table__heatmap-legend-info-icon q-table__heatmap-legend-info-icon--interactive">
+                    {% endif %}
+                        <rect width="11" height="11" class="s-color-gray-4" fill="white" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <div class="s-legend-item-label__item__label">Keine Daten</div>
+                </div>
+            </div>
+        {% endif %}
     </div>
+</div>
 {% endif %}
