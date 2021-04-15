@@ -16,11 +16,17 @@
   {% endif %}>
 
   {%- if cell.footnote %}
-    <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">
-  {%- elif heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null and not initWithCardLayout -%}
-    <span class="{{ heatmap.colors[row_loop.index-1].textColor }}">
+    {%- if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null and not initWithCardLayout -%}
+      <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation {{ heatmap.colors[row_loop.index-1].textColor }}">
+    {% else %}
+      <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">
+    {%- endif -%}      
   {% else %}
-    <span>
+    {%- if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null and not initWithCardLayout -%}
+      <span class="{{ heatmap.colors[row_loop.index-1].textColor }}">
+    {% else %}
+      <span>
+    {%- endif -%}      
   {%- endif -%}
   {%- if heatmap.selectedColumn===loop.index0 and heatmap.selectedColumn !==null %}
     {%- if heatmap.heatmapType === "numerical" -%}
