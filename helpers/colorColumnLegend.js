@@ -1,5 +1,5 @@
 const dataHelpers = require("./data.js");
-const colorHelpers = require("./heatmapColor.js");
+const colorHelpers = require("./colorColumnColor.js");
 const simpleStatistics = require("simple-statistics");
 
 const ckmeans = simpleStatistics.ckmeans;
@@ -7,16 +7,16 @@ const quantile = simpleStatistics.quantile;
 
 function getBucketsForLegend(
   filteredValues,
-  heatmap,
+  colorColumn,
   minValue,
   maxValue,
   customColorMap
 ) {
-  const bucketType = heatmap.numericalOptions.bucketType;
-  const numberBuckets = heatmap.numericalOptions.numberBuckets;
-  const scale = heatmap.numericalOptions.scale;
+  const bucketType = colorColumn.numericalOptions.bucketType;
+  const numberBuckets = colorColumn.numericalOptions.numberBuckets;
+  const scale = colorColumn.numericalOptions.scale;
   const colorOptions = {
-    colorScheme: heatmap.numericalOptions.colorScheme,
+    colorScheme: colorColumn.numericalOptions.colorScheme,
     colorOverwrites: customColorMap,
   };
 
@@ -44,7 +44,7 @@ function getBucketsForLegend(
       colorOptions
     );
   } else if (bucketType === "custom") {
-    return getCustomBuckets(options, scale, colorOptions);
+    return getCustomBuckets(colorColumn, scale, colorOptions);
   }
   return [];
 }
@@ -121,10 +121,10 @@ function getEqualBuckets(
   return equalBuckets;
 }
 
-function getCustomBuckets(heatmap, scale, colorOptions) {
-  if (heatmap.customBuckets !== undefined) {
-    const customBorderValues = heatmapHelpers.getCustomBucketBorders(
-      heatmap.customBuckets
+function getCustomBuckets(colorColumn, scale, colorOptions) {
+  if (colorColumn.customBuckets !== undefined) {
+    const customBorderValues = colorColumnHelpers.getCustomBucketBorders(
+      colorColumn.customBuckets
     );
 
     const numberBuckets = customBorderValues.length - 1;
@@ -152,9 +152,9 @@ function hasSingleValueBucket(legendData) {
   return firstBucket.from === firstBucket.to;
 }
 
-function getNumericalLegend(data, heatmap) {
-  const customColorMap = colorHelpers.getCustomColorMap(heatmap.numericalOptions.colorOverwrites);
-  const values = dataHelpers.getNumericalValuesByColumn(data, heatmap.selectedColumn);
+function getNumericalLegend(data, colorColumn) {
+  const customColorMap = colorHelpers.getCustomColorMap(colorColumn.numericalOptions.colorOverwrites);
+  const values = dataHelpers.getNumericalValuesByColumn(data, colorColumn.selectedColumn);
   const nonNullValues = dataHelpers.getNonNullValues(values);
   const metaData = dataHelpers.getMetaData(
     values,
@@ -168,7 +168,7 @@ function getNumericalLegend(data, heatmap) {
 
   legendData.buckets = getBucketsForLegend(
     nonNullValues,
-    heatmap,
+    colorColumn,
     legendData.minValue,
     legendData.maxValue,
     customColorMap
@@ -179,7 +179,7 @@ function getNumericalLegend(data, heatmap) {
   // for all bucket types we calculate the resulting buckets out of given data set
   // custom bucketing need a special handling of min/max values because the first and the last
   // custom bucket value could be lower/higher than min/max
-  if (heatmap.numericalOptions.bucketType === "custom") {
+  if (colorColumn.numericalOptions.bucketType === "custom") {
     // if first custom bucket value is less than min value in given data set
     // we set min value of legend to starting value of custom buckets
     const minBucketValue = legendData.buckets[0].from;
@@ -196,13 +196,13 @@ function getNumericalLegend(data, heatmap) {
   return legendData;
 }
 
-function getCategoricalLegend(data, heatmap) {
+function getCategoricalLegend(data, colorColumn) {
   const legendData = {
     type: "categorical",
   };
 
-  const customColorMap = colorHelpers.getCustomColorMap(heatmap.categoricalOptions.colorOverwrites);
-  const categoryObject = dataHelpers.getUniqueCategoriesObject(data, heatmap);
+  const customColorMap = colorHelpers.getCustomColorMap(colorColumn.categoricalOptions.colorOverwrites);
+  const categoryObject = dataHelpers.getUniqueCategoriesObject(data, colorColumn);
 
   let categories = [];
   categoryObject.categories.forEach((label, index) => {

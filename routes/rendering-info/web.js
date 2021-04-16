@@ -20,7 +20,7 @@ const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
 const dataHelpers = require(`${helpersDir}data.js`);
 const footnoteHelpers = require(`${helpersDir}footnotes.js`);
 const minibarHelpers = require(`${helpersDir}minibars.js`);
-const heatmapHelpers = require(`${helpersDir}heatmap.js`);
+const colorColumnHelpers = require(`${helpersDir}colorColumn.js`);
 
 const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
@@ -91,8 +91,8 @@ module.exports = {
       payload: { item: item },
     });
 
-    const heatmapAvailable = await request.server.inject({
-      url: "/option-availability/selectedColumnHeatmap",
+    const colorColumnAvailable = await request.server.inject({
+      url: "/option-availability/selectedColorColumn",
       method: "POST",
       payload: { item: item },
     });
@@ -108,8 +108,8 @@ module.exports = {
         ? minibarHelpers.getMinibarContext(item.options, itemDataCopy)
         : {},
       footnotes: footnotes,
-      heatmap: heatmapAvailable.result.available
-        ? heatmapHelpers.getHeatmapContext(item.options.heatmap, dataWithoutHeaderRow)
+      colorColumn: colorColumnAvailable.result.available
+        ? colorColumnHelpers.getColorColumnContext(item.options.colorColumn, dataWithoutHeaderRow)
         : {},
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
@@ -233,9 +233,9 @@ module.exports = {
       });
     }
 
-    if (Object.keys(context.heatmap).length !== 0) {
+    if (Object.keys(context.colorColumn).length !== 0) {
       renderingInfo.scripts.push({
-        content: renderingInfoScripts.getHeatmapScript(context),
+        content: renderingInfoScripts.getColorColumnScript(context),
       });
     }
 

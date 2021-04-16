@@ -4,7 +4,7 @@ const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 const getMinibarNumbersWithType = require("../helpers/minibars.js")
   .getMinibarNumbersWithType;
 
-const hasCustomBuckets = require("../helpers/heatmap.js").hasCustomBuckets;
+const hasCustomBuckets = require("../helpers/colorColumn.js").hasCustomBuckets;
 
 module.exports = {
   method: "POST",
@@ -105,8 +105,8 @@ module.exports = {
     }
 
     if (
-      optionName === "heatmap" ||
-      optionName === "selectedColumnHeatmap"
+      optionName === "colorColumn" ||
+      optionName === "selectedColorColumn"
     ) {
       let isAvailable = false;
 
@@ -124,32 +124,32 @@ module.exports = {
       };
     }
 
-    // properties heatmap 
-    if (item.options.heatmap !== null &&
-      item.options.heatmap !== undefined) {
+    // properties colorColumn 
+    if (item.options.colorColumn !== null &&
+      item.options.colorColumn !== undefined) {
 
       if (optionName === "isNumerical") {
         return {
-          available: item.options.heatmap.selectedColumn && item.options.heatmap.heatmapType === "numerical",
+          available: item.options.colorColumn.selectedColumn && item.options.colorColumn.colorColumnType === "numerical",
         };
       }
 
       if (optionName === "isCategorical") {
         return {
-          available: item.options.heatmap.heatmapType === "categorical",
+          available: item.options.colorColumn.colorColumnType === "categorical",
         };
       }
 
-      if (optionName === "heatmapType" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme" || optionName === "customCategoriesOrder") {
+      if (optionName === "colorColumnType" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme" || optionName === "customCategoriesOrder") {
         return {
-          available: item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined
+          available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined
         };
       }
 
       if (optionName === "customBuckets") {
-        let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = hasCustomBuckets(item.options.heatmap.numericalOptions.bucketType);
+          isAvailable = hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
         }
         return {
           available: isAvailable
@@ -157,9 +157,9 @@ module.exports = {
       }
 
       if (optionName === "numberBuckets") {
-        let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = !hasCustomBuckets(item.options.heatmap.numericalOptions.bucketType);
+          isAvailable = !hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
         }
         return {
           available: isAvailable
@@ -167,9 +167,9 @@ module.exports = {
       }
 
       if (optionName === "customColors") {
-        let isAvailable = item.options.heatmap.selectedColumn !== null && item.options.heatmap.selectedColumn !== undefined;
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = item.options.heatmap.numericalOptions.scale === "sequential"
+          isAvailable = item.options.colorColumn.numericalOptions.scale === "sequential"
         }
         return {
           available: isAvailable

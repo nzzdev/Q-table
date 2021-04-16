@@ -1,6 +1,6 @@
 const Joi = require("@hapi/joi");
 const dataHelpers = require("../../helpers/data.js");
-const heatmapHelpers = require("../../helpers/heatmap.js");
+const colorColumnHelpers = require("../../helpers/colorColumn.js");
 
 module.exports = {
     method: "POST",
@@ -21,11 +21,11 @@ module.exports = {
             // removing the header row first
             item.data.table = dataHelpers.getDataWithoutHeaderRow(item.data.table);
 
-            if (item.options.heatmap.bucketType === "custom") {
-                const bucketBorders = heatmapHelpers.getCustomBucketBorders(
-                    item.options.heatmap.customBuckets
+            if (item.options.colorColumn.bucketType === "custom") {
+                const bucketBorders = colorColumnHelpers.getCustomBucketBorders(
+                    item.options.colorColumn.customBuckets
                 );
-                const values = dataHelpers.getNumericalValuesByColumn(item.data.table, item.options.heatmap.selectedColumn);
+                const values = dataHelpers.getNumericalValuesByColumn(item.data.table, item.options.colorColumn.selectedColumn);
                 const numberValues = dataHelpers.getNonNullValues(values);
                 const metaData = dataHelpers.getMetaData(values, numberValues);
 

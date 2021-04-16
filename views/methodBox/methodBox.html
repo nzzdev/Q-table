@@ -2,7 +2,7 @@
     <div class="s-font-title-s">Daten und Methodik</div>
     <div>
         <div class="s-legend-icon-label">
-            {% for bucket in heatmap.legendData.buckets %}
+            {% for bucket in colorColumn.legendData.buckets %}
             {% set bucket_loop = loop %}
                 <div class="s-legend-item-label__item q-table-methods-box-static">
                     {% if bucket.color.customColor %}
@@ -11,7 +11,7 @@
                         <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {{bucket.color.colorClass}}"></div>
                     {% endif %}
                     <div class="s-legend-item-label__item__label s-font-note--tabularnums">
-                        {%- if bucket_loop.index0 === 0 and heatmap.legendData.hasSingleValueBucket -%}
+                        {%- if bucket_loop.index0 === 0 and colorColumn.legendData.hasSingleValueBucket -%}
                             {{bucket.from}} (nur ein Datenpunkt)
                         {%- else -%}
                             {{bucket.from}}–{{bucket.to}}
@@ -21,7 +21,7 @@
             {% endfor %}
         </div>
         <div class="q-table-methods-description s-font-note-s">
-            {{heatmap.methodBox.text}}
+            {{colorColumn.methodBox.text}}
         </div>
     </div>
 {%- else -%}
@@ -33,7 +33,7 @@
     <div class="q-table-methods-container hidden s-font-note-s">
         <div class="q-table-methods-legend">
             <table class="q-table-methods-legend-table s-font-note--tabularnums">
-                {% for bucket in heatmap.legendData.buckets %}
+                {% for bucket in colorColumn.legendData.buckets %}
                 <tr>
                     <td>
                         {% if bucket.color.colorClass %}
@@ -42,7 +42,7 @@
                             <div style="color: {{bucket.color.customColor}}"></div>
                         {%- endif -%}                        
                     </td>
-                    {%- if loop.index0 === 0 and heatmap.legendData.hasSingleValueBucket %}
+                    {%- if loop.index0 === 0 and colorColumn.legendData.hasSingleValueBucket %}
                     <td></td>
                     <td></td>
                     <td>
@@ -63,11 +63,11 @@
                 {% endfor %}
             </table>
         </div>
-        <div class="q-table-methods-description">{{heatmap.methodBox.text}}</div>
-        {%- if heatmap.methodBox.article !== null and heatmap.methodBox.article !== undefined -%}
+        <div class="q-table-methods-description">{{colorColumn.methodBox.text}}</div>
+        {%- if colorColumn.methodBox.article !== null and colorColumn.methodBox.article !== undefined -%}
         <div class="q-table-methods-article-container">
-            <a href={{heatmap.methodBox.article.url}} target="_blank" rel="noopener noreferrer">
-                {{heatmap.methodBox.article.title}}
+            <a href={{colorColumn.methodBox.article.url}} target="_blank" rel="noopener noreferrer">
+                {{colorColumn.methodBox.article.title}}
             </a>
         </div>
         {%- endif -%}

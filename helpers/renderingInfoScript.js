@@ -37,9 +37,9 @@ function getCardLayoutScript(context) {
     renderMinibarsFunction = `renderMinibars${context.id}()`;
   }
 
-  let renderHeatmapNumericalLegendFunction = "";
-  if (context.heatmap && context.heatmap.heatmapType === "numerical") {
-    renderHeatmapNumericalLegendFunction = `renderHeatmapNumericalLegend${context.id}(${dataObject}.width)`;
+  let renderColorColumnNumericalLegendFunction = "";
+  if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+    renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.width)`;
   }
 
   return `
@@ -81,7 +81,7 @@ function getCardLayoutScript(context) {
           ${dataObject}.width = newWidth;
           ${applyCardLayoutClassFunctionName}();
           ${renderMinibarsFunction};
-          ${renderHeatmapNumericalLegendFunction};
+          ${renderColorColumnNumericalLegendFunction};
         }
       });
     }, 250));
@@ -310,13 +310,13 @@ function getSearchFormInputScript(context) {
   `;
 }
 
-function getHeatmapScript(context) {
+function getColorColumnScript(context) {
 
   const dataObject = `window.${context.id}Data`;
   const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;
   const prepareMethodBoxElementsFunctionName = `prepareMethodBoxElements${context.id}`;
   const setVisibilityOfElementsFunctionName = `setVisibilityOfElements${context.id}`;
-  const renderHeatmapNumericalLegendFunctionName = `renderHeatmapNumericalLegend${context.id}`;
+  const renderColorColumnNumericalLegendFunctionName = `renderColorColumnNumericalLegend${context.id}`;
   const addEventListenerToMethodBoxToggleFunctionName = `addEventListenerToMethodBoxToggle${context.id}`;
   const handleClickOnMethodBoxToogleFunctionName = `handleClickOnMethodBoxToogle${context.id}`;
   const addEventListenerToMethodBoxArticleLinkFunctionName = `addEventListenerToMethodBoxArticleLink${context.id}`;
@@ -420,17 +420,17 @@ function getHeatmapScript(context) {
     event.target.dispatchEvent(trackingEvent);
   }
 
-  function ${renderHeatmapNumericalLegendFunctionName}(width) {
-    var legend = ${dataObject}.element.querySelector(".q-table__heatmap-legend--numerical");
-    var legendContainer = ${dataObject}.element.querySelector(".q-table__heatmap-legend-container");
+  function ${renderColorColumnNumericalLegendFunctionName}(width) {
+    var legend = ${dataObject}.element.querySelector(".q-table-colorColumn-legend--numerical");
+    var legendContainer = ${dataObject}.element.querySelector(".q-table-colorColumn-legend-container");
     if (width <= 640) {
-      legend.classList.remove("q-table__heatmap-legend--fullwidth")
-      legendContainer.classList.add("q-table__heatmap-legend-container--desktop"); 
-      legendContainer.classList.remove("q-table__heatmap-legend-container--fullwidth"); 
+      legend.classList.remove("q-table-colorColumn-legend--fullwidth")
+      legendContainer.classList.add("q-table-colorColumn-legend-container--desktop"); 
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--fullwidth"); 
     } else {
-      legend.classList.add("q-table__heatmap-legend--fullwidth")
-      legendContainer.classList.remove("q-table__heatmap-legend-container--desktop"); 
-      legendContainer.classList.add("q-table__heatmap-legend-container--fullwidth"); 
+      legend.classList.add("q-table-colorColumn-legend--fullwidth")
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--desktop"); 
+      legendContainer.classList.add("q-table-colorColumn-legend-container--fullwidth"); 
     }
   }
 
@@ -438,7 +438,7 @@ function getHeatmapScript(context) {
   function ${setupMethodBoxFunctionName}() {
     ${prepareMethodBoxElementsFunctionName}();
     ${setVisibilityOfElementsFunctionName}();
-    ${renderHeatmapNumericalLegendFunctionName}(${dataObject}.element.getBoundingClientRect().width);
+    ${renderColorColumnNumericalLegendFunctionName}(${dataObject}.element.getBoundingClientRect().width);
     ${addEventListenerToMethodBoxToggleFunctionName}();
     ${addEventListenerToMethodBoxArticleLinkFunctionName}();
   }
@@ -455,5 +455,5 @@ module.exports = {
   getShowMoreButtonScript,
   getMinibarsScript,
   getSearchFormInputScript,
-  getHeatmapScript,
+  getColorColumnScript,
 };

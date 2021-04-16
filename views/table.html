@@ -11,7 +11,7 @@
       <input class="q-table__search__input s-input-field" type="search" placeholder="Bitte Suche eingeben" maxlength="20" value="" autocapitalize="off" autocomplete="off" spellcheck="false" aria-label="Suchen">
     </div>
     {%- endif %}
-    {%- if heatmap.selectedColumn !==null and heatmap.selectedColumn !==undefined and not initWithCardLayout -%}
+    {%- if colorColumn.selectedColumn !==null and colorColumn.selectedColumn !==undefined and not initWithCardLayout -%}
       {% include "./legend.html" %}
     {%- endif -%}
     <table class="q-table__table">
@@ -62,7 +62,7 @@
   {%- if footnotes.length > 0 %}
     {% include "./footnotes.html" %}
   {%- endif -%}
-  {%- if heatmap.methodBox !== undefined and heatmap.methodBox !== null -%}
+  {%- if colorColumn.methodBox !== undefined and colorColumn.methodBox !== null -%}
     {% include "./methodBox/methodBox.html" %}
   {%- endif -%}
   {% include "./footer.html" %}

@@ -344,15 +344,15 @@
             }
           }
         },
-        "heatmap": {
-          "title": "Heatmap",
+        "colorColumn": {
+          "title": "Einfärben",
           "type": "object",
           "Q:options": {
             "availabilityChecks": [
               {
                 "type": "ToolEndpoint",
                 "config": {
-                  "endpoint": "option-availability/heatmap",
+                  "endpoint": "option-availability/colorColumn",
                   "fields": [
                     "options",
                     "data"
@@ -377,7 +377,7 @@
                   {
                     "type": "ToolEndpoint",
                     "config": {
-                      "endpoint": "option-availability/selectedColumnHeatmap",
+                      "endpoint": "option-availability/selectedColorColumn",
                       "fields": [
                         "options",
                         "data"
@@ -388,7 +388,7 @@
                 "dynamicSchema": {
                   "type": "ToolEndpoint",
                   "config": {
-                    "endpoint": "dynamic-schema/selectedColumnHeatmap",
+                    "endpoint": "dynamic-schema/selectedColorColumn",
                     "fields": [
                       "options",
                       "data"
@@ -397,8 +397,8 @@
                 }
               }
             },
-            "heatmapType": {
-              "title": "Heatmaptyp",
+            "colorColumnType": {
+              "title": "Einfärbungstyp",
               "type": "string",
               "enum": [
                 "numerical",
@@ -410,7 +410,7 @@
                   {
                     "type": "ToolEndpoint",
                     "config": {
-                      "endpoint": "option-availability/heatmapType",
+                      "endpoint": "option-availability/colorColumnType",
                       "fields": [
                         "options"
                       ]
@@ -425,7 +425,7 @@
               }
             },
             "numericalOptions": {
-              "title": "Optionen numerische Heatmap",
+              "title": "Optionen numerische Einfärbung",
               "type": "object",
               "Q:options": {
                 "availabilityChecks": [
@@ -702,7 +702,7 @@
               }
             },
             "categoricalOptions": {
-              "title": "Optionen kategorische Heatmap",
+              "title": "Optionen kategorische Einfärbung",
               "type": "object",
               "Q:options": {
                 "availabilityChecks": [
