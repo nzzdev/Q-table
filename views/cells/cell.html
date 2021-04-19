@@ -17,9 +17,9 @@
 
   {%- if cell.footnote %}
     {%- if colorColumn.selectedColumn===loop.index0 and colorColumn.selectedColumn !==null and not initWithCardLayout -%}
-      <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation {{ colorColumn.colors[row_loop.index-1].textColor }}">
+      <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation {{ colorColumn.colors[row_loop.index-1].textColor }}">
     {% else %}
-      <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">
+      <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation">
     {%- endif -%}      
   {% else %}
     {%- if colorColumn.selectedColumn===loop.index0 and colorColumn.selectedColumn !==null and not initWithCardLayout -%}

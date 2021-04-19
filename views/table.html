@@ -24,7 +24,7 @@
           colspan="2" id="q-table-minibar-header" {% elif minibar.type==="mixed" and
           item.options.minibar.selectedColumn===loop.index0 %} id="q-table-minibar-header" {% endif %}>
           {%- if head.footnote %}
-          <span data-annotation="{{ head.footnote.value }}" class="q-table-annotation">{{ head.value }}</span>
+          <span data-annotation="{{ head.footnote.value }}" class="q-table-footnote-annotation">{{ head.value }}</span>
           {% else %}
           {{ head.value }}
           {%- endif %}

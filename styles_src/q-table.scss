@@ -155,7 +155,7 @@ td.q-table__cell--numeric {
     left: 0;
   }
 
-  .q-table-col-footnotes-cardlayout-single {
+  .q-table-footnote-column-card-layout--single {
     margin-right: 7px !important;
 
     .q-table-minibar-alignment--negative,
@@ -165,7 +165,7 @@ td.q-table__cell--numeric {
     }
   }
 
-  .q-table-col-footnotes-cardlayout-double {
+  .q-table-footnote-column-card-layout--double {
     margin-right: 14px !important;
 
     .q-table-minibar-alignment--negative,
@@ -277,41 +277,43 @@ tr.q-table-state-visible {
   width: 100%;
 }
 
-.q-table-annotation {
-  position: relative;
-  display: block;
-  width: 100%;
-}
-
-.q-table-annotation::after {
-  content: attr(data-annotation);
-  position: absolute;
-  color: #6e6e7e;
-  margin-left: 1px;
-  margin-top: -5.5px;
-  font-size: 9px;
-}
-
-.q-table-footnote-index {
-  vertical-align: super;
-  font-size: 9px;
-  display: inline-block;
-  width: 5px;
-  margin-right: 3px;
-}
-
-.q-table-col-footnotes {
-  &-single {
-    padding-right: 8px !important;
+.q-table-footnote {
+  &-index {
+    vertical-align: super;
+    font-size: 9px;
+    display: inline-block;
+    margin-right: 4px;
   }
 
-  &-double {
-    padding-right: 16px !important;
+  &-annotation {
+    position: relative;
+    display: block;
+    width: 100%;
   }
-}
 
-.q-table-footer-footnote {
-  margin-top: 4px;
+  &-annotation::after {
+    content: attr(data-annotation);
+    position: absolute;
+    color: #6e6e7e;
+    margin-left: 1px;
+    margin-top: -5.5px;
+    font-size: 9px;
+  }
+
+  &-column {
+
+    &--single {
+      padding-right: 8px !important;
+    }
+  
+    &--double {
+      padding-right: 16px !important;
+    }
+  }
+
+  &-footer {
+    margin-top: 4px;
+  } 
 }
 
 .q-table-methods {

@@ -49,8 +49,8 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
       if (!options.hideTableHeader && index !== 0) {
         row.forEach((cell) => {
           flattenedFootnotes.length >= 10
-            ? cell.classes.push("q-table-col-footnotes-cardlayout-double")
-            : cell.classes.push("q-table-col-footnotes-cardlayout-single");
+            ? cell.classes.push("q-table-footnote-column-card-layout--double")
+            : cell.classes.push("q-table-footnote-column-card-layout--single");
         });
       }
     }
@@ -66,11 +66,11 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
         options.minibar.selectedColumn === footnote.colIndex + 1)) ||
     footnote.colIndex === lastColIndex
   ) {
-    let spacingClass = "q-table-col-footnotes";
+    let spacingClass = "q-table-footnote-column";
     if (amountOfFootnotes >= 10) {
-      spacingClass += "-double";
+      spacingClass += "--double";
     } else {
-      spacingClass += "-single";
+      spacingClass += "--single";
     }
     return spacingClass;
   }

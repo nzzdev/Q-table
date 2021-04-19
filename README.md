@@ -162,7 +162,7 @@ Footnotes are a feature to display annotations in the table and the sources in t
     {
       type: "numeric",
       value: "3",
-      classes: ["q-table-col-footnotes-cardlayout-single"],
+      classes: ["q-table-footnote-col-cardlayout-single"],
       footnote: {
         value: 2,
         unicode: "²",
@@ -175,7 +175,7 @@ Footnotes are a feature to display annotations in the table and the sources in t
 
 ###### Implementation details frontend
 
-- The `value` of the cell will be displayed inside a `span`-element with the class `q-table-annotation`
+- The `value` of the cell will be displayed inside a `span`-element with the class `q-table-footnote-annotation`
 - The `span`-element has the dataset `data-annotation` and the value `cell.footnote.value` applied to it
 - With the `::after` pseudo element, the dataset `data-annotation` will then be applied after the value
 - For the sources of the annotations the `footnotes` array applied to the `context` will be looped and displayed in the footer

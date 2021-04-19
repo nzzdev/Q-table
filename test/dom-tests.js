@@ -542,7 +542,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      "span.q-table-annotation"
+      "span.q-table-footnote-annotation"
     );
 
     let annotationIndexes = [];
@@ -566,7 +566,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footer-footnote"
+      "div.q-table-footnote-footer"
     );
 
     let arrayOfFootnotes = [];
@@ -610,7 +610,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footer-footnote"
+      "div.q-table-footnote-footer"
     );
 
     let arrayOfFootnotes = [];
@@ -642,7 +642,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footer-footnote"
+      "div.q-table-footnote-footer"
     );
 
     let arrayOfFootnotes = [];
@@ -702,7 +702,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      ".q-table-annotation"
+      ".q-table-footnote-annotation"
     );
 
     const footnoteIndexes = dom.window.document.querySelectorAll(
@@ -729,7 +729,7 @@ lab.experiment("footnotes", () => {
 
     elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(12);
     });
@@ -747,7 +747,7 @@ lab.experiment("footnotes", () => {
 
     elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-double"
+      ".q-table-footnote-column--double"
     ).then((value) => {
       expect(value).to.be.equal(12);
     });
@@ -765,7 +765,7 @@ lab.experiment("footnotes", () => {
 
     elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-cardlayout-single"
+      ".q-table-footnote-column-card-layout--single"
     ).then((value) => {
       expect(value).to.be.equal(20);
     });
@@ -783,7 +783,7 @@ lab.experiment("footnotes", () => {
 
     elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(16);
     });
@@ -801,7 +801,7 @@ lab.experiment("footnotes", () => {
 
     elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(16);
     });
@@ -819,7 +819,7 @@ lab.experiment("footnotes", () => {
 
     elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(18);
     });
@@ -869,7 +869,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      "span.q-table-annotation"
+      "span.q-table-footnote-annotation"
     );
     let annotationIndexes = [];
     annotations.forEach((annotation) => {
