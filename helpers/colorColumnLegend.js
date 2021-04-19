@@ -122,9 +122,9 @@ function getEqualBuckets(
 }
 
 function getCustomBuckets(colorColumn, scale, colorOptions) {
-  if (colorColumn.customBuckets !== undefined) {
-    const customBorderValues = colorColumnHelpers.getCustomBucketBorders(
-      colorColumn.customBuckets
+  if (colorColumn.numericalOptions.customBuckets !== undefined) {
+    const customBorderValues = getCustomBucketBorders(
+      colorColumn.numericalOptions.customBuckets
     );
 
     const numberBuckets = customBorderValues.length - 1;
@@ -145,6 +145,13 @@ function getCustomBuckets(colorColumn, scale, colorOptions) {
     });
     return customBuckets;
   }
+}
+
+function getCustomBucketBorders(customBuckets) {
+  const customBorderStrings = customBuckets.split(",");
+  return customBorderStrings.map((borderValue) => {
+    return parseFloat(borderValue.trim());
+  });
 }
 
 function hasSingleValueBucket(legendData) {

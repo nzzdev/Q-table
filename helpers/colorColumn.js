@@ -7,13 +7,6 @@ function hasCustomBuckets(bucketType) {
     return bucketType === "custom";
 }
 
-function getCustomBucketBorders(customBuckets) {
-    const customBorderStrings = customBuckets.split(",");
-    return customBorderStrings.map((borderValue) => {
-        return parseFloat(borderValue.trim());
-    });
-}
-
 function getNumberBuckets(colorColumn) {
     try {
         if (colorColumn.numericalOptions.bucketType !== "custom") {
@@ -78,7 +71,6 @@ function getColorColumnContext(colorColumn, data) {
 
 
 module.exports = {
-    getCustomBucketBorders,
     getNumberBuckets,
     hasCustomBuckets,
     getColorColumnContext,
