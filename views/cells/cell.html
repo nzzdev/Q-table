@@ -15,30 +15,47 @@
     class="q-table__cell q-table__cell--{{ cell.type }} {{cell.classes.join(" ")}}" 
   {% endif %}>
 
-  {%- if cell.footnote %}
-    {%- if colorColumn.selectedColumn===loop.index0 and colorColumn.selectedColumn !==null and not initWithCardLayout -%}
-      <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation {{ colorColumn.colors[row_loop.index-1].textColor }}">
-    {% else %}
-      <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation">
-    {%- endif -%}      
-  {% else %}
-    {%- if colorColumn.selectedColumn===loop.index0 and colorColumn.selectedColumn !==null and not initWithCardLayout -%}
+  {%- if colorColumn.selectedColumn===loop.index0 and colorColumn.selectedColumn !==null %}
+    {%- if cell.footnote -%}
+        <div>
+          <span class="{{ colorColumn.colors[row_loop.index-1].textColor }}">
+            {%- if colorColumn.colorColumnType === "numerical" -%}
+              {%- if colorColumn.formattedValues[row_loop.index0] === null or colorColumn.formattedValues[row_loop.index0] === undefined  -%}
+                --
+              {%- else -%}
+                {{colorColumn.formattedValues[row_loop.index0]}}  
+              {%- endif -%}
+            {%- else -%}
+              {{cell.value}}  
+            {%- endif -%}
+          </span>
+          {%- if cell.footnote.value -%}
+            <span class="q-table-footnote-annotation--colorColumn {{ colorColumn.colors[row_loop.index-1].textColor }}">
+              <sup>{{ cell.footnote.value }}</sup>
+            </span>
+          {%- else -%}
+            <span></span>
+          {%- endif -%}
+        </div>
+    {%- else -%}
       <span class="{{ colorColumn.colors[row_loop.index-1].textColor }}">
+        {%- if colorColumn.colorColumnType === "numerical" -%}
+          {%- if colorColumn.formattedValues[row_loop.index0] === null or colorColumn.formattedValues[row_loop.index0] === undefined  -%}
+            --
+          {%- else -%}
+            {{colorColumn.formattedValues[row_loop.index0]}}  
+          {%- endif -%}
+        {%- else -%}
+          {{cell.value}}  
+        {%- endif -%}
+      </span>
+    {%- endif -%}    
+  {%- else -%}
+    {%- if cell.footnote %}
+      <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation">
     {% else %}
       <span>
-    {%- endif -%}      
-  {%- endif -%}
-  {%- if colorColumn.selectedColumn===loop.index0 and colorColumn.selectedColumn !==null %}
-    {%- if colorColumn.colorColumnType === "numerical" -%}
-      {%- if colorColumn.formattedValues[row_loop.index0] === null or colorColumn.formattedValues[row_loop.index0] === undefined  -%}
-        --
-      {%- else -%}
-        {{colorColumn.formattedValues[row_loop.index0]}}  
-      {%- endif -%}    
-    {%- else -%}  
-      {{cell.value}}  
-    {%- endif -%}  
-  {%- else -%}
+    {%- endif -%}    
     {{ cell.value }}</span>
   {%- endif -%}
 </td>

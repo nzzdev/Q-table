@@ -280,7 +280,6 @@ tr.q-table-state-visible {
 .q-table-footnote {
   &-index {
     vertical-align: super;
-    font-size: 9px;
     display: inline-block;
     margin-right: 4px;
   }
@@ -289,6 +288,18 @@ tr.q-table-state-visible {
     position: relative;
     display: block;
     width: 100%;
+
+    &--colorColumn {
+      position: absolute; 
+      font-size: 11px; 
+      margin-top: -5.5px; 
+      margin-left: 1px;
+
+      sup {
+        color: currentColor; 
+        opacity: 0.6;
+      }
+    }
   }
 
   &-annotation::after {
