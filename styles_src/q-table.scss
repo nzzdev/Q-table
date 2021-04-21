@@ -297,7 +297,7 @@ tr.q-table-state-visible {
 
       sup {
         color: currentColor; 
-        opacity: 0.6;
+        opacity: 0.65;
       }
     }
   }
@@ -328,9 +328,12 @@ tr.q-table-state-visible {
 }
 
 .q-table-methods {
+  &--no-interaction {
+    margin-top: 12px;
+  }
+
   &-link {
     margin-top: 8px;
-
     display: flex;
     cursor: pointer;
     text-decoration: underline;

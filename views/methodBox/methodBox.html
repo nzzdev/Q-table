@@ -1,27 +1,29 @@
 {%- if noInteraction-%}
-    <div class="s-font-title-s">Daten und Methodik</div>
-    <div>
-        <div class="s-legend-icon-label">
-            {% for bucket in colorColumn.legendData.buckets %}
-            {% set bucket_loop = loop %}
-                <div class="s-legend-item-label__item q-table-methods-box-static">
-                    {% if bucket.color.customColor %}
-                        <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default" style="color: {{bucket.color.customColor}}"></div>
-                    {% else %}
-                        <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {{bucket.color.colorClass}}"></div>
-                    {% endif %}
-                    <div class="s-legend-item-label__item__label s-font-note--tabularnums">
-                        {%- if bucket_loop.index0 === 0 and colorColumn.legendData.hasSingleValueBucket -%}
-                            {{bucket.from}} (nur ein Datenpunkt)
-                        {%- else -%}
-                            {{bucket.from}}–{{bucket.to}}
-                        {%- endif -%}
+    <div class="q-table-methods--no-interaction">
+        <div class="s-font-title-s">Daten und Methodik</div>
+        <div>
+            <div class="s-legend-icon-label">
+                {% for bucket in colorColumn.legendData.buckets %}
+                {% set bucket_loop = loop %}
+                    <div class="s-legend-item-label__item q-table-methods-box-static">
+                        {% if bucket.color.customColor %}
+                            <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default" style="color: {{bucket.color.customColor}}"></div>
+                        {% else %}
+                            <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {{bucket.color.colorClass}}"></div>
+                        {% endif %}
+                        <div class="s-legend-item-label__item__label s-font-note--tabularnums">
+                            {%- if bucket_loop.index0 === 0 and colorColumn.legendData.hasSingleValueBucket -%}
+                                {{bucket.from}} (nur ein Datenpunkt)
+                            {%- else -%}
+                                {{bucket.from}}–{{bucket.to}}
+                            {%- endif -%}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="q-table-methods-description s-font-note-s">
-            {{colorColumn.methodBox.text}}
+                {% endfor %}
+            </div>
+            <div class="q-table-methods-description s-font-note-s">
+                {{colorColumn.methodBox.text}}
+            </div>
         </div>
     </div>
 {%- else -%}
