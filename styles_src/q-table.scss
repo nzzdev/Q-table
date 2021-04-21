@@ -461,16 +461,17 @@ tr.q-table-state-visible {
       display: flex;
       flex-direction: column;
 
-      &--desktop {
-        width: 100%;
+      &--fullwidth {
+        align-items: center;
       }
 
-      &--fullwidth {
-        width: 640px;
+      &--desktop {
+        width: 100%;
       }
     }
 
     &-border-container {
+      width: 100%;
       position: relative;
     }
   
@@ -518,14 +519,13 @@ tr.q-table-state-visible {
 
     &--numerical {
       display: flex;
-      justify-content: flex-start;
       flex-direction: column;
       margin-bottom: 12px;
       padding: 0 1px;
     }
 
     &--fullwidth {
-      justify-content: center;
+      width: 640px;
     }
 
     &--categorical {
