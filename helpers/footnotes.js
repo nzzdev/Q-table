@@ -67,7 +67,7 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
   if (
     (type === "numeric" &&
       (options.minibar.selectedColumn === footnote.colIndex ||
-        options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex)
+        options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)
   ) {
     let spacingClass = "q-table-footnote-column";
     if (amountOfFootnotes >= 10) {

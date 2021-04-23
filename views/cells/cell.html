@@ -17,26 +17,22 @@
 
   {%- if colorColumn.selectedColumn===loop.index0 and colorColumn.selectedColumn !==null %}
     {%- if cell.footnote -%}
-        <div>
-          <span class="{{ colorColumn.colors[row_loop.index-1].textColor }}">
-            {%- if colorColumn.colorColumnType === "numerical" -%}
-              {%- if colorColumn.formattedValues[row_loop.index0] === null or colorColumn.formattedValues[row_loop.index0] === undefined  -%}
-                --
-              {%- else -%}
-                {{colorColumn.formattedValues[row_loop.index0]}}  
-              {%- endif -%}
+        <span class="{{ colorColumn.colors[row_loop.index-1].textColor }}">
+          {%- if colorColumn.colorColumnType === "numerical" -%}
+            {%- if colorColumn.formattedValues[row_loop.index0] === null or colorColumn.formattedValues[row_loop.index0] === undefined  -%}
+              --
             {%- else -%}
-              {{cell.value}}  
+              {{colorColumn.formattedValues[row_loop.index0]}}  
             {%- endif -%}
-          </span>
-          {%- if cell.footnote.value -%}
-            <span class="q-table-footnote-annotation--colorColumn {{ colorColumn.colors[row_loop.index-1].textColor }}">
-              <sup>{{ cell.footnote.value }}</sup>
-            </span>
           {%- else -%}
-            <span></span>
+            {{cell.value}}  
           {%- endif -%}
-        </div>
+        </span>
+        {%- if cell.footnote.value -%}
+          <span class="q-table-footnote-annotation--colorColumn {{ colorColumn.colors[row_loop.index-1].textColor }}">
+            <sup>{{ cell.footnote.value }}</sup>
+          </span>
+        {%- endif -%}
     {%- else -%}
       <span class="{{ colorColumn.colors[row_loop.index-1].textColor }}">
         {%- if colorColumn.colorColumnType === "numerical" -%}
