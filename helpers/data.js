@@ -160,12 +160,14 @@ function getNonNullValues(values) {
   return values.filter((value) => value !== null);
 }
 
-function getMetaData(values, numberValues) {
+function getMetaData(values, numberValues, maxDigitsAfterComma) {
   return {
     hasNullValues: values.find((value) => value === null) !== undefined,
     hasZeroValues: numberValues.find((value) => value === 0) !== undefined,
     maxValue: Math.max(...numberValues),
-    minValue: Math.min(...numberValues)
+    minValue: Math.min(...numberValues),
+    averageValue: getRoundedAverage(numberValues, maxDigitsAfterComma),
+    medianValue: getRoundedMedian(numberValues, maxDigitsAfterComma),
   };
 }
 
@@ -269,6 +271,38 @@ function getFormattedValueForBuckets(formattingOptions, value) {
   return getFormattedValue({}, value);
 }
 
+function getMedian(values) {
+  let middleIndex = Math.floor(values.length / 2);
+  let sortedNumbers = [...values].sort((a, b) => a - b);
+  if (values.length % 2 !== 0) {
+    return sortedNumbers[middleIndex];
+  }
+  return (sortedNumbers[middleIndex - 1] + sortedNumbers[middleIndex]) / 2;
+}
+
+function getRoundedMedian(values, maxDigitsAfterComma) {
+  const medianValue = getMedian(values);
+  return getRoundedValue(medianValue, maxDigitsAfterComma);
+}
+
+function getAverage(values) {
+  return values.reduce((a, b) => a + b, 0) / values.length;
+}
+
+function getRoundedAverage(values, maxDigitsAfterComma) {
+  const averageValue = getAverage(values);
+  return getRoundedValue(averageValue, maxDigitsAfterComma);
+}
+
+function getRoundedValue(value, maxDigitsAfterComma) {
+  let roundingFactor = 100; // default: round to two digits after comma
+  // if data contains more precise float numbers we extend each value to max number of digits after comma
+  if (maxDigitsAfterComma !== undefined && maxDigitsAfterComma > 2) {
+    roundingFactor = Math.pow(10, maxDigitsAfterComma);
+  }
+  return Math.round(value * roundingFactor) / roundingFactor;
+}
+
 
 module.exports = {
   getTableData: getTableData,
@@ -285,4 +319,5 @@ module.exports = {
   getMaxDigitsAfterCommaInDataByRow,
   getFormattedValue,
   getFormattedValueForBuckets,
+  getRoundedValue,
 };

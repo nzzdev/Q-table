@@ -314,15 +314,15 @@ The scale can be chosen from between two types:
 - `sequential`
 - `diverging`
 
+###### Custom Color
+
+When having the expert-role added, the user is able to adjust the colors of the buckets. 
+
 When selecting the `diverging`-option, the options from which border it will be spilt are dynamically listed too. 
 
 ##### Categorical
 
-When selecting the cateo option, the 
-
-
-
-
+When selecting the categorical option, the values of the column will be mapped to categories. The categories will then be colored according to the color-scale. 
 
 ##### Legend 
 

@@ -435,6 +435,10 @@ tr.q-table-state-visible {
     height: 32px;
     width: 100%;
 
+    &-marker {
+      width: 100%;
+    }
+
     &-info {
       &--single-bucket {
         margin-right: 16px;

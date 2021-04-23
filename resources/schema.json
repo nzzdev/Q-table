@@ -441,6 +441,23 @@
                 ]
               },
               "properties": {
+                "labelLegend": {
+                  "title": "Mittelwert-Markierung",
+                  "type": "string",
+                  "default": "noLabel",
+                  "enum": [
+                    "noLabel",
+                    "average",
+                    "median"
+                  ],
+                  "Q:options": {
+                    "enum_titles": [
+                      "ausblenden",
+                      "zeigt Durchschnitt an",
+                      "zeigt Median an"
+                    ]
+                  }
+                },
                 "bucketType": {
                   "title": "Bucketing Methode",
                   "type": "string",

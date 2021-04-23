@@ -5,12 +5,20 @@ const simpleStatistics = require("simple-statistics");
 const ckmeans = simpleStatistics.ckmeans;
 const quantile = simpleStatistics.quantile;
 
+const widthConfig = {
+  legendSmall: 640,  // pixel
+  legendLarge: 100, // percent
+  average: 100,
+  median: 60
+}
+
 function getBucketsForLegend(
   filteredValues,
   colorColumn,
   minValue,
   maxValue,
-  customColorMap
+  customColorMap,
+  maxDigitsAfterComma
 ) {
   const bucketType = colorColumn.numericalOptions.bucketType;
   const numberBuckets = colorColumn.numericalOptions.numberBuckets;
@@ -41,7 +49,8 @@ function getBucketsForLegend(
       minValue,
       maxValue,
       scale,
-      colorOptions
+      colorOptions,
+      maxDigitsAfterComma
     );
   } else if (bucketType === "custom") {
     return getCustomBuckets(colorColumn, scale, colorOptions);
@@ -104,14 +113,22 @@ function getEqualBuckets(
   minValue,
   maxValue,
   scale,
-  colorOptions
+  colorOptions,
+  maxDigitsAfterComma
 ) {
+
   const portion = 1 / numberBuckets;
   const range = maxValue - minValue;
   let equalBuckets = [];
   for (let i = 0; i < numberBuckets; i++) {
     let from = i === 0 ? minValue : minValue + range * portion * i;
     let to = minValue + range * portion * (i + 1);
+
+    // round numbers
+    const roundingFactor = Math.pow(10, maxDigitsAfterComma);
+    from = Math.round(from * roundingFactor) / roundingFactor;
+    to = Math.round(to * roundingFactor) / roundingFactor;
+
     equalBuckets.push({
       from,
       to,
@@ -159,13 +176,14 @@ function hasSingleValueBucket(legendData) {
   return firstBucket.from === firstBucket.to;
 }
 
-function getNumericalLegend(data, colorColumn) {
+function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
   const customColorMap = colorHelpers.getCustomColorMap(colorColumn.numericalOptions.colorOverwrites);
   const values = dataHelpers.getNumericalValuesByColumn(data, colorColumn.selectedColumn);
   const nonNullValues = dataHelpers.getNonNullValues(values);
   const metaData = dataHelpers.getMetaData(
     values,
-    nonNullValues
+    nonNullValues,
+    maxDigitsAfterComma
   );
 
   const legendData = {
@@ -178,8 +196,12 @@ function getNumericalLegend(data, colorColumn) {
     colorColumn,
     legendData.minValue,
     legendData.maxValue,
-    customColorMap
+    customColorMap,
+    maxDigitsAfterComma
   );
+
+  legendData.labelLegend = getLabelLegend(legendData, maxDigitsAfterComma);
+  legendData.labelLegend.descriptionAlignment = getDescriptionAlignment(legendData.labelLegend, width, maxDigitsAfterComma)
 
   legendData.hasSingleValueBucket = hasSingleValueBucket(legendData);
 
@@ -225,7 +247,51 @@ function getCategoricalLegend(data, colorColumn) {
   return legendData;
 }
 
+function getLabelLegend(legendData, maxDigitsAfterComma) {
+  const range = legendData.maxValue - legendData.minValue;
+  if (legendData.labelLegend === "median") {
+    return {
+      id: "median",
+      label: "Median",
+      value: dataHelpers.getRoundedValue(legendData.medianValue, maxDigitsAfterComma),
+      position: ((legendData.medianValue - legendData.minValue) * 100) / range
+    };
+  } else if (legendData.labelLegend === "noLabel") {
+    return { label: "noLabel" };
+  }
+  return {
+    id: "average",
+    label: "Durchschnitt",
+    value: legendData.averageValue,
+    position: ((legendData.averageValue - legendData.minValue) * 100) / range
+  };
+}
 
+function getAvailableSpaceForLabel(labelLegend, contentWidth) {
+  let legendPixelWidth;
+  if (contentWidth > 640) {
+    legendPixelWidth = widthConfig.legendSmall;
+  } else {
+    legendPixelWidth = (contentWidth * widthConfig.legendLarge) / 100;
+  }
+  return (legendPixelWidth * (100 - labelLegend.position)) / 100;
+}
+
+function getDescriptionAlignment(labelLegend, contentWidth, maxDigitsAfterComma) {
+  const availableSpaceForLabel = getAvailableSpaceForLabel(labelLegend, contentWidth);
+  const valueLength = getValueLength(labelLegend.value, maxDigitsAfterComma);
+  const approxLabelWidth = widthConfig[labelLegend.id] + valueLength * 8;
+
+  if (availableSpaceForLabel < approxLabelWidth) {
+    return "text-align: right;";
+  }
+
+  return `margin-left: ${labelLegend.position}%`;
+}
+
+function getValueLength(value, maxDigitsAfterComma) {
+  return value.toFixed(0).length + maxDigitsAfterComma;
+}
 
 module.exports = {
   getNumericalLegend,

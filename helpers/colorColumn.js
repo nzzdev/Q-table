@@ -22,15 +22,11 @@ function getNumberBuckets(colorColumn) {
     }
 }
 
-function getColorColumnContext(colorColumn, data) {
+function getColorColumnContext(colorColumn, data, width) {
     let colorColumnContext = {};
     if (colorColumn !== null && colorColumn !== undefined && colorColumn.selectedColumn !== null && colorColumn.selectedColumn !== undefined) {
         let colors = [];
         if (colorColumn.colorColumnType === "numerical") {
-            colorColumnContext.legendData = legendHelpers.getNumericalLegend(
-                data,
-                colorColumn
-            );
 
             let formattingOptions = {
                 maxDigitsAfterComma: dataHelpers.getMaxDigitsAfterCommaInDataByRow(
@@ -38,6 +34,13 @@ function getColorColumnContext(colorColumn, data) {
                 ),
                 roundingBucketBorders: colorColumn.numericalOptions.bucketType !== "custom"
             };
+
+            colorColumnContext.legendData = legendHelpers.getNumericalLegend(
+                data,
+                colorColumn,
+                formattingOptions.maxDigitsAfterComma,
+                width
+            );
 
             colorColumnContext.methodBox = methodBoxHelpers.getMethodBoxInfo(
                 colorColumn.numericalOptions.bucketType

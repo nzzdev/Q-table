@@ -97,6 +97,8 @@ module.exports = {
       payload: { item: item },
     });
 
+    let width = getExactPixelWidth(request.payload.toolRuntimeConfig);
+
     const context = {
       item: item,
       tableData: dataHelpers.getTableData(
@@ -109,7 +111,7 @@ module.exports = {
         : {},
       footnotes: footnotes,
       colorColumn: colorColumnAvailable.result.available
-        ? colorColumnHelpers.getColorColumnContext(item.options.colorColumn, dataWithoutHeaderRow)
+        ? colorColumnHelpers.getColorColumnContext(item.options.colorColumn, dataWithoutHeaderRow, width)
         : {},
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
@@ -117,7 +119,7 @@ module.exports = {
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
       )}`.replace(/-/g, ""),
-      width: getExactPixelWidth(request.payload.toolRuntimeConfig),
+      width,
     };
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
