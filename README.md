@@ -179,6 +179,7 @@ Footnotes are a feature to display annotations in the table and the sources in t
 - The `span`-element has the dataset `data-annotation` and the value `cell.footnote.value` applied to it
 - With the `::after` pseudo element, the dataset `data-annotation` will then be applied after the value
 - For the sources of the annotations the `footnotes` array applied to the `context` will be looped and displayed in the footer
+- If the option `colorColumn` is selected, the footnote will be dispalyed in a seperate element and the color of the footnote will be set to `opacity: 0.65`
 
 [to the top](#table-of-contents)
 ### Options
@@ -343,6 +344,42 @@ buckets = [
 If there's the case that one of the bucket has just a single value in it, the single bucket will be displayed below with a seperate icon. If there is an entry without a value, there will be an extra icon too, for displaying 'no data'.
 
 The categorical legend will simply map the values to their colors.
+
+###### Implementation details serverside
+
+
+- Just like the feature minibars, the `option-availability` route will check if there are at least 3 columns to display this option\
+- If the option is selected, through the `dynamic-schema` route, depending on which `colorColumnType` is selected, will display specific options
+- **Important**: The function `getColorColumnContext()` will always return an object, when minibars aren't used the object is empty
+- The function `getColorColumnContext()` uses three parameters: `colorColumn`(option), `data`(data from table) and `width`(content-width)
+- If the option is selected, the function `getColorColumnContext()` will always return this object
+```javascript
+{
+  categoricalOptions, // object
+  colorColumnType, // string
+  colors, // array
+  legendData, // object
+  numericalOptions, // object
+  selectedColumn, // number
+}
+```
+
+- Depedning on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added 
+- **Important**: The properties `categoricalOptions` and `numericalOptions` will always be an object, even if not selected
+- If selecting the `colorColumnType` `numerical`, the following properties will be added 
+```javascript
+{
+  methodBox, // object
+  formattedValue, // array 
+}
+```
+
+###### Implementation details frontend
+
+- Either `numerical` or `categorical`, both table-cells will be colored with the referece to the `colors` array
+- The legend will be displayed 100% on `desktop` and `mobile`, on `fullwidth` it will be displayed `640px` (size of the text in article)
+- When resizing the graphic, the `EventLister` on the event `resize` implemented in the `renderColorColumnNumericalLegend()` will be triggered
+- The legend will then be resized according to the `width`
 
 #### Display options
 
