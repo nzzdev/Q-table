@@ -130,7 +130,7 @@ function getMaxItemsCategorical(data) {
 function getColorOverwriteEnumAndTitlesNumerical(colorColumn) {
   try {
     let enumValues = [null];
-    const numberItems = getNumberBuckets(colorColumn.numericalOption);
+    const numberItems = colorColumnHelpers.getNumberBuckets(colorColumn);
     for (let index = 0; index < numberItems; index++) {
       enumValues.push(index + 1);
     }

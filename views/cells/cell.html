@@ -19,7 +19,6 @@
     {%- if cell.footnote -%}
         <div>
           <span class="{{ colorColumn.colors[row_loop.index-1].textColor }}">
-            {{colorColumn.colors[row_loop.index0].customColor}}
             {%- if colorColumn.colorColumnType === "numerical" -%}
               {%- if colorColumn.formattedValues[row_loop.index0] === null or colorColumn.formattedValues[row_loop.index0] === undefined  -%}
                 --
