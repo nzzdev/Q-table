@@ -38,9 +38,14 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/table-search-hidden.json`),
   require(`${fixtureDataDirectory}/table-search-show.json`),
   require(`${fixtureDataDirectory}/table-search-with-multiple-columns.json`),
-  require(`${fixtureDataDirectory}/heatmap-categorical.json`),
-  require(`${fixtureDataDirectory}/heatmap-numerical.json`),
-  require(`${fixtureDataDirectory}/heatmap-single-value-bucket.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical-no-label.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical-footnotes.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical-custom-color.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical-footnotes.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical-custom-order.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical-custom-colors.json`),
 ];
 
 module.exports = {
