@@ -188,6 +188,7 @@ function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
 
   const legendData = {
     type: "numerical",
+    labelLegend: colorColumn.numericalOptions.labelLegend, // label average or median value or no label
     ...metaData,
   };
 
@@ -201,7 +202,9 @@ function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
   );
 
   legendData.labelLegend = getLabelLegend(legendData, maxDigitsAfterComma);
-  legendData.labelLegend.descriptionAlignment = getDescriptionAlignment(legendData.labelLegend, width, maxDigitsAfterComma)
+  if (legendData.labelLegend.value) {
+    legendData.labelLegend.descriptionAlignment = getDescriptionAlignment(legendData.labelLegend, width, maxDigitsAfterComma)
+  }
 
   legendData.hasSingleValueBucket = hasSingleValueBucket(legendData);
 
