@@ -929,7 +929,6 @@ lab.experiment("footnotes", () => {
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
-
   })
 });
 
@@ -985,3 +984,202 @@ lab.experiment("table search", () => {
     );
   })
 });
+
+lab.experiment("color column", () => {
+  it("displays the numerical legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend--numerical"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("displays the correct amount of buckets", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend .q-table-colorColumn-legend-bucket"
+    ).then((value) => {
+      expect(value).to.be.equal(5);
+    });
+  })
+
+  it("displays label legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-marker"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("doesnt display label legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-label.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-marker"
+    ).then((value) => {
+      expect(value).to.be.equal(0);
+    });
+  })
+
+  it("displays no-data in legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-data.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-info--no-data"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("doesn't displays no-data in legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-label.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-info--no-data"
+    ).then((value) => {
+      expect(value).to.be.equal(0);
+    });
+  })
+
+  it("displays single-bucket in legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-data.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-info--single-bucket"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("displays the categorical legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend--categorical"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("displays buckets in custonm color (numerical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-custom-colors.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    element(response.result.markup, ".q-table-colorColumn-legend-info--single-bucket .q-table-colorColumn-legend-bucket").then(
+      (elem) => {
+        expect(elem.style["color"]).to.be.equal("yellow");
+      }
+    );
+  })
+
+  it("displays buckets in custonm order (categorical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical-custom-order.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elements(response.result.markup, ".q-table-colorColumn-legend--categorical .s-legend-item-label__item__label").then(
+      (elements) => {
+        expect(elements[0].innerHTML).to.be.equal("Test1");
+        expect(elements[1].innerHTML).to.be.equal("Test2");
+      }
+    );
+  })
+
+  it("displays buckets in custonm color (categorical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical-custom-colors.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elements(response.result.markup, ".q-table-colorColumn-legend--categorical .s-legend-item-label__item").then(
+      (elements) => {
+        expect(elements[0].style["color"]).to.be.equal("pink");
+        expect(elements[1].style["color"]).to.be.equal("lightblue");
+      }
+    );
+  })
+})
