@@ -879,6 +879,58 @@ lab.experiment("footnotes", () => {
     expect(annotationIndexes).to.be.equal(["1"]);
     expect(response.statusCode).to.be.equal(200);
   });
+
+  it("displays the footnote when the table has colorColumn (numerical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-footnotes.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-column--single"
+    ).then((value) => {
+      expect(value).to.be.equal(7);
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-annotation--colorColumn"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+
+  })
+
+  it("displays the footnote when the table has colorColumn (categorical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical-footnotes.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-column--single"
+    ).then((value) => {
+      expect(value).to.be.equal(7);
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-annotation--colorColumn"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+
+  })
 });
 
 lab.experiment("table search", () => {
