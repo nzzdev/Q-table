@@ -133,7 +133,7 @@ function getShowMoreButtonScript(context) {
       ${dataObject}.showMoreButtonElement.classList.add('s-button--secondary');
       ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button');
       ${dataObject}.showMoreButtonElement.setAttribute('type', 'button');
-      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer")); //todo: appendChild because there is a new element between footer and table (methodbox)
+      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer"));
 
       ${dataObject}.showMoreButtonElement.addEventListener('click', function(event) {
         if (${dataObject}.rowVisibilityState === 'hidden') {
