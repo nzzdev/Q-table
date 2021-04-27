@@ -120,7 +120,7 @@ lab.experiment("migration endpoint", () => {
 });
 
 lab.experiment("option availability endpoint", () => {
-  it("returns true for option availability of selectedColumn", async () => {
+  it("returns true for option availability of minibar selectedColumn", async () => {
     const request = {
       method: "POST",
       url: "/option-availability/selectedColumnMinibar",
@@ -132,7 +132,7 @@ lab.experiment("option availability endpoint", () => {
     expect(response.result.available).to.be.equal(true);
   });
 
-  it("returns false for option availability of selectedColumn", async () => {
+  it("returns false for option availability of minibar selectedColumn", async () => {
     const request = {
       method: "POST",
       url: "/option-availability/selectedColumnMinibar",
@@ -143,10 +143,34 @@ lab.experiment("option availability endpoint", () => {
     const response = await server.inject(request);
     expect(response.result.available).to.be.equal(false);
   });
+
+  it("returns true for option availability of colorColumn selectedColumn", async () => {
+    const request = {
+      method: "POST",
+      url: "/option-availability/selectedColorColumn",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+      },
+    };
+    const response = await server.inject(request);
+    expect(response.result.available).to.be.equal(true);
+  });
+
+  it("returns false for option availability of colorColumn selectedColumn", async () => {
+    const request = {
+      method: "POST",
+      url: "/option-availability/selectedColorColumn",
+      payload: {
+        item: require("../resources/fixtures/data/two-column.json"),
+      },
+    };
+    const response = await server.inject(request);
+    expect(response.result.available).to.be.equal(false);
+  });
 });
 
 lab.experiment("dynamic schema endpoint", () => {
-  it("returns enums of selectedColumn", async () => {
+  it("returns enums of minibar selectedColumn", async () => {
     const request = {
       method: "POST",
       url: "/dynamic-schema/selectedColumnMinibar",
@@ -161,6 +185,25 @@ lab.experiment("dynamic schema endpoint", () => {
       "2016",
       "2017",
       "+/- %",
+    ]);
+  });
+
+  it("returns enums of colorColumn selectedColumn", async () => {
+    const request = {
+      method: "POST",
+      url: "/dynamic-schema/selectedColorColumn",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+      },
+    };
+    const response = await server.inject(request);
+    expect(response.result.enum).to.be.equal([null, 0, 1, 2, 3]);
+    expect(response.result["Q:options"].enum_titles).to.be.equal([
+      "keine",
+      "String",
+      "Number",
+      "Number",
+      "String",
     ]);
   });
 });
