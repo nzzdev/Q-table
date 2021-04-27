@@ -112,13 +112,13 @@ function getMaxItemsNumerical(colorColumn) {
   };
 }
 
-function getMaxItemsCategorical(data) {
+function getMaxItemsCategorical(data, colorColumn) {
   try {
     // removing the header row first
     data = dataHelpers.getDataWithoutHeaderRow(data);
 
     return {
-      maxItems: dataHelpers.getUniqueCategoriesCount(data),
+      maxItems: dataHelpers.getUniqueCategoriesCount(data, colorColumn),
     };
   } catch {
     return {
@@ -225,7 +225,7 @@ module.exports = {
       if (item.options.colorColumn.colorColumnType === "numerical") {
         return getMaxItemsNumerical(item.options.colorColumn);
       } else {
-        return getMaxItemsCategorical(item.data.table);
+        return getMaxItemsCategorical(item.data.table, item.options.colorColumn);
       }
     }
 
@@ -240,7 +240,7 @@ module.exports = {
     }
 
     if (optionName === "customCategoriesOrder") {
-      return getMaxItemsCategorical(item.data);
+      return getMaxItemsCategorical(item.data, item.options.colorColumn);
     }
 
     if (optionName === "customCategoriesOrderItem") {

@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const colorColumnHelpers = require("../../helpers/colorColumn.js");
+const dataHelpers = require("../../helpers/data.js");
 
 module.exports = {
     method: "POST",
@@ -18,15 +18,15 @@ module.exports = {
         try {
             const item = request.payload.item;
             // removing the header row first
-            item.data.table = colorColumnHelpers.getDataWithoutHeaderRow(item.data.table);
+            item.data.table = dataHelpers.getDataWithoutHeaderRow(item.data.table);
 
             if (
                 item.options.bucketType !== "custom"
             ) {
-                const numberUniqueValues = colorColumnHelpers.getUniqueCategoriesCount(
-                    item.data.table
+                const numberUniqueValues = dataHelpers.getUniqueCategoriesCount(
+                    item.data.table, item.options.colorColumn
                 );
-                const numberBuckets = item.options.numberBuckets;
+                const numberBuckets = item.options.colorColumn.numericalOptions.numberBuckets;
 
                 if (numberBuckets > numberUniqueValues) {
                     return {

@@ -175,8 +175,8 @@ function getDataWithoutHeaderRow(data) {
   return data.slice(1);
 }
 
-function getUniqueCategoriesCount(data) {
-  return getUniqueCategoriesObject(data).categories.length;
+function getUniqueCategoriesCount(data, colorColumn) {
+  return getUniqueCategoriesObject(data, colorColumn).categories.length;
 }
 
 function getUniqueCategoriesObject(data, colorColumn) {

@@ -864,7 +864,8 @@
                       "config": {
                         "endpoint": "dynamic-schema/customCategoriesOrder",
                         "fields": [
-                          "data"
+                          "data",
+                          "options"
                         ]
                       }
                     },
