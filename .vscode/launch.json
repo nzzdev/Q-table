@@ -14,9 +14,16 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "run 2e2 test",
+      "name": "run e2e test",
       "program": "${workspaceFolder}/test/e2e-tests.js",
       "runtimeVersion": "12.17.0",
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "run dom test",
+      "program": "${workspaceFolder}/test/dom-tests.js",
+      "runtimeVersion": "12.17.0",
+    },
   ]
 }
