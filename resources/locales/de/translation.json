@@ -14,7 +14,7 @@
         },
         "numberBucketsOutOfColorScale": {
             "title": "Farbskala",
-            "body": "Die Anzahl Buckets ist höher als wir mit unseren Farbskalen abdecken können"
+            "body": "Die Anzahl Buckets ist höher als mit den Farbskalen abgedeckt werden kann."
         }
     }
 }
