@@ -376,7 +376,7 @@ The categorical legend will simply map the values to their colors.
 
 ###### Implementation details frontend
 
-- Either `numerical` or `categorical`, both table-cells will be colored with the referece to the `colors` array
+- Either `numerical` or `categorical`, both table-cells will be colored with the reference to the `colors` array
 - The legend will be displayed 100% on `desktop` and `mobile`, on `fullwidth` it will be displayed `640px` (size of the text in article)
 - When resizing the graphic, the `EventLister` on the event `resize` implemented in the `renderColorColumnNumericalLegend()` will be triggered
 - The legend will then be resized according to the `width`
