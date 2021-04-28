@@ -48,12 +48,11 @@ function getColorColumnContext(colorColumn, data, width) {
 
             let valuesByColumn = dataHelpers.getNumericalValuesByColumn(data, colorColumn.selectedColumn);
             colorColumnContext.formattedValues = [];
-            colorColumnContext.methodBox.formattedValues = [];
+            colorColumnContext.methodBox.formattedBuckets = dataHelpers.getFormattedBuckets(formattingOptions, colorColumnContext.legendData.buckets);
             valuesByColumn.map(value => {
                 let color = colorHelpers.getColor(value, colorColumnContext.legendData);
                 colors = [...colors, color];
                 colorColumnContext.formattedValues = [...colorColumnContext.formattedValues, dataHelpers.getFormattedValue(formattingOptions, value)];
-                colorColumnContext.methodBox.formattedValues = [...colorColumnContext.methodBox.formattedValues, dataHelpers.getFormattedValueForBuckets(formattingOptions, value)];
             })
         } else {
             colorColumnContext.legendData = legendHelpers.getCategoricalLegend(

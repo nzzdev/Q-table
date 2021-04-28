@@ -264,11 +264,23 @@ function getFormattedValue(formattingOptions, value) {
   }
 }
 
-function getFormattedValueForBuckets(formattingOptions, value) {
-  if (formattingOptions.roundingBucketBorders) {
-    return getFormattedValue(formattingOptions, value);
-  }
-  return getFormattedValue({}, value);
+function getFormattedBuckets(formattingOptions, buckets) {
+  return buckets.map(bucket => {
+    let { from, to, color } = bucket;
+
+    if (formattingOptions.roundingBucketBorders) {
+      return {
+        from: getFormattedValue(formattingOptions, from),
+        to: getFormattedValue(formattingOptions, to),
+        color,
+      };
+    }
+    return {
+      from: getFormattedValue({}, from),
+      to: getFormattedValue({}, to),
+      color
+    };
+  })
 }
 
 function getMedian(values) {
@@ -318,6 +330,6 @@ module.exports = {
   getUniqueCategoriesObject,
   getMaxDigitsAfterCommaInDataByRow,
   getFormattedValue,
-  getFormattedValueForBuckets,
+  getFormattedBuckets,
   getRoundedValue,
 };

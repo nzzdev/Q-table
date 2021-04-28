@@ -3,7 +3,7 @@
         <div class="s-font-title-s">Daten und Methodik</div>
         <div>
             <div class="s-legend-icon-label">
-                {% for bucket in colorColumn.legendData.buckets %}
+                {% for bucket in colorColumn.methodBox.formattedBuckets %}
                 {% set bucket_loop = loop %}
                     <div class="s-legend-item-label__item q-table-methods-box-static">
                         {% if bucket.color.customColor %}
@@ -35,7 +35,7 @@
     <div class="q-table-methods-container hidden s-font-note-s">
         <div class="q-table-methods-legend">
             <table class="q-table-methods-legend-table s-font-note--tabularnums">
-                {% for bucket in colorColumn.legendData.buckets %}
+                {% for bucket in colorColumn.methodBox.formattedBuckets %}
                 <tr>
                     <td>
                         {% if bucket.color.colorClass %}
