@@ -322,6 +322,11 @@ function getColorColumnScript(context) {
   const addEventListenerToMethodBoxArticleLinkFunctionName = `addEventListenerToMethodBoxArticleLink${context.id}`;
   const handleClickOnMethodBoxArticleLinkFunctionName = `handleClickOnMethodBoxArticleLink${context.id}`;
 
+  let renderColorColumnNumericalLegendFunction = "";
+  if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+    renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.element.getBoundingClientRect().width)`;
+  }
+
   return `
 
   function ${prepareMethodBoxElementsFunctionName}() {
@@ -434,11 +439,10 @@ function getColorColumnScript(context) {
     }
   }
 
-
   function ${setupMethodBoxFunctionName}() {
     ${prepareMethodBoxElementsFunctionName}();
     ${setVisibilityOfElementsFunctionName}();
-    ${renderColorColumnNumericalLegendFunctionName}(${dataObject}.element.getBoundingClientRect().width);
+    ${renderColorColumnNumericalLegendFunction}
     ${addEventListenerToMethodBoxToggleFunctionName}();
     ${addEventListenerToMethodBoxArticleLinkFunctionName}();
   }
