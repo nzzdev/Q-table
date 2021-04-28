@@ -4,6 +4,8 @@ const getNumericColumns = require("../helpers/data.js").getNumericColumns;
 const getMinibarNumbersWithType = require("../helpers/minibars.js")
   .getMinibarNumbersWithType;
 
+const hasCustomBuckets = require("../helpers/colorColumn.js").hasCustomBuckets;
+
 module.exports = {
   method: "POST",
   path: "/option-availability/{optionName}",
@@ -13,23 +15,24 @@ module.exports = {
     },
     cors: true
   },
-  handler: function(request, h) {
+  handler: function (request, h) {
     const item = request.payload.item;
-    if (request.params.optionName === "cardLayoutIfSmall") {
+    const optionName = request.params.optionName;
+    if (optionName === "cardLayoutIfSmall") {
       return {
         available: !item.options.cardLayout
       };
     }
 
-    if (request.params.optionName === "showTableSearch") {
+    if (optionName === "showTableSearch") {
       return {
         available: (item.data.table.length > 16)
       };
     }
 
     if (
-      request.params.optionName === "minibars" ||
-      request.params.optionName === "selectedColumn"
+      optionName === "minibars" ||
+      optionName === "selectedColumnMinibar"
     ) {
       let isAvailable = false;
 
@@ -47,77 +50,131 @@ module.exports = {
       };
     }
 
-    if (request.params.optionName === "barColor") {
-      let isAvailable = false;
-      if (item.options.minibar !== null && item.options.minibar !== undefined) {
-        isAvailable =
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined;
+    // properties minibar
+    if (item.options.minibar !== null &&
+      item.options.minibar !== undefined) {
+
+      if (optionName === "barColor") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        return {
+          available: isAvailable
+        };
       }
 
-      return {
-        available: isAvailable
-      };
-    }
-
-    if (request.params.optionName === "barColorPositive") {
-      let isAvailable = false;
-      if (item.options.minibar != null && item.options.minibar != undefined) {
-        if (
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined
-        ) {
+      if (optionName === "barColorPositive") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        if (isAvailable) {
           let type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;
-
           isAvailable = type === "mixed" || type === "positive";
         }
+        return {
+          available: isAvailable
+        };
       }
-      return {
-        available: isAvailable
-      };
-    }
 
-    if (request.params.optionName === "barColorNegative") {
-      let isAvailable = false;
-      if (item.options.minibar != null && item.options.minibar != undefined) {
-        if (
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined
-        ) {
+      if (optionName === "barColorNegative") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        if (isAvailable) {
           let type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;
-
           isAvailable = type === "mixed" || type === "negative";
         }
+        return {
+          available: isAvailable
+        };
+      }
+
+      if (optionName === "invertColors") {
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
+        if (isAvailable) {
+          let type = getMinibarNumbersWithType(
+            item.data.table,
+            item.options.minibar.selectedColumn
+          ).type;
+          isAvailable = type === "mixed";
+        }
+        return {
+          available: isAvailable
+        };
+      }
+    }
+
+    if (
+      optionName === "colorColumn" ||
+      optionName === "selectedColorColumn"
+    ) {
+      let isAvailable = false;
+
+      if (item.data.table.length > 2) {
+        if (
+          !item.options.cardLayout &&
+          item.data.table[0].length >= 3 &&
+          item.data.table.length >= 1
+        ) {
+          isAvailable = true;
+        }
       }
       return {
         available: isAvailable
       };
     }
 
-    if (request.params.optionName === "invertColors") {
-      let isAvailable = false;
-      if (item.options.minibar != null && item.options.minibar != undefined) {
-        if (
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined
-        ) {
-          let type = getMinibarNumbersWithType(
-            item.data.table,
-            item.options.minibar.selectedColumn
-          ).type;
+    // properties colorColumn 
+    if (item.options.colorColumn !== null &&
+      item.options.colorColumn !== undefined) {
 
-          isAvailable = type === "mixed";
-        }
+      if (optionName === "isNumerical") {
+        return {
+          available: item.options.colorColumn.selectedColumn && item.options.colorColumn.colorColumnType === "numerical",
+        };
       }
-      return {
-        available: isAvailable
-      };
+
+      if (optionName === "isCategorical") {
+        return {
+          available: item.options.colorColumn.colorColumnType === "categorical",
+        };
+      }
+
+      if (["colorColumnType", "bucketType", "scale", "colorOverwritesItem", "colorScheme", "customCategoriesOrder"].includes(optionName)) {
+        return {
+          available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined
+        };
+      }
+
+      if (optionName === "customBuckets") {
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
+        if (isAvailable) {
+          isAvailable = hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
+        }
+        return {
+          available: isAvailable
+        };
+      }
+
+      if (optionName === "numberBuckets") {
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
+        if (isAvailable) {
+          isAvailable = !hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
+        }
+        return {
+          available: isAvailable
+        };
+      }
+
+      if (optionName === "customColors") {
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
+        if (isAvailable) {
+          isAvailable = item.options.colorColumn.numericalOptions.scale === "sequential"
+        }
+        return {
+          available: isAvailable
+        };
+      }
     }
 
     return Boom.badRequest();

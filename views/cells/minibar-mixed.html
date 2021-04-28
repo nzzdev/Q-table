@@ -6,14 +6,14 @@
   q-table-minibar--mixed">
   <div data-minibar="{{minibar.values[row_loop.index].type}}" class="q-table-minibar-alignment--{{minibar.values[row_loop.index].type}} q-table__cell q-table__cell--{{cell.type}} {% if minibar.values[row_loop.index].type === "positive" %}{{cell.footnote.class}}{%- endif -%} ">
   {%- if cell.footnote %}
-    <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">{{ cell.value }}</span>
+    <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation">{{ cell.value }}</span>
   {% else %}
     {{ cell.value }}
   {%- endif %}
   </div>
   {% else %}q-table__cell--{{cell.type}}">
   {%- if cell.footnote %}
-    <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">{{ cell.value }}</span>
+    <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation">{{ cell.value }}</span>
   {% else %}
     {{ cell.value }}
   {%- endif %}

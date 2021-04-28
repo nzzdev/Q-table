@@ -21,7 +21,7 @@
   q-table-minibar-cell--value" data-minibar="{{minibar.type}}" style="padding-right: 12px;
 {% endif %}">
 {%- if cell.footnote %}
-  <span data-annotation="{{ cell.footnote.value }}" class="q-table-annotation">{{ cell.value }}</span>
+  <span data-annotation="{{ cell.footnote.value }}" class="q-table-footnote-annotation">{{ cell.value }}</span>
 {% else %}
   {{ cell.value }}
 {%- endif %}

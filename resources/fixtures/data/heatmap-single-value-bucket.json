@@ -1,0 +1,183 @@
+{
+    "title": "FIXTURE: Heatmap single value bucket",
+    "data": {
+        "table": [
+            [
+                "Kanton",
+                "Wert",
+                "Wert"
+            ],
+            [
+                "Aargau",
+                "8.2",
+                "8.2"
+            ],
+            [
+                "Appenzell Ausserrhoden",
+                "6.0",
+                "6.0"
+            ],
+            [
+                "Appenzell Innerrhoden",
+                "5.8",
+                "5.8"
+            ],
+            [
+                "Basel-Landschaft",
+                null,
+                null
+            ],
+            [
+                "Basel-Stadt",
+                "2.8",
+                "2.8"
+            ],
+            [
+                "Bern",
+                null,
+                null
+            ],
+            [
+                "Freiburg",
+                null,
+                null
+            ],
+            [
+                "Genf",
+                null,
+                null
+            ],
+            [
+                "Glarus",
+                "3.6",
+                "3.6"
+            ],
+            [
+                "Graubünden",
+                "3.2",
+                "3.2"
+            ],
+            [
+                "Jura",
+                "3.5",
+                "3.5"
+            ],
+            [
+                "Luzern",
+                "4.8",
+                "4.8"
+            ],
+            [
+                "Neuenburg",
+                "2.7",
+                "2.7"
+            ],
+            [
+                "Nidwalden",
+                null,
+                null
+            ],
+            [
+                "Obwalden",
+                null,
+                null
+            ],
+            [
+                "Schaffhausen",
+                null,
+                null
+            ],
+            [
+                "Schwyz",
+                "4.9",
+                "4.9"
+            ],
+            [
+                "Solothurn",
+                "7.9",
+                "7.9"
+            ],
+            [
+                "St. Gallen",
+                "5.2",
+                "5.2"
+            ],
+            [
+                "Tessin",
+                "6.2",
+                "6.2"
+            ],
+            [
+                "Thurgau",
+                "0.8",
+                "0.8"
+            ],
+            [
+                "Uri",
+                "3.9",
+                "3.9"
+            ],
+            [
+                "Waadt",
+                null,
+                null
+            ],
+            [
+                "Wallis",
+                "3.4",
+                "3.4"
+            ],
+            [
+                "Zug",
+                "2.3",
+                "2.3"
+            ],
+            [
+                "Zürich",
+                null,
+                null
+            ]
+        ],
+        "metaData": {
+            "cells": []
+        }
+    },
+    "sources": [],
+    "options": {
+        "hideTableHeader": false,
+        "showTableSearch": false,
+        "cardLayout": false,
+        "cardLayoutIfSmall": false,
+        "minibar": {
+            "invertColors": false,
+            "barColor": {
+                "positive": {
+                    "className": "",
+                    "colorCode": ""
+                },
+                "negative": {
+                    "className": "",
+                    "colorCode": ""
+                }
+            },
+            "selectedColumn": null
+        },
+        "heatmap": {
+            "heatmapType": "numerical",
+            "numericalOptions": {
+                "bucketType": "ckmeans",
+                "numberBuckets": 5,
+                "scale": "sequential",
+                "colorScheme": "one",
+                "colorOverwrites": []
+            },
+            "categoricalOptions": {
+                "colorOverwrites": [],
+                "customCategoriesOrder": []
+            },
+            "selectedColumn": 1
+        }
+    },
+    "department": "Visuals",
+    "publication": "nzz"
+}

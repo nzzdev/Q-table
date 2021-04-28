@@ -18,5 +18,23 @@
   "Negative Werte": "Negative values",
   "CSS-Klassenname": "CSS class name",
   "Farbcode": "Color code",
-  "Der Titel bringt die Kernaussage der Tabelle auf den Punkt&#46;": "The title brings the core message of the table to the point."
+  "Der Titel bringt die Kernaussage der Tabelle auf den Punkt&#46;": "The title brings the core message of the table to the point.",
+  "notifications": {
+    "customBuckets": {
+      "title": "Custom borders",
+      "body": "Some values in data table are not covered by custom borders."
+    },
+    "numberBucketsExceedsDataSet": {
+      "title": "Number buckets",
+      "body": "Number of buckets exceeds the number of different values in data table."
+    },
+    "numberCategoriesOutOfColorScale": {
+      "title": "Color scale",
+      "body": "The number of categories exceeds the number of available colors in color scale"
+    },
+    "numberBucketsOutOfColorScale": {
+      "title": "Color scale",
+      "body": "The number of buckets exceeds the number of available colors in chosen color scale"
+    }
+  }
 }

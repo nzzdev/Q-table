@@ -1,0 +1,97 @@
+{
+  "title": "FIXTURE: color column numeric with footnotes",
+  "data": {
+    "table": [
+      [
+        "String",
+        "Number",
+        "Number",
+        "String"
+      ],
+      [
+        "Test1",
+        "1",
+        "2.1",
+        "Test2"
+      ],
+      [
+        "Test2",
+        "2",
+        "2.2",
+        "Test2"
+      ],
+      [
+        "Test3",
+        "3",
+        "2.3",
+        "Test1"
+      ],
+      [
+        "Test4",
+        "4",
+        "2.41",
+        "Test1"
+      ],
+      [
+        "Test5",
+        "5",
+        "2.5",
+        "Test2"
+      ],
+      [
+        "Test6",
+        "6",
+        "2.61",
+        "Test1"
+      ]
+    ],
+    "metaData": {
+      "cells": [
+        {
+          "data": {
+            "footnote": "fussnote"
+          },
+          "rowIndex": 4,
+          "colIndex": 2
+        }
+      ]
+    }
+  },
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "showTableSearch": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": null
+    },
+    "colorColumn": {
+      "colorColumnType": "numerical",
+      "numericalOptions": {
+        "labelLegend": "average",
+        "bucketType": "ckmeans",
+        "numberBuckets": 5,
+        "scale": "sequential",
+        "colorScheme": "one",
+        "colorOverwrites": []
+      },
+      "categoricalOptions": {
+        "colorOverwrites": [],
+        "customCategoriesOrder": []
+      },
+      "selectedColumn": 2
+    }
+  }
+}

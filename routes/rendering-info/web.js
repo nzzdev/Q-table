@@ -20,6 +20,7 @@ const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
 const dataHelpers = require(`${helpersDir}data.js`);
 const footnoteHelpers = require(`${helpersDir}footnotes.js`);
 const minibarHelpers = require(`${helpersDir}minibars.js`);
+const colorColumnHelpers = require(`${helpersDir}colorColumn.js`);
 
 const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
 
@@ -79,15 +80,24 @@ module.exports = {
 
     const item = request.payload.item;
     const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
+    const dataWithoutHeaderRow = dataHelpers.getDataWithoutHeaderRow(itemDataCopy);
     const footnotes = footnoteHelpers.getFootnotes(
       item.data.metaData,
       item.options.hideTableHeader
     );
     const minibarsAvailable = await request.server.inject({
-      url: "/option-availability/selectedColumn",
+      url: "/option-availability/selectedColumnMinibar",
       method: "POST",
       payload: { item: item },
     });
+
+    const colorColumnAvailable = await request.server.inject({
+      url: "/option-availability/selectedColorColumn",
+      method: "POST",
+      payload: { item: item },
+    });
+
+    let width = getExactPixelWidth(request.payload.toolRuntimeConfig);
 
     const context = {
       item: item,
@@ -100,13 +110,16 @@ module.exports = {
         ? minibarHelpers.getMinibarContext(item.options, itemDataCopy)
         : {},
       footnotes: footnotes,
+      colorColumn: colorColumnAvailable.result.available
+        ? colorColumnHelpers.getColorColumnContext(item.options.colorColumn, dataWithoutHeaderRow, width)
+        : {},
       numberOfRows: item.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       noInteraction: request.payload.toolRuntimeConfig.noInteraction,
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
       )}`.replace(/-/g, ""),
-      width: getExactPixelWidth(request.payload.toolRuntimeConfig),
+      width,
     };
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
@@ -137,10 +150,15 @@ module.exports = {
       context.numberOfRowsToHide = undefined;
     }
 
-    renderingInfo.markup = nunjucksEnv.render(
-      path.join(viewsDir, "table.html"),
-      context
-    );
+    try {
+      renderingInfo.markup = nunjucksEnv.render(
+        path.join(viewsDir, "table.html"),
+        context
+      );
+    } catch (ex) {
+      console.log(ex)
+    }
+
 
     // the scripts need to know if we are confident that the numberOfRowsToHide is correct
     // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
@@ -178,7 +196,8 @@ module.exports = {
       (item.options.cardLayout === false &&
         item.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
-      Object.keys(context.minibar).length !== 0
+      Object.keys(context.minibar).length !== 0 ||
+      Object.keys(context.colorColumn).length !== 0
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context),
@@ -214,6 +233,12 @@ module.exports = {
     if (Object.keys(context.minibar).length !== 0) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getMinibarsScript(context),
+      });
+    }
+
+    if (Object.keys(context.colorColumn).length !== 0) {
+      renderingInfo.scripts.push({
+        content: renderingInfoScripts.getColorColumnScript(context),
       });
     }
 
