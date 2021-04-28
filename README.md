@@ -300,7 +300,7 @@ The label allows to select between three options:
 
 This value will then be displayed on the legend. 
 
-###### BucektType
+###### BucketType
 
 There are four different buckets and each of it comes with it's own properties: 
 
@@ -364,7 +364,7 @@ The categorical legend will simply map the values to their colors.
 }
 ```
 
-- Depedning on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added 
+- Depending on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added 
 - **Important**: The properties `categoricalOptions` and `numericalOptions` will always be an object, even if not selected
 - If selecting the `colorColumnType` `numerical`, the following properties will be added 
 ```javascript
@@ -376,7 +376,7 @@ The categorical legend will simply map the values to their colors.
 
 ###### Implementation details frontend
 
-- Either `numerical` or `categorical`, both table-cells will be colored with the referece to the `colors` array
+- Either `numerical` or `categorical`, both table-cells will be colored with the reference to the `colors` array
 - The legend will be displayed 100% on `desktop` and `mobile`, on `fullwidth` it will be displayed `640px` (size of the text in article)
 - When resizing the graphic, the `EventLister` on the event `resize` implemented in the `renderColorColumnNumericalLegend()` will be triggered
 - The legend will then be resized according to the `width`

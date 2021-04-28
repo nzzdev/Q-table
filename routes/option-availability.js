@@ -140,7 +140,7 @@ module.exports = {
         };
       }
 
-      if (optionName === "colorColumnType" || optionName === "bucketType" || optionName === "scale" || optionName === "colorOverwritesItem" || optionName === "colorScheme" || optionName === "customCategoriesOrder") {
+      if (["colorColumnType", "bucketType", "scale", "colorOverwritesItem", "colorScheme", "customCategoriesOrder"].includes(optionName)) {
         return {
           available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined
         };
