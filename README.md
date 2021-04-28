@@ -300,7 +300,7 @@ The label allows to select between three options:
 
 This value will then be displayed on the legend. 
 
-###### BucektType
+###### BucketType
 
 There are four different buckets and each of it comes with it's own properties: 
 
