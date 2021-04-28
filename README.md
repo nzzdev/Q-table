@@ -282,6 +282,8 @@ Minibars are a visual feature to display the difference between numbers in the t
 
 #### colorColumn
 
+<img src="/doc/colorColumn.png" align="right" width=427 height=202>
+
 This feature allows to select a column and colorize it. There are two types: 
 - `numerical`
 - `categorical`
