@@ -492,6 +492,7 @@
                         "config": {
                           "endpoint": "notification/numberBucketsOutOfColorScale",
                           "fields": [
+                            "data",
                             "options"
                           ]
                         },
