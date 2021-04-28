@@ -364,7 +364,7 @@ The categorical legend will simply map the values to their colors.
 }
 ```
 
-- Depedning on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added 
+- Depending on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added 
 - **Important**: The properties `categoricalOptions` and `numericalOptions` will always be an object, even if not selected
 - If selecting the `colorColumnType` `numerical`, the following properties will be added 
 ```javascript
