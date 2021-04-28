@@ -196,7 +196,8 @@ module.exports = {
       (item.options.cardLayout === false &&
         item.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
-      Object.keys(context.minibar).length !== 0
+      Object.keys(context.minibar).length !== 0 ||
+      Object.keys(context.colorColumn).length !== 0
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context),
