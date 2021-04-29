@@ -4,6 +4,7 @@
 
 .q-table__search {
   padding: 0 1px;
+  margin-bottom: 16px;
 }
 
 .q-table__cell {
@@ -21,34 +22,37 @@ td.q-table__cell--numeric {
 
 // the high specificty is needed because nzz frontends apply lots of highly specific table styles we need to overwrite
 // this will change in the future and allow us to lower the specificity here again
-.q-table {
-  table {
+.q-table {  
+  table:not(.q-table-methods-legend-table) {
     border-collapse: collapse;
     border: none;
     margin: 0;
     padding: 0;
     width: 100%;
     table-layout: auto;
-    empty-cells: show;
+    empty-cells: show; 
+
+    th, td {
+      padding: 10px 4px;
+      vertical-align: top;
+      border: none !important;
+      font-size: unset;
+      line-height: unset;
+      font-weight: unset;
+    }
+    
+    thead {
+      background: unset;
+    }
+
+    tbody tr,
+    thead tr {
+      border-width: 0 0 1px 0;
+      border-style: solid;
+      border-color: #e9e9ee;
+    }
   }
-  table thead {
-    background: unset;
-  }
-  table tbody tr,
-  table thead tr {
-    border-width: 0 0 1px 0;
-    border-style: solid;
-    border-color: #e9e9ee;
-  }
-  table th,
-  table td {
-    padding: 10px 4px;
-    vertical-align: top;
-    border: none !important;
-    font-size: unset;
-    line-height: unset;
-    font-weight: unset;
-  }
+
 }
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
 .q-table:not(.q-table--card-layout)
@@ -151,7 +155,7 @@ td.q-table__cell--numeric {
     left: 0;
   }
 
-  .q-table-col-footnotes-cardlayout-single {
+  .q-table-footnote-column-card-layout--single {
     margin-right: 7px !important;
 
     .q-table-minibar-alignment--negative,
@@ -161,7 +165,7 @@ td.q-table__cell--numeric {
     }
   }
 
-  .q-table-col-footnotes-cardlayout-double {
+  .q-table-footnote-column-card-layout--double {
     margin-right: 14px !important;
 
     .q-table-minibar-alignment--negative,
@@ -273,38 +277,264 @@ tr.q-table-state-visible {
   width: 100%;
 }
 
-.q-table-annotation {
-  position: relative;
-  display: block;
-  width: 100%;
-}
-
-.q-table-annotation::after {
-  content: attr(data-annotation);
-  position: absolute;
-  color: #6e6e7e;
-  margin-left: 1px;
-  margin-top: -5.5px;
-  font-size: 9px;
-}
-
-.q-table-footnote-index {
-  vertical-align: super;
-  font-size: 9px;
-  display: inline-block;
-  width: 5px;
-}
-
-.q-table-col-footnotes {
-  &-single {
-    padding-right: 8px !important;
+.q-table-footnote {
+  &-index {
+    vertical-align: super;
+    display: inline-block;
+    margin-right: 4px;
   }
 
-  &-double {
-    padding-right: 16px !important;
+  &-annotation {
+    position: relative;
+    display: block;
+    width: 100%;
+
+    &--colorColumn {
+      position: absolute; 
+      font-size: 11px; 
+      margin-top: -5.5px; 
+      margin-left: 1px;
+
+      sup {
+        color: currentColor; 
+        opacity: 0.65;
+      }
+    }
+  }
+
+  &-annotation::after {
+    content: attr(data-annotation);
+    position: absolute;
+    color: #6e6e7e;
+    margin-left: 1px;
+    margin-top: -5.5px;
+    font-size: 9px;
+  }
+
+  &-column {
+
+    &--single {
+      padding-right: 8px !important;
+    }
+  
+    &--double {
+      padding-right: 16px !important;
+    }
+  }
+
+  &-footer {
+    margin-top: 4px;
+  } 
+}
+
+.q-table-methods {
+  &--no-interaction {
+    margin-top: 12px;
+  }
+
+  &-link {
+    margin-top: 8px;
+    display: flex;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      opacity: 0.6;
+    }
+
+    & svg {
+      height: 10px;
+      width: 10px;
+    }
+
+    &-icon-close,
+    &-icon-plus {
+      display: flex;
+      align-self: center;
+    }
+
+    &-icon-plus.hidden {
+      display: none;
+    }
+
+    &-icon-close.hidden {
+      display: none;
+    }
+
+    &-text {
+      margin-left: 4px;
+    }
+  }
+
+  &-description {
+    margin-top: 4px;
+  }
+
+  &-circle {
+    position: relative;
+    box-sizing: content-box;
+    width: 7px;
+    height: 7px;
+    margin: 2px 8px 2px 2px;
+    border: 1px solid;
+    border-radius: 50%;
+
+    &--circle-fill {
+      background-color: currentColor;
+    }
+
+    &-static {
+      margin-right: 8px;
+    }
+  }
+
+  &-box {
+    &-static {
+      margin-right: 20px;
+    }
+  }
+
+  &-article {
+    &-container {
+      margin-top: 4px;
+    }
+
+    &-link {
+      color: #05032d;
+    }
+  }
+
+  &-container {
+    margin-top: 8px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f2;
+    padding: 8px;
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  &-legend {
+    &-table {
+      table-layout: auto !important;
+
+      tr {
+        text-align: right;
+      }
+
+      td {
+        width: auto !important;
+      }
+    }
   }
 }
 
-.q-table-footer-footnote {
-  margin-top: 4px;
+.q-table-colorColumn {
+  &-legend {
+    height: 32px;
+    width: 100%;
+
+    &-marker {
+      width: 100%;
+    }
+
+    &-info {
+      &--single-bucket {
+        margin-right: 16px;
+      }
+      
+      &-icon {
+        &--interactive {
+          margin-top: -2px;
+        }
+      
+        &--no-interactive {
+          margin-top: 1px;
+        }
+      
+        margin-right: 8px;
+      }
+    }
+  
+    &-bucket {
+      fill: currentColor;
+    }
+
+    &-container {
+      display: flex;
+      flex-direction: column;
+
+      &--fullwidth {
+        align-items: center;
+      }
+
+      &--desktop {
+        width: 100%;
+      }
+    }
+
+    &-border-container {
+      width: 100%;
+      position: relative;
+    }
+  
+    &-borders {
+      position: absolute;
+      height: 28px;
+      top: 0px;
+      border-right: 0.5px solid currentColor;
+      border-left: 0.5px solid currentColor;
+      width: 100%;
+    }
+
+    &-value-container {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+  
+      &--minVal {
+        margin-left: 2px;
+      }
+  
+      &--maxVal {
+        margin-right: 2px;
+      }
+    }
+
+    &-info {
+      
+      &--single-bucket {
+        margin-right: 16px;
+      }
+
+      &-icon {
+        margin-right: 8px;
+
+        &--interactive {
+          margin-top: -2px;
+        }
+      
+        &--static {
+          margin-top: 1px;
+        }
+      }
+    }  
+
+    &--numerical {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+      padding: 0 1px;
+    }
+
+    &--fullwidth {
+      width: 640px;
+    }
+
+    &--categorical {
+      margin-top: 16px;
+      margin-bottom: 12px;
+    }
+  }
 }

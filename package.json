@@ -1,6 +1,6 @@
 {
   "name": "q-table",
-  "version": "3.4.1",
+  "version": "4.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "Beni Buess <beni.buess@nzz.ch>",
   "license": "MIT",
   "dependencies": {
-    "@hapi/boom": "^9.1.1",
+    "@hapi/boom": "^9.1.2",
     "@hapi/hapi": "^19.2.0",
     "@hapi/inert": "^6.0.3",
     "@hapi/joi": "^17.1.1",
@@ -19,18 +19,19 @@
     "array2d": "0.0.5",
     "clone": "^2.1.2",
     "d3-format": "^1.4.5",
-    "nunjucks": "^3.2.2",
-    "uglify-js": "^3.12.2"
+    "nunjucks": "^3.2.3",
+    "simple-statistics": "^7.7.0",
+    "uglify-js": "^3.13.4"
   },
   "devDependencies": {
-    "@hapi/code": "^8.0.2",
+    "@hapi/code": "^8.0.3",
     "@hapi/lab": "^22.0.5",
     "autoprefixer": "^9.8.6",
-    "cssnano": "^4.1.10",
+    "cssnano": "^4.1.11",
     "html-minifier": "^4.0.0",
-    "jsdom": "^16.4.0",
+    "jsdom": "^16.5.3",
     "postcss": "^7.0.35",
     "postcss-import": "^12.0.1",
-    "sass": "^1.30.0"
+    "sass": "^1.32.11"
   }
 }

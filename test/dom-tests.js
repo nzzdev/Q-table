@@ -13,6 +13,7 @@ const after = lab.after;
 const it = lab.it;
 
 const routes = require("../routes/routes.js");
+const { row } = require("array2d");
 let server;
 
 before(async () => {
@@ -67,7 +68,7 @@ lab.experiment("column headers", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table-cell--head").then(
+    elementCount(response.result.markup, ".q-table-cell--head").then(
       (value) => {
         expect(value).to.be.equal(4);
       }
@@ -84,7 +85,7 @@ lab.experiment("column headers", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table-cell--head").then(
+    elementCount(response.result.markup, ".q-table-cell--head").then(
       (value) => {
         expect(value).to.be.equal(0);
       }
@@ -103,7 +104,7 @@ lab.experiment("cell values", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table__cell--text").then(
+    elementCount(response.result.markup, ".q-table__cell--text").then(
       (value) => {
         expect(value).to.be.equals(32);
       }
@@ -120,7 +121,7 @@ lab.experiment("cell values", () => {
       },
     });
 
-    return elements(response.result.markup, ".q-table__cell--numeric").then(
+    elements(response.result.markup, ".q-table__cell--numeric").then(
       (elements) => {
         elements.forEach((element) => {
           expect(element.innerHTML.includes(" ")).to.be.equals(true);
@@ -139,7 +140,7 @@ lab.experiment("cell values", () => {
       },
     });
 
-    return elements(response.result.markup, ".q-table__cell--numeric").then(
+    elements(response.result.markup, ".q-table__cell--numeric").then(
       (elements) => {
         elements.forEach((element) => {
           expect(element.innerHTML.includes(" ")).to.be.equals(true);
@@ -158,7 +159,7 @@ lab.experiment("cell values", () => {
       },
     });
 
-    return elements(response.result.markup, ".q-table__cell--numeric").then(
+    elements(response.result.markup, ".q-table__cell--numeric").then(
       (elements) => {
         elements.forEach((element) => {
           expect(element.innerHTML.includes(" ")).to.be.equals(true);
@@ -179,7 +180,7 @@ lab.experiment("cardlayout", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table--card-layout").then(
+    elementCount(response.result.markup, ".q-table--card-layout").then(
       (value) => {
         expect(value).to.be.equal(1);
       }
@@ -195,7 +196,7 @@ lab.experiment("cardlayout", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table--card-layout").then(
+    elementCount(response.result.markup, ".q-table--card-layout").then(
       (value) => {
         expect(value).to.be.equal(1);
       }
@@ -211,7 +212,7 @@ lab.experiment("cardlayout", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table--card-layout").then(
+    elementCount(response.result.markup, ".q-table--card-layout").then(
       (value) => {
         expect(value).to.be.equal(1);
       }
@@ -264,86 +265,6 @@ lab.experiment("cardlayout on mobile", () => {
 });
 
 lab.experiment("minibars", () => {
-  it("shows the same markup for positive minibars", async () => {
-      const workingMinibarsMarkup = `<div class="s-q-item q-table"id="q_table_someid_"style="opacity: 0;"><h3 class="s-q-item__title">FIXTURE: minibars with negative values</h3><div class="s-q-item__subtitle">State by state breakdown</div><div style="overflow-x: auto;"><table class="q-table__table"><thead class="s-font-note s-font-note--strong"><th class="q-table__cell q-table-cell--head q-table__cell--text"></th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums">2016</th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums">2017</th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums"colspan="2"id="q-table-minibar-header">+/- %</th></thead><tbody class="s-font-note"><tr><td data-label=" \n  \n    \n  "class="q-table__cell q-table__cell--text">Auftragseingang</td><td data-label="2016 \n  \n    \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">10 375</td><td data-label="2017 \n  \n    \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">10 989</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--negative s-viz-color-one-5"style="width: 46.15384615384615%; background-color:;"></div></td><td data-label="+/- % \n  \n    \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">–6</td></tr><tr><td data-label=" \n  "class="q-table__cell q-table__cell--text">Umsatz</td><td data-label="2016 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">9 683</td><td data-label="2017 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">10 178</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--negative s-viz-color-one-5"style="width: 38.46153846153846%; background-color:;"></div></td><td data-label="+/- % \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">–5</td></tr><tr><td data-label=" \n  "class="q-table__cell q-table__cell--text">Ebit-Mage (%)</td><td data-label="2016 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">11,7</td><td data-label="2017 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">11,7</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--empty s-viz-color-one-5"></div></td><td data-label="+/- % \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">-</td></tr><tr><td data-label=" \n  "class="q-table__cell q-table__cell--text">Cashflow aus Geschäftstätigkeite</td><td data-label="2016 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">929</td><td data-label="2017 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">810</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--negative s-viz-color-one-5"style="width: 100%; background-color:;"></div></td><td data-label="+/- % \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">–13</td></tr></tbody></table></div><div class="s-q-item__footer">Quelle: The Centers for Disease Control and Prevention</div></div>`;
-
-    const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
-      payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json"),
-        toolRuntimeConfig: {},
-      },
-    });
-
-    const html = response.result.markup.replace(
-      /(?<=q_table_someid_)[\w+.-]+/,
-      ""
-    );
-
-    const resultResp = minify(html.replace("\n ", ""), {
-      collapseWhitespace: true,
-      removeComments: true,
-      removeTagWhitespace: true,
-      useShortDoctype: true,
-    });
-
-    expect(resultResp).to.be.equals(workingMinibarsMarkup);
-  });
-
-  it("shows the same markup for negative minibars", async () => {
-    const workingMinibarsMarkup = `<div class="s-q-item q-table"id="q_table_someid_"style="opacity: 0;"><h3 class="s-q-item__title">FIXTURE: minibars with negative values</h3><div class="s-q-item__subtitle">State by state breakdown</div><div style="overflow-x: auto;"><table class="q-table__table"><thead class="s-font-note s-font-note--strong"><th class="q-table__cell q-table-cell--head q-table__cell--text"></th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums">2016</th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums">2017</th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums"colspan="2"id="q-table-minibar-header">+/- %</th></thead><tbody class="s-font-note"><tr><td data-label=" \n  \n    \n  "class="q-table__cell q-table__cell--text">Auftragseingang</td><td data-label="2016 \n  \n    \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">10 375</td><td data-label="2017 \n  \n    \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">10 989</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--negative s-viz-color-one-5"style="width: 46.15384615384615%; background-color:;"></div></td><td data-label="+/- % \n  \n    \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">–6</td></tr><tr><td data-label=" \n  "class="q-table__cell q-table__cell--text">Umsatz</td><td data-label="2016 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">9 683</td><td data-label="2017 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">10 178</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--negative s-viz-color-one-5"style="width: 38.46153846153846%; background-color:;"></div></td><td data-label="+/- % \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">–5</td></tr><tr><td data-label=" \n  "class="q-table__cell q-table__cell--text">Ebit-Mage (%)</td><td data-label="2016 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">11,7</td><td data-label="2017 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">11,7</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--empty s-viz-color-one-5"></div></td><td data-label="+/- % \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">-</td></tr><tr><td data-label=" \n  "class="q-table__cell q-table__cell--text">Cashflow aus Geschäftstätigkeite</td><td data-label="2016 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">929</td><td data-label="2017 \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums">810</td><td class="q-table-minibar-cell"data-minibar="negative"style="padding-left: 12px; padding-right: 0px !important;"><div class="q-table-minibar-bar--negative s-viz-color-one-5"style="width: 100%; background-color:;"></div></td><td data-label="+/- % \n  "class="q-table__cell q-table__cell--numeric s-font-note--tabularnums q-table-minibar-cell--value"data-minibar="negative"style="padding-right: 12px;">–13</td></tr></tbody></table></div><div class="s-q-item__footer">Quelle: The Centers for Disease Control and Prevention</div></div>`;
-
-    const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
-      payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json"),
-        toolRuntimeConfig: {},
-      },
-    });
-
-    const html = response.result.markup.replace(
-      /(?<=q_table_someid_)[\w+.-]+/,
-      ""
-    );
-
-    const resultResp = minify(html, {
-      collapseWhitespace: true,
-      removeComments: true,
-      removeTagWhitespace: true,
-      useShortDoctype: true,
-    });
-
-    expect(resultResp).to.be.equals(workingMinibarsMarkup);
-  });
-
-  it("shows the same markup for mixed minibars", async () => {
-    const workingMinibarsMarkup = `<div class="s-q-item q-table"id="q_table_someid_"style="opacity: 0;"><h3 class="s-q-item__title">FIXTURE: minibars with positive and negative values</h3><div class="s-q-item__subtitle">State by state breakdown</div><div style="overflow-x: auto;"><table class="q-table__table"><thead class="s-font-note s-font-note--strong"><th class="q-table__cell q-table-cell--head q-table__cell--text"></th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums">2016</th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums">2017</th><th class="q-table__cell q-table-cell--head q-table__cell--numeric s-font-note--tabularnums"id="q-table-minibar-header">+/- %</th></thead><tbody class="s-font-note"><tr><td data-label=" "data-minibar="mixed"class="q-table__cell q-table__cell--text">Auftragseingang</td><td data-label="2016 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">10 375</td><td data-label="2017 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">10 989</td><td data-label="+/- % "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table-minibar--mixed"><div data-minibar="positive"class="q-table-minibar-alignment--positive q-table__cell q-table__cell--numeric">6</div><div data-minibar="positive"class="q-table-minibar-bar--positive q-table-minibar--positive s-viz-color-diverging-2-2"style="width: 23.076923076923077%;background-color:;"></div></td></tr><tr><td data-label=" "data-minibar="mixed"class="q-table__cell q-table__cell--text">Umsatz</td><td data-label="2016 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">9 683</td><td data-label="2017 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">10 178</td><td data-label="+/- % "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table-minibar--mixed"><div data-minibar="positive"class="q-table-minibar-alignment--positive q-table__cell q-table__cell--numeric">5</div><div data-minibar="positive"class="q-table-minibar-bar--positive q-table-minibar--positive s-viz-color-diverging-2-2"style="width: 19.23076923076923%;background-color:;"></div></td></tr><tr><td data-label=" "data-minibar="mixed"class="q-table__cell q-table__cell--text">Ebit-Mage (%)</td><td data-label="2016 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">11,7</td><td data-label="2017 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">11,7</td><td data-label="+/- % "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table-minibar--mixed"><div data-minibar="empty"class="q-table-minibar-alignment--empty q-table__cell q-table__cell--numeric">-</div></td></tr><tr><td data-label=" "data-minibar="mixed"class="q-table__cell q-table__cell--text">Cashflow aus Geschäftstätigkeite</td><td data-label="2016 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">929</td><td data-label="2017 "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table__cell--numeric">810</td><td data-label="+/- % "data-minibar="mixed"class="q-table__cell s-font-note--tabularnums q-table-minibar--mixed"><div data-minibar="negative"class="q-table-minibar-alignment--negative q-table__cell q-table__cell--numeric">–13</div><div data-minibar="negative"class="q-table-minibar-bar--negative q-table-minibar--negative s-viz-color-diverging-2-1"style="width: 50%;background-color:;"></div></td></tr></tbody></table></div><div class="s-q-item__footer">Quelle: The Centers for Disease Control and Prevention</div></div>`;
-    const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
-      payload: {
-        item: require("../resources/fixtures/data/minibars-mixed.json"),
-        toolRuntimeConfig: {},
-      },
-    });
-
-    const html = response.result.markup.replace(
-      /(?<=q_table_someid_)[\w+.-]+/,
-      ""
-    );
-
-    const resultResp = minify(html, {
-      collapseWhitespace: true,
-      removeComments: true,
-      removeTagWhitespace: true,
-      useShortDoctype: true,
-    });
-
-    expect(resultResp).to.be.equals(workingMinibarsMarkup);
-  });
-
   it("shows table correctly when no minibar-options", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
@@ -354,11 +275,259 @@ lab.experiment("minibars", () => {
       },
     });
 
-    return elementCount(response.result.markup, "td").then((value) => {
+    elementCount(response.result.markup, "td").then((value) => {
       expect(value).to.be.equal(28);
     });
   });
-});
+
+  it("uses correct cell type", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-negative.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response.result.markup, "td.q-table-minibar-cell").then(
+      (value) => {
+        expect(value).to.be.equal(4);
+      }
+    );
+  });
+
+  it("uses the negative bar type", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-negative.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response.result.markup, "div.q-table-minibar-bar--negative").then(
+      (value) => {
+        expect(value).to.be.equal(3);
+      }
+    );
+  });
+
+  it("shows negative bar and number", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-negative.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response.result.markup, "td.q-table-minibar-cell").then(
+      (value) => {
+        expect(value).to.be.equal(4);
+      }
+    );
+
+    elementCount(response.result.markup, "td.q-table-minibar-cell--value").then(
+      (value) => {
+        expect(value).to.be.equal(4);
+      }
+    );
+  });
+
+  it("shows the correct negative bar length", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-negative.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const bars = dom.window.document.querySelectorAll(
+      "div.q-table-minibar-bar--negative"
+    );
+
+    let widths = []
+    bars.forEach((bar) => {
+      const regex = /\s*width\s*:\s*([^;"]*)/;
+      let width = bar.outerHTML.match(regex)
+      widths = [...widths, width[1]];
+    });
+
+    expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
+  });
+
+  it("uses the positive bar type", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-positive.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response.result.markup, "div.q-table-minibar-bar--positive").then(
+      (value) => {
+        expect(value).to.be.equal(3);
+      }
+    );
+  });
+
+  it("uses the positive number and bar", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-positive.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+
+    elementCount(response.result.markup, "td.q-table-minibar-cell--value").then(
+      (value) => {
+        expect(value).to.be.equal(4);
+      }
+    );
+
+
+    elementCount(response.result.markup, "td.q-table-minibar-cell").then(
+      (value) => {
+        expect(value).to.be.equal(4);
+      }
+    );
+  });
+
+  it("show the corrent positive bar length", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-positive.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const bars = dom.window.document.querySelectorAll(
+      "div.q-table-minibar-bar--positive"
+    );
+
+    let widths = []
+    bars.forEach((bar) => {
+      const regex = /\s*width\s*:\s*([^;"]*)/;
+      let width = bar.outerHTML.match(regex)
+      widths = [...widths, width[1]];
+    });
+
+    expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
+  });
+
+  it("uses the mixed cell type", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-mixed.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response.result.markup, "td.q-table-minibar--mixed").then(
+      (value) => {
+        expect(value).to.be.equal(4);
+      }
+    );
+  });
+
+  it("shows mixed number and bar", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-mixed.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response.result.markup, ".q-table-minibar-alignment--positive")
+      .then((value) => {
+        expect(value).to.be.equal(2);
+      });
+
+    elementCount(response.result.markup, ".q-table-minibar-bar--positive")
+      .then((value) => {
+        expect(value).to.be.equal(2);
+      });
+
+    elementCount(response.result.markup, ".q-table-minibar-alignment--negative")
+      .then((value) => {
+        expect(value).to.be.equal(1);
+      });
+
+    elementCount(response.result.markup, ".q-table-minibar-bar--negative")
+      .then((value) => {
+        expect(value).to.be.equal(1);
+      });
+
+    elementCount(response.result.markup, ".q-table-minibar-alignment--empty")
+      .then((value) => {
+        expect(value).to.be.equal(1);
+      });
+
+  });
+
+  it("show the corrent mixed bar length", async () => {
+
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/minibars-positive.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    const dom = new JSDOM(response.result.markup);
+    const positiveBars = dom.window.document.querySelectorAll(
+      "div.q-table-minibar-bar--positive"
+    );
+
+    const negativeBars = dom.window.document.querySelectorAll(
+      "div.q-table-minibar-bar--negative"
+    );
+
+    let widths = []
+    const regex = /\s*width\s*:\s*([^;"]*)/;
+
+    positiveBars.forEach((bar) => {
+      let width = bar.outerHTML.match(regex)
+      widths = [...widths, width[1]];
+    });
+
+    negativeBars.forEach((bar) => {
+      let width = bar.outerHTML.match(regex)
+      widths = [...widths, width[1]];
+    });
+
+    expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
+  });
+
+})
 
 lab.experiment("footnotes", () => {
   it("shows annotations for footnotes in table numbering downwords", async () => {
@@ -373,7 +542,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      "span.q-table-annotation"
+      "span.q-table-footnote-annotation"
     );
 
     let annotationIndexes = [];
@@ -397,7 +566,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footer-footnote"
+      "div.q-table-footnote-footer"
     );
 
     let arrayOfFootnotes = [];
@@ -412,19 +581,19 @@ lab.experiment("footnotes", () => {
     expect(arrayOfFootnotes).to.be.equal([
       {
         index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann",
+        text: "Frisch verheiratet, früher Hanspeter Mustermann",
       },
       {
         index: "2",
-        text: " Verhalten in letzter Spalte",
+        text: "Verhalten in letzter Spalte",
       },
       {
         index: "3",
-        text: " Frisch verheiratet, früher Peter Vorderbach",
+        text: "Frisch verheiratet, früher Peter Vorderbach",
       },
       {
         index: "4",
-        text: " Frisch verheiratet, früher Ralf Hinterbach",
+        text: "Frisch verheiratet, früher Ralf Hinterbach",
       },
     ]);
   });
@@ -441,7 +610,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footer-footnote"
+      "div.q-table-footnote-footer"
     );
 
     let arrayOfFootnotes = [];
@@ -456,7 +625,7 @@ lab.experiment("footnotes", () => {
     expect(arrayOfFootnotes).to.be.equal([
       {
         index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann",
+        text: "Frisch verheiratet, früher Hanspeter Mustermann",
       },
     ]);
   });
@@ -473,7 +642,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footer-footnote"
+      "div.q-table-footnote-footer"
     );
 
     let arrayOfFootnotes = [];
@@ -488,11 +657,11 @@ lab.experiment("footnotes", () => {
     expect(arrayOfFootnotes).to.be.equal([
       {
         index: "1",
-        text: " Frisch verheiratet, früher Hanspeter Mustermann",
+        text: "Frisch verheiratet, früher Hanspeter Mustermann",
       },
       {
         index: "2",
-        text: " Frisch verheiratet, früher Hanspeter Musterfrau",
+        text: "Frisch verheiratet, früher Hanspeter Musterfrau",
       },
     ]);
   });
@@ -533,14 +702,14 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      ".q-table-annotation"
+      ".q-table-footnote-annotation"
     );
 
     const footnoteIndexes = dom.window.document.querySelectorAll(
       ".q-table-footnote-index"
     );
 
-    expect(annotations[0].innerHTML.replace("\n        ", "")).to.be.equal("1");
+    expect(annotations[0].innerHTML.replace("\n    ", "")).to.be.equal("1");
     expect(footnoteIndexes[0].innerHTML.replace("\n        ", "")).to.be.equal(
       "1"
     );
@@ -558,9 +727,9 @@ lab.experiment("footnotes", () => {
       },
     });
 
-    return elementCount(
+    elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(12);
     });
@@ -576,9 +745,9 @@ lab.experiment("footnotes", () => {
       },
     });
 
-    return elementCount(
+    elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-double"
+      ".q-table-footnote-column--double"
     ).then((value) => {
       expect(value).to.be.equal(12);
     });
@@ -594,9 +763,9 @@ lab.experiment("footnotes", () => {
       },
     });
 
-    return elementCount(
+    elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-cardlayout-single"
+      ".q-table-footnote-column-card-layout--single"
     ).then((value) => {
       expect(value).to.be.equal(20);
     });
@@ -612,9 +781,9 @@ lab.experiment("footnotes", () => {
       },
     });
 
-    return elementCount(
+    elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(16);
     });
@@ -630,9 +799,9 @@ lab.experiment("footnotes", () => {
       },
     });
 
-    return elementCount(
+    elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(16);
     });
@@ -648,9 +817,9 @@ lab.experiment("footnotes", () => {
       },
     });
 
-    return elementCount(
+    elementCount(
       response.result.markup,
-      ".q-table-col-footnotes-single"
+      ".q-table-footnote-column--single"
     ).then((value) => {
       expect(value).to.be.equal(18);
     });
@@ -700,7 +869,7 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      "span.q-table-annotation"
+      "span.q-table-footnote-annotation"
     );
     let annotationIndexes = [];
     annotations.forEach((annotation) => {
@@ -710,6 +879,57 @@ lab.experiment("footnotes", () => {
     expect(annotationIndexes).to.be.equal(["1"]);
     expect(response.statusCode).to.be.equal(200);
   });
+
+  it("displays the footnote when the table has colorColumn (numerical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-footnotes.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-column--single"
+    ).then((value) => {
+      expect(value).to.be.equal(7);
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-annotation--colorColumn"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+
+  })
+
+  it("displays the footnote when the table has colorColumn (categorical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical-footnotes.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-column--single"
+    ).then((value) => {
+      expect(value).to.be.equal(7);
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-footnote-annotation--colorColumn"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
 });
 
 lab.experiment("table search", () => {
@@ -723,7 +943,7 @@ lab.experiment("table search", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table__search__input").then(
+    elementCount(response.result.markup, ".q-table__search__input").then(
       (value) => {
         expect(value).to.be.equal(1);
       }
@@ -740,10 +960,226 @@ lab.experiment("table search", () => {
       },
     });
 
-    return elementCount(response.result.markup, ".q-table__search__input").then(
+    elementCount(response.result.markup, ".q-table__search__input").then(
       (value) => {
         expect(value).to.be.equal(0);
       }
     );
   });
+
+  it("doesn't show table search if property is true but not enough elements", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/hyphen-sign-as-number.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response.result.markup, ".q-table__search__input").then(
+      (value) => {
+        expect(value).to.be.equal(0);
+      }
+    );
+  })
 });
+
+lab.experiment("color column", () => {
+  it("displays the numerical legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend--numerical"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("displays the correct amount of buckets", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend .q-table-colorColumn-legend-bucket"
+    ).then((value) => {
+      expect(value).to.be.equal(5);
+    });
+  })
+
+  it("displays label legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-marker"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("doesnt display label legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-label.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-marker"
+    ).then((value) => {
+      expect(value).to.be.equal(0);
+    });
+  })
+
+  it("displays no-data in legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-data.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-info--no-data"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("doesn't displays no-data in legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-label.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-info--no-data"
+    ).then((value) => {
+      expect(value).to.be.equal(0);
+    });
+  })
+
+  it("displays single-bucket in legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-no-data.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend-info--single-bucket"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("displays the categorical legend", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(
+      response.result.markup,
+      ".q-table-colorColumn-legend--categorical"
+    ).then((value) => {
+      expect(value).to.be.equal(1);
+    });
+  })
+
+  it("displays buckets in custonm color (numerical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-numerical-custom-colors.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    element(response.result.markup, ".q-table-colorColumn-legend-info--single-bucket .q-table-colorColumn-legend-bucket").then(
+      (elem) => {
+        expect(elem.style["color"]).to.be.equal("yellow");
+      }
+    );
+  })
+
+  it("displays buckets in custonm order (categorical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical-custom-order.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elements(response.result.markup, ".q-table-colorColumn-legend--categorical .s-legend-item-label__item__label").then(
+      (elements) => {
+        expect(elements[0].innerHTML).to.be.equal("Test1");
+        expect(elements[1].innerHTML).to.be.equal("Test2");
+      }
+    );
+  })
+
+  it("displays buckets in custonm color (categorical)", async () => {
+    const response = await server.inject({
+      url: "/rendering-info/web?_id=someid",
+      method: "POST",
+      payload: {
+        item: require("../resources/fixtures/data/colorColumn-categorical-custom-colors.json"),
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elements(response.result.markup, ".q-table-colorColumn-legend--categorical .s-legend-item-label__item").then(
+      (elements) => {
+        expect(elements[0].style["color"]).to.be.equal("pink");
+        expect(elements[1].style["color"]).to.be.equal("lightblue");
+      }
+    );
+  })
+})

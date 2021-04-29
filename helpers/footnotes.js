@@ -22,10 +22,14 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
       tableData[footnote.rowIndex].length - 1
     );
     if (footnoteClass) {
-      spacings.push({
+      let space = {
         colIndex: footnote.colIndex,
         class: footnoteClass,
-      });
+      };
+
+      if (!hasFootnoteClass(spacings, space)) {
+        spacings.push(space);
+      }
     }
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
@@ -49,8 +53,8 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
       if (!options.hideTableHeader && index !== 0) {
         row.forEach((cell) => {
           flattenedFootnotes.length >= 10
-            ? cell.classes.push("q-table-col-footnotes-cardlayout-double")
-            : cell.classes.push("q-table-col-footnotes-cardlayout-single");
+            ? cell.classes.push("q-table-footnote-column-card-layout--double")
+            : cell.classes.push("q-table-footnote-column-card-layout--single");
         });
       }
     }
@@ -59,18 +63,17 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
 }
 
 function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
-  // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column
+  // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
   if (
     (type === "numeric" &&
       (options.minibar.selectedColumn === footnote.colIndex ||
-        options.minibar.selectedColumn === footnote.colIndex + 1)) ||
-    footnote.colIndex === lastColIndex
+        options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)
   ) {
-    let spacingClass = "q-table-col-footnotes";
+    let spacingClass = "q-table-footnote-column";
     if (amountOfFootnotes >= 10) {
-      spacingClass += "-double";
+      spacingClass += "--double";
     } else {
-      spacingClass += "-single";
+      spacingClass += "--single";
     }
     return spacingClass;
   }
@@ -135,6 +138,10 @@ function getFlattenedFootnotes(footnotes) {
     });
   });
   return flattenedFootnotes;
+}
+
+function hasFootnoteClass(classes, newClass) {
+  return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
 }
 
 module.exports = {

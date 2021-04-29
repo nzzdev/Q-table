@@ -38,6 +38,15 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/table-search-hidden.json`),
   require(`${fixtureDataDirectory}/table-search-show.json`),
   require(`${fixtureDataDirectory}/table-search-with-multiple-columns.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical-no-label.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical-no-data.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical-footnotes.json`),
+  require(`${fixtureDataDirectory}/colorColumn-numerical-custom-colors.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical-footnotes.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical-custom-order.json`),
+  require(`${fixtureDataDirectory}/colorColumn-categorical-custom-colors.json`),
 ];
 
 module.exports = {

@@ -37,6 +37,11 @@ function getCardLayoutScript(context) {
     renderMinibarsFunction = `renderMinibars${context.id}()`;
   }
 
+  let renderColorColumnNumericalLegendFunction = "";
+  if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+    renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.width)`;
+  }
+
   return `
     ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");
     ${dataObject}.isCardLayout = ${dataObject}.isCardLayout || undefined;
@@ -76,6 +81,7 @@ function getCardLayoutScript(context) {
           ${dataObject}.width = newWidth;
           ${applyCardLayoutClassFunctionName}();
           ${renderMinibarsFunction};
+          ${renderColorColumnNumericalLegendFunction};
         }
       });
     }, 250));
@@ -150,9 +156,8 @@ function getMinibarsScript(context) {
   const dataObject = `window.${context.id}Data`;
   const getColumnFunctionName = `getColumn${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
-  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${
-    context.id
-  }`;
+  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${context.id
+    }`;
 
   return `
     function ${getColumnFunctionName}(table, col) {
@@ -305,10 +310,154 @@ function getSearchFormInputScript(context) {
   `;
 }
 
+function getColorColumnScript(context) {
+
+  const dataObject = `window.${context.id}Data`;
+  const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;
+  const prepareMethodBoxElementsFunctionName = `prepareMethodBoxElements${context.id}`;
+  const setVisibilityOfElementsFunctionName = `setVisibilityOfElements${context.id}`;
+  const renderColorColumnNumericalLegendFunctionName = `renderColorColumnNumericalLegend${context.id}`;
+  const addEventListenerToMethodBoxToggleFunctionName = `addEventListenerToMethodBoxToggle${context.id}`;
+  const handleClickOnMethodBoxToogleFunctionName = `handleClickOnMethodBoxToogle${context.id}`;
+  const addEventListenerToMethodBoxArticleLinkFunctionName = `addEventListenerToMethodBoxArticleLink${context.id}`;
+  const handleClickOnMethodBoxArticleLinkFunctionName = `handleClickOnMethodBoxArticleLink${context.id}`;
+
+  let renderColorColumnNumericalLegendFunction = "";
+  if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+    renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.element.getBoundingClientRect().width)`;
+  }
+
+  return `
+
+  function ${prepareMethodBoxElementsFunctionName}() {
+    ${dataObject}.methodBoxToggleElement = ${dataObject}.element.querySelector(
+      ".q-table-methods-link"
+    );
+    ${dataObject}.methodBoxContainerElement = ${dataObject}.element.querySelector(
+      ".q-table-methods-container"
+    );
+    ${dataObject}.methodBoxOpenIcon = ${dataObject}.element.querySelector(
+      ".q-table-methods-link-icon-plus"
+    );
+    ${dataObject}.methodBoxCloseIcon = ${dataObject}.element.querySelector(
+      ".q-table-methods-link-icon-close"
+    );
+    ${dataObject}.methodBoxArticleLink = ${dataObject}.element.querySelector(
+      ".q-table-methods-article-container"
+    );
+  }
+
+  function ${setVisibilityOfElementsFunctionName}() {
+    if (${dataObject}.isMethodBoxVisible) {
+      if (${dataObject}.methodBoxContainerElement) {
+        ${dataObject}.methodBoxContainerElement.classList.remove("hidden");
+      }
+      if (${dataObject}.methodBoxOpenIcon) {
+        ${dataObject}.methodBoxOpenIcon.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxCloseIcon) {
+        ${dataObject}.methodBoxCloseIcon.classList.remove("hidden");
+      }
+    } else {
+      if (${dataObject}.methodBoxContainerElement) {
+        ${dataObject}.methodBoxContainerElement.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxCloseIcon) {
+        ${dataObject}.methodBoxCloseIcon.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxOpenIcon) {
+        ${dataObject}.methodBoxOpenIcon.classList.remove("hidden");
+      }
+    }
+  }
+
+  function ${addEventListenerToMethodBoxToggleFunctionName}() {
+    if (${dataObject}.methodBoxToggleElement) {
+      ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
+        ${handleClickOnMethodBoxToogleFunctionName}(event);
+      });
+    }
+  }
+
+
+  function ${handleClickOnMethodBoxToogleFunctionName}(event) {
+    const eventDetail = {
+      eventInfo: {
+        componentName: "q-table",
+        eventAction: ${dataObject}.isMethodBoxVisible
+          ? "close-methods-box"
+          : "open-methods-box",
+        eventNonInteractive: false,
+      },
+    };
+
+    ${dataObject}.isMethodBoxVisible = !${dataObject}.isMethodBoxVisible;
+    ${setVisibilityOfElementsFunctionName}();
+
+    const trackingEvent = new CustomEvent("q-tracking-event", {
+      bubbles: true,
+      detail: eventDetail,
+    });
+    event.target.dispatchEvent(trackingEvent);
+  }
+
+  function ${addEventListenerToMethodBoxArticleLinkFunctionName}() {
+    if (${dataObject}.methodBoxArticleLink) {
+      ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
+        ${handleClickOnMethodBoxArticleLinkFunctionName}(event);
+      });
+    }
+  }
+
+  function ${handleClickOnMethodBoxArticleLinkFunctionName}(event) {
+    const eventDetail = {
+      eventInfo: {
+        componentName: "q-table",
+        eventAction: "open-method-box-article-link",
+        eventNonInteractive: false,
+      },
+    };
+
+    const trackingEvent = new CustomEvent("q-tracking-event", {
+      bubbles: true,
+      detail: eventDetail,
+    });
+    event.target.dispatchEvent(trackingEvent);
+  }
+
+  function ${renderColorColumnNumericalLegendFunctionName}(width) {
+    var legend = ${dataObject}.element.querySelector(".q-table-colorColumn-legend--numerical");
+    var legendContainer = ${dataObject}.element.querySelector(".q-table-colorColumn-legend-container");
+    if (width <= 640) {
+      legend.classList.remove("q-table-colorColumn-legend--fullwidth")
+      legendContainer.classList.add("q-table-colorColumn-legend-container--desktop"); 
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--fullwidth"); 
+    } else {
+      legend.classList.add("q-table-colorColumn-legend--fullwidth")
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--desktop"); 
+      legendContainer.classList.add("q-table-colorColumn-legend-container--fullwidth"); 
+    }
+  }
+
+  function ${setupMethodBoxFunctionName}() {
+    ${prepareMethodBoxElementsFunctionName}();
+    ${setVisibilityOfElementsFunctionName}();
+    ${renderColorColumnNumericalLegendFunction}
+    ${addEventListenerToMethodBoxToggleFunctionName}();
+    ${addEventListenerToMethodBoxArticleLinkFunctionName}();
+  }
+
+  window.q_domready.then(function() {
+    ${setupMethodBoxFunctionName}();
+  });
+  `;
+}
+
 module.exports = {
-  getDefaultScript: getDefaultScript,
-  getCardLayoutScript: getCardLayoutScript,
-  getShowMoreButtonScript: getShowMoreButtonScript,
-  getMinibarsScript: getMinibarsScript,
-  getSearchFormInputScript: getSearchFormInputScript
+  getDefaultScript,
+  getCardLayoutScript,
+  getShowMoreButtonScript,
+  getMinibarsScript,
+  getSearchFormInputScript,
+  getColorColumnScript,
 };

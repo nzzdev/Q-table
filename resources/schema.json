@@ -115,7 +115,9 @@
             }
           }
         },
-        "required": ["text"]
+        "required": [
+          "text"
+        ]
       }
     },
     "notes": {
@@ -141,7 +143,10 @@
                 "type": "ToolEndpoint",
                 "config": {
                   "endpoint": "option-availability/showTableSearch",
-                  "fields": ["options", "data"]
+                  "fields": [
+                    "options",
+                    "data"
+                  ]
                 }
               }
             ]
@@ -162,7 +167,10 @@
                 "type": "ToolEndpoint",
                 "config": {
                   "endpoint": "option-availability/cardLayoutIfSmall",
-                  "fields": ["options", "data"]
+                  "fields": [
+                    "options",
+                    "data"
+                  ]
                 }
               }
             ]
@@ -177,7 +185,10 @@
                 "type": "ToolEndpoint",
                 "config": {
                   "endpoint": "option-availability/minibars",
-                  "fields": ["options", "data"]
+                  "fields": [
+                    "options",
+                    "data"
+                  ]
                 }
               }
             ]
@@ -198,16 +209,22 @@
                   {
                     "type": "ToolEndpoint",
                     "config": {
-                      "endpoint": "option-availability/selectedColumn",
-                      "fields": ["options", "data"]
+                      "endpoint": "option-availability/selectedColumnMinibar",
+                      "fields": [
+                        "options",
+                        "data"
+                      ]
                     }
                   }
                 ],
                 "dynamicSchema": {
                   "type": "ToolEndpoint",
                   "config": {
-                    "endpoint": "dynamic-schema/selectedColumn",
-                    "fields": ["options", "data"]
+                    "endpoint": "dynamic-schema/selectedColumnMinibar",
+                    "fields": [
+                      "options",
+                      "data"
+                    ]
                   }
                 }
               }
@@ -222,7 +239,10 @@
                     "type": "ToolEndpoint",
                     "config": {
                       "endpoint": "option-availability/invertColors",
-                      "fields": ["options", "data"]
+                      "fields": [
+                        "options",
+                        "data"
+                      ]
                     }
                   }
                 ]
@@ -243,7 +263,10 @@
                     "type": "ToolEndpoint",
                     "config": {
                       "endpoint": "option-availability/barColor",
-                      "fields": ["options", "data"]
+                      "fields": [
+                        "options",
+                        "data"
+                      ]
                     }
                   }
                 ]
@@ -258,7 +281,10 @@
                         "type": "ToolEndpoint",
                         "config": {
                           "endpoint": "option-availability/barColorPositive",
-                          "fields": ["options", "data"]
+                          "fields": [
+                            "options",
+                            "data"
+                          ]
                         }
                       }
                     ]
@@ -289,7 +315,10 @@
                         "type": "ToolEndpoint",
                         "config": {
                           "endpoint": "option-availability/barColorNegative",
-                          "fields": ["options", "data"]
+                          "fields": [
+                            "options",
+                            "data"
+                          ]
                         }
                       }
                     ]
@@ -314,9 +343,573 @@
               }
             }
           }
+        },
+        "colorColumn": {
+          "title": "Einfärben",
+          "type": "object",
+          "Q:options": {
+            "availabilityChecks": [
+              {
+                "type": "ToolEndpoint",
+                "config": {
+                  "endpoint": "option-availability/colorColumn",
+                  "fields": [
+                    "options",
+                    "data"
+                  ]
+                }
+              }
+            ]
+          },
+          "properties": {
+            "selectedColumn": {
+              "title": "Spalte auswählen",
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/selectedColorColumn",
+                      "fields": [
+                        "options",
+                        "data"
+                      ]
+                    }
+                  }
+                ],
+                "dynamicSchema": {
+                  "type": "ToolEndpoint",
+                  "config": {
+                    "endpoint": "dynamic-schema/selectedColorColumn",
+                    "fields": [
+                      "options",
+                      "data"
+                    ]
+                  }
+                }
+              }
+            },
+            "colorColumnType": {
+              "title": "Einfärbungstyp",
+              "type": "string",
+              "enum": [
+                "numerical",
+                "categorical"
+              ],
+              "default": "numerical",
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/colorColumnType",
+                      "fields": [
+                        "options"
+                      ]
+                    }
+                  }
+                ],
+                "selectType": "radio",
+                "enum_titles": [
+                  "numerisch",
+                  "kategorisch"
+                ]
+              }
+            },
+            "numericalOptions": {
+              "title": "Optionen numerische Einfärbung",
+              "type": "object",
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/isNumerical",
+                      "fields": [
+                        "options"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "properties": {
+                "labelLegend": {
+                  "title": "Mittelwert-Markierung",
+                  "type": "string",
+                  "default": "noLabel",
+                  "enum": [
+                    "noLabel",
+                    "average",
+                    "median"
+                  ],
+                  "Q:options": {
+                    "enum_titles": [
+                      "ausblenden",
+                      "zeigt Durchschnitt an",
+                      "zeigt Median an"
+                    ]
+                  }
+                },
+                "bucketType": {
+                  "title": "Bucketing Methode",
+                  "type": "string",
+                  "default": "ckmeans",
+                  "enum": [
+                    "ckmeans",
+                    "quantile",
+                    "equal",
+                    "custom"
+                  ],
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/bucketType",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ],
+                    "enum_titles": [
+                      "Jenks Natural Breaks",
+                      "Quantile",
+                      "gleich grosse Intervalle",
+                      "manuelle Grenzen"
+                    ],
+                    "notificationChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "notification/numberBucketsOutOfColorScale",
+                          "fields": [
+                            "data",
+                            "options"
+                          ]
+                        },
+                        "priority": {
+                          "type": "medium",
+                          "value": 2
+                        }
+                      }
+                    ]
+                  }
+                },
+                "customBuckets": {
+                  "title": "Manuelle Bucketgrenzen",
+                  "type": "string",
+                  "Q:options": {
+                    "placeholder": "z.B. 5, 15, 20, 30",
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/customBuckets",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ],
+                    "notificationChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "notification/customBuckets",
+                          "fields": [
+                            "data",
+                            "options"
+                          ]
+                        },
+                        "priority": {
+                          "type": "medium",
+                          "value": 2
+                        }
+                      }
+                    ]
+                  }
+                },
+                "numberBuckets": {
+                  "title": "Anzahl Buckets",
+                  "type": "number",
+                  "default": 5,
+                  "minimum": 2,
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/numberBuckets",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ],
+                    "notificationChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "notification/numberBucketsExceedsDataSet",
+                          "fields": [
+                            "data",
+                            "options"
+                          ]
+                        },
+                        "priority": {
+                          "type": "medium",
+                          "value": 2
+                        }
+                      }
+                    ]
+                  }
+                },
+                "scale": {
+                  "title": "Skala",
+                  "type": "string",
+                  "Q:options": {
+                    "selectType": "select",
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/scale",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ],
+                    "dynamicSchema": {
+                      "type": "ToolEndpoint",
+                      "config": {
+                        "endpoint": "dynamic-schema/scale",
+                        "fields": [
+                          "options"
+                        ]
+                      }
+                    }
+                  },
+                  "default": "sequential"
+                },
+                "colorScheme": {
+                  "title": "Farbschema",
+                  "type": "string",
+                  "default": "one",
+                  "Q:options": {
+                    "selectType": "select",
+                    "dynamicSchema": {
+                      "type": "ToolEndpoint",
+                      "config": {
+                        "endpoint": "dynamic-schema/colorScheme",
+                        "fields": [
+                          "options"
+                        ]
+                      }
+                    },
+                    "availabilityChecks": [
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/colorScheme",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "colorOverwrites": {
+                  "type": "array",
+                  "title": "Bucketfarbe",
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "UserHasRole",
+                        "config": {
+                          "role": "expert-table"
+                        }
+                      },
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/customColors",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ],
+                    "dynamicSchema": {
+                      "type": "ToolEndpoint",
+                      "config": {
+                        "endpoint": "dynamic-schema/colorOverwrites",
+                        "fields": [
+                          "options",
+                          "data"
+                        ]
+                      }
+                    },
+                    "layout": "compact",
+                    "expandable": {
+                      "itemLabelTemplate": "${color} - ${position}"
+                    },
+                    "sortable": false
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "color": {
+                        "title": "Farbe",
+                        "type": "string",
+                        "Q:type": "color"
+                      },
+                      "textColor": {
+                        "title": "Textfarbe",
+                        "type": "string",
+                        "default": "light",
+                        "enum": [
+                          "light",
+                          "dark"
+                        ],
+                        "Q:options": {
+                          "selectType": "select",
+                          "enum_titles": [
+                            "hell",
+                            "dunkel"
+                          ]
+                        }
+                      },
+                      "position": {
+                        "title": "Position",
+                        "oneOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "Q:options": {
+                          "dynamicSchema": {
+                            "selectType": "select",
+                            "type": "ToolEndpoint",
+                            "config": {
+                              "endpoint": "dynamic-schema/colorOverwritesItem",
+                              "fields": [
+                                "options"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "categoricalOptions": {
+              "title": "Optionen kategorische Einfärbung",
+              "type": "object",
+              "Q:options": {
+                "availabilityChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "option-availability/isCategorical",
+                      "fields": [
+                        "options"
+                      ]
+                    }
+                  }
+                ],
+                "notificationChecks": [
+                  {
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "notification/numberCategoriesOutOfColorScale",
+                      "fields": [
+                        "data",
+                        "options"
+                      ]
+                    },
+                    "priority": {
+                      "type": "medium",
+                      "value": 2
+                    }
+                  }
+                ]
+              },
+              "properties": {
+                "colorOverwrites": {
+                  "type": "array",
+                  "title": "Kategorienfarbe",
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "UserHasRole",
+                        "config": {
+                          "role": "expert-table"
+                        }
+                      },
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/customColors",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ],
+                    "dynamicSchema": {
+                      "type": "ToolEndpoint",
+                      "config": {
+                        "endpoint": "dynamic-schema/colorOverwrites",
+                        "fields": [
+                          "options",
+                          "data"
+                        ]
+                      }
+                    },
+                    "layout": "compact",
+                    "expandable": {
+                      "itemLabelTemplate": "${color} - ${position}"
+                    },
+                    "sortable": false
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "color": {
+                        "title": "Farbe",
+                        "type": "string",
+                        "Q:type": "color"
+                      },
+                      "textColor": {
+                        "title": "Textfarbe",
+                        "type": "string",
+                        "default": "light",
+                        "enum": [
+                          "light",
+                          "dark"
+                        ],
+                        "Q:options": {
+                          "selectType": "select",
+                          "enum_titles": [
+                            "hell",
+                            "dunkel"
+                          ]
+                        }
+                      },
+                      "position": {
+                        "title": "Position",
+                        "oneOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "Q:options": {
+                          "dynamicSchema": {
+                            "selectType": "select",
+                            "type": "ToolEndpoint",
+                            "config": {
+                              "endpoint": "dynamic-schema/colorOverwritesItem",
+                              "fields": [
+                                "options",
+                                "data"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "customCategoriesOrder": {
+                  "type": "array",
+                  "title": "Reihenfolge Kategorie",
+                  "Q:options": {
+                    "availabilityChecks": [
+                      {
+                        "type": "UserHasRole",
+                        "config": {
+                          "role": "expert-table"
+                        }
+                      },
+                      {
+                        "type": "ToolEndpoint",
+                        "config": {
+                          "endpoint": "option-availability/customCategoriesOrder",
+                          "fields": [
+                            "options"
+                          ]
+                        }
+                      }
+                    ],
+                    "dynamicSchema": {
+                      "type": "ToolEndpoint",
+                      "config": {
+                        "endpoint": "dynamic-schema/customCategoriesOrder",
+                        "fields": [
+                          "data",
+                          "options"
+                        ]
+                      }
+                    },
+                    "layout": "compact",
+                    "sortable": true
+                  },
+                  "items": {
+                    "type": "object",
+                    "title": "Kategorie",
+                    "properties": {
+                      "category": {
+                        "title": "Kategorie",
+                        "oneOf": [
+                          {
+                            "type": "string"
+                          }
+                        ],
+                        "Q:options": {
+                          "dynamicSchema": {
+                            "selectType": "select",
+                            "type": "ToolEndpoint",
+                            "config": {
+                              "endpoint": "dynamic-schema/customCategoriesOrderItem",
+                              "fields": [
+                                "data",
+                                "options"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
   },
-  "required": ["title", "data"]
+  "required": [
+    "title",
+    "data"
+  ]
 }

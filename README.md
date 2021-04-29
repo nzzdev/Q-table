@@ -162,7 +162,7 @@ Footnotes are a feature to display annotations in the table and the sources in t
     {
       type: "numeric",
       value: "3",
-      classes: ["q-table-col-footnotes-cardlayout-single"],
+      classes: ["q-table-footnote-col-cardlayout-single"],
       footnote: {
         value: 2,
         unicode: "²",
@@ -175,28 +175,13 @@ Footnotes are a feature to display annotations in the table and the sources in t
 
 ###### Implementation details frontend
 
-- The `value` of the cell will be displayed inside a `span`-element with the class `q-table-annotation`
+- The `value` of the cell will be displayed inside a `span`-element with the class `q-table-footnote-annotation`
 - The `span`-element has the dataset `data-annotation` and the value `cell.footnote.value` applied to it
 - With the `::after` pseudo element, the dataset `data-annotation` will then be applied after the value
 - For the sources of the annotations the `footnotes` array applied to the `context` will be looped and displayed in the footer
+- If the option `colorColumn` is selected, the footnote will be dispalyed in a seperate element and the color of the footnote will be set to `opacity: 0.65`
 
 [to the top](#table-of-contents)
-
-#### Table search
-
-<img src="/doc/table-search.png" align="right" width=300 height=400>
-
-This feature makes large tables searchable.
-
-###### Implementation details
-- By default the table is collapsed and the `q-table_show-more-button` is visible at the bottom of the table ([see Collapsable table](#collapsable-table)).
-- When the user starts typing, all rows will be made visible and the `q-table_show-more-button` disappears.
-- The actual search function triggers, as soon as the user types the second character.
-- The filter searches through text-based columns only.
-- When the user deletes his input, the table collapses and the `q-table_show-more-button` will be visible again.
-
-[to the top](#table-of-contents)
-
 ### Options
 
 #### hideTableHeader
@@ -211,7 +196,18 @@ This options allows to hide the header of each column. By default it's `false`
 
 #### showTableSearch
 
+<img src="/doc/table-search.png" align="right" width=300 height=400>
+
 This option allows to show or hide the table search feature. The option is only available, when there are more than 16 rows in the table. Default value is `false`.
+
+###### Implementation details
+- By default the table is collapsed and the `q-table_show-more-button` is visible at the bottom of the table ([see Collapsable table](#collapsable-table)).
+- When the user starts typing, all rows will be made visible and the `q-table_show-more-button` disappears.
+- The actual search function triggers, as soon as the user types the second character.
+- The filter searches through text-based columns only.
+- When the user deletes his input, the table collapses and the `q-table_show-more-button` will be visible again.
+
+[to the top](#table-of-contents)
 
 ###### Implementation details
 
@@ -282,6 +278,110 @@ Minibars are a visual feature to display the difference between numbers in the t
 - The function `handleMinibarsMinWidthFunctionName()` then either removes or adds `q-table-minibar-cell-mobile` or `q-table-minibar--mixed-mobile` to the cell according to the `type` of the table which can be read out on the dataset `data-minibar` on each cell
 
 [to the top](#table-of-contents)
+
+
+#### colorColumn
+
+<img src="/doc/colorColumn.png" align="right" width=427 height=202>
+
+This feature allows to select a column and colorize it. There are two types: 
+- `numerical`
+- `categorical`
+
+##### Numerical 
+
+When selecting the numerical option, the numbers inside the column will be split in buckets. Depending on the `bucketType`, the buckets will be calculated differently. 
+This option will be displayed with columns containing numerical values only, otherwise an error will be displayed.
+
+#### Label
+
+The label allows to select between three options: 
+- `noLabel` (default)
+- `average`
+- `median`
+
+This value will then be displayed on the legend. 
+
+###### BucketType
+
+There are four different buckets and each of it comes with it's own properties: 
+
+- Ckmeans, `numberBuckets`
+- Quantile, `numberBuckets`
+- Equal, `numberBuckets`
+- Custom, , `numberBuckets` and `customBuckets`
+
+###### Scale
+
+The scale can be chosen from between two types: 
+- `sequential`
+- `diverging`
+
+###### Custom Color
+
+When having the expert-role added, the user is able to adjust the colors of the buckets. 
+
+When selecting the `diverging`-option, the options from which border it will be spilt are dynamically listed too. 
+
+##### Categorical
+
+When selecting the categorical option, the values of the column will be mapped to categories. The categories will then be colored according to the color-scale. 
+
+##### Legend 
+
+The way the legend will be displayed is depending on the `colorColumnType`. When using numerical-option, the range of the values will be calculated by buckets, which can be changed on the options. The lowest and highest value will be displayed on the left and right end of the legend. 
+
+Depending on the selected bucketing method, the legend will be displayed differently. The array passed to render the legend looks as following:
+
+```javascript
+buckets = [
+    {
+        from, // lowest bucket border value
+        to, // highest bucket border value
+        color, // color depending on the selected color schema
+    },
+]
+```
+
+If there's the case that one of the bucket has just a single value in it, the single bucket will be displayed below with a seperate icon. If there is an entry without a value, there will be an extra icon too, for displaying 'no data'.
+
+The categorical legend will simply map the values to their colors.
+
+###### Implementation details serverside
+
+
+- Just like the feature minibars, the `option-availability` route will check if there are at least 3 columns to display this option\
+- If the option is selected, through the `dynamic-schema` route, depending on which `colorColumnType` is selected, will display specific options
+- **Important**: The function `getColorColumnContext()` will always return an object, when minibars aren't used the object is empty
+- The function `getColorColumnContext()` uses three parameters: `colorColumn`(option), `data`(data from table) and `width`(content-width)
+- If the option is selected, the function `getColorColumnContext()` will always return this object
+```javascript
+{
+  categoricalOptions, // object
+  colorColumnType, // string
+  colors, // array
+  legendData, // object
+  numericalOptions, // object
+  selectedColumn, // number
+}
+```
+
+- Depending on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added 
+- **Important**: The properties `categoricalOptions` and `numericalOptions` will always be an object, even if not selected
+- If selecting the `colorColumnType` `numerical`, the following properties will be added 
+```javascript
+{
+  methodBox, // object
+  formattedValue, // array 
+}
+```
+
+###### Implementation details frontend
+
+- Either `numerical` or `categorical`, both table-cells will be colored with the reference to the `colors` array
+- The legend will be displayed 100% on `desktop` and `mobile`, on `fullwidth` it will be displayed `640px` (size of the text in article)
+- When resizing the graphic, the `EventLister` on the event `resize` implemented in the `renderColorColumnNumericalLegend()` will be triggered
+- The legend will then be resized according to the `width`
 
 #### Display options
 
