@@ -1,4 +1,4 @@
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const colorColumnHelpers = require("../../helpers/colorColumn.js");
 
 const sequentialScaleMax = 7;

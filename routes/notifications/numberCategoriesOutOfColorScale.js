@@ -1,4 +1,4 @@
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const dataHelpers = require("../../helpers/data.js");
 
 const numberMainColors = require("../../helpers/colorColumnColor.js").digitWords.length;
