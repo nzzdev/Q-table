@@ -14,13 +14,13 @@
     "@hapi/boom": "^9.1.2",
     "@hapi/hapi": "^20.1.2",
     "@hapi/inert": "^6.0.3",
-    "joi": "^17.4.0",
     "ajv": "^6.12.6",
     "array2d": "0.0.5",
     "clone": "^2.1.2",
     "d3-format": "^1.4.5",
-    "nunjucks": "^3.2.3",
+    "joi": "^17.4.0",
     "simple-statistics": "^7.7.0",
+    "svelte": "^3.38.2",
     "uglify-js": "^3.13.8"
   },
   "devDependencies": {
