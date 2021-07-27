@@ -15,12 +15,9 @@
       if (item.options.hideTableHeader !== true) {
         dataLabel += tableData[0][colIndex].value;
       }
-      if (
-        (item.options.cardLayout || item.options.cardLayoutIfSmall) &&
-        tableData[0][colIndex].footnote &&
-        colIndex === 0
-      ) {
-        dataLabel += " " + tableData[0][colIndex].footnote.unicode;
+
+      if (initWithCardLayout && tableData[0][colIndex].footnote) {
+        dataLabel += tableData[0][colIndex].footnote.unicode;
       }
     }
     return dataLabel;
