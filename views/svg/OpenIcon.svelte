@@ -1,4 +1,4 @@
-<div class="q-table-methodbox-link-icon-plus">
+<div class="q-table-methods-link-icon-plus">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15">
     <g>
       <path
