@@ -7,7 +7,7 @@
   export let colIndex;
   export let initWithCardLayout;
 
-  $: styles = getStyles(colIndex, rowIndex);
+  $: styles = getCellStyles(colIndex, rowIndex);
 
   function getDataLabel(colIndex) {
     let dataLabel = "";
@@ -23,7 +23,7 @@
     return dataLabel;
   }
 
-  function getStyles(colIndex, rowIndex) {
+  function getCellStyles(colIndex, rowIndex) {
     let classes = `q-table__cell q-table__cell--${
       cell.type
     } ${cell.classes.join(" ")} `;

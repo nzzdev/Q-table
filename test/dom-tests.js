@@ -676,17 +676,12 @@ lab.experiment("footnotes", () => {
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll("td");
 
-    console.log(annotations.innerHTML)
-
     const footnoteOne = decodeURI(
       annotations[0].getAttribute("data-label").split("Rank")[1]
     );
     const footnoteTwo = decodeURI(
       annotations[1].getAttribute("data-label").split("Name")[1]
     );
-
-    console.log(footnoteOne)
-    console.log(footnoteTwo)
 
     expect(footnoteOne).to.be.equal("\u00b9");
     expect(footnoteTwo).to.be.equal("\u00b2");

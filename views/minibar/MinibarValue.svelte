@@ -32,7 +32,7 @@
     return;
   }
 
-  function getClasses() {
+  function getCellClass() {
     let classes = `q-table__cell q-table__cell--${
       cell.type
     } ${cell.classes.join(" ")} `;
@@ -46,7 +46,7 @@
     return classes;
   }
 
-  function getStyles() {
+  function getCellStyles() {
     let styles = "";
     if (
       item.options.minibar.selectedColumn &&
@@ -66,8 +66,8 @@
 <td
   data-label={getDataLabelAttribute()}
   data-minibar={getMinibarDataAttribute()}
-  class={getClasses()}
-  style={getStyles()}
+  class={getCellClass()}
+  style={getCellStyles()}
 >
   {#if cell.footnote}
     <span
