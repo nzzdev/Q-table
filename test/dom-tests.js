@@ -1,7 +1,7 @@
 const Lab = require("@hapi/lab");
 const Code = require("@hapi/code");
 const Hapi = require("@hapi/hapi");
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const lab = (exports.lab = Lab.script());
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -121,10 +121,10 @@ lab.experiment("cell values", () => {
       },
     });
 
-    elements(response.result.markup, ".q-table__cell--numeric").then(
+    elements(response.result.markup, ".q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)").then(
       (elements) => {
         elements.forEach((element) => {
-          expect(element.innerHTML.includes(" ")).to.be.equals(true);
+          expect(element.innerHTML.charCodeAt(8)).to.be.equals(8197);
         });
       }
     );
@@ -140,11 +140,9 @@ lab.experiment("cell values", () => {
       },
     });
 
-    elements(response.result.markup, ".q-table__cell--numeric").then(
+    elements(response.result.markup, ".q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)").then(
       (elements) => {
-        elements.forEach((element) => {
-          expect(element.innerHTML.includes(" ")).to.be.equals(true);
-        });
+        expect(elements[1].innerHTML.charCodeAt(9)).to.be.equals(8197);
       }
     );
   });
@@ -159,11 +157,10 @@ lab.experiment("cell values", () => {
       },
     });
 
-    elements(response.result.markup, ".q-table__cell--numeric").then(
+    elements(response.result.markup, ".q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)").then(
       (elements) => {
-        elements.forEach((element) => {
-          expect(element.innerHTML.includes(" ")).to.be.equals(true);
-        });
+        expect(elements[0].innerHTML.charCodeAt(7)).to.be.equals(8197);
+
       }
     );
   });
@@ -573,8 +570,8 @@ lab.experiment("footnotes", () => {
 
     footnotes.forEach((footnote) => {
       arrayOfFootnotes.push({
-        index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
-        text: footnote.childNodes[2].innerHTML.replace("\n        ", ""),
+        index: footnote.childNodes[0].innerHTML,
+        text: footnote.childNodes[1].innerHTML,
       });
     });
 
@@ -617,8 +614,8 @@ lab.experiment("footnotes", () => {
 
     footnotes.forEach((footnote) => {
       arrayOfFootnotes.push({
-        index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
-        text: footnote.childNodes[2].innerHTML.replace("\n        ", ""),
+        index: footnote.childNodes[0].innerHTML,
+        text: footnote.childNodes[1].innerHTML,
       });
     });
 
@@ -649,8 +646,8 @@ lab.experiment("footnotes", () => {
 
     footnotes.forEach((footnote) => {
       arrayOfFootnotes.push({
-        index: footnote.childNodes[1].innerHTML.replace("\n        ", ""),
-        text: footnote.childNodes[2].innerHTML.replace("\n        ", ""),
+        index: footnote.childNodes[0].innerHTML,
+        text: footnote.childNodes[1].innerHTML,
       });
     });
 
@@ -709,8 +706,8 @@ lab.experiment("footnotes", () => {
       ".q-table-footnote-index"
     );
 
-    expect(annotations[0].innerHTML.replace("\n    ", "")).to.be.equal("1");
-    expect(footnoteIndexes[0].innerHTML.replace("\n        ", "")).to.be.equal(
+    expect(annotations[0].innerHTML).to.be.equal("1");
+    expect(footnoteIndexes[0].innerHTML).to.be.equal(
       "1"
     );
     expect(annotations.length).to.be.equal(6);

@@ -1,7 +1,7 @@
 const Lab = require("@hapi/lab");
 const Code = require("@hapi/code");
 const Hapi = require("@hapi/hapi");
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const lab = (exports.lab = Lab.script());
 
 const expect = Code.expect;
@@ -45,7 +45,7 @@ lab.experiment("basics", () => {
 });
 
 lab.experiment("rendering-info/web", () => {
-  it("renders a table", { plan: 4 }, async () => {
+  it("renders a table", async () => {
     const response = await server.inject({
       url: "/rendering-info/web?_id=someid",
       method: "POST",
@@ -55,8 +55,8 @@ lab.experiment("rendering-info/web", () => {
       },
     });
     expect(response.statusCode).to.be.equal(200);
-    expect(response.result.markup).startsWith(
-      '<div class="s-q-item q-table " id="q_table_someid_'
+    expect(response.result.markup).includes(
+      '<div class="s-q-item q-table" id="q_table_someid_'
     );
     expect(response.result.stylesheets[0].name).startsWith("q-table.");
     expect(response.result.scripts[0].content).to.be.a.string();

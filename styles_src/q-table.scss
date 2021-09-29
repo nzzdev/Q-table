@@ -22,7 +22,7 @@ td.q-table__cell--numeric {
 
 // the high specificty is needed because nzz frontends apply lots of highly specific table styles we need to overwrite
 // this will change in the future and allow us to lower the specificity here again
-.q-table {  
+.q-table {
   table:not(.q-table-methods-legend-table) {
     border-collapse: collapse;
     border: none;
@@ -30,9 +30,10 @@ td.q-table__cell--numeric {
     padding: 0;
     width: 100%;
     table-layout: auto;
-    empty-cells: show; 
+    empty-cells: show;
 
-    th, td {
+    th,
+    td {
       padding: 10px 4px;
       vertical-align: top;
       border: none !important;
@@ -40,7 +41,7 @@ td.q-table__cell--numeric {
       line-height: unset;
       font-weight: unset;
     }
-    
+
     thead {
       background: unset;
     }
@@ -52,7 +53,6 @@ td.q-table__cell--numeric {
       border-color: #e9e9ee;
     }
   }
-
 }
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
 .q-table:not(.q-table--card-layout)
@@ -192,7 +192,7 @@ tr.q-table-state-visible {
   display: table-row !important;
 }
 
-#q-table-minibar-header {
+.q-table-minibar-header {
   text-align: center !important;
 }
 
@@ -290,13 +290,13 @@ tr.q-table-state-visible {
     width: 100%;
 
     &--colorColumn {
-      position: absolute; 
-      font-size: 11px; 
-      margin-top: -5.5px; 
+      position: absolute;
+      font-size: 11px;
+      margin-top: -5.5px;
       margin-left: 1px;
 
       sup {
-        color: currentColor; 
+        color: currentColor;
         opacity: 0.65;
       }
     }
@@ -312,11 +312,10 @@ tr.q-table-state-visible {
   }
 
   &-column {
-
     &--single {
       padding-right: 8px !important;
     }
-  
+
     &--double {
       padding-right: 16px !important;
     }
@@ -324,7 +323,7 @@ tr.q-table-state-visible {
 
   &-footer {
     margin-top: 4px;
-  } 
+  }
 }
 
 .q-table-methods {
@@ -443,20 +442,20 @@ tr.q-table-state-visible {
       &--single-bucket {
         margin-right: 16px;
       }
-      
+
       &-icon {
         &--interactive {
           margin-top: -2px;
         }
-      
+
         &--no-interactive {
           margin-top: 1px;
         }
-      
+
         margin-right: 8px;
       }
     }
-  
+
     &-bucket {
       fill: currentColor;
     }
@@ -478,7 +477,7 @@ tr.q-table-state-visible {
       width: 100%;
       position: relative;
     }
-  
+
     &-borders {
       position: absolute;
       height: 28px;
@@ -492,18 +491,17 @@ tr.q-table-state-visible {
       width: 100%;
       display: flex;
       justify-content: space-between;
-  
+
       &--minVal {
         margin-left: 2px;
       }
-  
+
       &--maxVal {
         margin-right: 2px;
       }
     }
 
     &-info {
-      
       &--single-bucket {
         margin-right: 16px;
       }
@@ -514,12 +512,12 @@ tr.q-table-state-visible {
         &--interactive {
           margin-top: -2px;
         }
-      
+
         &--static {
           margin-top: 1px;
         }
       }
-    }  
+    }
 
     &--numerical {
       display: flex;

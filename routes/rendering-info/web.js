@@ -9,9 +9,10 @@ const helpersDir = __dirname + "/../../helpers/";
 const viewsDir = __dirname + "/../../views/";
 const stylesDir = __dirname + "/../../styles/";
 
-// setup nunjucks environment
-const nunjucks = require("nunjucks");
-const nunjucksEnv = new nunjucks.Environment();
+// setup svelte environment
+require("svelte/register");
+const staticTemplate = require(viewsDir + "Table.svelte").default;
+
 
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
@@ -151,10 +152,7 @@ module.exports = {
     }
 
     try {
-      renderingInfo.markup = nunjucksEnv.render(
-        path.join(viewsDir, "table.html"),
-        context
-      );
+      renderingInfo.markup = staticTemplate.render(context).html
     } catch (ex) {
       console.log(ex)
     }
@@ -241,7 +239,7 @@ module.exports = {
         content: renderingInfoScripts.getColorColumnScript(context),
       });
     }
-
+    
     // minify the scripts
     for (let script of renderingInfo.scripts) {
       script.content = UglifyJS.minify(script.content).code;
