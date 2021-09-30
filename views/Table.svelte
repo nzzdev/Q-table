@@ -105,7 +105,7 @@
               rowIndex.index >= tableData.length - numberOfRowsToHide}
           >
             {#each row as cell, colIndex}
-              {#if item.options.minibar && item.options.minibar.selectedColumn && item.options.minibar.selectedColumn === colIndex}
+              {#if item.options.minibar && (item.options.minibar.selectedColumn !== null || item.options.minibar.selectedColumn !== undefined) && item.options.minibar.selectedColumn === colIndex}
                 {#if minibar.type === "positive"}
                   <MinibarValue
                     {item}
