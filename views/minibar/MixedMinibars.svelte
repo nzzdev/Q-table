@@ -34,8 +34,9 @@
   function getMinibarClasses() {
     let classes = "";
     if (
+      (item.options.minibar.selectedColumn !== null ||
+        item.options.minibar.selectedColumn !== undefined) &&
       item.options.minibar.selectedColumn === colIndex &&
-      item.options.minibar.selectedColumn &&
       !initWithCardLayout
     ) {
       classes = "q-table-minibar--mixed";

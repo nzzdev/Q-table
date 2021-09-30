@@ -29,7 +29,8 @@
     } ${cell.classes.join(" ")} `;
     let styles = "";
     if (
-      colorColumn.selectedColumn &&
+      (colorColumn.selectedColumn !== null ||
+        colorColumn.selectedColumn !== undefined) &&
       colorColumn.selectedColumn === colIndex &&
       !initWithCardLayout
     ) {
@@ -49,7 +50,7 @@
   class={styles.class}
   style={styles.style}
 >
-  {#if colorColumn.selectedColumn && colorColumn.selectedColumn === colIndex && !initWithCardLayout}
+  {#if (colorColumn.selectedColumn !== null || colorColumn.selectedColumn !== undefined) && colorColumn.selectedColumn === colIndex && !initWithCardLayout}
     {#if cell.footnote}
       <span class={colorColumn.colors[rowIndex].textColor}>
         {#if colorColumn.colorColumnType === "numerical"}
