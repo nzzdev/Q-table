@@ -37,6 +37,12 @@
     }
     return style;
   }
+
+  function getMinibarClassName() {
+    return minibar.values[rowIndex].type === "positive"
+      ? minibar.barColor.positive.className
+      : minibar.barColor.negative.className;
+  }
 </script>
 
 {#if (item.options.minibar.selectedColumn !== null || item.options.minibar.selectedColumn !== undefined) && item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
@@ -46,8 +52,8 @@
     style={getCellStyle()}
   >
     <div
-      class="q-table-minibar-bar--{minibar.values[rowIndex].type} {minibar
-        .barColor.negative.className}"
+      class="q-table-minibar-bar--{minibar.values[rowIndex]
+        .type} {getMinibarClassName()}"
       style={getBarStyle()}
     />
   </td>
