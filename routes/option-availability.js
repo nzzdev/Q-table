@@ -139,7 +139,9 @@ module.exports = {
 
       if (optionName === "isCategorical") {
         return {
-          available: item.options.colorColumn.colorColumnType === "categorical",
+          available:
+            item.options.colorColumn.selectedColumn &&
+            item.options.colorColumn.colorColumnType === "categorical",
         };
       }
 
