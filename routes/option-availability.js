@@ -132,7 +132,7 @@ module.exports = {
       if (optionName === "isNumerical") {
         return {
           available:
-            item.options.colorColumn.selectedColumn &&
+            item.options.colorColumn.selectedColumn !== null &&
             item.options.colorColumn.colorColumnType === "numerical",
         };
       }
@@ -140,7 +140,7 @@ module.exports = {
       if (optionName === "isCategorical") {
         return {
           available:
-            item.options.colorColumn.selectedColumn &&
+            item.options.colorColumn.selectedColumn !== null &&
             item.options.colorColumn.colorColumnType === "categorical",
         };
       }
