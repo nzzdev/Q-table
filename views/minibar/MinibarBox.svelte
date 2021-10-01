@@ -45,7 +45,7 @@
   }
 </script>
 
-{#if (item.options.minibar.selectedColumn !== null || item.options.minibar.selectedColumn !== undefined) && item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
+{#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
   <td
     class="q-table-minibar-cell"
     data-minibar={minibar.type}

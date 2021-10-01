@@ -34,8 +34,6 @@
   function getMinibarClasses() {
     let classes = "";
     if (
-      (item.options.minibar.selectedColumn !== null ||
-        item.options.minibar.selectedColumn !== undefined) &&
       item.options.minibar.selectedColumn === colIndex &&
       !initWithCardLayout
     ) {

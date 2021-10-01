@@ -23,8 +23,6 @@
 
   function getMinibarDataAttribute() {
     if (
-      (item.options.minibar.selectedColumn !== null ||
-        item.options.minibar.selectedColumn !== undefined) &&
       item.options.minibar.selectedColumn === colIndex &&
       !item.options.initWithCardLayout
     ) {
@@ -38,8 +36,6 @@
       cell.type
     } ${cell.classes.join(" ")} `;
     if (
-      (item.options.minibar.selectedColumn !== null ||
-        item.options.minibar.selectedColumn !== undefined) &&
       item.options.minibar.selectedColumn === colIndex &&
       !item.options.initWithCardLayout
     ) {
@@ -51,8 +47,6 @@
   function getCellStyles() {
     let styles = "";
     if (
-      (item.options.minibar.selectedColumn !== null ||
-        item.options.minibar.selectedColumn !== undefined) &&
       item.options.minibar.selectedColumn === colIndex &&
       !item.options.initWithCardLayout
     ) {

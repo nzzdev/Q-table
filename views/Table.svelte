@@ -24,8 +24,6 @@
       minibar &&
       minibar.type &&
       item.options.minibar &&
-      (item.options.minibar.selectedColumn !== null ||
-        item.options.minibar.selectedColumn !== undefined) &&
       item.options.minibar.selectedColumn === colIndex &&
       minibar.type !== "mixed" &&
       !initWithCardLayout
@@ -36,8 +34,6 @@
       minibar &&
       minibar.type === "mixed" &&
       item.options.minibar &&
-      (item.options.minibar.selectedColumn !== null ||
-        item.options.minibar.selectedColumn !== undefined) &&
       item.options.minibar.selectedColumn === colIndex
     ) {
       colspan = 0;
