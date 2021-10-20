@@ -65,7 +65,7 @@
   data-minibar={minibar.type}
   class="q-table__cell {cell.classes.join(' ')} {getMinibarClasses()}"
 >
-  {#if item.options.minibar.selectedColumn === colIndex && item.options.minibar.selectedColumn && !initWithCardLayout}
+  {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
     <div
       data-minibar={minibar.values[rowIndex].type}
       class="q-table-minibar-alignment--{minibar.values[rowIndex]
@@ -88,7 +88,7 @@
   {:else}
     {cell.value}
   {/if}
-  {#if item.options.minibar.selectedColumn === colIndex && item.options.minibar.selectedColumn && !initWithCardLayout}
+  {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
     {#if minibar.values[rowIndex].type !== "empty"}
       <div
         data-minibar={minibar.values[rowIndex].type}
