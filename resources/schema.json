@@ -707,7 +707,8 @@
                             "config": {
                               "endpoint": "dynamic-schema/colorOverwritesItem",
                               "fields": [
-                                "options"
+                                "options",
+                                "data"
                               ]
                             }
                           }
