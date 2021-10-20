@@ -71,7 +71,7 @@
         />
       </div>
     {/if}
-    {#if colorColumn && colorColumn.selectedColumn !== undefined && !initWithCardLayout}
+    {#if colorColumn && colorColumn.selectedColumn !== undefined && colorColumn.selectedColumn !== item.options.minibar.selectedColumn && !initWithCardLayout}
       <Legend {colorColumn} {noInteraction} />
     {/if}
     <table class="q-table__table">
