@@ -70,7 +70,11 @@ function getCategoryTextColor(colorScheme, customColor) {
       ? "s-color-gray-1"
       : "s-color-gray-9";
   } else {
-    if (["one", "five", "seven", "nine", "eleven"].includes(colorScheme)) {
+    if (
+      ["one", "four", "five", "seven", "nine", "ten", "eleven"].includes(
+        colorScheme
+      )
+    ) {
       return "s-color-gray-1";
     }
   }
@@ -85,7 +89,7 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
 
   if (scale === "sequential") {
     colorClass = `s-viz-color-sequential-${colorScheme}-${numberBuckets}-${numberBuckets - index
-      }`;
+    }`;
 
     textColor = getBucketTextColor(customColor, {
       scale,
