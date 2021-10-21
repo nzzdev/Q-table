@@ -32,7 +32,6 @@
           <svg class="q-table-colorColumn-legend">
             <g>
               {#each colorColumn.legendData.buckets as bucket, bucketIndex}
-                {JSON.stringify(colorColumn)}
                 {#if bucket.color.customColor}
                   <rect
                     class="q-table-colorColumn-legend-bucket"
