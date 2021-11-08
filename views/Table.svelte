@@ -24,7 +24,6 @@
       minibar &&
       minibar.type &&
       item.options.minibar &&
-      item.options.minibar.selectedColumn &&
       item.options.minibar.selectedColumn === colIndex &&
       minibar.type !== "mixed" &&
       !initWithCardLayout
@@ -35,7 +34,6 @@
       minibar &&
       minibar.type === "mixed" &&
       item.options.minibar &&
-      item.options.minibar.selectedColumn &&
       item.options.minibar.selectedColumn === colIndex
     ) {
       colspan = 0;
@@ -73,7 +71,7 @@
         />
       </div>
     {/if}
-    {#if colorColumn && colorColumn.selectedColumn && !initWithCardLayout}
+    {#if colorColumn && colorColumn.selectedColumn !== undefined && colorColumn.selectedColumn !== item.options.minibar.selectedColumn && !initWithCardLayout}
       <Legend {colorColumn} {noInteraction} />
     {/if}
     <table class="q-table__table">
@@ -105,7 +103,7 @@
               rowIndex.index >= tableData.length - numberOfRowsToHide}
           >
             {#each row as cell, colIndex}
-              {#if item.options.minibar && item.options.minibar.selectedColumn && item.options.minibar.selectedColumn === colIndex}
+              {#if item.options.minibar && item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined && item.options.minibar.selectedColumn === colIndex}
                 {#if minibar.type === "positive"}
                   <MinibarValue
                     {item}
