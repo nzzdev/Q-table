@@ -1,0 +1,51 @@
+{
+  "title": "FIXTURE: simple one-column short table with numeric values",
+  "subtitle": "some subtitle here",
+  "data": {
+    "table": [
+      [
+        "Punkte"
+      ],
+      [
+        "10000000"
+      ],
+      [
+        "20000000"
+      ],
+      [
+        "355547.5"
+      ],
+      [
+        "-3500000"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "options": {
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": null
+    }
+  },
+  "notes": "Anmerkungen",
+  "sources": [
+    {
+      "link": {},
+      "text": "Bloomberg"
+    }
+  ]
+}

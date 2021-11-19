@@ -129,12 +129,24 @@ lab.experiment("option availability endpoint", () => {
     expect(response.result.available).to.be.equal(true);
   });
 
-  it("returns false for option availability of minibar selectedColumn", async () => {
+  it("returns true for option availability of minibar selectedColumn", async () => {
     const request = {
       method: "POST",
       url: "/option-availability/selectedColumnMinibar",
       payload: {
         item: require("../resources/fixtures/data/two-column.json"),
+      },
+    };
+    const response = await server.inject(request);
+    expect(response.result.available).to.be.equal(true);
+  });
+
+  it("Minibar is not available from a certain number of columns", async () => {
+    const request = {
+      method: "POST",
+      url: "/option-availability/selectedColumnMinibar",
+      payload: {
+        item: require("../resources/fixtures/data/one-column.json"),
       },
     };
     const response = await server.inject(request);
@@ -153,12 +165,24 @@ lab.experiment("option availability endpoint", () => {
     expect(response.result.available).to.be.equal(true);
   });
 
-  it("returns false for option availability of colorColumn selectedColumn", async () => {
+  it("returns true for option availability of colorColumn selectedColumn", async () => {
     const request = {
       method: "POST",
       url: "/option-availability/selectedColorColumn",
       payload: {
         item: require("../resources/fixtures/data/two-column.json"),
+      },
+    };
+    const response = await server.inject(request);
+    expect(response.result.available).to.be.equal(true);
+  });
+
+  it("ColorColumn is not available from a certain number of columns", async () => {
+    const request = {
+      method: "POST",
+      url: "/option-availability/selectedColorColumn",
+      payload: {
+        item: require("../resources/fixtures/data/one-column.json"),
       },
     };
     const response = await server.inject(request);
