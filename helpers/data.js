@@ -320,6 +320,13 @@ function getRoundedValue(value, maxDigitsAfterComma) {
   return Math.round(value * roundingFactor) / roundingFactor;
 }
 
+function getCustomBucketBorders(customBuckets) {
+  const customBorderStrings = customBuckets.split(",");
+  return customBorderStrings.map((borderValue) => {
+    return parseFloat(borderValue.trim());
+  });
+}
+
 module.exports = {
   getTableData: getTableData,
   getNumericColumns,
@@ -336,4 +343,5 @@ module.exports = {
   getFormattedValue,
   getFormattedBuckets,
   getRoundedValue,
+  getCustomBucketBorders,
 };

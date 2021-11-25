@@ -21,7 +21,7 @@ module.exports = {
       item.data.table = dataHelpers.getDataWithoutHeaderRow(item.data.table);
 
       if (item.options.colorColumn.bucketType === "custom") {
-        const bucketBorders = colorColumnHelpers.getCustomBucketBorders(
+        const bucketBorders = dataHelpers.getCustomBucketBorders(
           item.options.colorColumn.customBuckets
         );
         const values = dataHelpers.getNumericalValuesByColumn(

@@ -12,7 +12,7 @@ function getNumberBuckets(colorColumn) {
     if (colorColumn.numericalOptions.bucketType !== "custom") {
       return colorColumn.numericalOptions.numberBuckets;
     } else {
-      const bucketBorderValues = getCustomBucketBorders(
+      const bucketBorderValues = dataHelpers.getCustomBucketBorders(
         colorColumn.numericalOptions.customBuckets
       );
       return bucketBorderValues.length - 1; // min value is part of border values and has to be excluded here
