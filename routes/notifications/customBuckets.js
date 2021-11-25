@@ -1,6 +1,5 @@
 const Joi = require("joi");
 const dataHelpers = require("../../helpers/data.js");
-const colorColumnHelpers = require("../../helpers/colorColumn.js");
 
 module.exports = {
   method: "POST",
