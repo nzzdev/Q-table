@@ -6,11 +6,11 @@ const ckmeans = simpleStatistics.ckmeans;
 const quantile = simpleStatistics.quantile;
 
 const widthConfig = {
-  legendSmall: 640,  // pixel
+  legendSmall: 640, // pixel
   legendLarge: 100, // percent
   average: 100,
-  median: 60
-}
+  median: 60,
+};
 
 function getBucketsForLegend(
   filteredValues,
@@ -116,7 +116,6 @@ function getEqualBuckets(
   colorOptions,
   maxDigitsAfterComma
 ) {
-
   const portion = 1 / numberBuckets;
   const range = maxValue - minValue;
   let equalBuckets = [];
@@ -177,8 +176,13 @@ function hasSingleValueBucket(legendData) {
 }
 
 function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
-  const customColorMap = colorHelpers.getCustomColorMap(colorColumn.numericalOptions.colorOverwrites);
-  const values = dataHelpers.getNumericalValuesByColumn(data, colorColumn.selectedColumn);
+  const customColorMap = colorHelpers.getCustomColorMap(
+    colorColumn.numericalOptions.colorOverwrites
+  );
+  const values = dataHelpers.getNumericalValuesByColumn(
+    data,
+    colorColumn.selectedColumn
+  );
   const nonNullValues = dataHelpers.getNonNullValues(values);
   const metaData = dataHelpers.getMetaData(
     values,
@@ -203,7 +207,11 @@ function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
 
   legendData.labelLegend = getLabelLegend(legendData, maxDigitsAfterComma);
   if (legendData.labelLegend.value) {
-    legendData.labelLegend.descriptionAlignment = getDescriptionAlignment(legendData.labelLegend, width, maxDigitsAfterComma)
+    legendData.labelLegend.descriptionAlignment = getDescriptionAlignment(
+      legendData.labelLegend,
+      width,
+      maxDigitsAfterComma
+    );
   }
 
   legendData.hasSingleValueBucket = hasSingleValueBucket(legendData);
@@ -233,8 +241,13 @@ function getCategoricalLegend(data, colorColumn) {
     type: "categorical",
   };
 
-  const customColorMap = colorHelpers.getCustomColorMap(colorColumn.categoricalOptions.colorOverwrites);
-  const categoryObject = dataHelpers.getUniqueCategoriesObject(data, colorColumn);
+  const customColorMap = colorHelpers.getCustomColorMap(
+    colorColumn.categoricalOptions.colorOverwrites
+  );
+  const categoryObject = dataHelpers.getUniqueCategoriesObject(
+    data,
+    colorColumn
+  );
 
   let categories = [];
   categoryObject.categories.forEach((label, index) => {
@@ -256,8 +269,11 @@ function getLabelLegend(legendData, maxDigitsAfterComma) {
     return {
       id: "median",
       label: "Median",
-      value: dataHelpers.getRoundedValue(legendData.medianValue, maxDigitsAfterComma),
-      position: ((legendData.medianValue - legendData.minValue) * 100) / range
+      value: dataHelpers.getRoundedValue(
+        legendData.medianValue,
+        maxDigitsAfterComma
+      ),
+      position: ((legendData.medianValue - legendData.minValue) * 100) / range,
     };
   } else if (legendData.labelLegend === "noLabel") {
     return { label: "noLabel" };
@@ -266,7 +282,7 @@ function getLabelLegend(legendData, maxDigitsAfterComma) {
     id: "average",
     label: "Durchschnitt",
     value: legendData.averageValue,
-    position: ((legendData.averageValue - legendData.minValue) * 100) / range
+    position: ((legendData.averageValue - legendData.minValue) * 100) / range,
   };
 }
 
@@ -280,8 +296,15 @@ function getAvailableSpaceForLabel(labelLegend, contentWidth) {
   return (legendPixelWidth * (100 - labelLegend.position)) / 100;
 }
 
-function getDescriptionAlignment(labelLegend, contentWidth, maxDigitsAfterComma) {
-  const availableSpaceForLabel = getAvailableSpaceForLabel(labelLegend, contentWidth);
+function getDescriptionAlignment(
+  labelLegend,
+  contentWidth,
+  maxDigitsAfterComma
+) {
+  const availableSpaceForLabel = getAvailableSpaceForLabel(
+    labelLegend,
+    contentWidth
+  );
   const valueLength = getValueLength(labelLegend.value, maxDigitsAfterComma);
   const approxLabelWidth = widthConfig[labelLegend.id] + valueLength * 8;
 

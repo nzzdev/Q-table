@@ -1,10 +1,10 @@
 const clone = require("clone");
 const d3 = {
-  format: require("d3-format")
+  format: require("d3-format"),
 };
 const Array2D = require("array2d");
-const appendFootnoteAnnotationsToTableData = require("./footnotes.js")
-  .appendFootnoteAnnotationsToTableData;
+const appendFootnoteAnnotationsToTableData =
+  require("./footnotes.js").appendFootnoteAnnotationsToTableData;
 
 const fourPerEmSpace = "\u2005";
 const enDash = "\u2013";
@@ -13,9 +13,8 @@ const formatLocale = d3.format.formatLocale({
   decimal: ",",
   thousands: fourPerEmSpace,
   minus: enDash,
-  grouping: [3]
+  grouping: [3],
 });
-
 
 const formatLocaleSmall = d3.format.formatLocale({
   decimal: ",",
@@ -40,12 +39,12 @@ function getColumnsType(data) {
   const columns = [];
   const table = getDataWithoutHeaderRow(data);
 
-  Array2D.eachColumn(table, column => {
+  Array2D.eachColumn(table, (column) => {
     let withFormating = false;
-    let columnEmpty = column.every(cell => {
+    let columnEmpty = column.every((cell) => {
       return cell === null || cell === "" || cell === "-" || cell === "–";
     });
-    let isColumnNumeric = column.every(cell => {
+    let isColumnNumeric = column.every((cell) => {
       return (
         !columnEmpty &&
         (isNumeric(cell) ||
@@ -56,8 +55,12 @@ function getColumnsType(data) {
       );
     });
     if (isColumnNumeric) {
-      const numbersOfColumn = column.map(number => isNumeric(number) ? parseFloat(number) : null);
-      withFormating = Math.max(...numbersOfColumn) >= 10000 || Math.min(...numbersOfColumn) <= -10000
+      const numbersOfColumn = column.map((number) =>
+        isNumeric(number) ? parseFloat(number) : null
+      );
+      withFormating =
+        Math.max(...numbersOfColumn) >= 10000 ||
+        Math.min(...numbersOfColumn) <= -10000;
     }
     columns.push({ isNumeric: isColumnNumeric, withFormating });
   });
@@ -100,7 +103,7 @@ function getTableData(data, footnotes, options) {
       let classes = [];
       if (columns[columnIndex].isNumeric) {
         type = "numeric";
-        classes.push('s-font-note--tabularnums');
+        classes.push("s-font-note--tabularnums");
 
         // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
         if (
@@ -121,7 +124,7 @@ function getTableData(data, footnotes, options) {
       return {
         type: type,
         value: value,
-        classes: classes
+        classes: classes,
       };
     });
     tableData.push(cells);
@@ -181,7 +184,8 @@ function getUniqueCategoriesCount(data, colorColumn) {
 
 function getUniqueCategoriesObject(data, colorColumn) {
   let hasNullValues = false;
-  let customCategoriesOrder = colorColumn.categoricalOptions.customCategoriesOrder;
+  let customCategoriesOrder =
+    colorColumn.categoricalOptions.customCategoriesOrder;
   const values = data
     .map((row) => {
       return row[colorColumn.selectedColumn];
@@ -197,11 +201,12 @@ function getUniqueCategoriesObject(data, colorColumn) {
 
   // If the user has set a custom order, sort the categories accordingly
   if (customCategoriesOrder) {
-    sortedValues.sort(
-      function (a, b) {
-        return customCategoriesOrder.map(c => c.category).indexOf(a) -
-          customCategoriesOrder.map(c => c.category).indexOf(b);
-      });
+    sortedValues.sort(function (a, b) {
+      return (
+        customCategoriesOrder.map((c) => c.category).indexOf(a) -
+        customCategoriesOrder.map((c) => c.category).indexOf(b)
+      );
+    });
   }
 
   return { hasNullValues, categories: [...new Set(sortedValues)] };
@@ -265,7 +270,7 @@ function getFormattedValue(formattingOptions, value) {
 }
 
 function getFormattedBuckets(formattingOptions, buckets) {
-  return buckets.map(bucket => {
+  return buckets.map((bucket) => {
     let { from, to, color } = bucket;
 
     if (formattingOptions.roundingBucketBorders) {
@@ -278,9 +283,9 @@ function getFormattedBuckets(formattingOptions, buckets) {
     return {
       from: getFormattedValue({}, from),
       to: getFormattedValue({}, to),
-      color
+      color,
     };
-  })
+  });
 }
 
 function getMedian(values) {
@@ -314,7 +319,6 @@ function getRoundedValue(value, maxDigitsAfterComma) {
   }
   return Math.round(value * roundingFactor) / roundingFactor;
 }
-
 
 module.exports = {
   getTableData: getTableData,
