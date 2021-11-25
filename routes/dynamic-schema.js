@@ -9,9 +9,8 @@ function getMinibarEnum(item) {
   }
 
   return [null].concat(
-    ...dataHelpers.getNumericColumns(item.data.table).map(col => col.index)
+    ...dataHelpers.getNumericColumns(item.data.table).map((col) => col.index)
   );
-
 }
 
 function getMinibarEnumTitles(item) {
@@ -20,7 +19,7 @@ function getMinibarEnumTitles(item) {
   }
 
   return ["keine"].concat(
-    ...dataHelpers.getNumericColumns(item.data.table).map(col => col.title)
+    ...dataHelpers.getNumericColumns(item.data.table).map((col) => col.title)
   );
 }
 
@@ -30,7 +29,9 @@ function getColorColumnEnum(item) {
   }
 
   return [null].concat(
-    ...dataHelpers.getCategoricalColumns(item.data.table).map(col => col.index)
+    ...dataHelpers
+      .getCategoricalColumns(item.data.table)
+      .map((col) => col.index)
   );
 }
 
@@ -40,7 +41,9 @@ function getColorColumnEnumTitles(item) {
   }
 
   return ["keine"].concat(
-    ...dataHelpers.getCategoricalColumns(item.data.table).map(col => col.title)
+    ...dataHelpers
+      .getCategoricalColumns(item.data.table)
+      .map((col) => col.title)
   );
 }
 
@@ -149,9 +152,13 @@ function getColorOverwriteEnumAndTitlesNumerical(colorColumn) {
 
 function getColorOverwriteEnumAndTitlesCategorical(data, colorColumn) {
   data = dataHelpers.getDataWithoutHeaderRow(data);
-  let customCategoriesOrder = colorColumn.categoricalOptions.customCategoriesOrder;
+  let customCategoriesOrder =
+    colorColumn.categoricalOptions.customCategoriesOrder;
   let enumValues = [null];
-  const categories = dataHelpers.getUniqueCategoriesObject(data, colorColumn).categories;
+  const categories = dataHelpers.getUniqueCategoriesObject(
+    data,
+    colorColumn
+  ).categories;
   const numberItems = categories.length;
   for (let index = 0; index < numberItems; index++) {
     enumValues.push(index + 1);
@@ -169,12 +176,15 @@ function getColorOverwriteEnumAndTitlesCategorical(data, colorColumn) {
 function getCustomCategoriesOrderEnumAndTitlesCategorical(data, colorColumn) {
   try {
     data = dataHelpers.getDataWithoutHeaderRow(data);
-    const categories = dataHelpers.getUniqueCategoriesObject(data, colorColumn).categories;
+    const categories = dataHelpers.getUniqueCategoriesObject(
+      data,
+      colorColumn
+    ).categories;
 
     return {
       enum: categories,
       "Q:options": {
-        enum_titles: categories
+        enum_titles: categories,
       },
     };
   } catch (ex) {
@@ -188,7 +198,7 @@ module.exports = {
   path: "/dynamic-schema/{optionName}",
   options: {
     validate: {
-      payload: Joi.object()
+      payload: Joi.object(),
     },
   },
   handler: function (request, h) {
@@ -198,8 +208,8 @@ module.exports = {
       return {
         enum: getMinibarEnum(item),
         "Q:options": {
-          enum_titles: getMinibarEnumTitles(item)
-        }
+          enum_titles: getMinibarEnumTitles(item),
+        },
       };
     }
 
@@ -207,8 +217,8 @@ module.exports = {
       return {
         enum: getColorColumnEnum(item),
         "Q:options": {
-          enum_titles: getColorColumnEnumTitles(item)
-        }
+          enum_titles: getColorColumnEnumTitles(item),
+        },
       };
     }
 
@@ -217,14 +227,19 @@ module.exports = {
     }
 
     if (optionName === "colorScheme") {
-      return getColorSchemeEnumWithTitles(item.options.colorColumn.numericalOptions);
+      return getColorSchemeEnumWithTitles(
+        item.options.colorColumn.numericalOptions
+      );
     }
 
     if (optionName === "colorOverwrites") {
       if (item.options.colorColumn.colorColumnType === "numerical") {
         return getMaxItemsNumerical(item.options.colorColumn);
       } else {
-        return getMaxItemsCategorical(item.data.table, item.options.colorColumn);
+        return getMaxItemsCategorical(
+          item.data.table,
+          item.options.colorColumn
+        );
       }
     }
 
@@ -234,7 +249,10 @@ module.exports = {
           item.options.colorColumn
         );
       } else {
-        return getColorOverwriteEnumAndTitlesCategorical(item.data.table, item.options.colorColumn);
+        return getColorOverwriteEnumAndTitlesCategorical(
+          item.data.table,
+          item.options.colorColumn
+        );
       }
     }
 
@@ -243,9 +261,12 @@ module.exports = {
     }
 
     if (optionName === "customCategoriesOrderItem") {
-      return getCustomCategoriesOrderEnumAndTitlesCategorical(item.data.table, item.options.colorColumn);
+      return getCustomCategoriesOrderEnumAndTitlesCategorical(
+        item.data.table,
+        item.options.colorColumn
+      );
     }
 
     return Boom.badRequest();
-  }
+  },
 };
