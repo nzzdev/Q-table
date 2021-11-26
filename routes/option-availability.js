@@ -202,7 +202,6 @@ module.exports = {
           available: isAvailable,
         };
       }
-      π;
     }
 
     return Boom.badRequest();
