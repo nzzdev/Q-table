@@ -63,30 +63,37 @@
 <td
   data-label={getDataLabelAttribute()}
   data-minibar={minibar.type}
-  class="q-table__cell {cell.classes.join(' ')} {getMinibarClasses()}"
->
+  class="q-table__cell {cell.classes.join(' ')} {getMinibarClasses()}">
   {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
     <div
       data-minibar={minibar.values[rowIndex].type}
-      class="q-table-minibar-alignment--{minibar.values[rowIndex]
-        .type} q-table__cell q-table__cell--{cell.type} {getFootnoteClasses()}"
-    >
+      class="q-table-minibar-alignment--{minibar.values[rowIndex].type} q-table__cell q-table__cell--{cell.type} {getFootnoteClasses()}">
       {#if cell.footnote}
         <span
           data-annotation={cell.footnote.value}
-          class="q-table-footnote-annotation">{cell.value}</span
-        >
-      {:else}
-        {cell.value}
+          class="q-table-footnote-annotation">
+          {#if cell.value}
+            {cell.value}
+          {/if}
+        </span>
+      {:else}  
+        {#if cell.value}
+          {cell.value}
+        {/if}
       {/if}
     </div>
   {:else if cell.footnote}
     <span
       data-annotation={cell.footnote.value}
-      class="q-table-footnote-annotation">{cell.value}</span
-    >
+      class="q-table-footnote-annotation">
+      {#if cell.value}
+        {cell.value}
+      {/if}
+    </span>
   {:else}
-    {cell.value}
+    {#if cell.value}
+      {cell.value}
+    {/if}
   {/if}
   {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
     {#if minibar.values[rowIndex].type !== "empty"}
@@ -96,8 +103,7 @@
           .type} q-table-minibar--{minibar.values[rowIndex]
           .type} {getMinibarClassName()}"
         style="width: {minibar.values[rowIndex]
-          .value}%; background-color: {getMinibarColor()}"
-      />
+          .value}%; background-color: {getMinibarColor()}" />
     {/if}
   {/if}
 </td>

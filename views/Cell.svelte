@@ -43,8 +43,7 @@
 <td
   data-label={getDataLabel(colIndex)}
   class={styles.class}
-  style={styles.style}
->
+  style={styles.style}>
   {#if colorColumn.selectedColumn === colIndex && !initWithCardLayout}
     {#if cell.footnote}
       <span class={colorColumn.colors[rowIndex].textColor}>
@@ -55,15 +54,14 @@
             {colorColumn.formattedValues[rowIndex]}
           {/if}
         {:else}
-          {cell.value}
+          {#if cell.value}
+            {cell.value}
+          {/if}
         {/if}
       </span>
       {#if cell.footnote.value}
         <span
-          class="q-table-footnote-annotation--colorColumn {colorColumn.colors[
-            rowIndex
-          ].textColor}"
-        >
+          class="q-table-footnote-annotation--colorColumn {colorColumn.colors[rowIndex].textColor}">
           <sup>{cell.footnote.value}</sup>
         </span>
       {/if}
@@ -76,16 +74,23 @@
             {colorColumn.formattedValues[rowIndex]}
           {/if}
         {:else}
-          {cell.value}
+          {#if cell.value}
+            {cell.value}
+          {/if}
         {/if}
       </span>
     {/if}
   {:else if cell.footnote}
     <span
       data-annotation={cell.footnote.value}
-      class="q-table-footnote-annotation">{cell.value}</span
-    >
+      class="q-table-footnote-annotation">
+      {#if cell.value}
+        {cell.value}
+      {/if}
+    </span>
   {:else if cell.value}
-    <span>{cell.value}</span>
+    <span>
+      {cell.value}
+    </span>
   {/if}
 </td>
