@@ -64,14 +64,18 @@
   data-label={getDataLabelAttribute()}
   data-minibar={getMinibarDataAttribute()}
   class={getCellClass()}
-  style={getCellStyles()}
->
+  style={getCellStyles()}>
   {#if cell.footnote}
     <span
       data-annotation={cell.footnote.value}
-      class="q-table-footnote-annotation">{cell.value}</span
-    >
+      class="q-table-footnote-annotation">
+      {#if cell.value}
+        {cell.value}
+      {/if}
+    </span>
   {:else}
-    {cell.value}
+    {#if cell.value}
+      {cell.value}
+    {/if}
   {/if}
 </td>
