@@ -156,6 +156,7 @@ function getNumericalValuesByColumn(data, column) {
 
 function getCategoricalValuesByColumn(data, column) {
   return data.map((row) => {
+    if (!row[column]) row[column] = null;
     return row[column];
   });
 }
