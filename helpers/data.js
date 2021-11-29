@@ -143,6 +143,7 @@ function getTableData(data, footnotes, options) {
 
 function getNumericalValuesByColumn(data, column) {
   return data.map((row) => {
+    if (!row[column]) row[column] = null;
     if (row[column] !== null) {
       if (row[column].match(/^[+-]?\d+(\.\d+)?$/) === null) {
         throw new Error("value is not a valid floating point number");
@@ -155,6 +156,7 @@ function getNumericalValuesByColumn(data, column) {
 
 function getCategoricalValuesByColumn(data, column) {
   return data.map((row) => {
+    if (!row[column]) row[column] = null;
     return row[column];
   });
 }

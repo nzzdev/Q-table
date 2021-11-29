@@ -1,6 +1,6 @@
 {
   "name": "q-table",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,18 +20,18 @@
     "d3-format": "^1.4.5",
     "joi": "^17.4.2",
     "simple-statistics": "^7.7.0",
-    "svelte": "^3.44.0",
-    "uglify-js": "^3.14.1"
+    "svelte": "^3.44.2",
+    "uglify-js": "^3.14.3"
   },
   "devDependencies": {
-    "@hapi/code": "^8.0.3",
-    "@hapi/lab": "^24.3.2",
+    "@hapi/code": "^8.0.5",
+    "@hapi/lab": "^24.4.0",
     "autoprefixer": "^9.8.8",
     "cssnano": "^4.1.11",
     "html-minifier": "^4.0.0",
     "jsdom": "^16.7.0",
     "postcss": "^7.0.39",
     "postcss-import": "^12.0.1",
-    "sass": "^1.43.2"
+    "sass": "^1.43.5"
   }
 }
