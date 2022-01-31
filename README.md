@@ -1,6 +1,6 @@
 # Q Table [![Build Status](https://travis-ci.com/nzzdev/Q-table.svg?token=g43MZxbtUcZ6QyxqUoJM&branch=dev)](https://travis-ci.com/nzzdev/Q-table)
 
-**Maintainer**: [philipkueng](https://github.com/philipkueng)
+**Maintainer**: [Franco Gervasi](https://github.com/fgervasi)
 
 Q Table is one tool of the Q toolbox to create tables.
 Test it in the [demo](https://editor.q.tools).
@@ -284,27 +284,27 @@ Minibars are a visual feature to display the difference between numbers in the t
 
 <img src="/doc/colorColumn.png" align="right" width=427 height=202>
 
-This feature allows to select a column and colorize it. There are two types: 
+This feature allows to select a column and colorize it. There are two types:
 - `numerical`
 - `categorical`
 
-##### Numerical 
+##### Numerical
 
-When selecting the numerical option, the numbers inside the column will be split in buckets. Depending on the `bucketType`, the buckets will be calculated differently. 
+When selecting the numerical option, the numbers inside the column will be split in buckets. Depending on the `bucketType`, the buckets will be calculated differently.
 This option will be displayed with columns containing numerical values only, otherwise an error will be displayed.
 
 #### Label
 
-The label allows to select between three options: 
+The label allows to select between three options:
 - `noLabel` (default)
 - `average`
 - `median`
 
-This value will then be displayed on the legend. 
+This value will then be displayed on the legend.
 
 ###### BucketType
 
-There are four different buckets and each of it comes with it's own properties: 
+There are four different buckets and each of it comes with it's own properties:
 
 - Ckmeans, `numberBuckets`
 - Quantile, `numberBuckets`
@@ -313,23 +313,23 @@ There are four different buckets and each of it comes with it's own properties:
 
 ###### Scale
 
-The scale can be chosen from between two types: 
+The scale can be chosen from between two types:
 - `sequential`
 - `diverging`
 
 ###### Custom Color
 
-When having the expert-role added, the user is able to adjust the colors of the buckets. 
+When having the expert-role added, the user is able to adjust the colors of the buckets.
 
-When selecting the `diverging`-option, the options from which border it will be spilt are dynamically listed too. 
+When selecting the `diverging`-option, the options from which border it will be spilt are dynamically listed too.
 
 ##### Categorical
 
-When selecting the categorical option, the values of the column will be mapped to categories. The categories will then be colored according to the color-scale. 
+When selecting the categorical option, the values of the column will be mapped to categories. The categories will then be colored according to the color-scale.
 
-##### Legend 
+##### Legend
 
-The way the legend will be displayed is depending on the `colorColumnType`. When using numerical-option, the range of the values will be calculated by buckets, which can be changed on the options. The lowest and highest value will be displayed on the left and right end of the legend. 
+The way the legend will be displayed is depending on the `colorColumnType`. When using numerical-option, the range of the values will be calculated by buckets, which can be changed on the options. The lowest and highest value will be displayed on the left and right end of the legend.
 
 Depending on the selected bucketing method, the legend will be displayed differently. The array passed to render the legend looks as following:
 
@@ -366,13 +366,13 @@ The categorical legend will simply map the values to their colors.
 }
 ```
 
-- Depending on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added 
+- Depending on the selected `colorColumnType`, either `numerical` or `categorical`, some of the properties will be added
 - **Important**: The properties `categoricalOptions` and `numericalOptions` will always be an object, even if not selected
-- If selecting the `colorColumnType` `numerical`, the following properties will be added 
+- If selecting the `colorColumnType` `numerical`, the following properties will be added
 ```javascript
 {
   methodBox, // object
-  formattedValue, // array 
+  formattedValue, // array
 }
 ```
 
