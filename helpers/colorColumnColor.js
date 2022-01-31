@@ -15,34 +15,14 @@ const digitWords = [
   "twelve",
 ];
 
-function getBucketTextColor(customColor, colorClass) {
+function getTextColor(customColor, colorClass) {
   if (
-    customColor !== undefined &&
-    customColor.textColor !== undefined &&
-    customColor.textColor === "light"
+    (customColor !== undefined &&
+      customColor.textColor !== undefined &&
+      customColor.textColor === "light") ||
+    colorClassWithLightFontList.indexOf(colorClass) > -1
   ) {
     return "s-color-gray-1";
-  }
-
-  if (colorClassWithLightFontList.indexOf(colorClass) > -1) {
-    return "s-color-gray-1";
-  }
-  return "s-color-gray-9";
-}
-
-function getCategoryTextColor(colorScheme, customColor) {
-  if (customColor !== undefined && customColor.textColor !== undefined) {
-    return customColor.textColor === "light"
-      ? "s-color-gray-1"
-      : "s-color-gray-9";
-  } else {
-    if (
-      ["one", "four", "five", "seven", "nine", "ten", "eleven"].includes(
-        colorScheme
-      )
-    ) {
-      return "s-color-gray-1";
-    }
   }
   return "s-color-gray-9";
 }
@@ -57,7 +37,7 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
     colorClass = `s-viz-color-sequential-${colorScheme}-${numberBuckets}-${
       numberBuckets - index
     }`;
-    textColor = getBucketTextColor(customColor, colorClass);
+    textColor = getTextColor(customColor, colorClass);
   } else {
     // if we have a diverging scale we deal with two cases:
     // a) diverging value = one of bucket border values,
@@ -99,7 +79,7 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
     }
 
     colorClass = `s-viz-color-diverging-${colorScheme}-${scaleSize}-${scalePosition}`;
-    textColor = getBucketTextColor(customColor, colorClass);
+    textColor = getTextColor(customColor, colorClass);
   }
   return {
     colorClass,
@@ -184,7 +164,7 @@ function getCategoryColor(index, customColorMap) {
       customColor !== undefined && customColor.color !== undefined
         ? customColor.color
         : "",
-    textColor: getCategoryTextColor(colorScheme, customColor),
+    textColor: getTextColor(customColor, colorClass),
   };
 }
 
