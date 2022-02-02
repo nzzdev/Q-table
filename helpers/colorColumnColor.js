@@ -16,12 +16,13 @@ const digitWords = [
 ];
 
 function getTextColor(customColor, colorClass) {
-  if (
-    (customColor !== undefined &&
-      customColor.textColor !== undefined &&
-      customColor.textColor === "light") ||
-    colorClassWithLightFontList.indexOf(colorClass) > -1
-  ) {
+  if (customColor !== undefined && customColor.textColor !== undefined) {
+    return customColor.textColor === "light"
+      ? "s-color-gray-1"
+      : "s-color-gray-9";
+  }
+
+  if (colorClassWithLightFontList.indexOf(colorClass) > -1) {
     return "s-color-gray-1";
   }
   return "s-color-gray-9";
