@@ -19,8 +19,7 @@
               />
             {:else}
               <div
-                class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {bucket
-                  .color.colorClass}"
+                class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {bucket.color.colorClass}"
               />
             {/if}
             <div
@@ -52,14 +51,16 @@
         {#each colorColumn.methodBox.formattedBuckets as bucket, bucketIndex}
           <tr>
             <td>
-              {#if bucket.color.colorClass}
-                <div
-                  class="{bucket.color
-                    .colorClass} q-table-methods-circle q-table-methods-circle--circle-fill"
-                />
-              {:else}
-                <div style="color: {bucket.color.customColor}" />
-              {/if}
+              <div
+                class="{bucket.color.colorClass !== undefined
+                  ? bucket.color.colorClass
+                  : ''}
+                q-table-methods-circle
+                q-table-methods-circle--circle-fill"
+                style="color: {bucket.color.customColor !== undefined
+                  ? bucket.color.customColor
+                  : ''}"
+              />
             </td>
             {#if bucketIndex === 0 && colorColumn.legendData.hasSingleValueBucket}
               <td />
