@@ -73,7 +73,7 @@ function getNumericColumns(data) {
   // data[0].length is undefined when creating a new item
   if (data[0] !== undefined) {
     Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
-      if (columns[columnIndex].isNumeric) {
+      if (columns[columnIndex] && columns[columnIndex].isNumeric) {
         numericColumns.push({ title: cell, index: columnIndex });
       }
     });
@@ -101,7 +101,7 @@ function getTableData(data, footnotes, options) {
       let type = "text";
       let value = cell;
       let classes = [];
-      if (columns[columnIndex].isNumeric) {
+      if (columns[columnIndex] && columns[columnIndex].isNumeric) {
         type = "numeric";
         classes.push("s-font-note--tabularnums");
 
