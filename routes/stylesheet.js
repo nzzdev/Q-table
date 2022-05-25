@@ -5,7 +5,7 @@ module.exports = {
   path: '/stylesheet/{filename}.{hash}.{extension}',
   options: {
     files: {
-      relativeTo: path.join(__dirname, '/../styles/')
+      relativeTo: path.join(__dirname, '/../dist/styles/')
     }
   },
   handler: function(request, h) {

@@ -1,7 +1,11 @@
+const rootDir = __dirname + "/../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+
 const Boom = require("@hapi/boom");
 const Joi = require("joi");
-const dataHelpers = require("../helpers/data.js");
-const colorColumnHelpers = require("../helpers/colorColumn.js");
+const dataHelpers = require(`${helpersDir}/data.js`);
+const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
 
 function getMinibarEnum(item) {
   if (item.data.table.length < 1) {

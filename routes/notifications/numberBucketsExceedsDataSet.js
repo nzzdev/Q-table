@@ -1,5 +1,9 @@
+const rootDir = __dirname + "/../../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+
 const Joi = require("joi");
-const dataHelpers = require("../../helpers/data.js");
+const dataHelpers = require(`${helpersDir}/data.js`);
 
 module.exports = {
     method: "POST",

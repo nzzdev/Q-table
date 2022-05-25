@@ -1,29 +1,34 @@
-const fs = require("fs");
-const path = require("path");
+// Setup svelte environment.
+require("svelte/register");
 
+// Require tools.
+const Ajv = require("ajv");
 const Boom = require("@hapi/boom");
+const fs = require("fs");
 const UglifyJS = require("uglify-js");
 
-const resourcesDir = __dirname + "/../../resources/";
-const helpersDir = __dirname + "/../../helpers/";
-const viewsDir = __dirname + "/../../views/";
-const stylesDir = __dirname + "/../../styles/";
+// Directories.
+const rootDir = __dirname + "/../../";
+const distDir = rootDir + 'dist/';
 
-// setup svelte environment
-require("svelte/register");
-const staticTemplate = require(viewsDir + "Table.svelte").default;
+const resourcesDir = rootDir + "resources/";
+const helpersDir = distDir + "helpers";
+const viewsDir = distDir + "components/";
+// const viewsDir = __dirname + "/../../views/";
+const stylesDir = distDir + "styles/";
 
+// Template file.
+const tableTemplate = require(viewsDir + "Table.svelte").default;
 
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
-const getExactPixelWidth = require(`${helpersDir}toolRuntimeConfig.js`)
-  .getExactPixelWidth;
-const dataHelpers = require(`${helpersDir}data.js`);
-const footnoteHelpers = require(`${helpersDir}footnotes.js`);
-const minibarHelpers = require(`${helpersDir}minibars.js`);
-const colorColumnHelpers = require(`${helpersDir}colorColumn.js`);
+const getExactPixelWidth = require(`${helpersDir}/toolRuntimeConfig.js`).getExactPixelWidth;
+const dataHelpers = require(`${helpersDir}/data.js`);
+const footnoteHelpers = require(`${helpersDir}/footnotes.js`);
+const minibarHelpers = require(`${helpersDir}/minibars.js`);
+const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
 
-const renderingInfoScripts = require("../../helpers/renderingInfoScript.js");
+const renderingInfoScripts = require(`${helpersDir}/renderingInfoScript.js`);
 
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
@@ -32,7 +37,7 @@ const schemaString = JSON.parse(
     encoding: "utf-8",
   })
 );
-const Ajv = require("ajv");
+
 const ajv = new Ajv();
 
 const validate = ajv.compile(schemaString);
@@ -71,50 +76,59 @@ module.exports = {
   handler: async function (request, h) {
     const renderingInfo = {
       polyfills: ["Promise"],
+      stylesheets: [{
+        name: styleHashMap["q-table"],
+      }]
     };
 
-    renderingInfo.stylesheets = [
-      {
-        name: styleHashMap["q-table"],
-      },
-    ];
+    // Extract table configurations.
+    const config = request.payload.item;
+    const toolRuntimeConfig = request.payload.toolRuntimeConfig;
 
-    const item = request.payload.item;
-    const itemDataCopy = request.payload.item.data.table.slice(0); // get unformated copy of data for minibars
+
+    console.log("config", config);
+    console.log("toolRuntimeConfig", toolRuntimeConfig);
+
+    let width = getExactPixelWidth(toolRuntimeConfig);
+
+    const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
+
     const dataWithoutHeaderRow = dataHelpers.getDataWithoutHeaderRow(itemDataCopy);
     const footnotes = footnoteHelpers.getFootnotes(
-      item.data.metaData,
-      item.options.hideTableHeader
+      config.data.metaData,
+      config.options.hideTableHeader
     );
+
     const minibarsAvailable = await request.server.inject({
       url: "/option-availability/selectedColumnMinibar",
       method: "POST",
-      payload: { item: item },
+      payload: { item: config },
     });
 
     const colorColumnAvailable = await request.server.inject({
       url: "/option-availability/selectedColorColumn",
       method: "POST",
-      payload: { item: item },
+      payload: { item: config },
     });
 
-    let width = getExactPixelWidth(request.payload.toolRuntimeConfig);
+
 
     const context = {
-      item: item,
+      item: config, // To make renderingInfoScripts working. refactor later.
+      config,
       tableData: dataHelpers.getTableData(
-        item.data.table,
+        config.data.table,
         footnotes,
-        item.options
+        config.options
       ),
       minibar: minibarsAvailable.result.available
-        ? minibarHelpers.getMinibarContext(item.options, itemDataCopy)
+        ? minibarHelpers.getMinibarContext(config.options, itemDataCopy)
         : {},
       footnotes: footnotes,
       colorColumn: colorColumnAvailable.result.available
-        ? colorColumnHelpers.getColorColumnContext(item.options.colorColumn, dataWithoutHeaderRow, width)
+        ? colorColumnHelpers.getColorColumnContext(config.options.colorColumn, dataWithoutHeaderRow, width)
         : {},
-      numberOfRows: item.data.table.length - 1, // do not count the header
+      numberOfRows: config.data.table.length - 1, // do not count the header
       displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
       noInteraction: request.payload.toolRuntimeConfig.noInteraction,
       id: `q_table_${request.query._id}_${Math.floor(
@@ -127,10 +141,10 @@ module.exports = {
     if (
       context.width &&
       context.width < 400 &&
-      item.options.cardLayoutIfSmall
+      config.options.cardLayoutIfSmall
     ) {
       context.initWithCardLayout = true;
-    } else if (item.options.cardLayout) {
+    } else if (config.options.cardLayout) {
       context.initWithCardLayout = true;
     }
 
@@ -152,7 +166,7 @@ module.exports = {
     }
 
     try {
-      renderingInfo.markup = staticTemplate.render(context).html
+      renderingInfo.markup = tableTemplate.render(context).html
     } catch (ex) {
       console.log(ex)
     }
@@ -167,12 +181,12 @@ module.exports = {
     let possibleToHaveToHideRows = false;
 
     // if we show cards, we hide if more or equal than 6
-    if (item.options.cardLayout && context.numberOfRows >= 6) {
+    if (config.options.cardLayout && context.numberOfRows >= 6) {
       possibleToHaveToHideRows = true;
     }
     // if we have cards for small, we hide if more or equal than 6
     if (
-      item.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
+      config.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
       (context.width === undefined || context.width < 400) && // width is unknown or below 400px
       context.numberOfRows >= 6 // more than 6 rows
     ) {
@@ -191,8 +205,8 @@ module.exports = {
 
     // if we are going to add any script, we want the default script first
     if (
-      (item.options.cardLayout === false &&
-        item.options.cardLayoutIfSmall === true) ||
+      (config.options.cardLayout === false &&
+        config.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
       Object.keys(context.minibar).length !== 0 ||
       Object.keys(context.colorColumn).length !== 0
@@ -205,8 +219,8 @@ module.exports = {
     // if we have cardLayoutIfSmall, we need to measure the width to set the class
     // not needed if we have cardLayout all the time
     if (
-      item.options.cardLayout === false &&
-      item.options.cardLayoutIfSmall === true
+      config.options.cardLayout === false &&
+      config.options.cardLayoutIfSmall === true
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getCardLayoutScript(context),
@@ -221,7 +235,7 @@ module.exports = {
 
     if (
       context.noInteraction !== true &&
-      item.options.showTableSearch === true
+      config.options.showTableSearch === true
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getSearchFormInputScript(context),
@@ -239,7 +253,7 @@ module.exports = {
         content: renderingInfoScripts.getColorColumnScript(context),
       });
     }
-    
+
     // minify the scripts
     for (let script of renderingInfo.scripts) {
       script.content = UglifyJS.minify(script.content).code;

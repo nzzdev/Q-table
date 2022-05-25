@@ -1,10 +1,13 @@
+const rootDir = __dirname + "/../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+
 const Boom = require("@hapi/boom");
 const Joi = require("joi");
-const getNumericColumns = require("../helpers/data.js").getNumericColumns;
-const getMinibarNumbersWithType =
-  require("../helpers/minibars.js").getMinibarNumbersWithType;
+const getNumericColumns = require(`${helpersDir}/data.js`).getNumericColumns;
+const getMinibarNumbersWithType = require(`${helpersDir}/minibars.js`).getMinibarNumbersWithType;
 
-const hasCustomBuckets = require("../helpers/colorColumn.js").hasCustomBuckets;
+const hasCustomBuckets = require(`${helpersDir}/colorColumn.js`).hasCustomBuckets;
 
 module.exports = {
   method: "POST",

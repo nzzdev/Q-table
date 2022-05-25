@@ -1,5 +1,9 @@
+const rootDir = __dirname + "/../../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+
 const Joi = require("joi");
-const colorColumnHelpers = require("../../helpers/colorColumn.js");
+const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
 
 const sequentialScaleMax = 7;
 const divergingScaleMax = sequentialScaleMax * 2;

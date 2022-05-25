@@ -1,7 +1,11 @@
-const Joi = require("joi");
-const dataHelpers = require("../../helpers/data.js");
+const rootDir = __dirname + "/../../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
 
-const numberMainColors = require("../../helpers/colorColumnColor.js").digitWords.length;
+const Joi = require("joi");
+const dataHelpers = require(`${helpersDir}/data.js`);
+
+const numberMainColors = require(`${helpersDir}/colorColumnColor.js`).digitWords.length;
 
 module.exports = {
   method: "POST",
