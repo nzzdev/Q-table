@@ -8,7 +8,7 @@ const fs = require("fs");
 const UglifyJS = require("uglify-js");
 
 // Directories.
-const rootDir = __dirname + "/../../";
+const rootDir = __dirname + "/../../../";
 const distDir = rootDir + 'dist/';
 
 const resourcesDir = rootDir + "resources/";

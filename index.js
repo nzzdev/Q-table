@@ -4,7 +4,7 @@ const server = Hapi.server({
     port: process.env.PORT || 3000,
 });
 
-const routes = require('./routes/routes.js');
+const routes = require('./dist/routes/routes.js');
 
 async function init() {
     await server.register(require('@hapi/inert'));

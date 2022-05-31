@@ -3,8 +3,8 @@ const Joi = require("joi");
 // register migration scripts here in order of version,
 // i.e. list the smallest version first
 const migrationScripts = [
-  require("../migration-scripts/to-v2.0.0.js"),
-  require("../migration-scripts/to-v3.0.0.js")
+  require("../../migration-scripts/to-v2.0.0.js"),
+  require("../../migration-scripts/to-v3.0.0.js")
 ];
 
 module.exports = {

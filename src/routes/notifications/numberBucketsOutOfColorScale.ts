@@ -1,4 +1,4 @@
-const rootDir = __dirname + "/../../";
+const rootDir = __dirname + '/../../../';
 const distDir = rootDir + 'dist/';
 const helpersDir = distDir + "helpers";
 
