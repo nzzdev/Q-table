@@ -1,9 +1,10 @@
-import * as ts from "typescript";
-import { ScriptTarget} from 'typescript';
+import * as fs from 'fs';
+import ts from "typescript";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import recursiveReadSync from 'recursive-readdir-sync';
 
-const fs = require("fs");
-const recursiveReadSync = require('recursive-readdir-sync');
-
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const helpersDir = __dirname + '/../src/helpers';
 
 // Create list of files to be transpiled.
@@ -31,7 +32,7 @@ function compile(fileNames: string[], options: ts.CompilerOptions): void {
 }
 
 const tsConfig: ts.CompilerOptions = {
-    'target': ScriptTarget.ES2015,
+    'target': ts.ScriptTarget.ES2015,
     'types': ['node'],
     'outDir': './dist/helpers',
     'typeRoots': ['./node_modules/@types'],

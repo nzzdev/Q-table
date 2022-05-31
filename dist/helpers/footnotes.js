@@ -1,5 +1,5 @@
 function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
-    var unicodes = {
+    const unicodes = {
         1: "\u00b9",
         2: "\u00b2",
         3: "\u00b3",
@@ -8,16 +8,16 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
         6: "\u2076",
         7: "\u2077",
         8: "\u2078",
-        9: "\u2079"
+        9: "\u2079",
     };
-    var spacings = [];
-    var flattenedFootnotes = getFlattenedFootnotes(footnotes);
-    flattenedFootnotes.forEach(function (footnote) {
-        var footnoteClass = getClass(options, footnote, flattenedFootnotes.length, tableData[footnote.rowIndex][footnote.colIndex].type, tableData[footnote.rowIndex].length - 1);
+    let spacings = [];
+    let flattenedFootnotes = getFlattenedFootnotes(footnotes);
+    flattenedFootnotes.forEach((footnote) => {
+        let footnoteClass = getClass(options, footnote, flattenedFootnotes.length, tableData[footnote.rowIndex][footnote.colIndex].type, tableData[footnote.rowIndex].length - 1);
         if (footnoteClass) {
-            var space = {
+            let space = {
                 colIndex: footnote.colIndex,
-                "class": footnoteClass
+                class: footnoteClass,
             };
             if (!hasFootnoteClass(spacings, space)) {
                 spacings.push(space);
@@ -27,21 +27,21 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
         tableData[footnote.rowIndex][footnote.colIndex].footnote = {
             value: footnote.value,
             unicode: unicodes[footnote.value],
-            "class": footnoteClass
+            class: footnoteClass,
         };
     });
     // assign spacingClass to cell
-    tableData.forEach(function (row, index) {
+    tableData.forEach((row, index) => {
         // assign class when not cardlayout but cardlayoutifsmall
         if (!options.cardLayout || options.cardLayoutIfSmall) {
-            spacings.forEach(function (spacing) {
-                row[spacing.colIndex].classes.push(spacing["class"]);
+            spacings.forEach((spacing) => {
+                row[spacing.colIndex].classes.push(spacing.class);
             });
         }
         // assign class when cardlayout or cardlayoutifsmall is active
         if (options.cardLayout || options.cardLayoutIfSmall) {
             if (!options.hideTableHeader && index !== 0) {
-                row.forEach(function (cell) {
+                row.forEach((cell) => {
                     flattenedFootnotes.length >= 10
                         ? cell.classes.push("q-table-footnote-column-card-layout--double")
                         : cell.classes.push("q-table-footnote-column-card-layout--single");
@@ -56,7 +56,7 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
     if ((type === "numeric" &&
         (options.minibar.selectedColumn === footnote.colIndex ||
             options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)) {
-        var spacingClass = "q-table-footnote-column";
+        let spacingClass = "q-table-footnote-column";
         if (amountOfFootnotes >= 10) {
             spacingClass += "--double";
         }
@@ -67,15 +67,15 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
     }
     return null;
 }
-function getFootnotes(metaData, hideTableHeader) {
-    var footnotes = metaData.cells
-        .filter(function (cell) {
+export function getFootnotes(metaData, hideTableHeader) {
+    let footnotes = metaData.cells
+        .filter((cell) => {
         if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
             return false;
         }
         return true;
     }) // remove cells with no footnotes
-        .sort(function (a, b) {
+        .sort((a, b) => {
         // sorting metaData to display them chronologically
         if (a.rowIndex !== b.rowIndex) {
             return a.rowIndex - b.rowIndex;
@@ -85,13 +85,13 @@ function getFootnotes(metaData, hideTableHeader) {
     return getStructuredFootnotes(footnotes);
 }
 function getStructuredFootnotes(footnotes) {
-    var structuredFootnotes = [];
-    footnotes.forEach(function (footnote) {
-        var existingFootnote = structuredFootnotes.find(function (filterFootnote) { return footnote.data.footnote === filterFootnote.value; });
+    let structuredFootnotes = [];
+    footnotes.forEach((footnote) => {
+        let existingFootnote = structuredFootnotes.find((filterFootnote) => footnote.data.footnote === filterFootnote.value);
         if (existingFootnote) {
             existingFootnote.coords.push({
                 colIndex: footnote.colIndex,
-                rowIndex: footnote.rowIndex
+                rowIndex: footnote.rowIndex,
             });
         }
         else {
@@ -101,31 +101,31 @@ function getStructuredFootnotes(footnotes) {
                 coords: [
                     {
                         colIndex: footnote.colIndex,
-                        rowIndex: footnote.rowIndex
+                        rowIndex: footnote.rowIndex,
                     },
-                ]
+                ],
             });
         }
     });
     return structuredFootnotes;
 }
 function getFlattenedFootnotes(footnotes) {
-    var flattenedFootnotes = [];
-    footnotes.forEach(function (footnote) {
-        footnote.coords.forEach(function (coord) {
+    let flattenedFootnotes = [];
+    footnotes.forEach((footnote) => {
+        footnote.coords.forEach((coord) => {
             flattenedFootnotes.push({
                 value: footnote.index,
                 colIndex: coord.colIndex,
-                rowIndex: coord.rowIndex
+                rowIndex: coord.rowIndex,
             });
         });
     });
     return flattenedFootnotes;
 }
 function hasFootnoteClass(classes, newClass) {
-    return classes.find(function (element) { return element.colIndex === newClass.colIndex && element["class"] === newClass["class"]; });
+    return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
 }
 module.exports = {
-    appendFootnoteAnnotationsToTableData: appendFootnoteAnnotationsToTableData,
-    getFootnotes: getFootnotes
+    appendFootnoteAnnotationsToTableData,
+    getFootnotes,
 };

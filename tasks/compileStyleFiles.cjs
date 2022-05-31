@@ -1,3 +1,4 @@
+// These lines make "require" available
 const fs = require('fs');
 const crypto = require('crypto');
 

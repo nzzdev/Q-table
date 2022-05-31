@@ -1,34 +1,34 @@
-var rootDir = __dirname + "/../../";
-var distDir = rootDir + 'dist/';
-var helpersDir = distDir + "helpers";
-var Boom = require("@hapi/boom");
-var Joi = require("joi");
-var getNumericColumns = require("".concat(helpersDir, "/data.js")).getNumericColumns;
-var getMinibarNumbersWithType = require("".concat(helpersDir, "/minibars.js")).getMinibarNumbersWithType;
-var hasCustomBuckets = require("".concat(helpersDir, "/colorColumn.js")).hasCustomBuckets;
+const rootDir = __dirname + "/../../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+const Boom = require("@hapi/boom");
+const Joi = require("joi");
+const getNumericColumns = require(`${helpersDir}/data.js`).getNumericColumns;
+const getMinibarNumbersWithType = require(`${helpersDir}/minibars.js`).getMinibarNumbersWithType;
+const hasCustomBuckets = require(`${helpersDir}/colorColumn.js`).hasCustomBuckets;
 module.exports = {
     method: "POST",
     path: "/option-availability/{optionName}",
     options: {
         validate: {
-            payload: Joi.object()
-        }
+            payload: Joi.object(),
+        },
     },
     handler: function (request, h) {
-        var item = request.payload.item;
-        var optionName = request.params.optionName;
+        const item = request.payload.item;
+        const optionName = request.params.optionName;
         if (optionName === "cardLayoutIfSmall") {
             return {
-                available: !item.options.cardLayout
+                available: !item.options.cardLayout,
             };
         }
         if (optionName === "showTableSearch") {
             return {
-                available: item.data.table.length > 16
+                available: item.data.table.length > 16,
             };
         }
         if (optionName === "minibars" || optionName === "selectedColumnMinibar") {
-            var isAvailable = false;
+            let isAvailable = false;
             if (item.data.table.length !== 0) {
                 if (!item.options.cardLayout &&
                     item.data.table[0].length >= 2 &&
@@ -37,54 +37,54 @@ module.exports = {
                 }
             }
             return {
-                available: isAvailable
+                available: isAvailable,
             };
         }
         // properties minibar
         if (item.options.minibar !== null && item.options.minibar !== undefined) {
             if (optionName === "barColor") {
-                var isAvailable = item.options.minibar.selectedColumn !== null &&
+                let isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 return {
-                    available: isAvailable
+                    available: isAvailable,
                 };
             }
             if (optionName === "barColorPositive") {
-                var isAvailable = item.options.minibar.selectedColumn !== null &&
+                let isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
-                    var type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
+                    let type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === "mixed" || type === "positive";
                 }
                 return {
-                    available: isAvailable
+                    available: isAvailable,
                 };
             }
             if (optionName === "barColorNegative") {
-                var isAvailable = item.options.minibar.selectedColumn !== null &&
+                let isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
-                    var type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
+                    let type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === "mixed" || type === "negative";
                 }
                 return {
-                    available: isAvailable
+                    available: isAvailable,
                 };
             }
             if (optionName === "invertColors") {
-                var isAvailable = item.options.minibar.selectedColumn !== null &&
+                let isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
-                    var type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
+                    let type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === "mixed";
                 }
                 return {
-                    available: isAvailable
+                    available: isAvailable,
                 };
             }
         }
         if (optionName === "colorColumn" || optionName === "selectedColorColumn") {
-            var isAvailable = false;
+            let isAvailable = false;
             if (item.data.table.length > 2) {
                 if (!item.options.cardLayout &&
                     item.data.table[0].length >= 2 &&
@@ -93,7 +93,7 @@ module.exports = {
                 }
             }
             return {
-                available: isAvailable
+                available: isAvailable,
             };
         }
         // properties colorColumn
@@ -102,13 +102,13 @@ module.exports = {
             if (optionName === "isNumerical") {
                 return {
                     available: item.options.colorColumn.selectedColumn !== null &&
-                        item.options.colorColumn.colorColumnType === "numerical"
+                        item.options.colorColumn.colorColumnType === "numerical",
                 };
             }
             if (optionName === "isCategorical") {
                 return {
                     available: item.options.colorColumn.selectedColumn !== null &&
-                        item.options.colorColumn.colorColumnType === "categorical"
+                        item.options.colorColumn.colorColumnType === "categorical",
                 };
             }
             if ([
@@ -121,31 +121,31 @@ module.exports = {
             ].includes(optionName)) {
                 return {
                     available: item.options.colorColumn.selectedColumn !== null &&
-                        item.options.colorColumn.selectedColumn !== undefined
+                        item.options.colorColumn.selectedColumn !== undefined,
                 };
             }
             if (optionName === "customBuckets") {
-                var isAvailable = item.options.colorColumn.selectedColumn !== null &&
+                let isAvailable = item.options.colorColumn.selectedColumn !== null &&
                     item.options.colorColumn.selectedColumn !== undefined;
                 if (isAvailable) {
                     isAvailable = hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
                 }
                 return {
-                    available: isAvailable
+                    available: isAvailable,
                 };
             }
             if (optionName === "numberBuckets") {
-                var isAvailable = item.options.colorColumn.selectedColumn !== null &&
+                let isAvailable = item.options.colorColumn.selectedColumn !== null &&
                     item.options.colorColumn.selectedColumn !== undefined;
                 if (isAvailable) {
                     isAvailable = !hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
                 }
                 return {
-                    available: isAvailable
+                    available: isAvailable,
                 };
             }
             if (optionName === "customColors") {
-                var isAvailable = item.options.colorColumn.selectedColumn !== null &&
+                let isAvailable = item.options.colorColumn.selectedColumn !== null &&
                     item.options.colorColumn.selectedColumn !== undefined;
                 if (isAvailable) {
                     isAvailable =
@@ -153,10 +153,10 @@ module.exports = {
                             item.options.colorColumn.colorColumnType === "categorical";
                 }
                 return {
-                    available: isAvailable
+                    available: isAvailable,
                 };
             }
         }
         return Boom.badRequest();
-    }
+    },
 };

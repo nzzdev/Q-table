@@ -176,7 +176,7 @@ function getMetaData(values, numberValues, maxDigitsAfterComma) {
   };
 }
 
-function getDataWithoutHeaderRow(data) {
+function getDataWithoutHeaderRow(data: string[][]) {
   return data.slice(1);
 }
 

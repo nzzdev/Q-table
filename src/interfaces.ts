@@ -17,13 +17,23 @@ interface ColorColumn {
     selectedColumn: string | null,
 }
 
+export interface dataMetaDataCell {
+    data: {
+        footnote: string
+    },
+    rowIndex: number,
+    colIndex: number,
+}
+
+export interface dataMetaData {
+    cells: dataMetaDataCell[],
+}
+
 export interface QTableConfig {
     acronym: string;
     data: {
-        table: Array<Array<string>>,
-        metadata: {
-            cells: Array<any>
-        }
+        table: string[][],
+        metaData: dataMetaData,
     },
     sources: Array<any>,
     options: {
@@ -51,7 +61,7 @@ export interface ToolRuntimeConfig {
     toolBaseUrl: string,
     id: string,
     size: {
-        width: Array<{value: number, comparison: '=' | '>' | '<' | '>=' | '<='}>
+        width: Array<{value: number, unit: string, comparison: '=' | '>' | '<' | '>=' | '<='}>
     },
     isPure: Boolean,
     requestId: string,

@@ -1,48 +1,48 @@
-var rootDir = __dirname + '/../../../';
-var distDir = rootDir + 'dist/';
-var helpersDir = distDir + "helpers";
-var Joi = require("joi");
-var colorColumnHelpers = require("".concat(helpersDir, "/colorColumn.js"));
-var sequentialScaleMax = 7;
-var divergingScaleMax = sequentialScaleMax * 2;
+const rootDir = __dirname + '/../../../';
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+const Joi = require("joi");
+const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
+const sequentialScaleMax = 7;
+const divergingScaleMax = sequentialScaleMax * 2;
 module.exports = {
     method: "POST",
     path: "/notification/numberBucketsOutOfColorScale",
     options: {
         validate: {
             options: {
-                allowUnknown: true
+                allowUnknown: true,
             },
-            payload: Joi.object().required()
+            payload: Joi.object().required(),
         },
-        tags: ["api"]
+        tags: ["api"],
     },
     handler: function (request, h) {
         try {
-            var item = request.payload.item;
+            const item = request.payload.item;
             if (item.options.colorColumn.colorColumnType === "numerical") {
-                var scale = item.options.colorColumn.numericalOptions.scale;
-                var numberBuckets = colorColumnHelpers.getNumberBuckets(item.options.colorColumn);
+                const scale = item.options.colorColumn.numericalOptions.scale;
+                let numberBuckets = colorColumnHelpers.getNumberBuckets(item.options.colorColumn);
                 if (scale === "sequential") {
                     if (numberBuckets > sequentialScaleMax) {
                         return {
                             message: {
                                 title: "notifications.numberBucketsOutOfColorScale.title",
-                                body: "notifications.numberBucketsOutOfColorScale.body"
-                            }
+                                body: "notifications.numberBucketsOutOfColorScale.body",
+                            },
                         };
                     }
                 }
                 else {
-                    var divergingSpecification = scale.split("-");
-                    var divergingIndex = parseInt(divergingSpecification[1]);
-                    var numberBucketsLeft = divergingIndex;
-                    var numberBucketsRight = numberBuckets - divergingIndex;
+                    const divergingSpecification = scale.split("-");
+                    const divergingIndex = parseInt(divergingSpecification[1]);
+                    const numberBucketsLeft = divergingIndex;
+                    let numberBucketsRight = numberBuckets - divergingIndex;
                     if (divergingSpecification[0] === "bucket") {
                         numberBucketsRight -= 1;
                     }
-                    var numberBucketsBiggerSide = Math.max(numberBucketsLeft, numberBucketsRight);
-                    var scaleSize = numberBucketsBiggerSide * 2;
+                    const numberBucketsBiggerSide = Math.max(numberBucketsLeft, numberBucketsRight);
+                    let scaleSize = numberBucketsBiggerSide * 2;
                     if (divergingSpecification[0] === "bucket") {
                         scaleSize += 1;
                     }
@@ -50,8 +50,8 @@ module.exports = {
                         return {
                             message: {
                                 title: "notifications.numberBucketsOutOfColorScale.title",
-                                body: "notifications.numberBucketsOutOfColorScale.body"
-                            }
+                                body: "notifications.numberBucketsOutOfColorScale.body",
+                            },
                         };
                     }
                 }
@@ -61,5 +61,5 @@ module.exports = {
         catch (err) {
             return null;
         }
-    }
+    },
 };

@@ -4,7 +4,7 @@ module.exports = {
     options: {
         tags: ['api']
     },
-    handler: function (request, h) {
+    handler: (request, h) => {
         return 'ok';
     }
 };

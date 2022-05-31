@@ -1,63 +1,447 @@
 function getDefaultScript(context) {
-    var dataObject = "window.".concat(context.id, "Data");
-    return "\n    if (!window.q_domready) {\n      window.q_domready = new Promise(function(resolve) {\n        if (document.readyState && (document.readyState === 'interactive' || document.readyState === 'complete')) {\n          resolve();\n        } else {\n          function onReady() {\n            resolve();\n            document.removeEventListener('DOMContentLoaded', onReady, true);\n          }\n          document.addEventListener('DOMContentLoaded', onReady, true);\n          document.onreadystatechange = function() {\n            if (document.readyState === \"interactive\") {\n              resolve();\n            }\n          }\n        }\n      });\n    }\n    if (".concat(dataObject, " === undefined) {\n      ").concat(dataObject, " = {};\n    }\n    ").concat(dataObject, ".element = document.querySelector(\"#").concat(context.id, "\");\n    ").concat(dataObject, ".tableElement = ").concat(dataObject, ".element.querySelector(\".q-table__table\");\n    ").concat(dataObject, ".isCardLayout = ").concat(context.item.options.cardLayout, ";\n  ");
+    const dataObject = `window.${context.id}Data`;
+    return `
+    if (!window.q_domready) {
+      window.q_domready = new Promise(function(resolve) {
+        if (document.readyState && (document.readyState === 'interactive' || document.readyState === 'complete')) {
+          resolve();
+        } else {
+          function onReady() {
+            resolve();
+            document.removeEventListener('DOMContentLoaded', onReady, true);
+          }
+          document.addEventListener('DOMContentLoaded', onReady, true);
+          document.onreadystatechange = function() {
+            if (document.readyState === "interactive") {
+              resolve();
+            }
+          }
+        }
+      });
+    }
+    if (${dataObject} === undefined) {
+      ${dataObject} = {};
+    }
+    ${dataObject}.element = document.querySelector("#${context.id}");
+    ${dataObject}.tableElement = ${dataObject}.element.querySelector(".q-table__table");
+    ${dataObject}.isCardLayout = ${context.item.options.cardLayout};
+  `;
 }
 function getCardLayoutScript(context) {
-    var applyCardLayoutClassFunctionName = "applyCardLayoutClass".concat(context.id);
-    var dataObject = "window.".concat(context.id, "Data");
-    var renderMinibarsFunction = "";
+    const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
+    const dataObject = `window.${context.id}Data`;
+    let renderMinibarsFunction = "";
     if (Object.keys(context.minibar).length !== 0) {
-        renderMinibarsFunction = "renderMinibars".concat(context.id, "()");
+        renderMinibarsFunction = `renderMinibars${context.id}()`;
     }
-    var renderColorColumnNumericalLegendFunction = "";
+    let renderColorColumnNumericalLegendFunction = "";
     if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
-        renderColorColumnNumericalLegendFunction = "renderColorColumnNumericalLegend".concat(context.id, "(").concat(dataObject, ".width)");
+        renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.width)`;
     }
-    return "\n    ".concat(dataObject, ".footerElement = ").concat(dataObject, ".element.querySelector(\".s-q-item__footer\");\n    ").concat(dataObject, ".isCardLayout = ").concat(dataObject, ".isCardLayout || undefined;\n\n    function ").concat(applyCardLayoutClassFunctionName, "() {\n      if (").concat(dataObject, ".width > 400 && !").concat(context.item.options.cardLayout, ") {\n        ").concat(dataObject, ".isCardLayout = false;\n        ").concat(dataObject, ".element.classList.remove('q-table--card-layout');\n      } else if (").concat(context.item.options.cardLayoutIfSmall, ") {\n        ").concat(dataObject, ".isCardLayout = true;\n        ").concat(dataObject, ".element.classList.add('q-table--card-layout');\n      }\n    }\n    window.q_domready.then(function() {\n      ").concat(dataObject, ".width = ").concat(dataObject, ".element.getBoundingClientRect().width;\n      \n      ").concat(applyCardLayoutClassFunctionName, "();\n    });\n    function ").concat(context.id, "debounce(func, wait, immediate) {\n      var timeout;\n      return function() {\n        var context = this, args = arguments;\n        var later = function() {\n          timeout = null;\n          if (!immediate) func.apply(context, args);\n        };\n        var callNow = immediate && !timeout;\n        clearTimeout(timeout);\n        timeout = setTimeout(later, wait);\n        if (callNow) func.apply(context, args);\n      };\n    };\n    window.addEventListener('resize', ").concat(context.id, "debounce(function() {\n      requestAnimationFrame(function() {\n        var newWidth = ").concat(dataObject, ".element.getBoundingClientRect().width;\n        if (newWidth !== ").concat(dataObject, ".width) {\n          ").concat(dataObject, ".width = newWidth;\n          ").concat(applyCardLayoutClassFunctionName, "();\n          ").concat(renderMinibarsFunction, ";\n          ").concat(renderColorColumnNumericalLegendFunction, ";\n        }\n      });\n    }, 250));\n  ");
+    return `
+    ${dataObject}.footerElement = ${dataObject}.element.querySelector(".s-q-item__footer");
+    ${dataObject}.isCardLayout = ${dataObject}.isCardLayout || undefined;
+
+    function ${applyCardLayoutClassFunctionName}() {
+      if (${dataObject}.width > 400 && !${context.item.options.cardLayout}) {
+        ${dataObject}.isCardLayout = false;
+        ${dataObject}.element.classList.remove('q-table--card-layout');
+      } else if (${context.item.options.cardLayoutIfSmall}) {
+        ${dataObject}.isCardLayout = true;
+        ${dataObject}.element.classList.add('q-table--card-layout');
+      }
+    }
+    window.q_domready.then(function() {
+      ${dataObject}.width = ${dataObject}.element.getBoundingClientRect().width;
+      
+      ${applyCardLayoutClassFunctionName}();
+    });
+    function ${context.id}debounce(func, wait, immediate) {
+      var timeout;
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+    };
+    window.addEventListener('resize', ${context.id}debounce(function() {
+      requestAnimationFrame(function() {
+        var newWidth = ${dataObject}.element.getBoundingClientRect().width;
+        if (newWidth !== ${dataObject}.width) {
+          ${dataObject}.width = newWidth;
+          ${applyCardLayoutClassFunctionName}();
+          ${renderMinibarsFunction};
+          ${renderColorColumnNumericalLegendFunction};
+        }
+      });
+    }, 250));
+  `;
 }
 function getShowMoreButtonScript(context) {
-    var dataObject = "window.".concat(context.id, "Data");
-    var handleShowMoreButtonFunctionName = "handleShowMoreButton".concat(context.id);
-    var hideRowsFunctionName = "hideRows".concat(context.id);
-    var showRowsFunctionName = "showRows".concat(context.id);
-    return "\n    ".concat(dataObject, ".rowVisibilityState = 'visible';\n    ").concat(dataObject, ".numberOfRows = ").concat(context.numberOfRows, ";\n    ").concat(dataObject, ".numberOfRowsToHide = ").concat(context.numberOfRowsToHide, ";\n    function ").concat(hideRowsFunctionName, "() {\n      ").concat(dataObject, ".tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {\n        if (index >= (").concat(dataObject, ".numberOfRows - ").concat(dataObject, ".numberOfRowsToHide)) {\n          rowElement.classList.remove('q-table-state-visible');\n          rowElement.classList.add('q-table-state-hidden');\n        }\n      });\n      ").concat(dataObject, ".showMoreButtonElement.textContent = 'Alle ' + ").concat(dataObject, ".numberOfRows + ' anzeigen';\n      ").concat(dataObject, ".rowVisibilityState = 'hidden';\n    }\n    function ").concat(showRowsFunctionName, "() {\n      ").concat(dataObject, ".tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {\n        rowElement.classList.remove('q-table-state-hidden');\n        rowElement.classList.add('q-table-state-visible');\n      });\n      ").concat(dataObject, ".showMoreButtonElement.textContent = \"Tabelle zuklappen\";\n      ").concat(dataObject, ".rowVisibilityState = 'visible';\n    }\n    function ").concat(handleShowMoreButtonFunctionName, "() {\n      if (").concat(dataObject, ".numberOfRowsToHide === undefined) {\n        if (").concat(dataObject, ".isCardLayout && ").concat(dataObject, ".numberOfRows >= 6) {\n          ").concat(dataObject, ".numberOfRowsToHide = ").concat(dataObject, ".numberOfRows - 3; // show 3 initially\n        } else if (").concat(dataObject, ".numberOfRows >= 15) {\n          ").concat(dataObject, ".numberOfRowsToHide = ").concat(dataObject, ".numberOfRows - 10; // show 10 initially\n        }\n      }\n      if (").concat(dataObject, ".numberOfRowsToHide === undefined || ").concat(dataObject, ".numberOfRowsToHide < 1) {\n        return;\n      }\n\n      ").concat(dataObject, ".showMoreButtonElement = document.createElement('button');\n      ").concat(dataObject, ".showMoreButtonElement.classList.add('s-button');\n      ").concat(dataObject, ".showMoreButtonElement.classList.add('s-button--secondary');\n      ").concat(dataObject, ".showMoreButtonElement.classList.add('q-table_show-more-button');\n      ").concat(dataObject, ".showMoreButtonElement.setAttribute('type', 'button');\n      ").concat(dataObject, ".element.insertBefore(").concat(dataObject, ".showMoreButtonElement, ").concat(dataObject, ".element.querySelector(\".s-q-item__footer\"));\n\n      ").concat(dataObject, ".showMoreButtonElement.addEventListener('click', function(event) {\n        if (").concat(dataObject, ".rowVisibilityState === 'hidden') {\n          ").concat(showRowsFunctionName, "();\n        } else {\n          ").concat(hideRowsFunctionName, "();\n          ").concat(dataObject, ".tableElement.scrollIntoView(true);\n        }\n      });\n      ").concat(hideRowsFunctionName, "();\n    }\n\n    window.q_domready.then(function() {\n      ").concat(handleShowMoreButtonFunctionName, "();\n    });\n  ");
+    const dataObject = `window.${context.id}Data`;
+    const handleShowMoreButtonFunctionName = `handleShowMoreButton${context.id}`;
+    const hideRowsFunctionName = `hideRows${context.id}`;
+    const showRowsFunctionName = `showRows${context.id}`;
+    return `
+    ${dataObject}.rowVisibilityState = 'visible';
+    ${dataObject}.numberOfRows = ${context.numberOfRows};
+    ${dataObject}.numberOfRowsToHide = ${context.numberOfRowsToHide};
+    function ${hideRowsFunctionName}() {
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
+          rowElement.classList.remove('q-table-state-visible');
+          rowElement.classList.add('q-table-state-hidden');
+        }
+      });
+      ${dataObject}.showMoreButtonElement.textContent = 'Alle ' + ${dataObject}.numberOfRows + ' anzeigen';
+      ${dataObject}.rowVisibilityState = 'hidden';
+    }
+    function ${showRowsFunctionName}() {
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        rowElement.classList.remove('q-table-state-hidden');
+        rowElement.classList.add('q-table-state-visible');
+      });
+      ${dataObject}.showMoreButtonElement.textContent = "Tabelle zuklappen";
+      ${dataObject}.rowVisibilityState = 'visible';
+    }
+    function ${handleShowMoreButtonFunctionName}() {
+      if (${dataObject}.numberOfRowsToHide === undefined) {
+        if (${dataObject}.isCardLayout && ${dataObject}.numberOfRows >= 6) {
+          ${dataObject}.numberOfRowsToHide = ${dataObject}.numberOfRows - 3; // show 3 initially
+        } else if (${dataObject}.numberOfRows >= 15) {
+          ${dataObject}.numberOfRowsToHide = ${dataObject}.numberOfRows - 10; // show 10 initially
+        }
+      }
+      if (${dataObject}.numberOfRowsToHide === undefined || ${dataObject}.numberOfRowsToHide < 1) {
+        return;
+      }
+
+      ${dataObject}.showMoreButtonElement = document.createElement('button');
+      ${dataObject}.showMoreButtonElement.classList.add('s-button');
+      ${dataObject}.showMoreButtonElement.classList.add('s-button--secondary');
+      ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button');
+      ${dataObject}.showMoreButtonElement.setAttribute('type', 'button');
+      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer"));
+
+      ${dataObject}.showMoreButtonElement.addEventListener('click', function(event) {
+        if (${dataObject}.rowVisibilityState === 'hidden') {
+          ${showRowsFunctionName}();
+        } else {
+          ${hideRowsFunctionName}();
+          ${dataObject}.tableElement.scrollIntoView(true);
+        }
+      });
+      ${hideRowsFunctionName}();
+    }
+
+    window.q_domready.then(function() {
+      ${handleShowMoreButtonFunctionName}();
+    });
+  `;
 }
 function getMinibarsScript(context) {
-    var dataObject = "window.".concat(context.id, "Data");
-    var getColumnFunctionName = "getColumn".concat(context.id);
-    var renderMinibarsFunctionName = "renderMinibars".concat(context.id);
-    var handleMinibarsMinWidthFunctionName = "handleMinibarsMinWidth".concat(context.id);
-    return "\n    function ".concat(getColumnFunctionName, "(table, col) {\n      var tab = table.getElementsByTagName('tbody')[0];\n      var columns = [];\n\n      for (var i = 0; i < tab.rows.length; i++) {\n          if (tab.rows[i].cells.length > col) { \n              columns.push(tab.rows[i].cells[col]);\n          }\n      }\n      return columns;\n    }\n\n    function ").concat(handleMinibarsMinWidthFunctionName, "(selectedColumn, minibarColumn, tableMinibarType) {\n      if (").concat(dataObject, ".element.getBoundingClientRect().width < 400) {\n        if (tableMinibarType===\"mixed\") {\n          selectedColumn.forEach(function(cell){\n            cell.classList.add('q-table-minibar--mixed-mobile');\n          });\n        }\n        if (tableMinibarType===\"positive\") {\n          minibarColumn.forEach(function(cell){\n            cell.classList.add('q-table-minibar-cell-mobile');\n          });\n        }\n        if (tableMinibarType===\"negative\") {\n          selectedColumn.forEach(function(cell){\n            cell.classList.add('q-table-minibar-cell-mobile');\n          });\n        }\n      } else {\n        if (tableMinibarType===\"mixed\") {\n          selectedColumn.forEach(function(cell){\n            cell.classList.remove('q-table-minibar--mixed-mobile');\n          });\n        }\n        if (tableMinibarType===\"positive\") {\n          minibarColumn.forEach(function(cell){\n            cell.classList.remove('q-table-minibar-cell-mobile');\n          });\n        }\n        if (tableMinibarType===\"negative\") {\n          selectedColumn.forEach(function(cell){\n            cell.classList.remove('q-table-minibar-cell-mobile');\n          });\n        }\n      }\n    }\n\n    function ").concat(renderMinibarsFunctionName, "() {\n      var selectedColumn = ").concat(getColumnFunctionName, "(").concat(dataObject, ".tableElement,\n        ").concat(context.item.options.minibar.selectedColumn, ");\n      var minibarColumn = ").concat(getColumnFunctionName, "(").concat(dataObject, ".tableElement,\n        ").concat(context.item.options.minibar.selectedColumn + 1, ");\n      ").concat(handleMinibarsMinWidthFunctionName, "(selectedColumn, minibarColumn, selectedColumn[0].dataset.minibar);\n    }\n\n    window.q_domready.then(function() {\n      ").concat(renderMinibarsFunctionName, "();\n    });\n  ");
+    const dataObject = `window.${context.id}Data`;
+    const getColumnFunctionName = `getColumn${context.id}`;
+    const renderMinibarsFunctionName = `renderMinibars${context.id}`;
+    const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${context.id}`;
+    return `
+    function ${getColumnFunctionName}(table, col) {
+      var tab = table.getElementsByTagName('tbody')[0];
+      var columns = [];
+
+      for (var i = 0; i < tab.rows.length; i++) {
+          if (tab.rows[i].cells.length > col) { 
+              columns.push(tab.rows[i].cells[col]);
+          }
+      }
+      return columns;
+    }
+
+    function ${handleMinibarsMinWidthFunctionName}(selectedColumn, minibarColumn, tableMinibarType) {
+      if (${dataObject}.element.getBoundingClientRect().width < 400) {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar--mixed-mobile');
+          });
+        }
+        if (tableMinibarType==="positive") {
+          minibarColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar-cell-mobile');
+          });
+        }
+        if (tableMinibarType==="negative") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.add('q-table-minibar-cell-mobile');
+          });
+        }
+      } else {
+        if (tableMinibarType==="mixed") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar--mixed-mobile');
+          });
+        }
+        if (tableMinibarType==="positive") {
+          minibarColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar-cell-mobile');
+          });
+        }
+        if (tableMinibarType==="negative") {
+          selectedColumn.forEach(function(cell){
+            cell.classList.remove('q-table-minibar-cell-mobile');
+          });
+        }
+      }
+    }
+
+    function ${renderMinibarsFunctionName}() {
+      var selectedColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+        ${context.item.options.minibar.selectedColumn});
+      var minibarColumn = ${getColumnFunctionName}(${dataObject}.tableElement,
+        ${context.item.options.minibar.selectedColumn + 1});
+      ${handleMinibarsMinWidthFunctionName}(selectedColumn, minibarColumn, selectedColumn[0].dataset.minibar);
+    }
+
+    window.q_domready.then(function() {
+      ${renderMinibarsFunctionName}();
+    });
+  `;
 }
 function getSearchFormInputScript(context) {
-    var dataObject = "window.".concat(context.id, "Data");
-    var searchFormInputAddEventListeners = "searchFormInputAddEventListeners".concat(context.id);
-    var searchFormInputHideRows = "searchFormInputHideRows".concat(context.id);
-    var searchFormInputShowRows = "searchFormInputShowRows".concat(context.id);
-    var filterRows = "filterRows".concat(context.id);
-    return "\n    function ".concat(searchFormInputHideRows, "() {\n      ").concat(dataObject, ".showMoreButtonElement.style.display = '';\n\n      ").concat(dataObject, ".tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {\n        if (index >= (").concat(dataObject, ".numberOfRows - ").concat(dataObject, ".numberOfRowsToHide)) {\n          rowElement.classList.remove('q-table-state-visible');\n          rowElement.classList.add('q-table-state-hidden');\n        }\n      });\n      ").concat(dataObject, ".showMoreButtonElement.textContent = 'Alle ' + ").concat(dataObject, ".numberOfRows + ' anzeigen';\n      ").concat(dataObject, ".rowVisibilityState = 'hidden';\n    }\n\n    function ").concat(searchFormInputShowRows, "() {\n      ").concat(dataObject, ".showMoreButtonElement.style.display = 'none';\n\n      ").concat(dataObject, ".tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {\n        rowElement.classList.remove('q-table-state-hidden');\n        rowElement.classList.add('q-table-state-visible');\n      });\n      ").concat(dataObject, ".showMoreButtonElement.textContent = \"Tabelle zuklappen\";\n      ").concat(dataObject, ".rowVisibilityState = 'visible';\n    }\n\n    function ").concat(filterRows, "(filter) {\n      var foundString = false;\n      filter = filter.toUpperCase();\n\n      if (filter.length < 2) return;\n\n      // Loop through all table rows\n      ").concat(dataObject, ".tableElement.querySelectorAll('tbody tr').forEach(\n        function(rowElement) {\n          foundString = false;\n          \n          // Loop through all text cells\n          rowElement.querySelectorAll('.q-table__cell--text').forEach(\n            function(textCellElement) {\n              textCellValue = textCellElement.innerText.toUpperCase();\n\n              if (textCellValue.indexOf(filter) > -1) {\n                foundString = true;\n                return;\n              }\n            }\n          )\n\n          if (foundString) {\n            rowElement.classList.remove('q-table-state-hidden');\n            rowElement.classList.add('q-table-state-visible');\n          } else {\n            rowElement.classList.remove('q-table-state-visible');\n            rowElement.classList.add('q-table-state-hidden');\n          }\n        }\n      );\n    }\n\n    function ").concat(searchFormInputAddEventListeners, "() {\n      ").concat(dataObject, ".element.querySelector('.q-table__search__input').addEventListener('input', function(event) {\n        var filter = event.target.value;\n\n        if (filter.length < 2) {\n          // Always make all rows visible again\n          ").concat(searchFormInputShowRows, "();\n\n          // No filter = show default view with show more button (15 rows)\n          if (filter.length == 0) ").concat(searchFormInputHideRows, "();\n        } else {\n          ").concat(filterRows, "(filter);\n        }\n      });\n    }\n\n    window.q_domready.then(function() {\n      ").concat(searchFormInputAddEventListeners, "();\n    });\n  ");
+    const dataObject = `window.${context.id}Data`;
+    const searchFormInputAddEventListeners = `searchFormInputAddEventListeners${context.id}`;
+    const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
+    const searchFormInputShowRows = `searchFormInputShowRows${context.id}`;
+    const filterRows = `filterRows${context.id}`;
+    return `
+    function ${searchFormInputHideRows}() {
+      ${dataObject}.showMoreButtonElement.style.display = '';
+
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
+          rowElement.classList.remove('q-table-state-visible');
+          rowElement.classList.add('q-table-state-hidden');
+        }
+      });
+      ${dataObject}.showMoreButtonElement.textContent = 'Alle ' + ${dataObject}.numberOfRows + ' anzeigen';
+      ${dataObject}.rowVisibilityState = 'hidden';
+    }
+
+    function ${searchFormInputShowRows}() {
+      ${dataObject}.showMoreButtonElement.style.display = 'none';
+
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
+        rowElement.classList.remove('q-table-state-hidden');
+        rowElement.classList.add('q-table-state-visible');
+      });
+      ${dataObject}.showMoreButtonElement.textContent = "Tabelle zuklappen";
+      ${dataObject}.rowVisibilityState = 'visible';
+    }
+
+    function ${filterRows}(filter) {
+      var foundString = false;
+      filter = filter.toUpperCase();
+
+      if (filter.length < 2) return;
+
+      // Loop through all table rows
+      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(
+        function(rowElement) {
+          foundString = false;
+          
+          // Loop through all text cells
+          rowElement.querySelectorAll('.q-table__cell--text').forEach(
+            function(textCellElement) {
+              textCellValue = textCellElement.innerText.toUpperCase();
+
+              if (textCellValue.indexOf(filter) > -1) {
+                foundString = true;
+                return;
+              }
+            }
+          )
+
+          if (foundString) {
+            rowElement.classList.remove('q-table-state-hidden');
+            rowElement.classList.add('q-table-state-visible');
+          } else {
+            rowElement.classList.remove('q-table-state-visible');
+            rowElement.classList.add('q-table-state-hidden');
+          }
+        }
+      );
+    }
+
+    function ${searchFormInputAddEventListeners}() {
+      ${dataObject}.element.querySelector('.q-table__search__input').addEventListener('input', function(event) {
+        var filter = event.target.value;
+
+        if (filter.length < 2) {
+          // Always make all rows visible again
+          ${searchFormInputShowRows}();
+
+          // No filter = show default view with show more button (15 rows)
+          if (filter.length == 0) ${searchFormInputHideRows}();
+        } else {
+          ${filterRows}(filter);
+        }
+      });
+    }
+
+    window.q_domready.then(function() {
+      ${searchFormInputAddEventListeners}();
+    });
+  `;
 }
 function getColorColumnScript(context) {
-    var dataObject = "window.".concat(context.id, "Data");
-    var setupMethodBoxFunctionName = "setupMethodBox".concat(context.id);
-    var prepareMethodBoxElementsFunctionName = "prepareMethodBoxElements".concat(context.id);
-    var setVisibilityOfElementsFunctionName = "setVisibilityOfElements".concat(context.id);
-    var renderColorColumnNumericalLegendFunctionName = "renderColorColumnNumericalLegend".concat(context.id);
-    var addEventListenerToMethodBoxToggleFunctionName = "addEventListenerToMethodBoxToggle".concat(context.id);
-    var handleClickOnMethodBoxToogleFunctionName = "handleClickOnMethodBoxToogle".concat(context.id);
-    var addEventListenerToMethodBoxArticleLinkFunctionName = "addEventListenerToMethodBoxArticleLink".concat(context.id);
-    var handleClickOnMethodBoxArticleLinkFunctionName = "handleClickOnMethodBoxArticleLink".concat(context.id);
-    var renderColorColumnNumericalLegendFunction = "";
+    const dataObject = `window.${context.id}Data`;
+    const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;
+    const prepareMethodBoxElementsFunctionName = `prepareMethodBoxElements${context.id}`;
+    const setVisibilityOfElementsFunctionName = `setVisibilityOfElements${context.id}`;
+    const renderColorColumnNumericalLegendFunctionName = `renderColorColumnNumericalLegend${context.id}`;
+    const addEventListenerToMethodBoxToggleFunctionName = `addEventListenerToMethodBoxToggle${context.id}`;
+    const handleClickOnMethodBoxToogleFunctionName = `handleClickOnMethodBoxToogle${context.id}`;
+    const addEventListenerToMethodBoxArticleLinkFunctionName = `addEventListenerToMethodBoxArticleLink${context.id}`;
+    const handleClickOnMethodBoxArticleLinkFunctionName = `handleClickOnMethodBoxArticleLink${context.id}`;
+    let renderColorColumnNumericalLegendFunction = "";
     if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
-        renderColorColumnNumericalLegendFunction = "renderColorColumnNumericalLegend".concat(context.id, "(").concat(dataObject, ".element.getBoundingClientRect().width)");
+        renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.element.getBoundingClientRect().width)`;
     }
-    return "\n\n  function ".concat(prepareMethodBoxElementsFunctionName, "() {\n    ").concat(dataObject, ".methodBoxToggleElement = ").concat(dataObject, ".element.querySelector(\n      \".q-table-methods-link\"\n    );\n    ").concat(dataObject, ".methodBoxContainerElement = ").concat(dataObject, ".element.querySelector(\n      \".q-table-methods-container\"\n    );\n    ").concat(dataObject, ".methodBoxOpenIcon = ").concat(dataObject, ".element.querySelector(\n      \".q-table-methods-link-icon-plus\"\n    );\n    ").concat(dataObject, ".methodBoxCloseIcon = ").concat(dataObject, ".element.querySelector(\n      \".q-table-methods-link-icon-close\"\n    );\n    ").concat(dataObject, ".methodBoxArticleLink = ").concat(dataObject, ".element.querySelector(\n      \".q-table-methods-article-container\"\n    );\n  }\n\n  function ").concat(setVisibilityOfElementsFunctionName, "() {\n    if (").concat(dataObject, ".isMethodBoxVisible) {\n      if (").concat(dataObject, ".methodBoxContainerElement) {\n        ").concat(dataObject, ".methodBoxContainerElement.classList.remove(\"hidden\");\n      }\n      if (").concat(dataObject, ".methodBoxOpenIcon) {\n        ").concat(dataObject, ".methodBoxOpenIcon.classList.add(\"hidden\");\n      }\n      if (").concat(dataObject, ".methodBoxCloseIcon) {\n        ").concat(dataObject, ".methodBoxCloseIcon.classList.remove(\"hidden\");\n      }\n    } else {\n      if (").concat(dataObject, ".methodBoxContainerElement) {\n        ").concat(dataObject, ".methodBoxContainerElement.classList.add(\"hidden\");\n      }\n      if (").concat(dataObject, ".methodBoxCloseIcon) {\n        ").concat(dataObject, ".methodBoxCloseIcon.classList.add(\"hidden\");\n      }\n      if (").concat(dataObject, ".methodBoxOpenIcon) {\n        ").concat(dataObject, ".methodBoxOpenIcon.classList.remove(\"hidden\");\n      }\n    }\n  }\n\n  function ").concat(addEventListenerToMethodBoxToggleFunctionName, "() {\n    if (").concat(dataObject, ".methodBoxToggleElement) {\n      ").concat(dataObject, ".methodBoxToggleElement.addEventListener(\"click\", function(event) {\n        ").concat(handleClickOnMethodBoxToogleFunctionName, "(event);\n      });\n    }\n  }\n\n\n  function ").concat(handleClickOnMethodBoxToogleFunctionName, "(event) {\n    const eventDetail = {\n      eventInfo: {\n        componentName: \"q-table\",\n        eventAction: ").concat(dataObject, ".isMethodBoxVisible\n          ? \"close-methods-box\"\n          : \"open-methods-box\",\n        eventNonInteractive: false,\n      },\n    };\n\n    ").concat(dataObject, ".isMethodBoxVisible = !").concat(dataObject, ".isMethodBoxVisible;\n    ").concat(setVisibilityOfElementsFunctionName, "();\n\n    const trackingEvent = new CustomEvent(\"q-tracking-event\", {\n      bubbles: true,\n      detail: eventDetail,\n    });\n    event.target.dispatchEvent(trackingEvent);\n  }\n\n  function ").concat(addEventListenerToMethodBoxArticleLinkFunctionName, "() {\n    if (").concat(dataObject, ".methodBoxArticleLink) {\n      ").concat(dataObject, ".methodBoxToggleElement.addEventListener(\"click\", function(event) {\n        ").concat(handleClickOnMethodBoxArticleLinkFunctionName, "(event);\n      });\n    }\n  }\n\n  function ").concat(handleClickOnMethodBoxArticleLinkFunctionName, "(event) {\n    const eventDetail = {\n      eventInfo: {\n        componentName: \"q-table\",\n        eventAction: \"open-method-box-article-link\",\n        eventNonInteractive: false,\n      },\n    };\n\n    const trackingEvent = new CustomEvent(\"q-tracking-event\", {\n      bubbles: true,\n      detail: eventDetail,\n    });\n    event.target.dispatchEvent(trackingEvent);\n  }\n\n  function ").concat(renderColorColumnNumericalLegendFunctionName, "(width) {\n    var legend = ").concat(dataObject, ".element.querySelector(\".q-table-colorColumn-legend--numerical\");\n    var legendContainer = ").concat(dataObject, ".element.querySelector(\".q-table-colorColumn-legend-container\");\n    if (width <= 640) {\n      legend.classList.remove(\"q-table-colorColumn-legend--fullwidth\")\n      legendContainer.classList.add(\"q-table-colorColumn-legend-container--desktop\"); \n      legendContainer.classList.remove(\"q-table-colorColumn-legend-container--fullwidth\"); \n    } else {\n      legend.classList.add(\"q-table-colorColumn-legend--fullwidth\")\n      legendContainer.classList.remove(\"q-table-colorColumn-legend-container--desktop\"); \n      legendContainer.classList.add(\"q-table-colorColumn-legend-container--fullwidth\"); \n    }\n  }\n\n  function ").concat(setupMethodBoxFunctionName, "() {\n    ").concat(prepareMethodBoxElementsFunctionName, "();\n    ").concat(setVisibilityOfElementsFunctionName, "();\n    ").concat(renderColorColumnNumericalLegendFunction, "\n    ").concat(addEventListenerToMethodBoxToggleFunctionName, "();\n    ").concat(addEventListenerToMethodBoxArticleLinkFunctionName, "();\n  }\n\n  window.q_domready.then(function() {\n    ").concat(setupMethodBoxFunctionName, "();\n  });\n  ");
+    return `
+
+  function ${prepareMethodBoxElementsFunctionName}() {
+    ${dataObject}.methodBoxToggleElement = ${dataObject}.element.querySelector(
+      ".q-table-methods-link"
+    );
+    ${dataObject}.methodBoxContainerElement = ${dataObject}.element.querySelector(
+      ".q-table-methods-container"
+    );
+    ${dataObject}.methodBoxOpenIcon = ${dataObject}.element.querySelector(
+      ".q-table-methods-link-icon-plus"
+    );
+    ${dataObject}.methodBoxCloseIcon = ${dataObject}.element.querySelector(
+      ".q-table-methods-link-icon-close"
+    );
+    ${dataObject}.methodBoxArticleLink = ${dataObject}.element.querySelector(
+      ".q-table-methods-article-container"
+    );
+  }
+
+  function ${setVisibilityOfElementsFunctionName}() {
+    if (${dataObject}.isMethodBoxVisible) {
+      if (${dataObject}.methodBoxContainerElement) {
+        ${dataObject}.methodBoxContainerElement.classList.remove("hidden");
+      }
+      if (${dataObject}.methodBoxOpenIcon) {
+        ${dataObject}.methodBoxOpenIcon.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxCloseIcon) {
+        ${dataObject}.methodBoxCloseIcon.classList.remove("hidden");
+      }
+    } else {
+      if (${dataObject}.methodBoxContainerElement) {
+        ${dataObject}.methodBoxContainerElement.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxCloseIcon) {
+        ${dataObject}.methodBoxCloseIcon.classList.add("hidden");
+      }
+      if (${dataObject}.methodBoxOpenIcon) {
+        ${dataObject}.methodBoxOpenIcon.classList.remove("hidden");
+      }
+    }
+  }
+
+  function ${addEventListenerToMethodBoxToggleFunctionName}() {
+    if (${dataObject}.methodBoxToggleElement) {
+      ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
+        ${handleClickOnMethodBoxToogleFunctionName}(event);
+      });
+    }
+  }
+
+
+  function ${handleClickOnMethodBoxToogleFunctionName}(event) {
+    const eventDetail = {
+      eventInfo: {
+        componentName: "q-table",
+        eventAction: ${dataObject}.isMethodBoxVisible
+          ? "close-methods-box"
+          : "open-methods-box",
+        eventNonInteractive: false,
+      },
+    };
+
+    ${dataObject}.isMethodBoxVisible = !${dataObject}.isMethodBoxVisible;
+    ${setVisibilityOfElementsFunctionName}();
+
+    const trackingEvent = new CustomEvent("q-tracking-event", {
+      bubbles: true,
+      detail: eventDetail,
+    });
+    event.target.dispatchEvent(trackingEvent);
+  }
+
+  function ${addEventListenerToMethodBoxArticleLinkFunctionName}() {
+    if (${dataObject}.methodBoxArticleLink) {
+      ${dataObject}.methodBoxToggleElement.addEventListener("click", function(event) {
+        ${handleClickOnMethodBoxArticleLinkFunctionName}(event);
+      });
+    }
+  }
+
+  function ${handleClickOnMethodBoxArticleLinkFunctionName}(event) {
+    const eventDetail = {
+      eventInfo: {
+        componentName: "q-table",
+        eventAction: "open-method-box-article-link",
+        eventNonInteractive: false,
+      },
+    };
+
+    const trackingEvent = new CustomEvent("q-tracking-event", {
+      bubbles: true,
+      detail: eventDetail,
+    });
+    event.target.dispatchEvent(trackingEvent);
+  }
+
+  function ${renderColorColumnNumericalLegendFunctionName}(width) {
+    var legend = ${dataObject}.element.querySelector(".q-table-colorColumn-legend--numerical");
+    var legendContainer = ${dataObject}.element.querySelector(".q-table-colorColumn-legend-container");
+    if (width <= 640) {
+      legend.classList.remove("q-table-colorColumn-legend--fullwidth")
+      legendContainer.classList.add("q-table-colorColumn-legend-container--desktop"); 
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--fullwidth"); 
+    } else {
+      legend.classList.add("q-table-colorColumn-legend--fullwidth")
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--desktop"); 
+      legendContainer.classList.add("q-table-colorColumn-legend-container--fullwidth"); 
+    }
+  }
+
+  function ${setupMethodBoxFunctionName}() {
+    ${prepareMethodBoxElementsFunctionName}();
+    ${setVisibilityOfElementsFunctionName}();
+    ${renderColorColumnNumericalLegendFunction}
+    ${addEventListenerToMethodBoxToggleFunctionName}();
+    ${addEventListenerToMethodBoxArticleLinkFunctionName}();
+  }
+
+  window.q_domready.then(function() {
+    ${setupMethodBoxFunctionName}();
+  });
+  `;
 }
 module.exports = {
-    getDefaultScript: getDefaultScript,
-    getCardLayoutScript: getCardLayoutScript,
-    getShowMoreButtonScript: getShowMoreButtonScript,
-    getMinibarsScript: getMinibarsScript,
-    getSearchFormInputScript: getSearchFormInputScript,
-    getColorColumnScript: getColorColumnScript
+    getDefaultScript,
+    getCardLayoutScript,
+    getShowMoreButtonScript,
+    getMinibarsScript,
+    getSearchFormInputScript,
+    getColorColumnScript,
 };

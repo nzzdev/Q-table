@@ -1,4 +1,4 @@
-var resourcesDir = __dirname + '/../resources/';
+const resourcesDir = __dirname + '/../resources/';
 module.exports = [
     {
         method: 'GET',

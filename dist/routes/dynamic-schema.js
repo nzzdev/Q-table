@@ -1,49 +1,45 @@
-var rootDir = __dirname + "/../../";
-var distDir = rootDir + 'dist/';
-var helpersDir = distDir + "helpers";
-var Boom = require("@hapi/boom");
-var Joi = require("joi");
-var dataHelpers = require("".concat(helpersDir, "/data.js"));
-var colorColumnHelpers = require("".concat(helpersDir, "/colorColumn.js"));
+const rootDir = __dirname + "/../../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+const Boom = require("@hapi/boom");
+const Joi = require("joi");
+const dataHelpers = require(`${helpersDir}/data.js`);
+const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
 function getMinibarEnum(item) {
-    var _a;
     if (item.data.table.length < 1) {
         return [null];
     }
-    return (_a = [null]).concat.apply(_a, dataHelpers.getNumericColumns(item.data.table).map(function (col) { return col.index; }));
+    return [null].concat(...dataHelpers.getNumericColumns(item.data.table).map((col) => col.index));
 }
 function getMinibarEnumTitles(item) {
-    var _a;
     if (item.data.table.length < 1) {
         return ["keine"];
     }
-    return (_a = ["keine"]).concat.apply(_a, dataHelpers.getNumericColumns(item.data.table).map(function (col) { return col.title; }));
+    return ["keine"].concat(...dataHelpers.getNumericColumns(item.data.table).map((col) => col.title));
 }
 function getColorColumnEnum(item) {
-    var _a;
     if (item.data.table.length < 1) {
         return [null];
     }
-    return (_a = [null]).concat.apply(_a, dataHelpers
+    return [null].concat(...dataHelpers
         .getCategoricalColumns(item.data.table)
-        .map(function (col) { return col.index; }));
+        .map((col) => col.index));
 }
 function getColorColumnEnumTitles(item) {
-    var _a;
     if (item.data.table.length < 1) {
         return ["keine"];
     }
-    return (_a = ["keine"]).concat.apply(_a, dataHelpers
+    return ["keine"].concat(...dataHelpers
         .getCategoricalColumns(item.data.table)
-        .map(function (col) { return col.title; }));
+        .map((col) => col.title));
 }
 function getScaleEnumWithTitles(numericalOptions) {
-    var enumValues = ["sequential"];
-    var enumTitles = ["Sequentiell"];
-    var bucketNumber = 0;
+    let enumValues = ["sequential"];
+    let enumTitles = ["Sequentiell"];
+    let bucketNumber = 0;
     if (numericalOptions.bucketType === "custom") {
         if (numericalOptions.customBuckets) {
-            var buckets = numericalOptions.customBuckets.split(",");
+            const buckets = numericalOptions.customBuckets.split(",");
             bucketNumber = buckets.length - 1;
         }
     }
@@ -51,26 +47,26 @@ function getScaleEnumWithTitles(numericalOptions) {
         bucketNumber = numericalOptions.numberBuckets;
     }
     // Add valid bucket borders to enum as diverging values
-    for (var i = 1; i < bucketNumber; i++) {
-        enumValues.push("border-".concat(i));
-        enumTitles.push("Divergierend ab Grenze ".concat(i));
+    for (let i = 1; i < bucketNumber; i++) {
+        enumValues.push(`border-${i}`);
+        enumTitles.push(`Divergierend ab Grenze ${i}`);
     }
     // Add valid buckets to enum as diverging values
-    for (var i = 1; i < bucketNumber - 1; i++) {
-        enumValues.push("bucket-".concat(i));
-        enumTitles.push("Divergierend ab Bucket ".concat(i + 1));
+    for (let i = 1; i < bucketNumber - 1; i++) {
+        enumValues.push(`bucket-${i}`);
+        enumTitles.push(`Divergierend ab Bucket ${i + 1}`);
     }
     return {
-        "enum": enumValues,
+        enum: enumValues,
         "Q:options": {
-            enum_titles: enumTitles
-        }
+            enum_titles: enumTitles,
+        },
     };
 }
 function getColorSchemeEnumWithTitles(numericalOptions) {
     if (numericalOptions.scale === "sequential") {
         return {
-            "enum": ["one", "two", "three", "female", "male"],
+            enum: ["one", "two", "three", "female", "male"],
             "Q:options": {
                 enum_titles: [
                     "Schema 1 (Standard)",
@@ -78,25 +74,25 @@ function getColorSchemeEnumWithTitles(numericalOptions) {
                     "Schema 3 (negative Bedeutung)",
                     "Schema weiblich",
                     "Schema männlich",
-                ]
-            }
+                ],
+            },
         };
     }
     return {
-        "enum": ["one", "two", "three", "gender"],
+        enum: ["one", "two", "three", "gender"],
         "Q:options": {
             enum_titles: [
                 "Schema 1 (Standard negativ/positiv)",
                 "Schema 2 (neutral)",
                 "Schema 3 (Alternative negativ/positiv)",
                 "Schema weiblich/männlich",
-            ]
-        }
+            ],
+        },
     };
 }
 function getMaxItemsNumerical(colorColumn) {
     return {
-        maxItems: colorColumnHelpers.getNumberBuckets(colorColumn)
+        maxItems: colorColumnHelpers.getNumberBuckets(colorColumn),
     };
 }
 function getMaxItemsCategorical(data, colorColumn) {
@@ -104,29 +100,27 @@ function getMaxItemsCategorical(data, colorColumn) {
         // removing the header row first
         data = dataHelpers.getDataWithoutHeaderRow(data);
         return {
-            maxItems: dataHelpers.getUniqueCategoriesCount(data, colorColumn)
+            maxItems: dataHelpers.getUniqueCategoriesCount(data, colorColumn),
         };
     }
     catch (_a) {
         return {
-            maxItems: undefined
+            maxItems: undefined,
         };
     }
 }
 function getColorOverwriteEnumAndTitlesNumerical(colorColumn) {
     try {
-        var enumValues = [null];
-        var numberItems = colorColumnHelpers.getNumberBuckets(colorColumn);
-        for (var index = 0; index < numberItems; index++) {
+        let enumValues = [null];
+        const numberItems = colorColumnHelpers.getNumberBuckets(colorColumn);
+        for (let index = 0; index < numberItems; index++) {
             enumValues.push(index + 1);
         }
         return {
-            "enum": enumValues,
+            enum: enumValues,
             "Q:options": {
-                enum_titles: enumValues.map(function (value) {
-                    return value === null ? "" : "".concat(value, ". Bucket ");
-                })
-            }
+                enum_titles: enumValues.map((value) => value === null ? "" : `${value}. Bucket `),
+            },
         };
     }
     catch (_a) {
@@ -135,29 +129,29 @@ function getColorOverwriteEnumAndTitlesNumerical(colorColumn) {
 }
 function getColorOverwriteEnumAndTitlesCategorical(data, colorColumn) {
     data = dataHelpers.getDataWithoutHeaderRow(data);
-    var customCategoriesOrder = colorColumn.categoricalOptions.customCategoriesOrder;
-    var enumValues = [null];
-    var categories = dataHelpers.getUniqueCategoriesObject(data, colorColumn).categories;
-    var numberItems = categories.length;
-    for (var index = 0; index < numberItems; index++) {
+    let customCategoriesOrder = colorColumn.categoricalOptions.customCategoriesOrder;
+    let enumValues = [null];
+    const categories = dataHelpers.getUniqueCategoriesObject(data, colorColumn).categories;
+    const numberItems = categories.length;
+    for (let index = 0; index < numberItems; index++) {
         enumValues.push(index + 1);
     }
     return {
-        "enum": enumValues,
+        enum: enumValues,
         "Q:options": {
-            enum_titles: [""].concat(categories.map(function (category, index) { return "".concat(index + 1, " - ").concat(category); }))
-        }
+            enum_titles: [""].concat(categories.map((category, index) => `${index + 1} - ${category}`)),
+        },
     };
 }
 function getCustomCategoriesOrderEnumAndTitlesCategorical(data, colorColumn) {
     try {
         data = dataHelpers.getDataWithoutHeaderRow(data);
-        var categories = dataHelpers.getUniqueCategoriesObject(data, colorColumn).categories;
+        const categories = dataHelpers.getUniqueCategoriesObject(data, colorColumn).categories;
         return {
-            "enum": categories,
+            enum: categories,
             "Q:options": {
-                enum_titles: categories
-            }
+                enum_titles: categories,
+            },
         };
     }
     catch (ex) {
@@ -170,26 +164,26 @@ module.exports = {
     path: "/dynamic-schema/{optionName}",
     options: {
         validate: {
-            payload: Joi.object()
-        }
+            payload: Joi.object(),
+        },
     },
     handler: function (request, h) {
-        var item = request.payload.item;
-        var optionName = request.params.optionName;
+        const item = request.payload.item;
+        const optionName = request.params.optionName;
         if (optionName === "selectedColumnMinibar") {
             return {
-                "enum": getMinibarEnum(item),
+                enum: getMinibarEnum(item),
                 "Q:options": {
-                    enum_titles: getMinibarEnumTitles(item)
-                }
+                    enum_titles: getMinibarEnumTitles(item),
+                },
             };
         }
         if (optionName === "selectedColorColumn") {
             return {
-                "enum": getColorColumnEnum(item),
+                enum: getColorColumnEnum(item),
                 "Q:options": {
-                    enum_titles: getColorColumnEnumTitles(item)
-                }
+                    enum_titles: getColorColumnEnumTitles(item),
+                },
             };
         }
         if (optionName === "scale") {
@@ -221,5 +215,5 @@ module.exports = {
             return getCustomCategoriesOrderEnumAndTitlesCategorical(item.data.table, item.options.colorColumn);
         }
         return Boom.badRequest();
-    }
+    },
 };

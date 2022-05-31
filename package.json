@@ -3,8 +3,9 @@
   "version": "5.0.9",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "compile-style-files": "node tasks/compileStyleFiles.js",
+    "compile-style-files": "node tasks/compileStyleFiles.cjs",
     "transpile-ts-files": "ts-node tasks/transpileTsFiles",
     "transpile-svelte-files": "svelte-strip -m false strip src/components/ dist/components/",
     "dev": "run-p transpile-ts-files transpile-svelte-files compile-style-files",

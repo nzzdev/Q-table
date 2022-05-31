@@ -1,34 +1,34 @@
-var rootDir = __dirname + "/../../../";
-var distDir = rootDir + 'dist/';
-var helpersDir = distDir + "helpers";
-var Joi = require("joi");
-var dataHelpers = require("".concat(helpersDir, "/data.js"));
-var numberMainColors = require("".concat(helpersDir, "/colorColumnColor.js")).digitWords.length;
+const rootDir = __dirname + "/../../../";
+const distDir = rootDir + 'dist/';
+const helpersDir = distDir + "helpers";
+const Joi = require("joi");
+const dataHelpers = require(`${helpersDir}/data.js`);
+const numberMainColors = require(`${helpersDir}/colorColumnColor.js`).digitWords.length;
 module.exports = {
     method: "POST",
     path: "/notification/numberCategoriesOutOfColorScale",
     options: {
         validate: {
             options: {
-                allowUnknown: true
+                allowUnknown: true,
             },
-            payload: Joi.object().required()
+            payload: Joi.object().required(),
         },
-        tags: ["api"]
+        tags: ["api"],
     },
     handler: function (request, h) {
         try {
-            var item = request.payload.item;
+            const item = request.payload.item;
             if (item.options.colorColumn.colorColumnType === "categorical") {
                 // removing the header row first
                 item.data = dataHelpers.getDataWithoutHeaderRow(item.data);
-                var numberUniqueValues = dataHelpers.getUniqueCategoriesCount(item.data.table, item.options.colorColumn);
+                const numberUniqueValues = dataHelpers.getUniqueCategoriesCount(item.data.table, item.options.colorColumn);
                 if (numberCategories > numberMainColors) {
                     return {
                         message: {
                             title: "notifications.numberCategoriesOutOfColorScale.title",
-                            body: "notifications.numberCategoriesOutOfColorScale.body"
-                        }
+                            body: "notifications.numberCategoriesOutOfColorScale.body",
+                        },
                     };
                 }
             }
@@ -37,5 +37,5 @@ module.exports = {
         catch (err) {
             return null;
         }
-    }
+    },
 };

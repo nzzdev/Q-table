@@ -1,3 +1,11 @@
+import type { dataMetaData, dataMetaDataCell } from '../interfaces';
+
+export interface StructuredFootnote {
+  value: string,
+  index: number,
+  coords: Array<{colIndex: number, rowIndex: number}>,
+}
+
 function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   const unicodes = {
     1: "\u00b9",
@@ -62,7 +70,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   return tableData;
 }
 
-function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
+function getClass(options, footnote, amountOfFootnotes, type, lastColIndex): string | null {
   // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
   if (
     (type === "numeric" &&
@@ -77,10 +85,11 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
     }
     return spacingClass;
   }
+
   return null;
 }
 
-function getFootnotes(metaData, hideTableHeader) {
+export function getFootnotes(metaData: dataMetaData, hideTableHeader: Boolean): StructuredFootnote[] {
   let footnotes = metaData.cells
     .filter((cell) => {
       if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
@@ -98,8 +107,9 @@ function getFootnotes(metaData, hideTableHeader) {
   return getStructuredFootnotes(footnotes);
 }
 
-function getStructuredFootnotes(footnotes) {
-  let structuredFootnotes = [];
+function getStructuredFootnotes(footnotes: dataMetaDataCell[]): StructuredFootnote[] {
+  let structuredFootnotes: StructuredFootnote[] = [];
+
   footnotes.forEach((footnote) => {
     let existingFootnote = structuredFootnotes.find(
       (filterFootnote) => footnote.data.footnote === filterFootnote.value
@@ -123,6 +133,7 @@ function getStructuredFootnotes(footnotes) {
       });
     }
   });
+
   return structuredFootnotes;
 }
 
@@ -137,6 +148,7 @@ function getFlattenedFootnotes(footnotes) {
       });
     });
   });
+
   return flattenedFootnotes;
 }
 

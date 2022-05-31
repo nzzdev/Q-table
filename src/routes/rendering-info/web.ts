@@ -3,7 +3,7 @@ require("svelte/register");
 
 import type { IReply, Request } from 'hapi';
 import type { QTableConfig, ToolRuntimeConfig } from '../../interfaces';
-
+import type { StructuredFootnote } from '../../helpers/footnotes';
 // Require tools.
 const Ajv = require("ajv");
 const Boom = require("@hapi/boom");
@@ -27,11 +27,15 @@ const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
 const getExactPixelWidth = require(`${helpersDir}/toolRuntimeConfig.js`).getExactPixelWidth;
 const dataHelpers = require(`${helpersDir}/data.js`);
-const footnoteHelpers = require(`${helpersDir}/footnotes.js`);
+// const footnoteHelpers = require(`${helpersDir}/footnotes.js`);
+// const footnoteHelpers = require('../../helpers/footnotes');
 const minibarHelpers = require(`${helpersDir}/minibars.js`);
 const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
 
 const renderingInfoScripts = require(`${helpersDir}/renderingInfoScript.js`);
+
+
+import * as footnoteHelpers from '../../helpers/footnotes';
 
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
@@ -76,7 +80,7 @@ module.exports = {
       payload: validatePayload,
     },
   },
-  handler: async function (request, h) {
+  handler: async function (request: Request, h) {
     const renderingInfo = {
       polyfills: ["Promise"],
       stylesheets: [{
@@ -93,7 +97,8 @@ module.exports = {
     const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
 
     const dataWithoutHeaderRow = dataHelpers.getDataWithoutHeaderRow(itemDataCopy);
-    const footnotes = footnoteHelpers.getFootnotes(
+
+    const footnotes: StructuredFootnote[] = footnoteHelpers.getFootnotes(
       config.data.metaData,
       config.options.hideTableHeader
     );
@@ -102,13 +107,13 @@ module.exports = {
       url: "/option-availability/selectedColumnMinibar",
       method: "POST",
       payload: { item: config },
-    });
+    }, () => {});
 
     const colorColumnAvailable = await request.server.inject({
       url: "/option-availability/selectedColorColumn",
       method: "POST",
       payload: { item: config },
-    });
+    }, () => {});
 
 
 
