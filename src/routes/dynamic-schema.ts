@@ -207,6 +207,7 @@ module.exports = {
   },
   handler: function (request, h) {
     const item = request.payload.item;
+
     const optionName = request.params.optionName;
     if (optionName === "selectedColumnMinibar") {
       return {

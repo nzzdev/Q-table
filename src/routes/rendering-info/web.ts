@@ -1,6 +1,9 @@
 // Setup svelte environment.
 require("svelte/register");
 
+import type { IReply, Request } from 'hapi';
+import type { QTableConfig, ToolRuntimeConfig } from '../../interfaces';
+
 // Require tools.
 const Ajv = require("ajv");
 const Boom = require("@hapi/boom");
@@ -82,12 +85,8 @@ module.exports = {
     };
 
     // Extract table configurations.
-    const config = request.payload.item;
-    const toolRuntimeConfig = request.payload.toolRuntimeConfig;
-
-
-    console.log("config", config);
-    console.log("toolRuntimeConfig", toolRuntimeConfig);
+    const config = request.payload.item as QTableConfig;
+    const toolRuntimeConfig = request.payload.toolRuntimeConfig as ToolRuntimeConfig;
 
     let width = getExactPixelWidth(toolRuntimeConfig);
 

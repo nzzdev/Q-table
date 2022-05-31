@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+import { ScriptTarget} from 'typescript';
 
 const fs = require("fs");
 const recursiveReadSync = require('recursive-readdir-sync');
@@ -30,6 +31,7 @@ function compile(fileNames: string[], options: ts.CompilerOptions): void {
 }
 
 const tsConfig: ts.CompilerOptions = {
+    'target': ScriptTarget.ES2015,
     'types': ['node'],
     'outDir': './dist/helpers',
     'typeRoots': ['./node_modules/@types'],
@@ -37,4 +39,4 @@ const tsConfig: ts.CompilerOptions = {
 };
 
 compile(helperFiles, { ...tsConfig, 'outDir': './dist/helpers' });
-compile(routeFiles, { ...tsConfig, 'outDir': './dist/routes' });
+compile(routeFiles, { ...tsConfig, 'outDir': './dist/' });

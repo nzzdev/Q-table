@@ -7,10 +7,7 @@ export let displayOptions;
 export let config;
 export let tableData;
 
-console.log("tableData", tableData);
-
 const subtitle = config.subtitle?.trim();
-
 
 function shouldShowLegend() {
     return true;

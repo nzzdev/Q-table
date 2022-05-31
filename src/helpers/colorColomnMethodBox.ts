@@ -1,4 +1,4 @@
-export type MethodBoxBuckedType =  keyof typeof methodBoxTextConfig;
+import type { BucketType } from "../interfaces";
 
 interface MethodBoxInfo {
     text: string;
@@ -8,7 +8,7 @@ interface MethodBoxInfo {
     }
 }
 
-const methodBoxTextConfig = {
+const methodBoxTextConfig: Record<BucketType, string> = {
     ckmeans:
         "Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede zwischen den Regionen möglichst gut sichtbar werden (Jenks Natural Breaks).",
     quantile:
@@ -18,7 +18,7 @@ const methodBoxTextConfig = {
     custom: "Die Gruppen wurden manuell definiert.",
 };
 
-function getMethodBoxInfo(bucketType: MethodBoxBuckedType): MethodBoxInfo {
+function getMethodBoxInfo(bucketType: BucketType): MethodBoxInfo {
     const methodBoxText = methodBoxTextConfig[bucketType];
 
     return {

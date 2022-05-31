@@ -5,7 +5,6 @@ export let id;
 export let displayOptions;
 export let config;
 export let tableData;
-console.log("tableData", tableData);
 const subtitle = (_a = config.subtitle) === null || _a === void 0 ? void 0 : _a.trim();
 function shouldShowLegend() {
     return true;
