@@ -1,7 +1,8 @@
-module.exports.migrate = function(item) {
+export function migrate(item) {
   let result = {
     isChanged: false
   };
+
   if (item.options.minibar === undefined) {
     if (!Number.isNaN(parseInt(item.options.minibarOptions))) {
       let minibars = {

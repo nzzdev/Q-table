@@ -4,7 +4,7 @@
 
     https://observablehq.com/d/e40dc4a09badab8a
  */
-module.exports = [
+export default [
     "s-viz-color-diverging-gender-10-1",
     "s-viz-color-diverging-gender-11-1",
     "s-viz-color-diverging-gender-12-1",

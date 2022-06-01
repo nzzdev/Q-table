@@ -1,11 +1,7 @@
-const rootDir = __dirname + "/../../../";
-const distDir = rootDir + 'dist/';
-const helpersDir = distDir + "helpers";
+import Joi from "joi";
+import * as dataHelpers from '../../helpers/data.js';
 
-const Joi = require("joi");
-const dataHelpers = require(`${helpersDir}/data.js`);
-
-module.exports = {
+export default {
     method: "POST",
     path: "/notification/numberBucketsExceedsDataSet",
     options: {

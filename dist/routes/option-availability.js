@@ -1,12 +1,9 @@
-const rootDir = __dirname + "/../../";
-const distDir = rootDir + 'dist/';
-const helpersDir = distDir + "helpers";
-const Boom = require("@hapi/boom");
-const Joi = require("joi");
-const getNumericColumns = require(`${helpersDir}/data.js`).getNumericColumns;
-const getMinibarNumbersWithType = require(`${helpersDir}/minibars.js`).getMinibarNumbersWithType;
-const hasCustomBuckets = require(`${helpersDir}/colorColumn.js`).hasCustomBuckets;
-module.exports = {
+import Boom from '@hapi/boom';
+import Joi from 'joi';
+import { getNumericColumns } from '../helpers/data.js';
+import { getMinibarNumbersWithType } from '../helpers/minibars.js';
+import { hasCustomBuckets } from '../helpers/colorColumn.js';
+export default {
     method: "POST",
     path: "/option-availability/{optionName}",
     options: {

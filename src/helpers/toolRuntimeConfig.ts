@@ -1,6 +1,6 @@
-import type { ToolRuntimeConfig } from '../interfaces';
+import type { ToolRuntimeConfig } from '../interfaces.js';
 
-function getExactPixelWidth(toolRuntimeConfig: ToolRuntimeConfig) {
+export default function getExactPixelWidth(toolRuntimeConfig: ToolRuntimeConfig) {
     if (!toolRuntimeConfig.size || !Array.isArray(toolRuntimeConfig.size.width)) {
         return undefined;
     }
@@ -12,8 +12,4 @@ function getExactPixelWidth(toolRuntimeConfig: ToolRuntimeConfig) {
     }
 
     return undefined;
-}
-
-module.exports = {
-    getExactPixelWidth: getExactPixelWidth
 }

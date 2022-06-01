@@ -1,11 +1,7 @@
-const rootDir = __dirname + "/../../";
-const distDir = rootDir + 'dist/';
-const helpersDir = distDir + "helpers";
-
-const Boom = require("@hapi/boom");
-const Joi = require("joi");
-const dataHelpers = require(`${helpersDir}/data.js`);
-const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
+import { Boom } from "@hapi/boom";
+import Joi from "joi";
+import * as dataHelpers from '../helpers/data.js';
+import * as colorColumnHelpers from '../helpers/colorColumn.js';
 
 function getMinibarEnum(item) {
   if (item.data.table.length < 1) {
@@ -197,7 +193,7 @@ function getCustomCategoriesOrderEnumAndTitlesCategorical(data, colorColumn) {
   }
 }
 
-module.exports = {
+export default {
   method: "POST",
   path: "/dynamic-schema/{optionName}",
   options: {

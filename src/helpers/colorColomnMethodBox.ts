@@ -18,7 +18,7 @@ const methodBoxTextConfig: Record<BucketType, string> = {
     custom: "Die Gruppen wurden manuell definiert.",
 };
 
-function getMethodBoxInfo(bucketType: BucketType): MethodBoxInfo {
+export function getMethodBoxInfo(bucketType: BucketType): MethodBoxInfo {
     const methodBoxText = methodBoxTextConfig[bucketType];
 
     return {
@@ -29,5 +29,3 @@ function getMethodBoxInfo(bucketType: BucketType): MethodBoxInfo {
         }
     };
 }
-
-module.exports = { getMethodBoxInfo };

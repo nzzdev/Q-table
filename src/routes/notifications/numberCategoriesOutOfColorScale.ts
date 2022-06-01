@@ -1,13 +1,10 @@
-const rootDir = __dirname + "/../../../";
-const distDir = rootDir + 'dist/';
-const helpersDir = distDir + "helpers";
+import Joi from "joi";
+import * as dataHelpers from '../../helpers/data.js';
+import { digitWords } from '../../helpers/colorColumnColor.js';
 
-const Joi = require("joi");
-const dataHelpers = require(`${helpersDir}/data.js`);
+const numberMainColors = digitWords.length;
 
-const numberMainColors = require(`${helpersDir}/colorColumnColor.js`).digitWords.length;
-
-module.exports = {
+export default {
   method: "POST",
   path: "/notification/numberCategoriesOutOfColorScale",
   options: {
@@ -25,11 +22,12 @@ module.exports = {
       if (item.options.colorColumn.colorColumnType === "categorical") {
         // removing the header row first
         item.data = dataHelpers.getDataWithoutHeaderRow(item.data);
+
         const numberUniqueValues = dataHelpers.getUniqueCategoriesCount(
           item.data.table, item.options.colorColumn
         );
 
-        if (numberCategories > numberMainColors) {
+        if (numberUniqueValues > numberMainColors) {
           return {
             message: {
               title: "notifications.numberCategoriesOutOfColorScale.title",

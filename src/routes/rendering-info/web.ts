@@ -1,47 +1,52 @@
+// These lines make "require" available.
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
 // Setup svelte environment.
-require("svelte/register");
+require('svelte/register');
 
 import type { IReply, Request } from 'hapi';
 import type { QTableConfig, ToolRuntimeConfig } from '../../interfaces';
 import type { StructuredFootnote } from '../../helpers/footnotes';
+
 // Require tools.
-const Ajv = require("ajv");
-const Boom = require("@hapi/boom");
-const fs = require("fs");
-const UglifyJS = require("uglify-js");
+import Ajv from 'ajv';
+import Boom from '@hapi/boom';
+import fs from 'fs';
+import UglifyJS from 'uglify-js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Directories.
-const rootDir = __dirname + "/../../../";
+const rootDir = __dirname + '/../../../';
 const distDir = rootDir + 'dist/';
 
-const resourcesDir = rootDir + "resources/";
-const helpersDir = distDir + "helpers";
-const viewsDir = distDir + "components/";
-// const viewsDir = __dirname + "/../../views/";
-const stylesDir = distDir + "styles/";
+const resourcesDir = rootDir + 'resources/';
+const viewsDir = distDir + 'components/';
+// const viewsDir = __dirname + "/../../../views/";
+const stylesDir = distDir + 'styles/';
 
 // Template file.
-const tableTemplate = require(viewsDir + "Table.svelte").default;
+const tableTemplate = require(viewsDir + 'Table.svelte').default;
 
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
-const getExactPixelWidth = require(`${helpersDir}/toolRuntimeConfig.js`).getExactPixelWidth;
-const dataHelpers = require(`${helpersDir}/data.js`);
-// const footnoteHelpers = require(`${helpersDir}/footnotes.js`);
-// const footnoteHelpers = require('../../helpers/footnotes');
-const minibarHelpers = require(`${helpersDir}/minibars.js`);
-const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
+import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 
-const renderingInfoScripts = require(`${helpersDir}/renderingInfoScript.js`);
-
-
-import * as footnoteHelpers from '../../helpers/footnotes';
+import * as dataHelpers from '../../helpers/data.js';
+import * as minibarHelpers from '../../helpers/minibars.js';
+import * as colorColumnHelpers from '../../helpers/colorColumn.js';
+import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
+import * as footnoteHelpers from '../../helpers/footnotes.js';
 
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
 const schemaString = JSON.parse(
-  fs.readFileSync(resourcesDir + "schema.json", {
-    encoding: "utf-8",
+  fs.readFileSync(resourcesDir + 'schema.json', {
+    encoding: 'utf-8',
   })
 );
 
@@ -57,21 +62,21 @@ function validateAgainstSchema(item, options) {
 }
 
 async function validatePayload(payload, options, next) {
-  if (typeof payload !== "object") {
+  if (typeof payload !== 'object') {
     return next(Boom.badRequest(), payload);
   }
-  if (typeof payload.item !== "object") {
+  if (typeof payload.item !== 'object') {
     return next(Boom.badRequest(), payload);
   }
-  if (typeof payload.toolRuntimeConfig !== "object") {
+  if (typeof payload.toolRuntimeConfig !== 'object') {
     return next(Boom.badRequest(), payload);
   }
   await validateAgainstSchema(payload.item, options);
 }
 
-module.exports = {
-  method: "POST",
-  path: "/rendering-info/web",
+export default {
+  method: 'POST',
+  path: '/rendering-info/web',
   options: {
     validate: {
       options: {
@@ -82,9 +87,9 @@ module.exports = {
   },
   handler: async function (request: Request, h) {
     const renderingInfo = {
-      polyfills: ["Promise"],
+      polyfills: ['Promise'],
       stylesheets: [{
-        name: styleHashMap["q-table"],
+        name: styleHashMap['q-table'],
       }]
     };
 
@@ -104,16 +109,16 @@ module.exports = {
     );
 
     const minibarsAvailable = await request.server.inject({
-      url: "/option-availability/selectedColumnMinibar",
-      method: "POST",
+      url: '/option-availability/selectedColumnMinibar',
+      method: 'POST',
       payload: { item: config },
-    }, () => {});
+    }, () => { });
 
     const colorColumnAvailable = await request.server.inject({
-      url: "/option-availability/selectedColorColumn",
-      method: "POST",
+      url: '/option-availability/selectedColorColumn',
+      method: 'POST',
       payload: { item: config },
-    }, () => {});
+    }, () => { });
 
 
 
@@ -137,7 +142,7 @@ module.exports = {
       noInteraction: request.payload.toolRuntimeConfig.noInteraction,
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
-      )}`.replace(/-/g, ""),
+      )}`.replace(/-/g, ''),
       width,
     };
 

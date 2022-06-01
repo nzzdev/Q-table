@@ -4,7 +4,7 @@ const methodBoxTextConfig = {
     equal: "Die Gruppen wurden so gewählt, dass sie jeweils einen gleich grossen Bereich auf der Skala abdecken.",
     custom: "Die Gruppen wurden manuell definiert.",
 };
-function getMethodBoxInfo(bucketType) {
+export function getMethodBoxInfo(bucketType) {
     const methodBoxText = methodBoxTextConfig[bucketType];
     return {
         text: methodBoxText || "",
@@ -14,5 +14,3 @@ function getMethodBoxInfo(bucketType) {
         }
     };
 }
-module.exports = { getMethodBoxInfo };
-export {};

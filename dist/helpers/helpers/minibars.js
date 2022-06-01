@@ -1,13 +1,13 @@
-const clone = require("clone");
-const isNumeric = require("./data.js").isNumeric;
-const Array2D = require("array2d");
+import clone from 'clone';
+import { isNumeric } from './data.js';
+import Array2D from 'array2d';
 const miniBarTypes = {
     positive: "positive",
     negative: "negative",
     mixed: "mixed",
     empty: "empty"
 };
-function getMinibarNumbersWithType(data, selectedColumnIndex) {
+export function getMinibarNumbersWithType(data, selectedColumnIndex) {
     let minibarsWithType = {
         items: [],
         numbers: []
@@ -36,7 +36,7 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
     minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
     return minibarsWithType;
 }
-function getMinibarContext(options, itemDataCopy) {
+export function getMinibarContext(options, itemDataCopy) {
     let minibar = {};
     // if minibars active
     if (options.minibar !== null && options.minibar !== undefined) {
@@ -125,7 +125,3 @@ function getNegativeColor(type) {
     }
     return color;
 }
-module.exports = {
-    getMinibarNumbersWithType: getMinibarNumbersWithType,
-    getMinibarContext: getMinibarContext
-};

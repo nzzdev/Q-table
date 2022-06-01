@@ -1,7 +1,11 @@
-const Joi = require("joi");
+import Joi from "joi";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const localesDir = __dirname + "/../resources/locales/";
 
-module.exports = {
+export default {
   path: "/locales/{lng}/translation.json",
   method: "GET",
   options: {

@@ -1,9 +1,6 @@
-const rootDir = __dirname + "/../../../";
-const distDir = rootDir + 'dist/';
-const helpersDir = distDir + "helpers";
-const Joi = require("joi");
-const dataHelpers = require(`${helpersDir}/data.js`);
-module.exports = {
+import Joi from "joi";
+import * as dataHelpers from '../../helpers/data.js';
+export default {
     method: "POST",
     path: "/notification/customBuckets",
     options: {

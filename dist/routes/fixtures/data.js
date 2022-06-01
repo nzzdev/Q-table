@@ -47,7 +47,7 @@ const fixtureData = [
     require(`${fixtureDataDirectory}/colorColumn-categorical-custom-order.json`),
     require(`${fixtureDataDirectory}/colorColumn-categorical-custom-colors.json`),
 ];
-module.exports = {
+export default {
     path: "/fixtures/data",
     method: "GET",
     options: {

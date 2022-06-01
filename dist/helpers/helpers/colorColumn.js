@@ -1,11 +1,11 @@
-const dataHelpers = require("./data.js");
-const legendHelpers = require("./colorColumnLegend.js");
-const colorHelpers = require("./colorColumnColor.js");
-const methodBoxHelpers = require("./colorColomnMethodBox.js");
-function hasCustomBuckets(bucketType) {
+import * as dataHelpers from './data.js';
+import * as legendHelpers from './colorColumnLegend.js';
+import * as colorHelpers from './colorColumnColor.js';
+import * as methodBoxHelpers from './colorColomnMethodBox.js';
+export function hasCustomBuckets(bucketType) {
     return bucketType === "custom";
 }
-function getNumberBuckets(colorColumn) {
+export function getNumberBuckets(colorColumn) {
     try {
         if (colorColumn.numericalOptions.bucketType !== "custom") {
             return colorColumn.numericalOptions.numberBuckets;
@@ -19,7 +19,7 @@ function getNumberBuckets(colorColumn) {
         return 0;
     }
 }
-function getColorColumnContext(colorColumn, data, width) {
+export function getColorColumnContext(colorColumn, data, width) {
     let colorColumnContext = {};
     if (colorColumn !== null &&
         colorColumn !== undefined &&
@@ -58,9 +58,3 @@ function getColorColumnContext(colorColumn, data, width) {
     }
     return colorColumnContext;
 }
-module.exports = {
-    getNumberBuckets,
-    hasCustomBuckets,
-    getColorColumnContext,
-};
-export {};

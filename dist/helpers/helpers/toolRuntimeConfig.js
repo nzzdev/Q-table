@@ -1,4 +1,4 @@
-function getExactPixelWidth(toolRuntimeConfig) {
+export default function getExactPixelWidth(toolRuntimeConfig) {
     if (!toolRuntimeConfig.size || !Array.isArray(toolRuntimeConfig.size.width)) {
         return undefined;
     }
@@ -9,7 +9,3 @@ function getExactPixelWidth(toolRuntimeConfig) {
     }
     return undefined;
 }
-module.exports = {
-    getExactPixelWidth: getExactPixelWidth
-};
-export {};

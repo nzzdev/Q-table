@@ -1,4 +1,4 @@
-function getDefaultScript(context) {
+export function getDefaultScript(context) {
     const dataObject = `window.${context.id}Data`;
     return `
     if (!window.q_domready) {
@@ -27,7 +27,7 @@ function getDefaultScript(context) {
     ${dataObject}.isCardLayout = ${context.item.options.cardLayout};
   `;
 }
-function getCardLayoutScript(context) {
+export function getCardLayoutScript(context) {
     const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
     const dataObject = `window.${context.id}Data`;
     let renderMinibarsFunction = "";
@@ -53,7 +53,7 @@ function getCardLayoutScript(context) {
     }
     window.q_domready.then(function() {
       ${dataObject}.width = ${dataObject}.element.getBoundingClientRect().width;
-      
+
       ${applyCardLayoutClassFunctionName}();
     });
     function ${context.id}debounce(func, wait, immediate) {
@@ -83,7 +83,7 @@ function getCardLayoutScript(context) {
     }, 250));
   `;
 }
-function getShowMoreButtonScript(context) {
+export function getShowMoreButtonScript(context) {
     const dataObject = `window.${context.id}Data`;
     const handleShowMoreButtonFunctionName = `handleShowMoreButton${context.id}`;
     const hideRowsFunctionName = `hideRows${context.id}`;
@@ -145,7 +145,7 @@ function getShowMoreButtonScript(context) {
     });
   `;
 }
-function getMinibarsScript(context) {
+export function getMinibarsScript(context) {
     const dataObject = `window.${context.id}Data`;
     const getColumnFunctionName = `getColumn${context.id}`;
     const renderMinibarsFunctionName = `renderMinibars${context.id}`;
@@ -156,7 +156,7 @@ function getMinibarsScript(context) {
       var columns = [];
 
       for (var i = 0; i < tab.rows.length; i++) {
-          if (tab.rows[i].cells.length > col) { 
+          if (tab.rows[i].cells.length > col) {
               columns.push(tab.rows[i].cells[col]);
           }
       }
@@ -212,7 +212,7 @@ function getMinibarsScript(context) {
     });
   `;
 }
-function getSearchFormInputScript(context) {
+export function getSearchFormInputScript(context) {
     const dataObject = `window.${context.id}Data`;
     const searchFormInputAddEventListeners = `searchFormInputAddEventListeners${context.id}`;
     const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
@@ -253,7 +253,7 @@ function getSearchFormInputScript(context) {
       ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(
         function(rowElement) {
           foundString = false;
-          
+
           // Loop through all text cells
           rowElement.querySelectorAll('.q-table__cell--text').forEach(
             function(textCellElement) {
@@ -298,7 +298,7 @@ function getSearchFormInputScript(context) {
     });
   `;
 }
-function getColorColumnScript(context) {
+export function getColorColumnScript(context) {
     const dataObject = `window.${context.id}Data`;
     const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;
     const prepareMethodBoxElementsFunctionName = `prepareMethodBoxElements${context.id}`;
@@ -415,12 +415,12 @@ function getColorColumnScript(context) {
     var legendContainer = ${dataObject}.element.querySelector(".q-table-colorColumn-legend-container");
     if (width <= 640) {
       legend.classList.remove("q-table-colorColumn-legend--fullwidth")
-      legendContainer.classList.add("q-table-colorColumn-legend-container--desktop"); 
-      legendContainer.classList.remove("q-table-colorColumn-legend-container--fullwidth"); 
+      legendContainer.classList.add("q-table-colorColumn-legend-container--desktop");
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--fullwidth");
     } else {
       legend.classList.add("q-table-colorColumn-legend--fullwidth")
-      legendContainer.classList.remove("q-table-colorColumn-legend-container--desktop"); 
-      legendContainer.classList.add("q-table-colorColumn-legend-container--fullwidth"); 
+      legendContainer.classList.remove("q-table-colorColumn-legend-container--desktop");
+      legendContainer.classList.add("q-table-colorColumn-legend-container--fullwidth");
     }
   }
 
@@ -437,11 +437,3 @@ function getColorColumnScript(context) {
   });
   `;
 }
-module.exports = {
-    getDefaultScript,
-    getCardLayoutScript,
-    getShowMoreButtonScript,
-    getMinibarsScript,
-    getSearchFormInputScript,
-    getColorColumnScript,
-};

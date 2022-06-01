@@ -1,4 +1,4 @@
-module.exports.migrate = function(item) {
+export function migrate(item) {
   let result = {
     isChanged: false
   };

@@ -7,32 +7,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+// These lines make "require" available.
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 // Setup svelte environment.
 require("svelte/register");
 // Require tools.
-const Ajv = require("ajv");
-const Boom = require("@hapi/boom");
-const fs = require("fs");
-const UglifyJS = require("uglify-js");
+import Ajv from 'ajv';
+import Boom from '@hapi/boom';
+import fs from 'fs';
+import UglifyJS from 'uglify-js';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 // Directories.
 const rootDir = __dirname + "/../../../";
 const distDir = rootDir + 'dist/';
 const resourcesDir = rootDir + "resources/";
-const helpersDir = distDir + "helpers";
 const viewsDir = distDir + "components/";
-// const viewsDir = __dirname + "/../../views/";
+// const viewsDir = __dirname + "/../../../views/";
 const stylesDir = distDir + "styles/";
 // Template file.
 const tableTemplate = require(viewsDir + "Table.svelte").default;
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
-const getExactPixelWidth = require(`${helpersDir}/toolRuntimeConfig.js`).getExactPixelWidth;
-const dataHelpers = require(`${helpersDir}/data.js`);
-// const footnoteHelpers = require(`${helpersDir}/footnotes.js`);
-// const footnoteHelpers = require('../../helpers/footnotes');
-const minibarHelpers = require(`${helpersDir}/minibars.js`);
-const colorColumnHelpers = require(`${helpersDir}/colorColumn.js`);
-const renderingInfoScripts = require(`${helpersDir}/renderingInfoScript.js`);
-import * as footnoteHelpers from '../../helpers/footnotes';
+import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
+import * as dataHelpers from '../../helpers/data.js';
+import * as minibarHelpers from '../../helpers/minibars.js';
+import * as colorColumnHelpers from '../../helpers/colorColumn.js';
+import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
+import * as footnoteHelpers from '../../helpers/footnotes.js';
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
 const schemaString = JSON.parse(fs.readFileSync(resourcesDir + "schema.json", {
@@ -62,7 +65,7 @@ function validatePayload(payload, options, next) {
         yield validateAgainstSchema(payload.item, options);
     });
 }
-module.exports = {
+export default {
     method: "POST",
     path: "/rendering-info/web",
     options: {

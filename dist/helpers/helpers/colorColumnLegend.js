@@ -1,6 +1,6 @@
-const dataHelpers = require("./data.js");
-const colorHelpers = require("./colorColumnColor.js");
-const simpleStatistics = require("simple-statistics");
+import * as dataHelpers from './data.js';
+import * as colorHelpers from './colorColumnColor.js';
+import * as simpleStatistics from 'simple-statistics';
 const ckmeans = simpleStatistics.ckmeans;
 const quantile = simpleStatistics.quantile;
 const widthConfig = {
@@ -100,7 +100,7 @@ function hasSingleValueBucket(legendData) {
     const firstBucket = legendData.buckets[0];
     return firstBucket.from === firstBucket.to;
 }
-function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
+export function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
     const customColorMap = colorHelpers.getCustomColorMap(colorColumn.numericalOptions.colorOverwrites);
     const values = dataHelpers.getNumericalValuesByColumn(data, colorColumn.selectedColumn);
     const nonNullValues = dataHelpers.getNonNullValues(values);
@@ -131,7 +131,7 @@ function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
     }
     return legendData;
 }
-function getCategoricalLegend(data, colorColumn) {
+export function getCategoricalLegend(data, colorColumn) {
     const legendData = {
         type: "categorical",
     };
@@ -190,7 +190,3 @@ function getDescriptionAlignment(labelLegend, contentWidth, maxDigitsAfterComma)
 function getValueLength(value, maxDigitsAfterComma) {
     return value.toFixed(0).length + maxDigitsAfterComma;
 }
-module.exports = {
-    getNumericalLegend,
-    getCategoricalLegend,
-};

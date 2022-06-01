@@ -1,22 +1,18 @@
-const clone = require("clone");
-const d3 = {
-  format: require("d3-format"),
-};
-const Array2D = require("array2d");
-const appendFootnoteAnnotationsToTableData =
-  require("./footnotes.js").appendFootnoteAnnotationsToTableData;
+import Array2D from 'array2d';
+import { formatLocale as d3FormatLocale } from 'd3-format';
+import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 
 const fourPerEmSpace = "\u2005";
 const enDash = "\u2013";
 
-const formatLocale = d3.format.formatLocale({
+const formatLocale = d3FormatLocale({
   decimal: ",",
   thousands: fourPerEmSpace,
   minus: enDash,
   grouping: [3],
 });
 
-const formatLocaleSmall = d3.format.formatLocale({
+const formatLocaleSmall = d3FormatLocale({
   decimal: ",",
   minus: enDash,
 });
@@ -24,7 +20,7 @@ const formatLocaleSmall = d3.format.formatLocale({
 const formatGrouping = formatLocale.format(",");
 const formatNoGrouping = formatLocale.format("");
 
-function isNumeric(cell) {
+export function isNumeric(cell) {
   if (!cell) {
     return false;
   }
@@ -67,7 +63,7 @@ function getColumnsType(data) {
   return columns;
 }
 
-function getNumericColumns(data) {
+export function getNumericColumns(data) {
   const columns = getColumnsType(data);
   const numericColumns = [];
   // data[0].length is undefined when creating a new item
@@ -81,7 +77,7 @@ function getNumericColumns(data) {
   return numericColumns;
 }
 
-function getCategoricalColumns(data) {
+export function getCategoricalColumns(data) {
   const columns = getColumnsType(data);
   const categoricalColumns = [];
   // data[0].length is undefined when creating a new item
@@ -93,7 +89,7 @@ function getCategoricalColumns(data) {
   return categoricalColumns;
 }
 
-function getTableData(data, footnotes, options) {
+export function getTableData(data, footnotes, options) {
   const columns = getColumnsType(data);
   let tableData = [];
   Array2D.eachRow(data, (row, rowIndex) => {
@@ -141,7 +137,7 @@ function getTableData(data, footnotes, options) {
   return tableData;
 }
 
-function getNumericalValuesByColumn(data, column) {
+export function getNumericalValuesByColumn(data, column) {
   return data.map((row) => {
     if (!row[column]) row[column] = null;
     if (row[column] !== null) {
@@ -154,18 +150,18 @@ function getNumericalValuesByColumn(data, column) {
   });
 }
 
-function getCategoricalValuesByColumn(data, column) {
+export function getCategoricalValuesByColumn(data, column) {
   return data.map((row) => {
     if (!row[column]) row[column] = null;
     return row[column];
   });
 }
 
-function getNonNullValues(values) {
+export function getNonNullValues(values) {
   return values.filter((value) => value !== null);
 }
 
-function getMetaData(values, numberValues, maxDigitsAfterComma) {
+export function getMetaData(values, numberValues, maxDigitsAfterComma) {
   return {
     hasNullValues: values.find((value) => value === null) !== undefined,
     hasZeroValues: numberValues.find((value) => value === 0) !== undefined,
@@ -176,15 +172,15 @@ function getMetaData(values, numberValues, maxDigitsAfterComma) {
   };
 }
 
-function getDataWithoutHeaderRow(data: string[][]) {
+export function getDataWithoutHeaderRow(data: string[][]) {
   return data.slice(1);
 }
 
-function getUniqueCategoriesCount(data, colorColumn) {
+export function getUniqueCategoriesCount(data, colorColumn) {
   return getUniqueCategoriesObject(data, colorColumn).categories.length;
 }
 
-function getUniqueCategoriesObject(data, colorColumn) {
+export function getUniqueCategoriesObject(data, colorColumn) {
   let hasNullValues = false;
   let customCategoriesOrder =
     colorColumn.categoricalOptions.customCategoriesOrder;
@@ -226,7 +222,7 @@ function getSortedValues(values) {
   return sortedCounter.map((x) => x[0]);
 }
 
-function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
+export function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
   let maxDigitsAfterComma = 0;
   data.forEach((row) => {
     const digitsAfterComma = getDigitsAfterComma(row[rowIndex]);
@@ -249,7 +245,7 @@ function getDigitsAfterComma(value) {
   }
 }
 
-function getFormattedValue(formattingOptions, value) {
+export function getFormattedValue(formattingOptions, value) {
   if (value === null) {
     return value;
   }
@@ -271,7 +267,7 @@ function getFormattedValue(formattingOptions, value) {
   }
 }
 
-function getFormattedBuckets(formattingOptions, buckets) {
+export function getFormattedBuckets(formattingOptions, buckets) {
   return buckets.map((bucket) => {
     let { from, to, color } = bucket;
 
@@ -290,21 +286,23 @@ function getFormattedBuckets(formattingOptions, buckets) {
   });
 }
 
-function getMedian(values) {
+function getMedian(values: number[]) {
   let middleIndex = Math.floor(values.length / 2);
   let sortedNumbers = [...values].sort((a, b) => a - b);
+
   if (values.length % 2 !== 0) {
     return sortedNumbers[middleIndex];
   }
+
   return (sortedNumbers[middleIndex - 1] + sortedNumbers[middleIndex]) / 2;
 }
 
-function getRoundedMedian(values, maxDigitsAfterComma) {
+function getRoundedMedian(values: number[], maxDigitsAfterComma: number) {
   const medianValue = getMedian(values);
   return getRoundedValue(medianValue, maxDigitsAfterComma);
 }
 
-function getAverage(values) {
+function getAverage(values: number[]) {
   return values.reduce((a, b) => a + b, 0) / values.length;
 }
 
@@ -313,37 +311,22 @@ function getRoundedAverage(values, maxDigitsAfterComma) {
   return getRoundedValue(averageValue, maxDigitsAfterComma);
 }
 
-function getRoundedValue(value, maxDigitsAfterComma) {
-  let roundingFactor = 100; // default: round to two digits after comma
-  // if data contains more precise float numbers we extend each value to max number of digits after comma
+export function getRoundedValue(value: number, maxDigitsAfterComma: number) {
+  // Default: round to two digits after comma.
+  let roundingFactor = 100;
+
+  // If data contains more precise float numbers we extend
+  // each value to max number of digits after comma.
   if (maxDigitsAfterComma !== undefined && maxDigitsAfterComma > 2) {
     roundingFactor = Math.pow(10, maxDigitsAfterComma);
   }
+
   return Math.round(value * roundingFactor) / roundingFactor;
 }
 
-function getCustomBucketBorders(customBuckets) {
+export function getCustomBucketBorders(customBuckets) {
   const customBorderStrings = customBuckets.split(",");
   return customBorderStrings.map((borderValue) => {
     return parseFloat(borderValue.trim());
   });
 }
-
-module.exports = {
-  getTableData: getTableData,
-  getNumericColumns,
-  getCategoricalColumns,
-  isNumeric: isNumeric,
-  getNumericalValuesByColumn,
-  getCategoricalValuesByColumn,
-  getNonNullValues,
-  getMetaData,
-  getDataWithoutHeaderRow,
-  getUniqueCategoriesCount,
-  getUniqueCategoriesObject,
-  getMaxDigitsAfterCommaInDataByRow,
-  getFormattedValue,
-  getFormattedBuckets,
-  getRoundedValue,
-  getCustomBucketBorders,
-};

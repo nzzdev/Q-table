@@ -6,7 +6,7 @@ export interface StructuredFootnote {
   coords: Array<{colIndex: number, rowIndex: number}>,
 }
 
-function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
+export function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
   const unicodes = {
     1: "\u00b9",
     2: "\u00b2",
@@ -155,8 +155,3 @@ function getFlattenedFootnotes(footnotes) {
 function hasFootnoteClass(classes, newClass) {
   return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
 }
-
-module.exports = {
-  appendFootnoteAnnotationsToTableData,
-  getFootnotes,
-};

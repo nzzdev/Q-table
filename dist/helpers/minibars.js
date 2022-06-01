@@ -1,21 +1,21 @@
-var clone = require("clone");
-var isNumeric = require("./data.js").isNumeric;
-var Array2D = require("array2d");
-var miniBarTypes = {
+import clone from 'clone';
+import { isNumeric } from './data.js';
+import Array2D from 'array2d';
+const miniBarTypes = {
     positive: "positive",
     negative: "negative",
     mixed: "mixed",
     empty: "empty"
 };
-function getMinibarNumbersWithType(data, selectedColumnIndex) {
-    var minibarsWithType = {
+export function getMinibarNumbersWithType(data, selectedColumnIndex) {
+    let minibarsWithType = {
         items: [],
         numbers: []
     };
-    var dataCopy = clone(data);
-    dataCopy[0] = dataCopy[0].map(function (cell) { return (cell = ""); }); // first row is always header so ignore it
-    Array2D.forColumn(dataCopy, selectedColumnIndex, function (cell) {
-        var type = miniBarTypes.positive;
+    let dataCopy = clone(data);
+    dataCopy[0] = dataCopy[0].map(cell => (cell = "")); // first row is always header so ignore it
+    Array2D.forColumn(dataCopy, selectedColumnIndex, cell => {
+        let type = miniBarTypes.positive;
         if (cell < 0) {
             type = miniBarTypes.negative;
         }
@@ -27,17 +27,17 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
         }
         if (isNumeric(cell) || parseFloat(cell)) {
             minibarsWithType.numbers.push(parseFloat(cell));
-            minibarsWithType.items.push({ value: parseFloat(cell), type: type });
+            minibarsWithType.items.push({ value: parseFloat(cell), type });
         }
         else {
-            minibarsWithType.items.push({ value: null, type: type });
+            minibarsWithType.items.push({ value: null, type });
         }
     });
     minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
     return minibarsWithType;
 }
-function getMinibarContext(options, itemDataCopy) {
-    var minibar = {};
+export function getMinibarContext(options, itemDataCopy) {
+    let minibar = {};
     // if minibars active
     if (options.minibar !== null && options.minibar !== undefined) {
         if (options.minibar.selectedColumn !== null &&
@@ -59,7 +59,7 @@ function getMinibarContext(options, itemDataCopy) {
                 minibar.barColor.negative.colorCode = "";
             }
             if (options.minibar.invertColors) {
-                var color = minibar.barColor.negative;
+                let color = minibar.barColor.negative;
                 minibar.barColor.negative = minibar.barColor.positive;
                 minibar.barColor.positive = color;
             }
@@ -79,10 +79,10 @@ function getMinibarValue(type, value, min, max) {
     }
 }
 function getMinibarType(numbers) {
-    if (numbers.every(function (number) { return number > 0; })) {
+    if (numbers.every(number => { return number > 0; })) {
         return miniBarTypes.positive;
     }
-    else if (numbers.every(function (number) { return number < 0; })) {
+    else if (numbers.every(number => { return number < 0; })) {
         return miniBarTypes.negative;
     }
     else {
@@ -90,10 +90,10 @@ function getMinibarType(numbers) {
     }
 }
 function getMinibarData(data, minibarOptions) {
-    var dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
-    var minValue = Math.min.apply(Math, dataColumn.numbers);
-    var maxValue = Math.max.apply(Math, dataColumn.numbers);
-    var values = dataColumn.items.map(function (item) {
+    let dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
+    let minValue = Math.min(...dataColumn.numbers);
+    let maxValue = Math.max(...dataColumn.numbers);
+    let values = dataColumn.items.map(item => {
         return {
             type: item.type,
             value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
@@ -106,7 +106,7 @@ function getMinibarData(data, minibarOptions) {
     };
 }
 function getPositiveColor(type) {
-    var color;
+    let color;
     if (type === "mixed") {
         color = "s-viz-color-diverging-2-2";
     }
@@ -116,7 +116,7 @@ function getPositiveColor(type) {
     return color;
 }
 function getNegativeColor(type) {
-    var color;
+    let color;
     if (type === "mixed") {
         color = "s-viz-color-diverging-2-1";
     }
@@ -125,7 +125,3 @@ function getNegativeColor(type) {
     }
     return color;
 }
-module.exports = {
-    getMinibarNumbersWithType: getMinibarNumbersWithType,
-    getMinibarContext: getMinibarContext
-};

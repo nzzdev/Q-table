@@ -1,5 +1,5 @@
-const colorClassWithLightFontList = require("./colorClassLightFont");
-const digitWords = [
+import colorClassWithLightFontList from './colorClassLightFont.js';
+export const digitWords = [
     "one",
     "two",
     "three",
@@ -24,7 +24,7 @@ function getTextColor(customColor, colorClass) {
     }
     return "s-color-gray-9";
 }
-function getBucketColor(numberBuckets, index, scale, colorOptions) {
+export function getBucketColor(numberBuckets, index, scale, colorOptions) {
     const colorScheme = colorOptions.colorScheme;
     const customColor = colorOptions.colorOverwrites.get(index);
     let colorClass = "";
@@ -76,7 +76,7 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
         textColor,
     };
 }
-function getColor(value, legendData) {
+export function getColor(value, legendData) {
     if (value === null || value === undefined) {
         return {
             colorClass: "",
@@ -130,7 +130,7 @@ function getColor(value, legendData) {
         }
     }
 }
-function getCustomColorMap(colorOverwrites) {
+export function getCustomColorMap(colorOverwrites) {
     if (colorOverwrites === undefined) {
         colorOverwrites = [];
     }
@@ -139,7 +139,7 @@ function getCustomColorMap(colorOverwrites) {
         { color, textColor },
     ]));
 }
-function getCategoryColor(index, customColorMap) {
+export function getCategoryColor(index, customColorMap) {
     const customColor = customColorMap.get(index);
     const colorScheme = digitWords[index];
     const colorClass = `s-viz-color-${colorScheme}-5`;
@@ -151,10 +151,3 @@ function getCategoryColor(index, customColorMap) {
         textColor: getTextColor(customColor, colorClass),
     };
 }
-module.exports = {
-    digitWords,
-    getBucketColor,
-    getColor,
-    getCategoryColor,
-    getCustomColorMap,
-};

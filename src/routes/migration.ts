@@ -1,13 +1,15 @@
-const Joi = require("joi");
+import Joi from "joi";
+import * as migrationToV2 from '../../migration-scripts/to-v2.0.0.js';
+import * as migrationToV3 from '../../migration-scripts/to-v3.0.0.js';
 
 // register migration scripts here in order of version,
-// i.e. list the smallest version first
+// i.e. list the smallest version first!
 const migrationScripts = [
-  require("../../migration-scripts/to-v2.0.0.js"),
-  require("../../migration-scripts/to-v3.0.0.js")
+  migrationToV2,
+  migrationToV3,
 ];
 
-module.exports = {
+export default {
   method: "POST",
   path: "/migration",
   options: {
