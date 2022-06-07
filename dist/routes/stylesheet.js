@@ -7,7 +7,7 @@ export default {
     path: '/stylesheet/{filename}.{hash}.{extension}',
     options: {
         files: {
-            relativeTo: path.join(__dirname, '/../dist/styles/')
+            relativeTo: path.join(__dirname, '/../styles/')
         }
     },
     handler: function (request, h) {

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import ts from "typescript";
+import ts from 'typescript';
 import recursiveReadSync from 'recursive-readdir-sync';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -40,8 +40,13 @@ const tsConfig: ts.CompilerOptions = {
   typeRoots: ['./node_modules/@types'],
   declaration: false,
   allowSyntheticDefaultImports: true,
-  noImplicitAny: true,
+  strictNullChecks: true,
+  // noImplicitAny: true,
 };
 
-compile(helperFiles, { ...tsConfig, 'outDir': './dist/helpers' });
+// compile(helperFiles, { ...tsConfig, 'outDir': './dist/helpers' });
+
+// The entry point are the route files.
+// Typescwript will compile anything that it finds in the tree starting from
+// the route files, which are the entry point.
 compile(routeFiles, { ...tsConfig, 'outDir': './dist/' });

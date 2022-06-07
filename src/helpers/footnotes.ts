@@ -1,4 +1,4 @@
-import type { dataMetaData, dataMetaDataCell } from '../interfaces';
+import type { dataMetaData, dataMetaDataCell, QTableConfigOptions, QTableDataFormatted } from '../interfaces';
 
 export interface StructuredFootnote {
   value: string,
@@ -6,19 +6,30 @@ export interface StructuredFootnote {
   coords: Array<{colIndex: number, rowIndex: number}>,
 }
 
-export function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
+interface FlattenedFootnote {
+  value: number,
+  colIndex: number,
+  rowIndex: number,
+}
+
+interface Spacing {
+  colIndex: number,
+  class: string,
+}
+
+export function appendFootnoteAnnotationsToTableData(tableData: QTableDataFormatted[][], footnotes: StructuredFootnote[], options: QTableConfigOptions) {
   const unicodes = {
-    1: "\u00b9",
-    2: "\u00b2",
-    3: "\u00b3",
-    4: "\u2074",
-    5: "\u2075",
-    6: "\u2076",
-    7: "\u2077",
-    8: "\u2078",
-    9: "\u2079",
+    1: '\u00b9',
+    2: '\u00b2',
+    3: '\u00b3',
+    4: '\u2074',
+    5: '\u2075',
+    6: '\u2076',
+    7: '\u2077',
+    8: '\u2078',
+    9: '\u2079',
   };
-  let spacings = [];
+  let spacings: Spacing[] = [];
   let flattenedFootnotes = getFlattenedFootnotes(footnotes);
 
   flattenedFootnotes.forEach((footnote) => {
@@ -29,6 +40,7 @@ export function appendFootnoteAnnotationsToTableData(tableData, footnotes, optio
       tableData[footnote.rowIndex][footnote.colIndex].type,
       tableData[footnote.rowIndex].length - 1
     );
+
     if (footnoteClass) {
       let space = {
         colIndex: footnote.colIndex,
@@ -39,6 +51,7 @@ export function appendFootnoteAnnotationsToTableData(tableData, footnotes, optio
         spacings.push(space);
       }
     }
+
     // create a new property to safe the index of the footnote
     tableData[footnote.rowIndex][footnote.colIndex].footnote = {
       value: footnote.value,
@@ -61,8 +74,8 @@ export function appendFootnoteAnnotationsToTableData(tableData, footnotes, optio
       if (!options.hideTableHeader && index !== 0) {
         row.forEach((cell) => {
           flattenedFootnotes.length >= 10
-            ? cell.classes.push("q-table-footnote-column-card-layout--double")
-            : cell.classes.push("q-table-footnote-column-card-layout--single");
+            ? cell.classes.push('q-table-footnote-column-card-layout--double')
+            : cell.classes.push('q-table-footnote-column-card-layout--single');
         });
       }
     }
@@ -70,18 +83,18 @@ export function appendFootnoteAnnotationsToTableData(tableData, footnotes, optio
   return tableData;
 }
 
-function getClass(options, footnote, amountOfFootnotes, type, lastColIndex): string | null {
+function getClass(options: QTableConfigOptions, footnote: FlattenedFootnote, amountOfFootnotes: number, type: string, lastColIndex: number): string | null {
   // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
   if (
-    (type === "numeric" &&
+    (type === 'numeric' &&
       (options.minibar.selectedColumn === footnote.colIndex ||
-        options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)
+        options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn === footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)
   ) {
-    let spacingClass = "q-table-footnote-column";
+    let spacingClass = 'q-table-footnote-column';
     if (amountOfFootnotes >= 10) {
-      spacingClass += "--double";
+      spacingClass += '--double';
     } else {
-      spacingClass += "--single";
+      spacingClass += '--single';
     }
     return spacingClass;
   }
@@ -137,8 +150,9 @@ function getStructuredFootnotes(footnotes: dataMetaDataCell[]): StructuredFootno
   return structuredFootnotes;
 }
 
-function getFlattenedFootnotes(footnotes) {
-  let flattenedFootnotes = [];
+function getFlattenedFootnotes(footnotes: StructuredFootnote[]): FlattenedFootnote[] {
+  let flattenedFootnotes: FlattenedFootnote[] = [];
+
   footnotes.forEach((footnote) => {
     footnote.coords.forEach((coord) => {
       flattenedFootnotes.push({
@@ -152,6 +166,6 @@ function getFlattenedFootnotes(footnotes) {
   return flattenedFootnotes;
 }
 
-function hasFootnoteClass(classes, newClass) {
+function hasFootnoteClass(classes: Spacing[], newClass: Spacing): Spacing | undefined {
   return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
 }

@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Joi from "joi";
+import Joi from 'joi';
 import * as migrationToV2 from '../../migration-scripts/to-v2.0.0.js';
 import * as migrationToV3 from '../../migration-scripts/to-v3.0.0.js';
 // register migration scripts here in order of version,
@@ -17,8 +17,8 @@ const migrationScripts = [
     migrationToV3,
 ];
 export default {
-    method: "POST",
-    path: "/migration",
+    method: 'POST',
+    path: '/migration',
     options: {
         validate: {
             payload: {

@@ -8,12 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 // These lines make "require" available.
-import { createRequire } from "module";
+// Todo comment.
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 // Setup svelte environment.
-require("svelte/register");
+require('svelte/register');
 // Require tools.
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
@@ -21,25 +22,25 @@ import fs from 'fs';
 import UglifyJS from 'uglify-js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Directories.
-const rootDir = __dirname + "/../../../";
+const rootDir = __dirname + '/../../../';
 const distDir = rootDir + 'dist/';
-const resourcesDir = rootDir + "resources/";
-const viewsDir = distDir + "components/";
-// const viewsDir = __dirname + "/../../../views/";
-const stylesDir = distDir + "styles/";
+const resourcesDir = rootDir + 'resources/';
+// const viewsDir = distDir + 'components/'; // New views.
+const viewsDir = __dirname + '/../../../views/';
+const stylesDir = distDir + 'styles/';
 // Template file.
-const tableTemplate = require(viewsDir + "Table.svelte").default;
+const tableTemplate = require(viewsDir + 'Table.svelte').default;
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
-import * as dataHelpers from '../../helpers/data.js';
+import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
 import * as minibarHelpers from '../../helpers/minibars.js';
 import * as colorColumnHelpers from '../../helpers/colorColumn.js';
 import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
-import * as footnoteHelpers from '../../helpers/footnotes.js';
+import { getFootnotes } from '../../helpers/footnotes.js';
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
-const schemaString = JSON.parse(fs.readFileSync(resourcesDir + "schema.json", {
-    encoding: "utf-8",
+const schemaString = JSON.parse(fs.readFileSync(resourcesDir + 'schema.json', {
+    encoding: 'utf-8',
 }));
 const ajv = new Ajv();
 const validate = ajv.compile(schemaString);
@@ -53,21 +54,21 @@ function validateAgainstSchema(item, options) {
 }
 function validatePayload(payload, options, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (typeof payload !== "object") {
+        if (typeof payload !== 'object') {
             return next(Boom.badRequest(), payload);
         }
-        if (typeof payload.item !== "object") {
+        if (typeof payload.item !== 'object') {
             return next(Boom.badRequest(), payload);
         }
-        if (typeof payload.toolRuntimeConfig !== "object") {
+        if (typeof payload.toolRuntimeConfig !== 'object') {
             return next(Boom.badRequest(), payload);
         }
         yield validateAgainstSchema(payload.item, options);
     });
 }
 export default {
-    method: "POST",
-    path: "/rendering-info/web",
+    method: 'POST',
+    path: '/rendering-info/web',
     options: {
         validate: {
             options: {
@@ -79,32 +80,36 @@ export default {
     handler: function (request, h) {
         return __awaiter(this, void 0, void 0, function* () {
             const renderingInfo = {
-                polyfills: ["Promise"],
+                polyfills: ['Promise'],
                 stylesheets: [{
-                        name: styleHashMap["q-table"],
+                        name: styleHashMap['q-table'],
                     }]
             };
+            const payload = request.payload;
             // Extract table configurations.
-            const config = request.payload.item;
-            const toolRuntimeConfig = request.payload.toolRuntimeConfig;
+            const config = payload.item;
+            const toolRuntimeConfig = payload.toolRuntimeConfig;
+            const options = config.options;
             let width = getExactPixelWidth(toolRuntimeConfig);
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-            const dataWithoutHeaderRow = dataHelpers.getDataWithoutHeaderRow(itemDataCopy);
-            const footnotes = footnoteHelpers.getFootnotes(config.data.metaData, config.options.hideTableHeader);
+            console.log("data", itemDataCopy);
+            const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+            const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
             const minibarsAvailable = yield request.server.inject({
-                url: "/option-availability/selectedColumnMinibar",
-                method: "POST",
+                url: '/option-availability/selectedColumnMinibar',
+                method: 'POST',
                 payload: { item: config },
-            }, () => { });
+            });
             const colorColumnAvailable = yield request.server.inject({
-                url: "/option-availability/selectedColorColumn",
-                method: "POST",
+                url: '/option-availability/selectedColorColumn',
+                method: 'POST',
                 payload: { item: config },
-            }, () => { });
+            });
+            const tableData = formatTableData(config.data.table, footnotes, options);
             const context = {
                 item: config,
                 config,
-                tableData: dataHelpers.getTableData(config.data.table, footnotes, config.options),
+                tableData,
                 minibar: minibarsAvailable.result.available
                     ? minibarHelpers.getMinibarContext(config.options, itemDataCopy)
                     : {},
@@ -113,9 +118,9 @@ export default {
                     ? colorColumnHelpers.getColorColumnContext(config.options.colorColumn, dataWithoutHeaderRow, width)
                     : {},
                 numberOfRows: config.data.table.length - 1,
-                displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
-                noInteraction: request.payload.toolRuntimeConfig.noInteraction,
-                id: `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, ""),
+                displayOptions: payload.toolRuntimeConfig.displayOptions || {},
+                noInteraction: payload.toolRuntimeConfig.noInteraction,
+                id: `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, ''),
                 width,
             };
             // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout

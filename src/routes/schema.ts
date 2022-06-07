@@ -2,7 +2,7 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const resourcesDir = __dirname + '/../resources/';
+const resourcesDir = __dirname + '/../../resources/';
 
 export default [
   {

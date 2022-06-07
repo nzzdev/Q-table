@@ -1,20 +1,24 @@
 import Array2D from 'array2d';
 import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
-const fourPerEmSpace = "\u2005";
-const enDash = "\u2013";
+const fourPerEmSpace = '\u2005';
+const enDash = '\u2013';
 const formatLocale = d3FormatLocale({
-    decimal: ",",
+    decimal: ',',
     thousands: fourPerEmSpace,
     minus: enDash,
     grouping: [3],
+    currency: ['€', ''],
 });
 const formatLocaleSmall = d3FormatLocale({
-    decimal: ",",
+    decimal: ',',
     minus: enDash,
+    currency: ['€', ''],
+    thousands: fourPerEmSpace,
+    grouping: [],
 });
-const formatGrouping = formatLocale.format(",");
-const formatNoGrouping = formatLocale.format("");
+const formatGrouping = formatLocale.format(',');
+const formatNoGrouping = formatLocale.format('');
 export function isNumeric(cell) {
     if (!cell) {
         return false;
@@ -31,15 +35,15 @@ function getColumnsType(data) {
     Array2D.eachColumn(table, (column) => {
         let withFormating = false;
         let columnEmpty = column.every((cell) => {
-            return cell === null || cell === "" || cell === "-" || cell === "–";
+            return cell === null || cell === '' || cell === '-' || cell === '–';
         });
         let isColumnNumeric = column.every((cell) => {
             return (!columnEmpty &&
                 (isNumeric(cell) ||
                     cell === null ||
-                    cell === "" ||
-                    cell === "-" ||
-                    cell === "–"));
+                    cell === '' ||
+                    cell === '-' ||
+                    cell === '–'));
         });
         if (isColumnNumeric) {
             const numbersOfColumn = column.map((number) => isNumeric(number) ? parseFloat(number) : null);
@@ -75,22 +79,22 @@ export function getCategoricalColumns(data) {
     }
     return categoricalColumns;
 }
-export function getTableData(data, footnotes, options) {
+export function formatTableData(data, footnotes, options) {
     const columns = getColumnsType(data);
     let tableData = [];
     Array2D.eachRow(data, (row, rowIndex) => {
         let cells = row.map((cell, columnIndex) => {
-            let type = "text";
+            let type = 'text';
             let value = cell;
             let classes = [];
             if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-                type = "numeric";
-                classes.push("s-font-note--tabularnums");
+                type = 'numeric';
+                classes.push('s-font-note--tabularnums');
                 // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
                 if (rowIndex > 0 &&
                     cell !== null &&
-                    cell !== "" &&
-                    cell != "-" &&
+                    cell !== '' &&
+                    cell != '-' &&
                     cell != enDash) {
                     if (columns[columnIndex].withFormating) {
                         value = formatGrouping(cell);
@@ -114,12 +118,13 @@ export function getTableData(data, footnotes, options) {
     return tableData;
 }
 export function getNumericalValuesByColumn(data, column) {
+    console.log("a", data);
     return data.map((row) => {
         if (!row[column])
             row[column] = null;
         if (row[column] !== null) {
             if (row[column].match(/^[+-]?\d+(\.\d+)?$/) === null) {
-                throw new Error("value is not a valid floating point number");
+                throw new Error('value is not a valid floating point number');
             }
             return parseFloat(row[column]);
         }
@@ -160,7 +165,7 @@ export function getUniqueCategoriesObject(data, colorColumn) {
         return row[colorColumn.selectedColumn];
     })
         .filter((value) => {
-        if (value !== null && value !== "") {
+        if (value !== null && value !== '') {
             return true;
         }
         hasNullValues = true;
@@ -197,7 +202,7 @@ export function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
 function getDigitsAfterComma(value) {
     try {
         if (value !== undefined && value !== null) {
-            const valueParts = value.toString().split(".");
+            const valueParts = value.toString().split('.');
             if (valueParts.length > 1) {
                 return valueParts[1].length;
             }
@@ -205,14 +210,14 @@ function getDigitsAfterComma(value) {
         return 0;
     }
     catch (e) {
-        return 0; // if something goes wrong we just return 0 digits after comma
+        return 0; // If something goes wrong we just return 0 digits after comma.
     }
 }
 export function getFormattedValue(formattingOptions, value) {
     if (value === null) {
         return value;
     }
-    let formatSpecifier = ",";
+    let formatSpecifier = ',';
     // if we have float values in data set we extend all float values
     // to max number of positions after comma, e.g. format specifier
     // could be ",.2f" for 2 positions after comma
@@ -244,6 +249,25 @@ export function getFormattedBuckets(formattingOptions, buckets) {
         };
     });
 }
+export function getRoundedValue(value, maxDigitsAfterComma) {
+    // Default: round to two digits after comma.
+    let roundingFactor = 100;
+    // If data contains more precise float numbers we extend
+    // each value to max number of digits after comma.
+    if (maxDigitsAfterComma !== undefined && maxDigitsAfterComma > 2) {
+        roundingFactor = Math.pow(10, maxDigitsAfterComma);
+    }
+    return Math.round(value * roundingFactor) / roundingFactor;
+}
+export function getCustomBucketBorders(customBuckets) {
+    const customBorderStrings = customBuckets.split(',');
+    return customBorderStrings.map((borderValue) => {
+        return parseFloat(borderValue.trim());
+    });
+}
+/**
+ * Internal.
+ */
 function getMedian(values) {
     let middleIndex = Math.floor(values.length / 2);
     let sortedNumbers = [...values].sort((a, b) => a - b);
@@ -262,20 +286,4 @@ function getAverage(values) {
 function getRoundedAverage(values, maxDigitsAfterComma) {
     const averageValue = getAverage(values);
     return getRoundedValue(averageValue, maxDigitsAfterComma);
-}
-export function getRoundedValue(value, maxDigitsAfterComma) {
-    // Default: round to two digits after comma.
-    let roundingFactor = 100;
-    // If data contains more precise float numbers we extend
-    // each value to max number of digits after comma.
-    if (maxDigitsAfterComma !== undefined && maxDigitsAfterComma > 2) {
-        roundingFactor = Math.pow(10, maxDigitsAfterComma);
-    }
-    return Math.round(value * roundingFactor) / roundingFactor;
-}
-export function getCustomBucketBorders(customBuckets) {
-    const customBorderStrings = customBuckets.split(",");
-    return customBorderStrings.map((borderValue) => {
-        return parseFloat(borderValue.trim());
-    });
 }

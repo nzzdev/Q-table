@@ -1,5 +1,10 @@
-const fixtureDataDirectory = "../../../resources/fixtures/data";
-// provide every fixture data file present in ../../resources/fixtures/data
+// These lines make "require" available.
+// We do this because otherwise we need a build system
+// to bundle this and it is too much work.
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const fixtureDataDirectory = '../../../resources/fixtures/data';
+// Provide every fixture data file present in ../../resources/fixtures/data
 const fixtureData = [
     require(`${fixtureDataDirectory}/two-column.json`),
     require(`${fixtureDataDirectory}/four-column.json`),
@@ -48,10 +53,10 @@ const fixtureData = [
     require(`${fixtureDataDirectory}/colorColumn-categorical-custom-colors.json`),
 ];
 export default {
-    path: "/fixtures/data",
-    method: "GET",
+    path: '/fixtures/data',
+    method: 'GET',
     options: {
-        tags: ["api"],
+        tags: ['api'],
     },
     handler: (request, h) => {
         return fixtureData;

@@ -1,40 +1,56 @@
 import colorClassWithLightFontList from './colorClassLightFont.js';
 
+export interface CategoryColor {
+  colorClass: string,
+  customColor: string,
+  textColor: string,
+}
+
+export interface CustomColorMap {
+
+}
+
 export const digitWords = [
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine",
-  "ten",
-  "eleven",
-  "twelve",
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
 ];
 
-function getTextColor(customColor, colorClass) {
-  if (customColor !== undefined && customColor.textColor !== undefined) {
-    return customColor.textColor === "light"
-      ? "s-color-gray-1"
-      : "s-color-gray-9";
+const gray1 = 's-color-gray-1';
+const gray4 = 's-color-gray-4';
+const gray6 = 's-color-gray-6';
+const gray7 = 's-color-gray-7';
+const gray8 = 's-color-gray-8';
+const gray9 = 's-color-gray-9';
+
+function getTextColor(customColor, colorClass): string {
+  if(customColor?.textColor !== undefined) {
+    return customColor.textColor === 'light' ? gray1 : gray9;
   }
 
   if (colorClassWithLightFontList.indexOf(colorClass) > -1) {
-    return "s-color-gray-1";
+    return gray1;
   }
-  return "s-color-gray-9";
+
+  return gray9;
 }
 
 export function getBucketColor(numberBuckets, index, scale, colorOptions) {
   const colorScheme = colorOptions.colorScheme;
   const customColor = colorOptions.colorOverwrites.get(index);
-  let colorClass = "";
-  let textColor = "";
+  let colorClass = '';
+  let textColor = '';
 
-  if (scale === "sequential") {
+  if (scale === 'sequential') {
     colorClass = `s-viz-color-sequential-${colorScheme}-${numberBuckets}-${
       numberBuckets - index
     }`;
@@ -46,7 +62,7 @@ export function getBucketColor(numberBuckets, index, scale, colorOptions) {
     // b) diverging value = one of the buckets,
     //    i.e. this bucket has a neutral color value
     // scale values could be e.g. border-1, border-2 or bucket-1, bucket-2
-    const divergingSpecification = scale.split("-");
+    const divergingSpecification = scale.split('-');
     const divergingIndex = parseInt(divergingSpecification[1]);
 
     // in order to know which diverging scale size we have to use,
@@ -55,7 +71,7 @@ export function getBucketColor(numberBuckets, index, scale, colorOptions) {
     const numberBucketsLeft = divergingIndex;
     let numberBucketsRight = numberBuckets - divergingIndex;
 
-    if (divergingSpecification[0] === "bucket") {
+    if (divergingSpecification[0] === 'bucket') {
       numberBucketsRight -= 1;
     }
 
@@ -65,7 +81,7 @@ export function getBucketColor(numberBuckets, index, scale, colorOptions) {
     );
 
     let scaleSize = numberBucketsBiggerSide * 2;
-    if (divergingSpecification[0] === "bucket") {
+    if (divergingSpecification[0] === 'bucket') {
       scaleSize += 1;
     }
 
@@ -87,7 +103,7 @@ export function getBucketColor(numberBuckets, index, scale, colorOptions) {
     customColor:
       customColor !== undefined && customColor.color !== undefined
         ? customColor.color
-        : "",
+        : '',
     textColor,
   };
 }
@@ -95,12 +111,12 @@ export function getBucketColor(numberBuckets, index, scale, colorOptions) {
 export function getColor(value, legendData) {
   if (value === null || value === undefined) {
     return {
-      colorClass: "",
-      customColor: "#fff",
-      textColor: "s-color-gray-6",
+      colorClass: '',
+      customColor: '#fff',
+      textColor: 's-color-gray-6',
     };
   }
-  if (legendData.type === "numerical") {
+  if (legendData.type === 'numerical') {
     const buckets = legendData.buckets;
     const bucket = buckets.find((bucket, index) => {
       if (index === 0) {
@@ -119,9 +135,9 @@ export function getColor(value, legendData) {
       };
     } else {
       return {
-        colorClass: "s-color-gray-4",
-        customColor: "",
-        textColor: "s-color-gray-6",
+        colorClass: 's-color-gray-4',
+        customColor: '',
+        textColor: 's-color-gray-6',
       };
     }
   } else {
@@ -135,8 +151,8 @@ export function getColor(value, legendData) {
       };
     } else {
       return {
-        colorClass: "s-color-gray-4",
-        customColor: "",
+        colorClass: 's-color-gray-4',
+        customColor: '',
       };
     }
   }
@@ -155,16 +171,17 @@ export function getCustomColorMap(colorOverwrites) {
   );
 }
 
-export function getCategoryColor(index, customColorMap) {
+export function getCategoryColor(index: number, customColorMap): CategoryColor {
   const customColor = customColorMap.get(index);
   const colorScheme = digitWords[index];
   const colorClass = `s-viz-color-${colorScheme}-5`;
+
   return {
     colorClass,
     customColor:
       customColor !== undefined && customColor.color !== undefined
         ? customColor.color
-        : "",
+        : '',
     textColor: getTextColor(customColor, colorClass),
   };
 }

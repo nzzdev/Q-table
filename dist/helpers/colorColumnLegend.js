@@ -1,4 +1,4 @@
-import * as dataHelpers from './data.js';
+import { getNumericalValuesByColumn, getNonNullValues, getMetaData, getCustomBucketBorders, getUniqueCategoriesObject } from './data.js';
 import * as colorHelpers from './colorColumnColor.js';
 import * as simpleStatistics from 'simple-statistics';
 const ckmeans = simpleStatistics.ckmeans;
@@ -9,6 +9,43 @@ const widthConfig = {
     average: 100,
     median: 60,
 };
+export function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
+    const customColorMap = colorHelpers.getCustomColorMap(colorColumn.numericalOptions.colorOverwrites);
+    const values = getNumericalValuesByColumn(data, colorColumn.selectedColumn);
+    const nonNullValues = getNonNullValues(values);
+    const metaData = getMetaData(values, nonNullValues, maxDigitsAfterComma);
+    const legendData = Object.assign({ type: 'numerical', labelLegend: colorColumn.numericalOptions.labelLegend }, metaData);
+    legendData.buckets = getBucketsForLegend(nonNullValues, colorColumn, legendData.minValue, legendData.maxValue, customColorMap, maxDigitsAfterComma);
+    legendData.labelLegend = getLabelLegend(legendData, maxDigitsAfterComma);
+    if (legendData.labelLegend.value) {
+        legendData.labelLegend.descriptionAlignment = getDescriptionAlignment(legendData.labelLegend, width, maxDigitsAfterComma);
+    }
+    legendData.hasSingleValueBucket = hasSingleValueBucket(legendData);
+    // for all bucket types we calculate the resulting buckets out of given data set
+    // custom bucketing need a special handling of min/max values because the first and the last
+    // custom bucket value could be lower/higher than min/max
+    if (colorColumn.numericalOptions.bucketType === 'custom') {
+        // if first custom bucket value is less than min value in given data set
+        // we set min value of legend to starting value of custom buckets
+        const minBucketValue = legendData.buckets[0].from;
+        if (legendData.minValue > minBucketValue) {
+            legendData.minValue = minBucketValue;
+        }
+        // if last custom bucket value is higher that max value in given data set
+        // we set max value of legend to last custom bucket value
+        const maxBucketValue = legendData.buckets[legendData.buckets.length - 1].to;
+        if (legendData.maxValue < maxBucketValue) {
+            legendData.maxValue = maxBucketValue;
+        }
+    }
+    return legendData;
+}
+/**
+ * Internal.
+ */
+/**
+ * Interfaces.
+ */
 function getBucketsForLegend(filteredValues, colorColumn, minValue, maxValue, customColorMap, maxDigitsAfterComma) {
     const bucketType = colorColumn.numericalOptions.bucketType;
     const numberBuckets = colorColumn.numericalOptions.numberBuckets;
@@ -17,16 +54,16 @@ function getBucketsForLegend(filteredValues, colorColumn, minValue, maxValue, cu
         colorScheme: colorColumn.numericalOptions.colorScheme,
         colorOverwrites: customColorMap,
     };
-    if (bucketType === "ckmeans") {
+    if (bucketType === 'ckmeans') {
         return getCkMeansBuckets(filteredValues, numberBuckets, scale, colorOptions);
     }
-    else if (bucketType === "quantile") {
+    else if (bucketType === 'quantile') {
         return getQuantileBuckets(filteredValues, numberBuckets, minValue, scale, colorOptions);
     }
-    else if (bucketType === "equal") {
+    else if (bucketType === 'equal') {
         return getEqualBuckets(numberBuckets, minValue, maxValue, scale, colorOptions, maxDigitsAfterComma);
     }
-    else if (bucketType === "custom") {
+    else if (bucketType === 'custom') {
         return getCustomBuckets(colorColumn, scale, colorOptions);
     }
     return [];
@@ -82,7 +119,7 @@ function getEqualBuckets(numberBuckets, minValue, maxValue, scale, colorOptions,
 }
 function getCustomBuckets(colorColumn, scale, colorOptions) {
     if (colorColumn.numericalOptions.customBuckets !== undefined) {
-        const customBorderValues = dataHelpers.getCustomBucketBorders(colorColumn.numericalOptions.customBuckets);
+        const customBorderValues = getCustomBucketBorders(colorColumn.numericalOptions.customBuckets);
         const numberBuckets = customBorderValues.length - 1;
         const minBorder = customBorderValues.shift();
         let customBuckets = [];
@@ -100,43 +137,12 @@ function hasSingleValueBucket(legendData) {
     const firstBucket = legendData.buckets[0];
     return firstBucket.from === firstBucket.to;
 }
-export function getNumericalLegend(data, colorColumn, maxDigitsAfterComma, width) {
-    const customColorMap = colorHelpers.getCustomColorMap(colorColumn.numericalOptions.colorOverwrites);
-    const values = dataHelpers.getNumericalValuesByColumn(data, colorColumn.selectedColumn);
-    const nonNullValues = dataHelpers.getNonNullValues(values);
-    const metaData = dataHelpers.getMetaData(values, nonNullValues, maxDigitsAfterComma);
-    const legendData = Object.assign({ type: "numerical", labelLegend: colorColumn.numericalOptions.labelLegend }, metaData);
-    legendData.buckets = getBucketsForLegend(nonNullValues, colorColumn, legendData.minValue, legendData.maxValue, customColorMap, maxDigitsAfterComma);
-    legendData.labelLegend = getLabelLegend(legendData, maxDigitsAfterComma);
-    if (legendData.labelLegend.value) {
-        legendData.labelLegend.descriptionAlignment = getDescriptionAlignment(legendData.labelLegend, width, maxDigitsAfterComma);
-    }
-    legendData.hasSingleValueBucket = hasSingleValueBucket(legendData);
-    // for all bucket types we calculate the resulting buckets out of given data set
-    // custom bucketing need a special handling of min/max values because the first and the last
-    // custom bucket value could be lower/higher than min/max
-    if (colorColumn.numericalOptions.bucketType === "custom") {
-        // if first custom bucket value is less than min value in given data set
-        // we set min value of legend to starting value of custom buckets
-        const minBucketValue = legendData.buckets[0].from;
-        if (legendData.minValue > minBucketValue) {
-            legendData.minValue = minBucketValue;
-        }
-        // if last custom bucket value is higher that max value in given data set
-        // we set max value of legend to last custom bucket value
-        const maxBucketValue = legendData.buckets[legendData.buckets.length - 1].to;
-        if (legendData.maxValue < maxBucketValue) {
-            legendData.maxValue = maxBucketValue;
-        }
-    }
-    return legendData;
-}
 export function getCategoricalLegend(data, colorColumn) {
     const legendData = {
-        type: "categorical",
+        type: 'categorical',
     };
     const customColorMap = colorHelpers.getCustomColorMap(colorColumn.categoricalOptions.colorOverwrites);
-    const categoryObject = dataHelpers.getUniqueCategoriesObject(data, colorColumn);
+    const categoryObject = getUniqueCategoriesObject(data, colorColumn);
     let categories = [];
     categoryObject.categories.forEach((label, index) => {
         categories.push({
@@ -150,23 +156,24 @@ export function getCategoricalLegend(data, colorColumn) {
 }
 function getLabelLegend(legendData, maxDigitsAfterComma) {
     const range = legendData.maxValue - legendData.minValue;
-    if (legendData.labelLegend === "median") {
-        return {
-            id: "median",
-            label: "Median",
-            value: dataHelpers.getRoundedValue(legendData.medianValue, maxDigitsAfterComma),
-            position: ((legendData.medianValue - legendData.minValue) * 100) / range,
-        };
+    switch (legendData.labelLegend) {
+        case 'noLabel':
+            return { label: 'noLabel' };
+        case 'median':
+            return {
+                id: 'median',
+                label: 'Median',
+                value: dataHelpers.getRoundedValue(legendData.medianValue, maxDigitsAfterComma),
+                position: ((legendData.medianValue - legendData.minValue) * 100) / range,
+            };
+        default:
+            return {
+                id: 'average',
+                label: 'Durchschnitt',
+                value: legendData.averageValue,
+                position: ((legendData.averageValue - legendData.minValue) * 100) / range,
+            };
     }
-    else if (legendData.labelLegend === "noLabel") {
-        return { label: "noLabel" };
-    }
-    return {
-        id: "average",
-        label: "Durchschnitt",
-        value: legendData.averageValue,
-        position: ((legendData.averageValue - legendData.minValue) * 100) / range,
-    };
 }
 function getAvailableSpaceForLabel(labelLegend, contentWidth) {
     let legendPixelWidth;
@@ -183,7 +190,7 @@ function getDescriptionAlignment(labelLegend, contentWidth, maxDigitsAfterComma)
     const valueLength = getValueLength(labelLegend.value, maxDigitsAfterComma);
     const approxLabelWidth = widthConfig[labelLegend.id] + valueLength * 8;
     if (availableSpaceForLabel < approxLabelWidth) {
-        return "text-align: right;";
+        return 'text-align: right;';
     }
     return `margin-left: ${labelLegend.position}%`;
 }

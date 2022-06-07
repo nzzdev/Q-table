@@ -1,4 +1,5 @@
 // These lines make "require" available.
+// Todo comment.
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
@@ -8,8 +9,8 @@ import { fileURLToPath } from 'url';
 // Setup svelte environment.
 require('svelte/register');
 
-import type { IReply, Request } from 'hapi';
-import type { QTableConfig, ToolRuntimeConfig } from '../../interfaces';
+import type { IReply, Request, ServerInjectResponse } from 'hapi';
+import type { AvailabilityResponseObject, QTableConfig, ToolRuntimeConfig, RenderingInfo, WebPayload  } from '../../interfaces';
 import type { StructuredFootnote } from '../../helpers/footnotes';
 
 // Require tools.
@@ -25,8 +26,8 @@ const rootDir = __dirname + '/../../../';
 const distDir = rootDir + 'dist/';
 
 const resourcesDir = rootDir + 'resources/';
-const viewsDir = distDir + 'components/';
-// const viewsDir = __dirname + "/../../../views/";
+// const viewsDir = distDir + 'components/'; // New views.
+const viewsDir = __dirname + '/../../../views/';
 const stylesDir = distDir + 'styles/';
 
 // Template file.
@@ -36,11 +37,11 @@ const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 
-import * as dataHelpers from '../../helpers/data.js';
+import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
 import * as minibarHelpers from '../../helpers/minibars.js';
 import * as colorColumnHelpers from '../../helpers/colorColumn.js';
 import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
-import * as footnoteHelpers from '../../helpers/footnotes.js';
+import { getFootnotes } from '../../helpers/footnotes.js';
 
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
@@ -86,64 +87,66 @@ export default {
     },
   },
   handler: async function (request: Request, h) {
-    const renderingInfo = {
+    const renderingInfo: RenderingInfo = {
       polyfills: ['Promise'],
       stylesheets: [{
         name: styleHashMap['q-table'],
-      }]
+      }],
+      scripts: [],
     };
 
+    const payload = request.payload as WebPayload;
+
     // Extract table configurations.
-    const config = request.payload.item as QTableConfig;
-    const toolRuntimeConfig = request.payload.toolRuntimeConfig as ToolRuntimeConfig;
+    const config = payload.item;
+    const toolRuntimeConfig = payload.toolRuntimeConfig;
+    const options = config.options;
 
     let width = getExactPixelWidth(toolRuntimeConfig);
 
     const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
 
-    const dataWithoutHeaderRow = dataHelpers.getDataWithoutHeaderRow(itemDataCopy);
+    // console.log("data", itemDataCopy);
+    const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+    const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
 
-    const footnotes: StructuredFootnote[] = footnoteHelpers.getFootnotes(
-      config.data.metaData,
-      config.options.hideTableHeader
-    );
+    const minibarsAvailable = await areMinibarsAvailable(request, config);
 
-    const minibarsAvailable = await request.server.inject({
-      url: '/option-availability/selectedColumnMinibar',
-      method: 'POST',
-      payload: { item: config },
-    }, () => { });
+    const colorColumnAvailable = await isColorColumnAvailable(request, config);
+    // const minibarsAvailable = await request.server.inject({
+    //   url: '/option-availability/selectedColumnMinibar',
+    //   method: 'POST',
+    //   payload: { item: config },
+    // }): ;
 
-    const colorColumnAvailable = await request.server.inject({
-      url: '/option-availability/selectedColorColumn',
-      method: 'POST',
-      payload: { item: config },
-    }, () => { });
+    // const colorColumnAvailable = await request.server.inject({
+    //   url: '/option-availability/selectedColorColumn',
+    //   method: 'POST',
+    //   payload: { item: config },
+    // });
 
 
+    const tableData = formatTableData(config.data.table, footnotes, options);
 
     const context = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
-      tableData: dataHelpers.getTableData(
-        config.data.table,
-        footnotes,
-        config.options
-      ),
-      minibar: minibarsAvailable.result.available
+      tableData,
+      minibar: minibarsAvailable
         ? minibarHelpers.getMinibarContext(config.options, itemDataCopy)
         : {},
       footnotes: footnotes,
-      colorColumn: colorColumnAvailable.result.available
+      colorColumn: colorColumnAvailable
         ? colorColumnHelpers.getColorColumnContext(config.options.colorColumn, dataWithoutHeaderRow, width)
         : {},
       numberOfRows: config.data.table.length - 1, // do not count the header
-      displayOptions: request.payload.toolRuntimeConfig.displayOptions || {},
-      noInteraction: request.payload.toolRuntimeConfig.noInteraction,
+      displayOptions: payload.toolRuntimeConfig.displayOptions || {},
+      noInteraction: payload.toolRuntimeConfig.noInteraction,
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
       )}`.replace(/-/g, ''),
       width,
+      initWithCardLayout: false,
     };
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
@@ -170,14 +173,14 @@ export default {
     }
 
     // if we have toolRuntimeConfig.noInteraction, we do not hide rows because showing them is not possible
-    if (request.payload.toolRuntimeConfig.noInteraction) {
+    if (toolRuntimeConfig.noInteraction) {
       context.numberOfRowsToHide = undefined;
     }
 
     try {
       renderingInfo.markup = tableTemplate.render(context).html
     } catch (ex) {
-      console.log(ex)
+      console.log('Failed rendering html', ex);
     }
 
 
@@ -206,11 +209,9 @@ export default {
       possibleToHaveToHideRows = true;
     }
 
-    if (request.payload.toolRuntimeConfig.noInteraction) {
+    if (toolRuntimeConfig.noInteraction) {
       possibleToHaveToHideRows = false;
     }
-
-    renderingInfo.scripts = [];
 
     // if we are going to add any script, we want the default script first
     if (
@@ -271,3 +272,35 @@ export default {
     return renderingInfo;
   },
 };
+
+async function areMinibarsAvailable(request: Request, config: QTableConfig): Promise<boolean> {
+  const a = await request.server.inject({
+    url: '/option-availability/selectedColumnMinibar',
+    method: 'POST',
+    payload: { item: config },
+  });
+
+  const result = a.result as AvailabilityResponseObject | undefined;
+  if (result) {
+    return result.available;
+  } else {
+    console.log('Error receiving result for /option-availability/selectedColumnMinibar', result);
+    return false;
+  }
+}
+
+async function isColorColumnAvailable(request: Request, config: QTableConfig): Promise<boolean> {
+  const a = await request.server.inject({
+    url: '/option-availability/selectedColorColumn',
+    method: 'POST',
+    payload: { item: config },
+  });
+
+  const result = a.result as AvailabilityResponseObject | undefined;
+  if (result) {
+    return result.available;
+  } else {
+    console.log('Error receiving result for /option-availability/selectedColorColumn', result);
+    return false;
+  }
+}

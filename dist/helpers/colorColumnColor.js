@@ -1,35 +1,35 @@
 import colorClassWithLightFontList from './colorClassLightFont.js';
 export const digitWords = [
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-    "ten",
-    "eleven",
-    "twelve",
+    'one',
+    'two',
+    'three',
+    'four',
+    'five',
+    'six',
+    'seven',
+    'eight',
+    'nine',
+    'ten',
+    'eleven',
+    'twelve',
 ];
 function getTextColor(customColor, colorClass) {
     if (customColor !== undefined && customColor.textColor !== undefined) {
-        return customColor.textColor === "light"
-            ? "s-color-gray-1"
-            : "s-color-gray-9";
+        return customColor.textColor === 'light'
+            ? 's-color-gray-1'
+            : 's-color-gray-9';
     }
     if (colorClassWithLightFontList.indexOf(colorClass) > -1) {
-        return "s-color-gray-1";
+        return 's-color-gray-1';
     }
-    return "s-color-gray-9";
+    return 's-color-gray-9';
 }
 export function getBucketColor(numberBuckets, index, scale, colorOptions) {
     const colorScheme = colorOptions.colorScheme;
     const customColor = colorOptions.colorOverwrites.get(index);
-    let colorClass = "";
-    let textColor = "";
-    if (scale === "sequential") {
+    let colorClass = '';
+    let textColor = '';
+    if (scale === 'sequential') {
         colorClass = `s-viz-color-sequential-${colorScheme}-${numberBuckets}-${numberBuckets - index}`;
         textColor = getTextColor(customColor, colorClass);
     }
@@ -40,19 +40,19 @@ export function getBucketColor(numberBuckets, index, scale, colorOptions) {
         // b) diverging value = one of the buckets,
         //    i.e. this bucket has a neutral color value
         // scale values could be e.g. border-1, border-2 or bucket-1, bucket-2
-        const divergingSpecification = scale.split("-");
+        const divergingSpecification = scale.split('-');
         const divergingIndex = parseInt(divergingSpecification[1]);
         // in order to know which diverging scale size we have to use,
         // we have to check which side is bigger first and then calculate
         // the size depending on the number of buckets of the bigger side
         const numberBucketsLeft = divergingIndex;
         let numberBucketsRight = numberBuckets - divergingIndex;
-        if (divergingSpecification[0] === "bucket") {
+        if (divergingSpecification[0] === 'bucket') {
             numberBucketsRight -= 1;
         }
         const numberBucketsBiggerSide = Math.max(numberBucketsLeft, numberBucketsRight);
         let scaleSize = numberBucketsBiggerSide * 2;
-        if (divergingSpecification[0] === "bucket") {
+        if (divergingSpecification[0] === 'bucket') {
             scaleSize += 1;
         }
         // if the left side is smaller we cannot start with scale position 1
@@ -72,19 +72,19 @@ export function getBucketColor(numberBuckets, index, scale, colorOptions) {
         colorClass,
         customColor: customColor !== undefined && customColor.color !== undefined
             ? customColor.color
-            : "",
+            : '',
         textColor,
     };
 }
 export function getColor(value, legendData) {
     if (value === null || value === undefined) {
         return {
-            colorClass: "",
-            customColor: "#fff",
-            textColor: "s-color-gray-6",
+            colorClass: '',
+            customColor: '#fff',
+            textColor: 's-color-gray-6',
         };
     }
-    if (legendData.type === "numerical") {
+    if (legendData.type === 'numerical') {
         const buckets = legendData.buckets;
         const bucket = buckets.find((bucket, index) => {
             if (index === 0) {
@@ -106,9 +106,9 @@ export function getColor(value, legendData) {
         }
         else {
             return {
-                colorClass: "s-color-gray-4",
-                customColor: "",
-                textColor: "s-color-gray-6",
+                colorClass: 's-color-gray-4',
+                customColor: '',
+                textColor: 's-color-gray-6',
             };
         }
     }
@@ -124,8 +124,8 @@ export function getColor(value, legendData) {
         }
         else {
             return {
-                colorClass: "s-color-gray-4",
-                customColor: "",
+                colorClass: 's-color-gray-4',
+                customColor: '',
             };
         }
     }
@@ -147,7 +147,7 @@ export function getCategoryColor(index, customColorMap) {
         colorClass,
         customColor: customColor !== undefined && customColor.color !== undefined
             ? customColor.color
-            : "",
+            : '',
         textColor: getTextColor(customColor, colorClass),
     };
 }

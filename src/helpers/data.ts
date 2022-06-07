@@ -2,23 +2,31 @@ import Array2D from 'array2d';
 import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 
-const fourPerEmSpace = "\u2005";
-const enDash = "\u2013";
+// Types.
+import type { StructuredFootnote } from './footnotes';
+import type { QTableDataFormatted, QTableDataRaw, QTableConfigOptions } from '../interfaces';
+
+const fourPerEmSpace = '\u2005';
+const enDash = '\u2013';
 
 const formatLocale = d3FormatLocale({
-  decimal: ",",
+  decimal: ',',
   thousands: fourPerEmSpace,
   minus: enDash,
   grouping: [3],
+  currency: ['€', ''],
 });
 
 const formatLocaleSmall = d3FormatLocale({
-  decimal: ",",
+  decimal: ',',
   minus: enDash,
+  currency: ['€', ''],
+  thousands: fourPerEmSpace,
+  grouping: [],
 });
 
-const formatGrouping = formatLocale.format(",");
-const formatNoGrouping = formatLocale.format("");
+const formatGrouping = formatLocale.format(',');
+const formatNoGrouping = formatLocale.format('');
 
 export function isNumeric(cell) {
   if (!cell) {
@@ -38,16 +46,16 @@ function getColumnsType(data) {
   Array2D.eachColumn(table, (column) => {
     let withFormating = false;
     let columnEmpty = column.every((cell) => {
-      return cell === null || cell === "" || cell === "-" || cell === "–";
+      return cell === null || cell === '' || cell === '-' || cell === '–';
     });
     let isColumnNumeric = column.every((cell) => {
       return (
         !columnEmpty &&
         (isNumeric(cell) ||
           cell === null ||
-          cell === "" ||
-          cell === "-" ||
-          cell === "–")
+          cell === '' ||
+          cell === '-' ||
+          cell === '–')
       );
     });
     if (isColumnNumeric) {
@@ -89,24 +97,27 @@ export function getCategoricalColumns(data) {
   return categoricalColumns;
 }
 
-export function getTableData(data, footnotes, options) {
+export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): QTableDataFormatted[][] {
   const columns = getColumnsType(data);
-  let tableData = [];
+  let tableData: QTableDataFormatted[][] = [];
+
   Array2D.eachRow(data, (row, rowIndex) => {
     let cells = row.map((cell, columnIndex) => {
-      let type = "text";
+      let type = 'text';
       let value = cell;
-      let classes = [];
+
+      let classes: string[] = [];
+
       if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-        type = "numeric";
-        classes.push("s-font-note--tabularnums");
+        type = 'numeric';
+        classes.push('s-font-note--tabularnums');
 
         // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
         if (
           rowIndex > 0 &&
           cell !== null &&
-          cell !== "" &&
-          cell != "-" &&
+          cell !== '' &&
+          cell != '-' &&
           cell != enDash
         ) {
           if (columns[columnIndex].withFormating) {
@@ -123,30 +134,31 @@ export function getTableData(data, footnotes, options) {
         classes: classes,
       };
     });
+
     tableData.push(cells);
   });
 
   if (footnotes.length > 0) {
-    tableData = appendFootnoteAnnotationsToTableData(
-      tableData,
-      footnotes,
-      options
-    );
+    tableData = appendFootnoteAnnotationsToTableData(tableData, footnotes, options);
   }
 
   return tableData;
 }
 
-export function getNumericalValuesByColumn(data, column) {
+export function getNumericalValuesByColumn(data: QTableDataRaw, column: number): Array<number|null> {
   return data.map((row) => {
     if (!row[column]) row[column] = null;
-    if (row[column] !== null) {
-      if (row[column].match(/^[+-]?\d+(\.\d+)?$/) === null) {
-        throw new Error("value is not a valid floating point number");
-      }
-      return parseFloat(row[column]);
+
+    const val = row[column];
+    let return_val: number | null = null;
+
+    if (typeof val === 'string' && val.match(/^[+-]?\d+(\.\d+)?$/)) {
+        return_val = parseFloat(val);
+    } else {
+      throw new Error('value is not a valid floating point number');
     }
-    return row[column];
+
+    return return_val;
   });
 }
 
@@ -157,11 +169,11 @@ export function getCategoricalValuesByColumn(data, column) {
   });
 }
 
-export function getNonNullValues(values) {
-  return values.filter((value) => value !== null);
+export function getNonNullValues(values: Array<number|null>): number[] {
+  return values.filter(value => value !== null) as number[];
 }
 
-export function getMetaData(values, numberValues, maxDigitsAfterComma) {
+export function getMetaData(values, numberValues, maxDigitsAfterComma: number): MetaData {
   return {
     hasNullValues: values.find((value) => value === null) !== undefined,
     hasZeroValues: numberValues.find((value) => value === 0) !== undefined,
@@ -172,7 +184,7 @@ export function getMetaData(values, numberValues, maxDigitsAfterComma) {
   };
 }
 
-export function getDataWithoutHeaderRow(data: string[][]) {
+export function getDataWithoutHeaderRow(data: QTableDataRaw): QTableDataRaw {
   return data.slice(1);
 }
 
@@ -189,7 +201,7 @@ export function getUniqueCategoriesObject(data, colorColumn) {
       return row[colorColumn.selectedColumn];
     })
     .filter((value) => {
-      if (value !== null && value !== "") {
+      if (value !== null && value !== '') {
         return true;
       }
       hasNullValues = true;
@@ -222,35 +234,38 @@ function getSortedValues(values) {
   return sortedCounter.map((x) => x[0]);
 }
 
-export function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
+export function getMaxDigitsAfterCommaInDataByRow(data, rowIndex: number): number {
   let maxDigitsAfterComma = 0;
+
   data.forEach((row) => {
     const digitsAfterComma = getDigitsAfterComma(row[rowIndex]);
     maxDigitsAfterComma = Math.max(maxDigitsAfterComma, digitsAfterComma);
   });
+
   return maxDigitsAfterComma;
 }
 
-function getDigitsAfterComma(value) {
+function getDigitsAfterComma(value): number {
   try {
     if (value !== undefined && value !== null) {
-      const valueParts = value.toString().split(".");
+      const valueParts = value.toString().split('.');
       if (valueParts.length > 1) {
         return valueParts[1].length;
       }
     }
+
     return 0;
   } catch (e) {
-    return 0; // if something goes wrong we just return 0 digits after comma
+    return 0; // If something goes wrong we just return 0 digits after comma.
   }
 }
 
-export function getFormattedValue(formattingOptions, value) {
+export function getFormattedValue(formattingOptions: DataFormattingOptions, value: number | null): string {
   if (value === null) {
     return value;
   }
 
-  let formatSpecifier = ",";
+  let formatSpecifier = ',';
 
   // if we have float values in data set we extend all float values
   // to max number of positions after comma, e.g. format specifier
@@ -267,7 +282,7 @@ export function getFormattedValue(formattingOptions, value) {
   }
 }
 
-export function getFormattedBuckets(formattingOptions, buckets) {
+export function getFormattedBuckets(formattingOptions: DataFormattingOptions, buckets) {
   return buckets.map((bucket) => {
     let { from, to, color } = bucket;
 
@@ -286,30 +301,7 @@ export function getFormattedBuckets(formattingOptions, buckets) {
   });
 }
 
-function getMedian(values: number[]) {
-  let middleIndex = Math.floor(values.length / 2);
-  let sortedNumbers = [...values].sort((a, b) => a - b);
 
-  if (values.length % 2 !== 0) {
-    return sortedNumbers[middleIndex];
-  }
-
-  return (sortedNumbers[middleIndex - 1] + sortedNumbers[middleIndex]) / 2;
-}
-
-function getRoundedMedian(values: number[], maxDigitsAfterComma: number) {
-  const medianValue = getMedian(values);
-  return getRoundedValue(medianValue, maxDigitsAfterComma);
-}
-
-function getAverage(values: number[]) {
-  return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
-function getRoundedAverage(values, maxDigitsAfterComma) {
-  const averageValue = getAverage(values);
-  return getRoundedValue(averageValue, maxDigitsAfterComma);
-}
 
 export function getRoundedValue(value: number, maxDigitsAfterComma: number) {
   // Default: round to two digits after comma.
@@ -325,8 +317,60 @@ export function getRoundedValue(value: number, maxDigitsAfterComma: number) {
 }
 
 export function getCustomBucketBorders(customBuckets) {
-  const customBorderStrings = customBuckets.split(",");
+  const customBorderStrings = customBuckets.split(',');
   return customBorderStrings.map((borderValue) => {
     return parseFloat(borderValue.trim());
   });
+}
+
+
+/**
+ * Internal.
+ */
+function getMedian(values: number[]): number {
+  let middleIndex = Math.floor(values.length / 2);
+  let sortedNumbers = [...values].sort((a, b) => a - b);
+
+  if (values.length % 2 !== 0) {
+    return sortedNumbers[middleIndex];
+  }
+
+  return (sortedNumbers[middleIndex - 1] + sortedNumbers[middleIndex]) / 2;
+}
+
+function getRoundedMedian(values: number[], maxDigitsAfterComma: number): number {
+  const medianValue = getMedian(values);
+  return getRoundedValue(medianValue, maxDigitsAfterComma);
+}
+
+function getAverage(values: number[]): number {
+  return values.reduce((a, b) => a + b, 0) / values.length;
+}
+
+function getRoundedAverage(values, maxDigitsAfterComma: number): number {
+  const averageValue = getAverage(values);
+  return getRoundedValue(averageValue, maxDigitsAfterComma);
+}
+
+/**
+ * Interfaces.
+ */
+export interface FormattedBucket {
+  from: string,
+  to: string,
+  color: any,
+}
+
+export interface MetaData {
+  hasNullValues: boolean,
+  hasZeroValues: boolean,
+  maxValue: number,
+  minValue: number,
+  averageValue: number,
+  medianValue: number,
+}
+
+export interface DataFormattingOptions {
+  maxDigitsAfterComma?: number,
+  roundingBucketBorders?: boolean,
 }

@@ -1,14 +1,14 @@
 export function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     const unicodes = {
-        1: "\u00b9",
-        2: "\u00b2",
-        3: "\u00b3",
-        4: "\u2074",
-        5: "\u2075",
-        6: "\u2076",
-        7: "\u2077",
-        8: "\u2078",
-        9: "\u2079",
+        1: '\u00b9',
+        2: '\u00b2',
+        3: '\u00b3',
+        4: '\u2074',
+        5: '\u2075',
+        6: '\u2076',
+        7: '\u2077',
+        8: '\u2078',
+        9: '\u2079',
     };
     let spacings = [];
     let flattenedFootnotes = getFlattenedFootnotes(footnotes);
@@ -43,8 +43,8 @@ export function appendFootnoteAnnotationsToTableData(tableData, footnotes, optio
             if (!options.hideTableHeader && index !== 0) {
                 row.forEach((cell) => {
                     flattenedFootnotes.length >= 10
-                        ? cell.classes.push("q-table-footnote-column-card-layout--double")
-                        : cell.classes.push("q-table-footnote-column-card-layout--single");
+                        ? cell.classes.push('q-table-footnote-column-card-layout--double')
+                        : cell.classes.push('q-table-footnote-column-card-layout--single');
                 });
             }
         }
@@ -53,15 +53,15 @@ export function appendFootnoteAnnotationsToTableData(tableData, footnotes, optio
 }
 function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
     // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
-    if ((type === "numeric" &&
+    if ((type === 'numeric' &&
         (options.minibar.selectedColumn === footnote.colIndex ||
-            options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)) {
-        let spacingClass = "q-table-footnote-column";
+            options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn === footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)) {
+        let spacingClass = 'q-table-footnote-column';
         if (amountOfFootnotes >= 10) {
-            spacingClass += "--double";
+            spacingClass += '--double';
         }
         else {
-            spacingClass += "--single";
+            spacingClass += '--single';
         }
         return spacingClass;
     }
