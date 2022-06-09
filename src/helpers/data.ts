@@ -4,7 +4,7 @@ import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 
 // Types.
 import type { StructuredFootnote } from './footnotes';
-import type { QTableDataFormatted, QTableDataRaw, QTableConfigOptions } from '../interfaces';
+import type { ColorColumnSettings, QTableDataFormatted, QTableDataRaw, QTableConfigOptions } from '../interfaces';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
@@ -28,52 +28,10 @@ const formatLocaleSmall = d3FormatLocale({
 const formatGrouping = formatLocale.format(',');
 const formatNoGrouping = formatLocale.format('');
 
-export function isNumeric(cell) {
-  if (!cell) {
-    return false;
-  }
-  cell = cell.trim(); // remove whitespaces
-  if (cell.match(/^[+-]?\d+(\.\d+)?$/) === null) {
-    return false;
-  }
-  return cell && !Number.isNaN(parseFloat(cell));
-}
-
-function getColumnsType(data) {
-  const columns = [];
-  const table = getDataWithoutHeaderRow(data);
-
-  Array2D.eachColumn(table, (column) => {
-    let withFormating = false;
-    let columnEmpty = column.every((cell) => {
-      return cell === null || cell === '' || cell === '-' || cell === '–';
-    });
-    let isColumnNumeric = column.every((cell) => {
-      return (
-        !columnEmpty &&
-        (isNumeric(cell) ||
-          cell === null ||
-          cell === '' ||
-          cell === '-' ||
-          cell === '–')
-      );
-    });
-    if (isColumnNumeric) {
-      const numbersOfColumn = column.map((number) =>
-        isNumeric(number) ? parseFloat(number) : null
-      );
-      withFormating =
-        Math.max(...numbersOfColumn) >= 10000 ||
-        Math.min(...numbersOfColumn) <= -10000;
-    }
-    columns.push({ isNumeric: isColumnNumeric, withFormating });
-  });
-  return columns;
-}
-
-export function getNumericColumns(data) {
+export function getNumericColumns(data: QTableDataRaw) {
   const columns = getColumnsType(data);
   const numericColumns = [];
+
   // data[0].length is undefined when creating a new item
   if (data[0] !== undefined) {
     Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
@@ -84,6 +42,59 @@ export function getNumericColumns(data) {
   }
   return numericColumns;
 }
+
+export function isNumeric(cell: string | null): boolean {
+  if (typeof cell !== 'string') {
+    return false
+  }
+
+  const parsed = parseFloat(cell);
+
+  if (isNaN(parsed)) {
+    return false;
+  }
+
+  return true;
+}
+
+function getColumnsType(data: QTableDataRaw): ColumnType[] {
+  const columns: ColumnType[]  = [];
+  const table = getDataWithoutHeaderRow(data);
+
+  Array2D.eachColumn(table, (column) => {
+    let withFormating = false;
+    const columnNumeric = isColumnNumeric(column);
+
+    if (columnNumeric) {
+      const numbersOfColumn = column.map((number) =>
+        isNumeric(number) ? parseFloat(number) : null
+      );
+
+      withFormating =
+        Math.max(...numbersOfColumn) >= 10000 ||
+        Math.min(...numbersOfColumn) <= -10000;
+    }
+
+    columns.push({ isNumeric: columnNumeric, withFormating });
+  });
+  return columns;
+}
+
+function isColumnNumeric(column: (string|null)[]): boolean {
+  // If we find one cell that is numeric then it is a numeric column.
+  for (let i = 0 ; i < column.length; i++) {
+    const value = column[i];
+
+    if (isNumeric(value)) {
+      return true;
+    }
+  }
+
+  return false;
+
+}
+
+
 
 export function getCategoricalColumns(data) {
   const columns = getColumnsType(data);
@@ -192,21 +203,22 @@ export function getUniqueCategoriesCount(data, colorColumn) {
   return getUniqueCategoriesObject(data, colorColumn).categories.length;
 }
 
-export function getUniqueCategoriesObject(data, colorColumn) {
+export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettings: ColorColumnSettings) {
   let hasNullValues = false;
-  let customCategoriesOrder =
-    colorColumn.categoricalOptions.customCategoriesOrder;
+  const { categoricalOptions, selectedColumn } = colorColumnSettings;
+
+  let customCategoriesOrder = categoricalOptions.customCategoriesOrder;
+
   const values = data
-    .map((row) => {
-      return row[colorColumn.selectedColumn];
-    })
+    .map(row => row[selectedColumn])
     .filter((value) => {
       if (value !== null && value !== '') {
         return true;
       }
       hasNullValues = true;
       return false;
-    });
+    }) as string[];
+
   let sortedValues = getSortedValues(values);
 
   // If the user has set a custom order, sort the categories accordingly
@@ -219,10 +231,12 @@ export function getUniqueCategoriesObject(data, colorColumn) {
     });
   }
 
-  return { hasNullValues, categories: [...new Set(sortedValues)] };
+  const categories = Array.from(new Set(sortedValues));
+
+  return { hasNullValues, categories };
 }
 
-function getSortedValues(values) {
+function getSortedValues(values: string[]) {
   // Create a counter object on array
   let counter = values.reduce((counter, key) => {
     counter[key] = 1 + counter[key] || 1;
@@ -234,35 +248,34 @@ function getSortedValues(values) {
   return sortedCounter.map((x) => x[0]);
 }
 
-export function getMaxDigitsAfterCommaInDataByRow(data, rowIndex: number): number {
+export function getMaxDigitsAfterCommaInDataByRow(data: QTableDataRaw, rowIndex: number): number {
   let maxDigitsAfterComma = 0;
 
   data.forEach((row) => {
-    const digitsAfterComma = getDigitsAfterComma(row[rowIndex]);
-    maxDigitsAfterComma = Math.max(maxDigitsAfterComma, digitsAfterComma);
+    const value = row[rowIndex];
+
+    if (typeof value === 'string') {
+      const digitsAfterComma = getDigitsAfterComma(value);
+      maxDigitsAfterComma = Math.max(maxDigitsAfterComma, digitsAfterComma);
+    }
   });
 
   return maxDigitsAfterComma;
 }
 
-function getDigitsAfterComma(value): number {
-  try {
-    if (value !== undefined && value !== null) {
-      const valueParts = value.toString().split('.');
-      if (valueParts.length > 1) {
-        return valueParts[1].length;
-      }
-    }
+function getDigitsAfterComma(value: string): number {
+  const digitsAfterComma = value.split('.');
 
-    return 0;
-  } catch (e) {
-    return 0; // If something goes wrong we just return 0 digits after comma.
+  if (digitsAfterComma.length > 1) {
+    return digitsAfterComma[1].length;
   }
+
+  return 0;
 }
 
 export function getFormattedValue(formattingOptions: DataFormattingOptions, value: number | null): string {
   if (value === null) {
-    return value;
+    return '';
   }
 
   let formatSpecifier = ',';
@@ -301,9 +314,7 @@ export function getFormattedBuckets(formattingOptions: DataFormattingOptions, bu
   });
 }
 
-
-
-export function getRoundedValue(value: number, maxDigitsAfterComma: number) {
+export function getRoundedValue(value: number, maxDigitsAfterComma: number): number {
   // Default: round to two digits after comma.
   let roundingFactor = 100;
 
@@ -316,13 +327,13 @@ export function getRoundedValue(value: number, maxDigitsAfterComma: number) {
   return Math.round(value * roundingFactor) / roundingFactor;
 }
 
-export function getCustomBucketBorders(customBuckets) {
+export function getCustomBucketBorders(customBuckets: string): number[] {
   const customBorderStrings = customBuckets.split(',');
-  return customBorderStrings.map((borderValue) => {
-    return parseFloat(borderValue.trim());
+
+  return customBorderStrings.map((value) => {
+    return parseFloat(value.trim());
   });
 }
-
 
 /**
  * Internal.
@@ -373,4 +384,9 @@ export interface MetaData {
 export interface DataFormattingOptions {
   maxDigitsAfterComma?: number,
   roundingBucketBorders?: boolean,
+}
+
+interface ColumnType {
+  isNumeric: boolean,
+  withFormating: boolean,
 }

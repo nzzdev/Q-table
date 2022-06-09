@@ -1,5 +1,5 @@
 import path from 'path';
-import type { IReply, Request } from 'hapi';
+import type { Request } from 'hapi';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 

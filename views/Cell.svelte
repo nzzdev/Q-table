@@ -28,14 +28,18 @@
       cell.type
     } ${cell.classes.join(" ")} `;
     let styles = "";
-    if (colorColumn.selectedColumn === colIndex && !initWithCardLayout) {
-      if (colorColumn.colors[rowIndex].customColor) {
-        styles += `background-color: ${colorColumn.colors[rowIndex].customColor};`;
-      } else {
-        classes += colorColumn.colors[rowIndex].colorClass;
-        styles += "background-color: currentColor;";
+
+    if (colorColumn !== null) {
+      if (colorColumn.selectedColumn === colIndex && !initWithCardLayout) {
+        if (colorColumn.colors[rowIndex].customColor) {
+          styles += `background-color: ${colorColumn.colors[rowIndex].customColor};`;
+        } else {
+          classes += colorColumn.colors[rowIndex].colorClass;
+          styles += "background-color: currentColor;";
+        }
       }
     }
+
     return { class: classes, style: styles };
   }
 </script>
@@ -44,7 +48,7 @@
   data-label={getDataLabel(colIndex)}
   class={styles.class}
   style={styles.style}>
-  {#if colorColumn.selectedColumn === colIndex && !initWithCardLayout}
+  {#if colorColumn !== null && colorColumn.selectedColumn === colIndex && !initWithCardLayout}
     {#if cell.footnote}
       <span class={colorColumn.colors[rowIndex].textColor}>
         {#if colorColumn.colorColumnType === "numerical"}

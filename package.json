@@ -8,8 +8,8 @@
     "compile-style-files": "node tasks/compileStyleFiles.cjs",
     "transpile-ts-files": "ts-node tasks/transpileTsFiles",
     "transpile-svelte-files": "svelte-strip -m false strip src/components/ dist/components/",
-    "dev": "run-p transpile-ts-files transpile-svelte-files compile-style-files",
-    "start": "node dev.cjs",
+    "dev": "run-p transpile-ts-files transpile-svelte-files compile-style-files && node dev.js",
+    "start": "nodemon --exec \"npm run dev\"",
     "test": "lab -a @hapi/code -c -P tests --verbose --leaks",
     "update-local-fixtureData": "node tasks/updateFixtureData.js"
   },
@@ -42,6 +42,7 @@
     "eslint": "^8.16.0",
     "html-minifier": "^4.0.0",
     "jsdom": "^16.7.0",
+    "nodemon": "^2.0.16",
     "npm-run-all": "^4.1.5",
     "postcss": "^7.0.39",
     "postcss-import": "^12.0.1",

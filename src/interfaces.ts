@@ -1,3 +1,8 @@
+export const enum LABEL_LEGEND_ID {
+  MEDIAN = 'median',
+  AVERAGE = 'average',
+  NO_LABEL = 'noLabel',
+}
 
 export interface WebPayload {
   item: QTableConfig,
@@ -8,21 +13,22 @@ export type BucketType = 'ckmeans' | 'quantile' | 'equal' | 'custom';
 export type ColorColumnType = 'numerical' | 'categorical';
 export type QTableDataRaw = (string | null)[][];
 
-interface ColorOverwrites {
+export interface ColorOverwrites {
   textColor: string,
   color: string,
   position: number,
 }
 
-export interface ColorColumn {
+export interface ColorColumnSettings {
   colorColumnType: ColorColumnType,
   numericalOptions: {
-    labelLegend: string,
+    labelLegend: LABEL_LEGEND_ID,
     bucketType: BucketType,
     numberBuckets: number,
     scale: string,
     colorScheme: string,
     colorOverwrites: ColorOverwrites[],
+    customBuckets: string,
   },
   categoricalOptions: {
     colorOverwrites: ColorOverwrites[],
@@ -45,18 +51,20 @@ export interface dataMetaData {
 
 export interface QTableConfigOptions {
   hideTableHeader: Boolean,
-    showTableSearch: Boolean,
-    cardLayout: Boolean,
-    cardLayoutIfSmall: Boolean,
-    minibar: {
-      invertColors: Boolean,
-      barColor: {
-        positive: { className: string, colorCode: string },
-        negative: { className: string, colorCode: string },
-      },
-      selectedColumn: number
+  showTableSearch: Boolean,
+  cardLayout: Boolean,
+  cardLayoutIfSmall: Boolean,
+  minibar: QTableConfigMinibarSettings,
+  colorColumn: ColorColumnSettings
+}
+
+export interface QTableConfigMinibarSettings {
+  invertColors: Boolean,
+    barColor: {
+      positive: { className: string, colorCode: string },
+      negative: { className: string, colorCode: string },
     },
-    colorColumn: ColorColumn
+    selectedColumn: number
 }
 
 export interface QTableConfig {

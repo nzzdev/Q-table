@@ -69,7 +69,7 @@
                 {/if}
               {/each}
             </g>
-            {#if colorColumn.legendData.labelLegend.label !== "noLabel"}
+            {#if colorColumn.legendData.labelLegend !== null}
               <g>
                 <circle
                   cx="{colorColumn.legendData.labelLegend.position}%"
@@ -92,7 +92,7 @@
           </svg>
           <div class="q-table-colorColumn-legend-borders s-color-gray-6" />
         </div>
-        {#if colorColumn.legendData.labelLegend.label !== "noLabel"}
+        {#if colorColumn.legendData.labelLegend !== null}
           <div
             class="q-table-colorColumn-legend-marker s-font-note s-font-note--tabularnums"
             style={colorColumn.legendData.labelLegend.descriptionAlignment}

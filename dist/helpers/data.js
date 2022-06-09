@@ -19,42 +19,6 @@ const formatLocaleSmall = d3FormatLocale({
 });
 const formatGrouping = formatLocale.format(',');
 const formatNoGrouping = formatLocale.format('');
-export function isNumeric(cell) {
-    if (!cell) {
-        return false;
-    }
-    cell = cell.trim(); // remove whitespaces
-    if (cell.match(/^[+-]?\d+(\.\d+)?$/) === null) {
-        return false;
-    }
-    return cell && !Number.isNaN(parseFloat(cell));
-}
-function getColumnsType(data) {
-    const columns = [];
-    const table = getDataWithoutHeaderRow(data);
-    Array2D.eachColumn(table, (column) => {
-        let withFormating = false;
-        let columnEmpty = column.every((cell) => {
-            return cell === null || cell === '' || cell === '-' || cell === '–';
-        });
-        let isColumnNumeric = column.every((cell) => {
-            return (!columnEmpty &&
-                (isNumeric(cell) ||
-                    cell === null ||
-                    cell === '' ||
-                    cell === '-' ||
-                    cell === '–'));
-        });
-        if (isColumnNumeric) {
-            const numbersOfColumn = column.map((number) => isNumeric(number) ? parseFloat(number) : null);
-            withFormating =
-                Math.max(...numbersOfColumn) >= 10000 ||
-                    Math.min(...numbersOfColumn) <= -10000;
-        }
-        columns.push({ isNumeric: isColumnNumeric, withFormating });
-    });
-    return columns;
-}
 export function getNumericColumns(data) {
     const columns = getColumnsType(data);
     const numericColumns = [];
@@ -67,6 +31,42 @@ export function getNumericColumns(data) {
         });
     }
     return numericColumns;
+}
+export function isNumeric(cell) {
+    if (typeof cell !== 'string') {
+        return false;
+    }
+    const parsed = parseFloat(cell);
+    if (isNaN(parsed)) {
+        return false;
+    }
+    return true;
+}
+function getColumnsType(data) {
+    const columns = [];
+    const table = getDataWithoutHeaderRow(data);
+    Array2D.eachColumn(table, (column) => {
+        let withFormating = false;
+        const columnNumeric = isColumnNumeric(column);
+        if (columnNumeric) {
+            const numbersOfColumn = column.map((number) => isNumeric(number) ? parseFloat(number) : null);
+            withFormating =
+                Math.max(...numbersOfColumn) >= 10000 ||
+                    Math.min(...numbersOfColumn) <= -10000;
+        }
+        columns.push({ isNumeric: columnNumeric, withFormating });
+    });
+    return columns;
+}
+function isColumnNumeric(column) {
+    // If we find one cell that is numeric then it is a numeric column.
+    for (let i = 0; i < column.length; i++) {
+        const value = column[i];
+        if (isNumeric(value)) {
+            return true;
+        }
+    }
+    return false;
 }
 export function getCategoricalColumns(data) {
     const columns = getColumnsType(data);
@@ -118,17 +118,18 @@ export function formatTableData(data, footnotes, options) {
     return tableData;
 }
 export function getNumericalValuesByColumn(data, column) {
-    console.log("a", data);
     return data.map((row) => {
         if (!row[column])
             row[column] = null;
-        if (row[column] !== null) {
-            if (row[column].match(/^[+-]?\d+(\.\d+)?$/) === null) {
-                throw new Error('value is not a valid floating point number');
-            }
-            return parseFloat(row[column]);
+        const val = row[column];
+        let return_val = null;
+        if (typeof val === 'string' && val.match(/^[+-]?\d+(\.\d+)?$/)) {
+            return_val = parseFloat(val);
         }
-        return row[column];
+        else {
+            throw new Error('value is not a valid floating point number');
+        }
+        return return_val;
     });
 }
 export function getCategoricalValuesByColumn(data, column) {
@@ -139,7 +140,7 @@ export function getCategoricalValuesByColumn(data, column) {
     });
 }
 export function getNonNullValues(values) {
-    return values.filter((value) => value !== null);
+    return values.filter(value => value !== null);
 }
 export function getMetaData(values, numberValues, maxDigitsAfterComma) {
     return {
@@ -157,13 +158,12 @@ export function getDataWithoutHeaderRow(data) {
 export function getUniqueCategoriesCount(data, colorColumn) {
     return getUniqueCategoriesObject(data, colorColumn).categories.length;
 }
-export function getUniqueCategoriesObject(data, colorColumn) {
+export function getUniqueCategoriesObject(data, colorColumnSettings) {
     let hasNullValues = false;
-    let customCategoriesOrder = colorColumn.categoricalOptions.customCategoriesOrder;
+    const { categoricalOptions, selectedColumn } = colorColumnSettings;
+    let customCategoriesOrder = categoricalOptions.customCategoriesOrder;
     const values = data
-        .map((row) => {
-        return row[colorColumn.selectedColumn];
-    })
+        .map(row => row[selectedColumn])
         .filter((value) => {
         if (value !== null && value !== '') {
             return true;
@@ -179,7 +179,8 @@ export function getUniqueCategoriesObject(data, colorColumn) {
                 customCategoriesOrder.map((c) => c.category).indexOf(b));
         });
     }
-    return { hasNullValues, categories: [...new Set(sortedValues)] };
+    const categories = Array.from(new Set(sortedValues));
+    return { hasNullValues, categories };
 }
 function getSortedValues(values) {
     // Create a counter object on array
@@ -194,28 +195,24 @@ function getSortedValues(values) {
 export function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
     let maxDigitsAfterComma = 0;
     data.forEach((row) => {
-        const digitsAfterComma = getDigitsAfterComma(row[rowIndex]);
-        maxDigitsAfterComma = Math.max(maxDigitsAfterComma, digitsAfterComma);
+        const value = row[rowIndex];
+        if (typeof value === 'string') {
+            const digitsAfterComma = getDigitsAfterComma(value);
+            maxDigitsAfterComma = Math.max(maxDigitsAfterComma, digitsAfterComma);
+        }
     });
     return maxDigitsAfterComma;
 }
 function getDigitsAfterComma(value) {
-    try {
-        if (value !== undefined && value !== null) {
-            const valueParts = value.toString().split('.');
-            if (valueParts.length > 1) {
-                return valueParts[1].length;
-            }
-        }
-        return 0;
+    const digitsAfterComma = value.split('.');
+    if (digitsAfterComma.length > 1) {
+        return digitsAfterComma[1].length;
     }
-    catch (e) {
-        return 0; // If something goes wrong we just return 0 digits after comma.
-    }
+    return 0;
 }
 export function getFormattedValue(formattingOptions, value) {
     if (value === null) {
-        return value;
+        return '';
     }
     let formatSpecifier = ',';
     // if we have float values in data set we extend all float values
@@ -261,8 +258,8 @@ export function getRoundedValue(value, maxDigitsAfterComma) {
 }
 export function getCustomBucketBorders(customBuckets) {
     const customBorderStrings = customBuckets.split(',');
-    return customBorderStrings.map((borderValue) => {
-        return parseFloat(borderValue.trim());
+    return customBorderStrings.map((value) => {
+        return parseFloat(value.trim());
     });
 }
 /**

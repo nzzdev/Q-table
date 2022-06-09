@@ -33,8 +33,8 @@ const tableTemplate = require(viewsDir + 'Table.svelte').default;
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
-import * as minibarHelpers from '../../helpers/minibars.js';
-import * as colorColumnHelpers from '../../helpers/colorColumn.js';
+import { getMinibar } from '../../helpers/minibars.js';
+import { getColorColumn } from '../../helpers/colorColumn.js';
 import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
 // POSTed item will be validated against given schema
@@ -83,7 +83,8 @@ export default {
                 polyfills: ['Promise'],
                 stylesheets: [{
                         name: styleHashMap['q-table'],
-                    }]
+                    }],
+                scripts: [],
             };
             const payload = request.payload;
             // Extract table configurations.
@@ -92,36 +93,27 @@ export default {
             const options = config.options;
             let width = getExactPixelWidth(toolRuntimeConfig);
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-            console.log("data", itemDataCopy);
+            // console.log("data", itemDataCopy);
             const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
             const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
-            const minibarsAvailable = yield request.server.inject({
-                url: '/option-availability/selectedColumnMinibar',
-                method: 'POST',
-                payload: { item: config },
-            });
-            const colorColumnAvailable = yield request.server.inject({
-                url: '/option-availability/selectedColorColumn',
-                method: 'POST',
-                payload: { item: config },
-            });
+            const minibarsAvailable = yield areMinibarsAvailable(request, config);
+            const colorColumnAvailable = yield isColorColumnAvailable(request, config);
             const tableData = formatTableData(config.data.table, footnotes, options);
+            const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
+            const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width);
             const context = {
                 item: config,
                 config,
                 tableData,
-                minibar: minibarsAvailable.result.available
-                    ? minibarHelpers.getMinibarContext(config.options, itemDataCopy)
-                    : {},
-                footnotes: footnotes,
-                colorColumn: colorColumnAvailable.result.available
-                    ? colorColumnHelpers.getColorColumnContext(config.options.colorColumn, dataWithoutHeaderRow, width)
-                    : {},
+                minibar,
+                footnotes,
+                colorColumn,
                 numberOfRows: config.data.table.length - 1,
                 displayOptions: payload.toolRuntimeConfig.displayOptions || {},
                 noInteraction: payload.toolRuntimeConfig.noInteraction,
                 id: `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, ''),
                 width,
+                initWithCardLayout: false,
             };
             // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
             if (context.width &&
@@ -144,14 +136,14 @@ export default {
                 context.numberOfRowsToHide = context.numberOfRows - 10; // show 10 initially
             }
             // if we have toolRuntimeConfig.noInteraction, we do not hide rows because showing them is not possible
-            if (request.payload.toolRuntimeConfig.noInteraction) {
+            if (toolRuntimeConfig.noInteraction) {
                 context.numberOfRowsToHide = undefined;
             }
             try {
                 renderingInfo.markup = tableTemplate.render(context).html;
             }
             catch (ex) {
-                console.log(ex);
+                console.log('Failed rendering html', ex);
             }
             // the scripts need to know if we are confident that the numberOfRowsToHide is correct
             // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
@@ -174,16 +166,15 @@ export default {
             if (context.numberOfRows >= 15) {
                 possibleToHaveToHideRows = true;
             }
-            if (request.payload.toolRuntimeConfig.noInteraction) {
+            if (toolRuntimeConfig.noInteraction) {
                 possibleToHaveToHideRows = false;
             }
-            renderingInfo.scripts = [];
             // if we are going to add any script, we want the default script first
             if ((config.options.cardLayout === false &&
                 config.options.cardLayoutIfSmall === true) ||
                 possibleToHaveToHideRows ||
-                Object.keys(context.minibar).length !== 0 ||
-                Object.keys(context.colorColumn).length !== 0) {
+                context.minibar !== null ||
+                context.colorColumn !== null) {
                 renderingInfo.scripts.push({
                     content: renderingInfoScripts.getDefaultScript(context),
                 });
@@ -207,12 +198,12 @@ export default {
                     content: renderingInfoScripts.getSearchFormInputScript(context),
                 });
             }
-            if (Object.keys(context.minibar).length !== 0) {
+            if (context.minibar !== null) {
                 renderingInfo.scripts.push({
                     content: renderingInfoScripts.getMinibarsScript(context),
                 });
             }
-            if (Object.keys(context.colorColumn).length !== 0) {
+            if (context.colorColumn !== null) {
                 renderingInfo.scripts.push({
                     content: renderingInfoScripts.getColorColumnScript(context),
                 });
@@ -225,3 +216,37 @@ export default {
         });
     },
 };
+function areMinibarsAvailable(request, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield request.server.inject({
+            url: '/option-availability/selectedColumnMinibar',
+            method: 'POST',
+            payload: { item: config },
+        });
+        const result = response.result;
+        if (result) {
+            return result.available;
+        }
+        else {
+            console.log('Error receiving result for /option-availability/selectedColumnMinibar', result);
+            return false;
+        }
+    });
+}
+function isColorColumnAvailable(request, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield request.server.inject({
+            url: '/option-availability/selectedColorColumn',
+            method: 'POST',
+            payload: { item: config },
+        });
+        const result = response.result;
+        if (result) {
+            return result.available;
+        }
+        else {
+            console.log('Error receiving result for /option-availability/selectedColorColumn', result);
+            return false;
+        }
+    });
+}

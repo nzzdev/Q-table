@@ -192,7 +192,7 @@ function click() {
       </div>
     {/each}
   {/if}
-  {#if colorColumn && colorColumn.methodBox && colorColumn.methodBox !== null}
+  {#if colorColumn && colorColumn.methodBox !== null}
     <MethodBox {colorColumn} {noInteraction} />
   {/if}
   <Footer {item} />

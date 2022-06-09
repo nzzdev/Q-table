@@ -1,109 +1,77 @@
-import clone from 'clone';
-import { isNumeric } from  './data.js';
-import Array2D from 'array2d';
+import type { QTableConfigOptions, QTableDataRaw, QTableConfigMinibarSettings } from '../interfaces';
 
-const miniBarTypes = {
-  positive: "positive",
-  negative: "negative",
-  mixed: "mixed",
-  empty: "empty"
-};
+export const enum MINIBAR_TYPE {
+  POSITIVE = 'positive',
+  NEGATIVE ='negative',
+  MIXED = 'mixed',
+  EMPTY = 'empty'
+}
 
-export function getMinibarNumbersWithType(data, selectedColumnIndex) {
-  let minibarsWithType = {
+export function getMinibar(minibarsAvailable: boolean, options: QTableConfigOptions, itemDataCopy: QTableDataRaw): Minibar | null {
+  if (minibarsAvailable === true && typeof options.minibar?.selectedColumn === 'number') {
+    const minibarSettings = options.minibar;
+
+    const minibar = createMinibarObject(itemDataCopy, minibarSettings);
+
+    checkPositiveBarColor(minibar);
+    checkNegativeBarColor(minibar);
+
+    if (minibarSettings.invertColors) {
+      invertBarColors(minibar);
+    }
+
+    return minibar;
+  }
+
+  return null;
+}
+
+export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnIndex: number): MinibarNumbersWithType {
+  let minibarsWithType: MinibarNumbersWithType = {
     items: [],
-    numbers: []
+    numbers: [],
+    type: MINIBAR_TYPE.MIXED,
   };
 
-  let dataCopy = clone(data);
-  dataCopy[0] = dataCopy[0].map(cell => (cell = "")); // first row is always header so ignore it
-
-  Array2D.forColumn(dataCopy, selectedColumnIndex, cell => {
-    let type = miniBarTypes.positive;
-
-    if (cell < 0) {
-      type = miniBarTypes.negative;
-    } else if (cell > 0) {
-      type = miniBarTypes.positive;
-    } else {
-      type = miniBarTypes.empty;
-    }
-
-    if (isNumeric(cell) || parseFloat(cell)) {
-      minibarsWithType.numbers.push(parseFloat(cell));
-      minibarsWithType.items.push({ value: parseFloat(cell), type });
-    } else {
-      minibarsWithType.items.push({ value: null, type });
-    }
+  // First row is always header so we add a null entry for it.
+  minibarsWithType.items.push({
+    value: null,
+    type : MINIBAR_TYPE.EMPTY
   });
 
+  // First row is always header so start at 1.
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const cell = row[selectedColumnIndex];
+    let value = parseFloat(cell || '');
+    const type = getTypeOfValue(value);
+
+    if (isNaN(value)) {
+      minibarsWithType.items.push({
+        value: null,
+        type
+      });
+    } else {
+      minibarsWithType.numbers.push(value);
+
+      minibarsWithType.items.push({
+        value,
+        type
+      });
+    }
+  }
+
   minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
+
   return minibarsWithType;
 }
 
-export function getMinibarContext(options, itemDataCopy) {
-  let minibar = {};
-  // if minibars active
-  if (options.minibar !== null && options.minibar !== undefined) {
-    if (
-      options.minibar.selectedColumn !== null &&
-      options.minibar.selectedColumn !== undefined
-    ) {
-      // get minibar
-      minibar = getMinibarData(itemDataCopy, options.minibar);
-      if (
-        minibar.barColor.positive.className === "" &&
-        minibar.barColor.positive.colorCode === ""
-      ) {
-        minibar.barColor.positive.className = getPositiveColor(minibar.type);
-      } else if (minibar.barColor.positive.className !== "") {
-        minibar.barColor.positive.colorCode = "";
-      }
+/**
+ * Internal.
+ */
+function createMinibarObject(data: QTableDataRaw, minibarOptions: QTableConfigMinibarSettings): Minibar {
+  let dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
 
-      if (
-        minibar.barColor.negative.className === "" &&
-        minibar.barColor.negative.colorCode === ""
-      ) {
-        minibar.barColor.negative.className = getNegativeColor(minibar.type);
-      } else if (minibar.barColor.negative.className !== "") {
-        minibar.barColor.negative.colorCode = "";
-      }
-
-      if (options.minibar.invertColors) {
-        let color = minibar.barColor.negative;
-        minibar.barColor.negative = minibar.barColor.positive;
-        minibar.barColor.positive = color;
-      }
-    }
-  }
-  return minibar;
-}
-
-function getMinibarValue(type, value, min, max) {
-  if (type === miniBarTypes.positive) {
-    return Math.abs((value * 100) / max);
-  } else if (type === miniBarTypes.negative) {
-    return Math.abs((value * 100) / min);
-  } else {
-    return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2; // divided by 2 because max. value is 50%
-  }
-}
-
-function getMinibarType(numbers) {
-  if (numbers.every(number => {return number > 0;})) {
-    return miniBarTypes.positive;
-  } else if (numbers.every(number => {return number < 0;})) {
-    return miniBarTypes.negative;
-  } else {
-    return miniBarTypes.mixed;
-  }
-}
-
-function getMinibarData(data, minibarOptions) {
-  let dataColumn = getMinibarNumbersWithType(
-    data,
-    minibarOptions.selectedColumn
-  );
   let minValue = Math.min(...dataColumn.numbers);
   let maxValue = Math.max(...dataColumn.numbers);
 
@@ -121,22 +89,112 @@ function getMinibarData(data, minibarOptions) {
   };
 }
 
-function getPositiveColor(type) {
-  let color;
-  if (type === "mixed") {
-    color = "s-viz-color-diverging-2-2";
-  } else {
-    color = "s-viz-color-one-5";
+function getMinibarValue(type: MINIBAR_TYPE, value: number | null, min: number, max: number): number {
+  if (value === null) return 0;
+
+  switch(type) {
+    case MINIBAR_TYPE.POSITIVE:
+      return Math.abs((value * 100) / max);
+
+    case MINIBAR_TYPE.NEGATIVE:
+      return Math.abs((value * 100) / min);
+
+    default:
+      return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
   }
+}
+
+function checkPositiveBarColor(minibar: Minibar) {
+  const className = minibar.barColor.positive.className;
+  const colorCode = minibar.barColor.positive.colorCode;
+
+  if (className === '' && colorCode === '') {
+    minibar.barColor.positive.className = getPositiveColor(minibar.type);
+  } else if (className !== '') {
+    minibar.barColor.positive.colorCode = '';
+  }
+}
+
+function checkNegativeBarColor(minibar: Minibar) {
+  const className = minibar.barColor.negative.className;
+  const colorCode = minibar.barColor.negative.colorCode;
+
+  if (className === '' && colorCode === '') {
+    minibar.barColor.negative.className = getNegativeColor(minibar.type);
+  } else if (className !== '') {
+    minibar.barColor.negative.colorCode = '';
+  }
+}
+
+function invertBarColors(minibar: Minibar) {
+  let temp = minibar.barColor.negative;
+  minibar.barColor.negative = minibar.barColor.positive;
+  minibar.barColor.positive = temp;
+}
+
+function getTypeOfValue(value: number):MINIBAR_TYPE  {
+  if (value < 0) {
+    return MINIBAR_TYPE.NEGATIVE;
+  }
+
+  if (value > 0) {
+    return MINIBAR_TYPE.POSITIVE;
+  }
+
+  return MINIBAR_TYPE.EMPTY;
+}
+
+function getMinibarType(numbers: number[]): MINIBAR_TYPE {
+  const allPositive = numbers.every(number => number > 0);
+  const allNegative = numbers.every(number => number < 0);
+
+  if (allPositive) {
+    return MINIBAR_TYPE.POSITIVE;
+  } else if (allNegative) {
+    return MINIBAR_TYPE.NEGATIVE;
+  }
+
+  return MINIBAR_TYPE.MIXED;
+}
+
+function getPositiveColor(type): string {
+  let color;
+
+  if (type === 'mixed') {
+    color = 's-viz-color-diverging-2-2';
+  } else {
+    color = 's-viz-color-one-5';
+  }
+
   return color;
 }
 
-function getNegativeColor(type) {
+function getNegativeColor(type): string {
   let color;
-  if (type === "mixed") {
-    color = "s-viz-color-diverging-2-1";
+
+  if (type === 'mixed') {
+    color = 's-viz-color-diverging-2-1';
   } else {
-    color = "s-viz-color-one-5";
+    color = 's-viz-color-one-5';
   }
+
   return color;
+}
+
+/**
+ * Interfaces.
+ */
+export interface Minibar {
+  barColor: {
+    positive: { className: string, colorCode: string },
+    negative: { className: string, colorCode: string },
+  },
+  type: MINIBAR_TYPE,
+  values: Array<{type: string, value: number | null}>,
+}
+
+interface MinibarNumbersWithType {
+  numbers: number[],
+  items: Array<{type: string, value: number | null}>,
+  type: MINIBAR_TYPE,
 }

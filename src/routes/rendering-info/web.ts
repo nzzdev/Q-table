@@ -9,9 +9,10 @@ import { fileURLToPath } from 'url';
 // Setup svelte environment.
 require('svelte/register');
 
-import type { IReply, Request, ServerInjectResponse } from 'hapi';
-import type { AvailabilityResponseObject, QTableConfig, ToolRuntimeConfig, RenderingInfo, WebPayload  } from '../../interfaces';
+import type { Request, ServerInjectResponse } from 'hapi';
+import type { AvailabilityResponseObject, QTableConfig, ToolRuntimeConfig, RenderingInfo, WebPayload, QTableConfigOptions, QTableDataRaw  } from '../../interfaces';
 import type { StructuredFootnote } from '../../helpers/footnotes';
+import type { Minibar } from '../../helpers/minibars';
 
 // Require tools.
 import Ajv from 'ajv';
@@ -38,10 +39,11 @@ const styleHashMap = require(`${stylesDir}/hashMap.json`);
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 
 import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
-import * as minibarHelpers from '../../helpers/minibars.js';
-import * as colorColumnHelpers from '../../helpers/colorColumn.js';
+import { getMinibar } from '../../helpers/minibars.js';
+import { getColorColumn } from '../../helpers/colorColumn.js';
 import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
+import { min } from 'd3';
 
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
@@ -111,34 +113,20 @@ export default {
     const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
 
     const minibarsAvailable = await areMinibarsAvailable(request, config);
-
     const colorColumnAvailable = await isColorColumnAvailable(request, config);
-    // const minibarsAvailable = await request.server.inject({
-    //   url: '/option-availability/selectedColumnMinibar',
-    //   method: 'POST',
-    //   payload: { item: config },
-    // }): ;
-
-    // const colorColumnAvailable = await request.server.inject({
-    //   url: '/option-availability/selectedColorColumn',
-    //   method: 'POST',
-    //   payload: { item: config },
-    // });
-
 
     const tableData = formatTableData(config.data.table, footnotes, options);
+
+    const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
+    const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width);
 
     const context = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
       tableData,
-      minibar: minibarsAvailable
-        ? minibarHelpers.getMinibarContext(config.options, itemDataCopy)
-        : {},
-      footnotes: footnotes,
-      colorColumn: colorColumnAvailable
-        ? colorColumnHelpers.getColorColumnContext(config.options.colorColumn, dataWithoutHeaderRow, width)
-        : {},
+      minibar,
+      footnotes,
+      colorColumn,
       numberOfRows: config.data.table.length - 1, // do not count the header
       displayOptions: payload.toolRuntimeConfig.displayOptions || {},
       noInteraction: payload.toolRuntimeConfig.noInteraction,
@@ -218,8 +206,8 @@ export default {
       (config.options.cardLayout === false &&
         config.options.cardLayoutIfSmall === true) ||
       possibleToHaveToHideRows ||
-      Object.keys(context.minibar).length !== 0 ||
-      Object.keys(context.colorColumn).length !== 0
+      context.minibar !== null ||
+      context.colorColumn !== null
     ) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getDefaultScript(context),
@@ -252,13 +240,13 @@ export default {
       });
     }
 
-    if (Object.keys(context.minibar).length !== 0) {
+    if (context.minibar !== null) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getMinibarsScript(context),
       });
     }
 
-    if (Object.keys(context.colorColumn).length !== 0) {
+    if (context.colorColumn !== null) {
       renderingInfo.scripts.push({
         content: renderingInfoScripts.getColorColumnScript(context),
       });
@@ -274,13 +262,13 @@ export default {
 };
 
 async function areMinibarsAvailable(request: Request, config: QTableConfig): Promise<boolean> {
-  const a = await request.server.inject({
+  const response = await request.server.inject({
     url: '/option-availability/selectedColumnMinibar',
     method: 'POST',
     payload: { item: config },
   });
 
-  const result = a.result as AvailabilityResponseObject | undefined;
+  const result = response.result as AvailabilityResponseObject | undefined;
   if (result) {
     return result.available;
   } else {
@@ -290,13 +278,13 @@ async function areMinibarsAvailable(request: Request, config: QTableConfig): Pro
 }
 
 async function isColorColumnAvailable(request: Request, config: QTableConfig): Promise<boolean> {
-  const a = await request.server.inject({
+  const response = await request.server.inject({
     url: '/option-availability/selectedColorColumn',
     method: 'POST',
     payload: { item: config },
   });
 
-  const result = a.result as AvailabilityResponseObject | undefined;
+  const result = response.result as AvailabilityResponseObject | undefined;
   if (result) {
     return result.available;
   } else {

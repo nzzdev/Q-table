@@ -1,6 +1,5 @@
-import * as dataHelpers from './data.js';
+import { getMaxDigitsAfterCommaInDataByRow, getNumericalValuesByColumn, getFormattedBuckets, getFormattedValue, getCategoricalValuesByColumn, getCustomBucketBorders } from './data.js';
 import * as legendHelpers from './colorColumnLegend.js';
-import * as colorHelpers from './colorColumnColor.js';
 import * as methodBoxHelpers from './colorColomnMethodBox.js';
 export function hasCustomBuckets(bucketType) {
     return bucketType === 'custom';
@@ -11,7 +10,7 @@ export function getNumberBuckets(colorColumn) {
             return colorColumn.numericalOptions.numberBuckets;
         }
         else {
-            const bucketBorderValues = dataHelpers.getCustomBucketBorders(colorColumn.numericalOptions.customBuckets);
+            const bucketBorderValues = getCustomBucketBorders(colorColumn.numericalOptions.customBuckets);
             return bucketBorderValues.length - 1; // min value is part of border values and has to be excluded here
         }
     }
@@ -19,49 +18,111 @@ export function getNumberBuckets(colorColumn) {
         return 0;
     }
 }
-export function getColorColumnContext(colorColumn, data, width) {
-    let colorColumnContext = {};
-    if (selectedColumnIsValid(colorColumn)) {
-        let colors = [];
-        if (colorColumn.colorColumnType === 'numerical') {
-            const maxDigitsAfterComma = dataHelpers.getMaxDigitsAfterCommaInDataByRow(data, colorColumn.selectedColumn);
-            const roundingBucketBorders = colorColumn.numericalOptions.bucketType !== 'custom';
-            let formattingOptions = {
-                maxDigitsAfterComma,
-                roundingBucketBorders,
-            };
-            colorColumnContext.legendData = legendHelpers.getNumericalLegend(data, colorColumn, formattingOptions.maxDigitsAfterComma, width);
-            colorColumnContext.methodBox = methodBoxHelpers.getMethodBoxInfo(colorColumn.numericalOptions.bucketType);
-            let valuesByColumn = dataHelpers.getNumericalValuesByColumn(data, colorColumn.selectedColumn);
-            colorColumnContext.formattedValues = [];
-            colorColumnContext.methodBox.formattedBuckets = dataHelpers.getFormattedBuckets(formattingOptions, colorColumnContext.legendData.buckets);
-            valuesByColumn.map((value) => {
-                let color = colorHelpers.getColor(value, colorColumnContext.legendData);
-                colors = [...colors, color];
-                colorColumnContext.formattedValues = [
-                    ...colorColumnContext.formattedValues,
-                    dataHelpers.getFormattedValue(formattingOptions, value),
-                ];
-            });
+export function getColorColumn(colorColumnAvailable, settings, data, width) {
+    if (colorColumnAvailable && selectedColumnIsValid(settings)) {
+        if (settings.colorColumnType === 'numerical') {
+            return createNumericalColorColumn(settings, data, width);
         }
         else {
-            colorColumnContext.legendData = legendHelpers.getCategoricalLegend(data, colorColumn);
-            let categoriesByColumn = dataHelpers.getCategoricalValuesByColumn(data, colorColumn.selectedColumn);
-            categoriesByColumn.map((category) => {
-                let color = colorHelpers.getColor(category, colorColumnContext.legendData);
-                colors = [...colors, color];
-            });
+            return createCategoricalColorColumn(settings, data, width);
         }
-        colorColumnContext = Object.assign(Object.assign(Object.assign({}, colorColumnContext), colorColumn), { colors });
     }
-    return colorColumnContext;
+    return null;
+}
+function createNumericalColorColumn(settings, data, width) {
+    const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, settings.selectedColumn);
+    const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
+    let formattingOptions = {
+        maxDigitsAfterComma,
+        roundingBucketBorders,
+    };
+    const legendData = legendHelpers.getNumericalLegend(data, settings, maxDigitsAfterComma, width);
+    const methodBox = methodBoxHelpers.getMethodBoxInfo(settings.numericalOptions.bucketType);
+    methodBox.formattedBuckets = getFormattedBuckets(formattingOptions, legendData.buckets);
+    const formattedValues = [];
+    const colors = [];
+    const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
+    valuesByColumn.map((value) => {
+        const color = getColor(value, legendData);
+        colors.push(color);
+        const formattedValue = getFormattedValue(formattingOptions, value);
+        formattedValues.push(formattedValue);
+    });
+    return Object.assign({ legendData,
+        methodBox,
+        formattedValues }, settings);
+}
+function createCategoricalColorColumn(settings, data, width) {
+    const legendData = legendHelpers.getCategoricalLegend(data, settings);
+    const categoriesByColumn = getCategoricalValuesByColumn(data, settings.selectedColumn);
+    const colors = [];
+    categoriesByColumn.map((category) => {
+        const color = getColor(category, legendData);
+        colors.push(color);
+    });
+    return Object.assign({ legendData, methodBox: null, formattedValues: [] }, settings);
 }
 /**
  * Internal.
  */
-function selectedColumnIsValid(colorColumn) {
-    return colorColumn !== null &&
-        colorColumn !== undefined &&
-        colorColumn.selectedColumn !== null &&
-        colorColumn.selectedColumn !== undefined;
+function selectedColumnIsValid(settings) {
+    return settings !== null &&
+        settings !== undefined &&
+        settings.selectedColumn !== null &&
+        settings.selectedColumn !== undefined;
+}
+function getColor(value, legendData) {
+    if (value === null || value === undefined) {
+        return {
+            colorClass: '',
+            customColor: '#fff',
+            textColor: 's-color-gray-6',
+        };
+    }
+    if (legendData.type === 'numerical') {
+        const buckets = legendData.buckets;
+        const bucket = buckets.find((bucket, index) => {
+            if (index === 0) {
+                return value <= bucket.to;
+            }
+            else if (index === buckets.length - 1) {
+                return bucket.from < value;
+            }
+            else {
+                return bucket.from < value && value <= bucket.to;
+            }
+        });
+        if (bucket) {
+            return {
+                colorClass: bucket.color.colorClass,
+                customColor: bucket.color.customColor,
+                textColor: bucket.color.textColor,
+            };
+        }
+        else {
+            return {
+                colorClass: 's-color-gray-4',
+                customColor: '',
+                textColor: 's-color-gray-6',
+            };
+        }
+    }
+    else {
+        const categories = legendData.categories;
+        const category = categories.find((category) => category.label === value);
+        if (category) {
+            return {
+                colorClass: category.color.colorClass,
+                customColor: category.color.customColor,
+                textColor: category.color.textColor,
+            };
+        }
+        else {
+            return {
+                colorClass: 's-color-gray-4',
+                customColor: '',
+                textColor: '',
+            };
+        }
+    }
 }
