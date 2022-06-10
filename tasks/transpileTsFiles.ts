@@ -1,14 +1,11 @@
-import * as fs from 'fs';
+/// <reference path="./modules.d.ts" />
+
 import ts from 'typescript';
 import recursiveReadSync from 'recursive-readdir-sync';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const helpersDir = __dirname + '/../src/helpers';
-
-// Create list of files to be transpiled.
-const helperFiles = fs.readdirSync(helpersDir).map((f: string) => __dirname + '/../src/helpers/' + f);
 
 const routeFiles = recursiveReadSync(__dirname + '/../src/routes/');
 
@@ -31,22 +28,21 @@ function compile(fileNames: string[], options: ts.CompilerOptions): void {
   });
 }
 
+// You should keep this in sync with tsconfig.json.
 const tsConfig: ts.CompilerOptions = {
-  target: ts.ScriptTarget.ES2015,
+  allowSyntheticDefaultImports: true,
+  declaration: false,
+  esModuleInterop: true,
   module: ts.ModuleKind.ES2020,
   moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  types: ['node'],
-  outDir: './dist/helpers',
-  typeRoots: ['./node_modules/@types'],
-  declaration: false,
-  allowSyntheticDefaultImports: true,
+  noImplicitAny: true,
+  outDir: './dist/',
   strictNullChecks: true,
-  // noImplicitAny: true,
+  target: ts.ScriptTarget.ES2015,
+  types: ['node'],
 };
-
-// compile(helperFiles, { ...tsConfig, 'outDir': './dist/helpers' });
 
 // The entry point are the route files.
 // Typescwript will compile anything that it finds in the tree starting from
 // the route files, which are the entry point.
-compile(routeFiles, { ...tsConfig, 'outDir': './dist/' });
+compile(routeFiles, tsConfig);
