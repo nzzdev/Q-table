@@ -1,3 +1,7 @@
+import { ColorColumn } from './helpers/colorColumn';
+import { StructuredFootnote } from './helpers/footnotes';
+import { Minibar } from './helpers/minibars';
+
 export const enum LABEL_LEGEND_ID {
   MEDIAN = 'median',
   AVERAGE = 'average',
@@ -34,7 +38,7 @@ export interface ColorColumnSettings {
     colorOverwrites: ColorOverwrites[],
     customCategoriesOrder: Array<any>,
   },
-  selectedColumn: number,
+  selectedColumn: number | null,
 }
 
 export interface dataMetaDataCell {
@@ -45,7 +49,7 @@ export interface dataMetaDataCell {
   colIndex: number,
 }
 
-export interface dataMetaData {
+export interface DataMetaData {
   cells: dataMetaDataCell[],
 }
 
@@ -71,7 +75,7 @@ export interface QTableConfig {
   acronym: string;
   data: {
     table: QTableDataRaw,
-    metaData: dataMetaData,
+    metaData: DataMetaData,
   },
   sources: Array<any>,
   options: QTableConfigOptions,
@@ -84,6 +88,11 @@ export interface QTableDataFormatted {
   type: string,
   value: string,
   classes: string[],
+  footnote: {
+    value: number,
+    unicode: string,
+    class: string | null,
+  }
 }
 
 export interface DisplayOptions {
@@ -108,8 +117,25 @@ export interface RenderingInfo {
   polyfills: string[],
   stylesheets:Array<{name: string}>,
   scripts: Array<{content: string}>,
+  markup: string,
 }
 
 export interface AvailabilityResponseObject {
   available: boolean;
+}
+
+export interface WebContextObject {
+  item: QTableConfig, // To make renderingInfoScripts working. refactor later.
+  config: QTableConfig,
+  tableData: QTableDataFormatted[][],
+  minibar: Minibar | null,
+  footnotes: StructuredFootnote[] | null,
+  colorColumn: ColorColumn | null,
+  numberOfRows: number, // do not count the header
+  displayOptions: DisplayOptions | {},
+  noInteraction: boolean,
+  id: string,
+  width: number | undefined,
+  initWithCardLayout: boolean,
+  numberOfRowsToHide: number | undefined,
 }

@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 require('svelte/register');
 
 import type { Request, ServerInjectResponse } from 'hapi';
-import type { AvailabilityResponseObject, QTableConfig, ToolRuntimeConfig, RenderingInfo, WebPayload, QTableConfigOptions, QTableDataRaw  } from '../../interfaces';
+import type { AvailabilityResponseObject, QTableConfig, ToolRuntimeConfig, RenderingInfo, WebPayload, QTableConfigOptions, QTableDataRaw, WebContextObject  } from '../../interfaces';
 import type { StructuredFootnote } from '../../helpers/footnotes';
 import type { Minibar } from '../../helpers/minibars';
 
@@ -95,6 +95,7 @@ export default {
         name: styleHashMap['q-table'],
       }],
       scripts: [],
+      markup: '',
     };
 
     const payload = request.payload as WebPayload;
@@ -108,7 +109,6 @@ export default {
 
     const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
 
-    // console.log("data", itemDataCopy);
     const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
     const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
 
@@ -118,9 +118,9 @@ export default {
     const tableData = formatTableData(config.data.table, footnotes, options);
 
     const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
-    const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width);
+    const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
 
-    const context = {
+    const context: WebContextObject = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
       tableData,
@@ -135,6 +135,7 @@ export default {
       )}`.replace(/-/g, ''),
       width,
       initWithCardLayout: false,
+      numberOfRowsToHide: undefined,
     };
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout

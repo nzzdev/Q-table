@@ -222,7 +222,6 @@
                   "config": {
                     "endpoint": "dynamic-schema/selectedColumnMinibar",
                     "fields": [
-                      "options",
                       "data"
                     ]
                   }
@@ -390,7 +389,6 @@
                   "config": {
                     "endpoint": "dynamic-schema/selectedColorColumn",
                     "fields": [
-                      "options",
                       "data"
                     ]
                   }
@@ -573,7 +571,7 @@
                     ]
                   }
                 },
-                "scale": {
+                "colorScale": {
                   "title": "Skala",
                   "type": "string",
                   "Q:options": {
@@ -582,7 +580,7 @@
                       {
                         "type": "ToolEndpoint",
                         "config": {
-                          "endpoint": "option-availability/scale",
+                          "endpoint": "option-availability/colorScale",
                           "fields": [
                             "options"
                           ]
@@ -592,7 +590,7 @@
                     "dynamicSchema": {
                       "type": "ToolEndpoint",
                       "config": {
-                        "endpoint": "dynamic-schema/scale",
+                        "endpoint": "dynamic-schema/colorScale",
                         "fields": [
                           "options"
                         ]

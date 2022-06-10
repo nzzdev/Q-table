@@ -9,6 +9,8 @@ import type { ColorColumnSettings, QTableDataFormatted, QTableDataRaw, QTableCon
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 
+
+// Formatting for numbers of >= 10000.
 const formatLocale = d3FormatLocale({
   decimal: ',',
   thousands: fourPerEmSpace,
@@ -17,20 +19,21 @@ const formatLocale = d3FormatLocale({
   currency: ['€', ''],
 });
 
+// Formatting for numbers of <= 10000.
 const formatLocaleSmall = d3FormatLocale({
   decimal: ',',
   minus: enDash,
   currency: ['€', ''],
   thousands: fourPerEmSpace,
-  grouping: [],
+  grouping: [10], // Set the grouping high so numbers under 10000 do not get grouped.
 });
 
-const formatGrouping = formatLocale.format(',');
-const formatNoGrouping = formatLocale.format('');
+const formatWithGroupingSeparator = formatLocale.format(',');
+const formatNoGroupingSeparator = formatLocale.format('');
 
-export function getNumericColumns(data: QTableDataRaw) {
+export function getNumericColumns(data: QTableDataRaw): IndexedColumnTitle[] {
   const columns = getColumnsType(data);
-  const numericColumns = [];
+  const numericColumns: IndexedColumnTitle[] = [];
 
   // data[0].length is undefined when creating a new item
   if (data[0] !== undefined) {
@@ -40,7 +43,21 @@ export function getNumericColumns(data: QTableDataRaw) {
       }
     });
   }
+
   return numericColumns;
+}
+
+export function getCategoricalColumns(data): IndexedColumnTitle[] {
+  const categoricalColumns: IndexedColumnTitle[] = [];
+
+  // data[0].length is undefined when creating a new item
+  if (data[0] !== undefined) {
+    Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
+      categoricalColumns.push({ title: cell, index: columnIndex });
+    });
+  }
+
+  return categoricalColumns;
 }
 
 export function isNumeric(cell: string | null): boolean {
@@ -94,20 +111,6 @@ function isColumnNumeric(column: (string|null)[]): boolean {
 
 }
 
-
-
-export function getCategoricalColumns(data) {
-  const columns = getColumnsType(data);
-  const categoricalColumns = [];
-  // data[0].length is undefined when creating a new item
-  if (data[0] !== undefined) {
-    Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
-      categoricalColumns.push({ title: cell, index: columnIndex });
-    });
-  }
-  return categoricalColumns;
-}
-
 export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): QTableDataFormatted[][] {
   const columns = getColumnsType(data);
   let tableData: QTableDataFormatted[][] = [];
@@ -132,9 +135,9 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
           cell != enDash
         ) {
           if (columns[columnIndex].withFormating) {
-            value = formatGrouping(cell);
+            value = formatWithGroupingSeparator(cell);
           } else {
-            value = formatNoGrouping(cell);
+            value = formatNoGroupingSeparator(cell);
           }
         }
       }
@@ -199,31 +202,34 @@ export function getDataWithoutHeaderRow(data: QTableDataRaw): QTableDataRaw {
   return data.slice(1);
 }
 
-export function getUniqueCategoriesCount(data, colorColumn) {
+export function getUniqueCategoriesCount(data: QTableDataRaw, colorColumn: ColorColumnSettings) {
   return getUniqueCategoriesObject(data, colorColumn).categories.length;
 }
 
 export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettings: ColorColumnSettings) {
-  let hasNullValues = false;
   const { categoricalOptions, selectedColumn } = colorColumnSettings;
-
   let customCategoriesOrder = categoricalOptions.customCategoriesOrder;
+  let hasNullValues = false;
+  let values: string[] = [];
 
-  const values = data
-    .map(row => row[selectedColumn])
-    .filter((value) => {
-      if (value !== null && value !== '') {
-        return true;
-      }
-      hasNullValues = true;
-      return false;
-    }) as string[];
+  if (typeof selectedColumn === 'number') {
+    values = data
+      .map(row => row[selectedColumn])
+      .filter((value) => {
+        if (value !== null && value !== '') {
+          return true;
+        }
 
-  let sortedValues = getSortedValues(values);
+        hasNullValues = true;
+        return false;
+      }) as string[];
+  }
+
+  let sortedValuesbyCount = sortValuesByCount(values);
 
   // If the user has set a custom order, sort the categories accordingly
   if (customCategoriesOrder) {
-    sortedValues.sort(function (a, b) {
+    sortedValuesbyCount.sort(function (a, b) {
       return (
         customCategoriesOrder.map((c) => c.category).indexOf(a) -
         customCategoriesOrder.map((c) => c.category).indexOf(b)
@@ -231,21 +237,24 @@ export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettin
     });
   }
 
-  const categories = Array.from(new Set(sortedValues));
+  const categories = Array.from(new Set(sortedValuesbyCount));
 
   return { hasNullValues, categories };
 }
 
-function getSortedValues(values: string[]) {
-  // Create a counter object on array
-  let counter = values.reduce((counter, key) => {
+function sortValuesByCount(values: string[]): string[] {
+  // Count how much each value appears.
+  let counter: Record<string, number> = {};
+  for (let i = 0; i < values.length; i++) {
+    const key = values[i];
     counter[key] = 1 + counter[key] || 1;
-    return counter;
-  }, {});
+  }
 
-  // Sort counter by values
+  // Sort counter by amount of appearance.
   let sortedCounter = Object.entries(counter).sort((a, b) => b[1] - a[1]);
-  return sortedCounter.map((x) => x[0]);
+
+  // Return only the values. The amount of appearance is not necessary.
+  return sortedCounter.map(x => x[0]);
 }
 
 export function getMaxDigitsAfterCommaInDataByRow(data: QTableDataRaw, rowIndex: number): number {
@@ -389,4 +398,9 @@ export interface DataFormattingOptions {
 interface ColumnType {
   isNumeric: boolean,
   withFormating: boolean,
+}
+
+interface IndexedColumnTitle {
+  index: number,
+  title: string,
 }

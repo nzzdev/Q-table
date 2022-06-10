@@ -1,4 +1,4 @@
-import type { dataMetaData, dataMetaDataCell, QTableConfigOptions, QTableDataFormatted } from '../interfaces';
+import type { DataMetaData, dataMetaDataCell, QTableConfigOptions, QTableDataFormatted } from '../interfaces';
 
 export interface StructuredFootnote {
   value: string,
@@ -102,7 +102,7 @@ function getClass(options: QTableConfigOptions, footnote: FlattenedFootnote, amo
   return null;
 }
 
-export function getFootnotes(metaData: dataMetaData, hideTableHeader: Boolean): StructuredFootnote[] {
+export function getFootnotes(metaData: DataMetaData, hideTableHeader: Boolean): StructuredFootnote[] {
   let footnotes = metaData.cells
     .filter((cell) => {
       if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {

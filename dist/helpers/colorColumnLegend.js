@@ -9,8 +9,8 @@ const widthConfig = {
     ["average" /* LABEL_LEGEND_ID.AVERAGE */]: 100,
     ["median" /* LABEL_LEGEND_ID.MEDIAN */]: 60,
 };
-export function getNumericalLegend(data, colorColumnSettings, maxDigitsAfterComma, width) {
-    const { numericalOptions, selectedColumn } = colorColumnSettings;
+export function getNumericalLegend(selectedColumn, data, colorColumnSettings, maxDigitsAfterComma, width) {
+    const { numericalOptions } = colorColumnSettings;
     const customColorMap = getCustomColorMap(numericalOptions.colorOverwrites);
     const values = getNumericalValuesByColumn(data, selectedColumn);
     const nonNullValues = getNonNullValues(values);

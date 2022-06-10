@@ -111,7 +111,7 @@ export default {
             if ([
                 'colorColumnType',
                 'bucketType',
-                'scale',
+                'colorScale',
                 'colorOverwritesItem',
                 'colorScheme',
                 'customCategoriesOrder',

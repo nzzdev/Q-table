@@ -3,6 +3,7 @@ import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
+// Formatting for numbers of >= 10000.
 const formatLocale = d3FormatLocale({
     decimal: ',',
     thousands: fourPerEmSpace,
@@ -10,15 +11,16 @@ const formatLocale = d3FormatLocale({
     grouping: [3],
     currency: ['€', ''],
 });
+// Formatting for numbers of <= 10000.
 const formatLocaleSmall = d3FormatLocale({
     decimal: ',',
     minus: enDash,
     currency: ['€', ''],
     thousands: fourPerEmSpace,
-    grouping: [],
+    grouping: [10], // Set the grouping high so numbers under 10000 do not get grouped.
 });
-const formatGrouping = formatLocale.format(',');
-const formatNoGrouping = formatLocale.format('');
+const formatWithGroupingSeparator = formatLocale.format(',');
+const formatNoGroupingSeparator = formatLocale.format('');
 export function getNumericColumns(data) {
     const columns = getColumnsType(data);
     const numericColumns = [];
@@ -31,6 +33,16 @@ export function getNumericColumns(data) {
         });
     }
     return numericColumns;
+}
+export function getCategoricalColumns(data) {
+    const categoricalColumns = [];
+    // data[0].length is undefined when creating a new item
+    if (data[0] !== undefined) {
+        Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
+            categoricalColumns.push({ title: cell, index: columnIndex });
+        });
+    }
+    return categoricalColumns;
 }
 export function isNumeric(cell) {
     if (typeof cell !== 'string') {
@@ -68,17 +80,6 @@ function isColumnNumeric(column) {
     }
     return false;
 }
-export function getCategoricalColumns(data) {
-    const columns = getColumnsType(data);
-    const categoricalColumns = [];
-    // data[0].length is undefined when creating a new item
-    if (data[0] !== undefined) {
-        Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
-            categoricalColumns.push({ title: cell, index: columnIndex });
-        });
-    }
-    return categoricalColumns;
-}
 export function formatTableData(data, footnotes, options) {
     const columns = getColumnsType(data);
     let tableData = [];
@@ -97,10 +98,10 @@ export function formatTableData(data, footnotes, options) {
                     cell != '-' &&
                     cell != enDash) {
                     if (columns[columnIndex].withFormating) {
-                        value = formatGrouping(cell);
+                        value = formatWithGroupingSeparator(cell);
                     }
                     else {
-                        value = formatNoGrouping(cell);
+                        value = formatNoGroupingSeparator(cell);
                     }
                 }
             }
@@ -159,38 +160,43 @@ export function getUniqueCategoriesCount(data, colorColumn) {
     return getUniqueCategoriesObject(data, colorColumn).categories.length;
 }
 export function getUniqueCategoriesObject(data, colorColumnSettings) {
-    let hasNullValues = false;
     const { categoricalOptions, selectedColumn } = colorColumnSettings;
     let customCategoriesOrder = categoricalOptions.customCategoriesOrder;
-    const values = data
-        .map(row => row[selectedColumn])
-        .filter((value) => {
-        if (value !== null && value !== '') {
-            return true;
-        }
-        hasNullValues = true;
-        return false;
-    });
-    let sortedValues = getSortedValues(values);
+    let hasNullValues = false;
+    let values = [];
+    if (typeof selectedColumn === 'number') {
+        values = data
+            .map(row => row[selectedColumn])
+            .filter((value) => {
+            if (value !== null && value !== '') {
+                return true;
+            }
+            hasNullValues = true;
+            return false;
+        });
+    }
+    let sortedValuesbyCount = sortValuesByCount(values);
     // If the user has set a custom order, sort the categories accordingly
     if (customCategoriesOrder) {
-        sortedValues.sort(function (a, b) {
+        sortedValuesbyCount.sort(function (a, b) {
             return (customCategoriesOrder.map((c) => c.category).indexOf(a) -
                 customCategoriesOrder.map((c) => c.category).indexOf(b));
         });
     }
-    const categories = Array.from(new Set(sortedValues));
+    const categories = Array.from(new Set(sortedValuesbyCount));
     return { hasNullValues, categories };
 }
-function getSortedValues(values) {
-    // Create a counter object on array
-    let counter = values.reduce((counter, key) => {
+function sortValuesByCount(values) {
+    // Count how much each value appears.
+    let counter = {};
+    for (let i = 0; i < values.length; i++) {
+        const key = values[i];
         counter[key] = 1 + counter[key] || 1;
-        return counter;
-    }, {});
-    // Sort counter by values
+    }
+    // Sort counter by amount of appearance.
     let sortedCounter = Object.entries(counter).sort((a, b) => b[1] - a[1]);
-    return sortedCounter.map((x) => x[0]);
+    // Return only the values. The amount of appearance is not necessary.
+    return sortedCounter.map(x => x[0]);
 }
 export function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
     let maxDigitsAfterComma = 0;

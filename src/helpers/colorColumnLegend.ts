@@ -16,8 +16,8 @@ const widthConfig = {
   [LABEL_LEGEND_ID.MEDIAN]: 60,
 };
 
-export function getNumericalLegend(data: QTableDataRaw, colorColumnSettings: ColorColumnSettings, maxDigitsAfterComma: number, width: number): NumericalLegend {
-  const { numericalOptions, selectedColumn } = colorColumnSettings
+export function getNumericalLegend(selectedColumn: number, data: QTableDataRaw, colorColumnSettings: ColorColumnSettings, maxDigitsAfterComma: number, width: number): NumericalLegend {
+  const { numericalOptions } = colorColumnSettings
 
   const customColorMap = getCustomColorMap(numericalOptions.colorOverwrites);
   const values = getNumericalValuesByColumn(data, selectedColumn);
@@ -299,12 +299,6 @@ function getCustomBuckets(colorColumnSettings: ColorColumnSettings, scale, color
 
   return [];
 }
-
-
-
-
-
-
 
 function getDescriptionAlignment(id: LABEL_LEGEND_ID, value: number, position: number, width: number, maxDigitsAfterComma: number): string {
   const availableSpaceForLabel = getAvailableSpaceForLabel(position, width);

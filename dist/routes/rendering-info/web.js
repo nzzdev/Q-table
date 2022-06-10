@@ -85,6 +85,7 @@ export default {
                         name: styleHashMap['q-table'],
                     }],
                 scripts: [],
+                markup: '',
             };
             const payload = request.payload;
             // Extract table configurations.
@@ -93,14 +94,13 @@ export default {
             const options = config.options;
             let width = getExactPixelWidth(toolRuntimeConfig);
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-            // console.log("data", itemDataCopy);
             const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
             const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
             const minibarsAvailable = yield areMinibarsAvailable(request, config);
             const colorColumnAvailable = yield isColorColumnAvailable(request, config);
             const tableData = formatTableData(config.data.table, footnotes, options);
             const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
-            const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width);
+            const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
             const context = {
                 item: config,
                 config,
@@ -114,6 +114,7 @@ export default {
                 id: `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, ''),
                 width,
                 initWithCardLayout: false,
+                numberOfRowsToHide: undefined,
             };
             // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
             if (context.width &&

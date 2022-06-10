@@ -1,7 +1,7 @@
 import web from './rendering-info/web.js';
 import stylesheet from './stylesheet.js';
 import optionAvailability from './option-availability.js';
-import dynamicSchema from './dynamic-schema.js';
+import dynamicSchemas from './dynamic-schemas/index.js';
 import health from './health.js';
 import migration from './migration.js';
 import locales from './locales.js';
@@ -15,7 +15,7 @@ const allRoutes = [
     web,
     stylesheet,
     optionAvailability,
-    dynamicSchema,
+    ...dynamicSchemas,
     health,
     migration,
     locales,

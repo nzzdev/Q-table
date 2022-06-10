@@ -1,5 +1,5 @@
 import { getMaxDigitsAfterCommaInDataByRow, getNumericalValuesByColumn, getFormattedBuckets, getFormattedValue, getCategoricalValuesByColumn, getCustomBucketBorders } from './data.js';
-import * as legendHelpers from './colorColumnLegend.js';
+import { getCategoricalLegend, getNumericalLegend } from './colorColumnLegend.js';
 import * as methodBoxHelpers from './colorColomnMethodBox.js';
 
 import type { BucketType, ColorColumnSettings, QTableDataRaw } from '../interfaces';
@@ -26,19 +26,21 @@ export function getNumberBuckets(colorColumn: ColorColumnSettings): number {
 }
 
 export function getColorColumn(colorColumnAvailable: boolean, settings: ColorColumnSettings, data: QTableDataRaw, width: number): ColorColumn | null {
-  if (colorColumnAvailable && selectedColumnIsValid(settings)) {
+  if (colorColumnAvailable && typeof settings?.selectedColumn === 'number') {
+    const selectedColumn = settings.selectedColumn;
+
     if (settings.colorColumnType === 'numerical') {
-      return createNumericalColorColumn(settings, data, width);
+      return createNumericalColorColumn(selectedColumn, settings, data, width);
     } else {
-      return createCategoricalColorColumn(settings, data, width);
+      return createCategoricalColorColumn(selectedColumn, settings, data, width);
     }
   }
 
   return null;
 }
 
-function createNumericalColorColumn(settings: ColorColumnSettings, data: QTableDataRaw, width: number): ColorColumn {
-  const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, settings.selectedColumn);
+function createNumericalColorColumn(selectedColumn: number, settings: ColorColumnSettings, data: QTableDataRaw, width: number): ColorColumn {
+  const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, selectedColumn);
   const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
 
   let formattingOptions = {
@@ -46,34 +48,37 @@ function createNumericalColorColumn(settings: ColorColumnSettings, data: QTableD
     roundingBucketBorders,
   };
 
-  const legendData = legendHelpers.getNumericalLegend(data, settings, maxDigitsAfterComma, width);
+  const legendData = getNumericalLegend(selectedColumn, data, settings, maxDigitsAfterComma, width);
 
   const methodBox = methodBoxHelpers.getMethodBoxInfo(settings.numericalOptions.bucketType);
   methodBox.formattedBuckets = getFormattedBuckets(formattingOptions, legendData.buckets);
 
   const formattedValues: string[] = [];
   const colors: ColumnColorSettings[] = [];
-  const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
 
-  valuesByColumn.map((value) => {
-    const color = getColor(value, legendData);
-    colors.push(color);
+  if (typeof settings.selectedColumn =='number') {
+    const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
 
-    const formattedValue = getFormattedValue(formattingOptions, value);
-    formattedValues.push(formattedValue)
-  });
+    valuesByColumn.map((value) => {
+      const color = getColor(value, legendData);
+      colors.push(color);
 
+      const formattedValue = getFormattedValue(formattingOptions, value);
+      formattedValues.push(formattedValue)
+    });
+  }
   return {
     legendData,
     methodBox,
     formattedValues,
+    colors,
     ...settings,
   }
 }
 
-function createCategoricalColorColumn(settings: ColorColumnSettings, data: QTableDataRaw, width: number): ColorColumn {
-  const legendData = legendHelpers.getCategoricalLegend(data, settings);
-  const categoriesByColumn = getCategoricalValuesByColumn(data, settings.selectedColumn);
+function createCategoricalColorColumn(selectedColumn: number, settings: ColorColumnSettings, data: QTableDataRaw, width: number): ColorColumn {
+  const legendData = getCategoricalLegend(data, settings);
+  const categoriesByColumn = getCategoricalValuesByColumn(data, selectedColumn);
 
   const colors: ColumnColorSettings[] = [];
 
@@ -86,6 +91,7 @@ function createCategoricalColorColumn(settings: ColorColumnSettings, data: QTabl
     legendData,
     methodBox: null,
     formattedValues: [],
+    colors,
     ...settings,
   }
 }
@@ -93,13 +99,6 @@ function createCategoricalColorColumn(settings: ColorColumnSettings, data: QTabl
 /**
  * Internal.
  */
-function selectedColumnIsValid(settings: ColorColumnSettings): boolean {
-  return settings !== null &&
-         settings !== undefined &&
-         settings.selectedColumn !== null &&
-         settings.selectedColumn !== undefined;
-}
-
 function getColor(value, legendData): ColumnColorSettings {
   if (value === null || value === undefined) {
     return {
@@ -159,6 +158,7 @@ export interface ColorColumn extends ColorColumnSettings {
   legendData: NumericalLegend | CategoricalLegend,
   methodBox: MethodBoxInfo | null,
   formattedValues: string[],
+  colors: ColumnColorSettings[],
 }
 
 export interface ColorColumnContext {

@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { getNumericColumns } from '../helpers/data.js';
 import { getMinibarNumbersWithType } from '../helpers/minibars.js';
 import { hasCustomBuckets } from '../helpers/colorColumn.js';
-import type { QTableConfig, ToolRuntimeConfig, RenderingInfo, WebPayload  } from '../interfaces';
+import type { AvailabilityResponseObject, QTableConfig } from '../interfaces';
 
 export default {
   method: 'POST',
@@ -13,7 +13,7 @@ export default {
       payload: Joi.object(),
     },
   },
-  handler: function (request, h) {
+  handler: function (request, h): AvailabilityResponseObject | Boom.Boom {
     const item = request.payload.item as QTableConfig;
     const optionName = request.params.optionName as string;
 
@@ -148,7 +148,7 @@ export default {
         [
           'colorColumnType',
           'bucketType',
-          'scale',
+          'colorScale',
           'colorOverwritesItem',
           'colorScheme',
           'customCategoriesOrder',

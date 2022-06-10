@@ -1,5 +1,5 @@
 import { getMaxDigitsAfterCommaInDataByRow, getNumericalValuesByColumn, getFormattedBuckets, getFormattedValue, getCategoricalValuesByColumn, getCustomBucketBorders } from './data.js';
-import * as legendHelpers from './colorColumnLegend.js';
+import { getCategoricalLegend, getNumericalLegend } from './colorColumnLegend.js';
 import * as methodBoxHelpers from './colorColomnMethodBox.js';
 export function hasCustomBuckets(bucketType) {
     return bucketType === 'custom';
@@ -19,58 +19,56 @@ export function getNumberBuckets(colorColumn) {
     }
 }
 export function getColorColumn(colorColumnAvailable, settings, data, width) {
-    if (colorColumnAvailable && selectedColumnIsValid(settings)) {
+    if (colorColumnAvailable && typeof (settings === null || settings === void 0 ? void 0 : settings.selectedColumn) === 'number') {
+        const selectedColumn = settings.selectedColumn;
         if (settings.colorColumnType === 'numerical') {
-            return createNumericalColorColumn(settings, data, width);
+            return createNumericalColorColumn(selectedColumn, settings, data, width);
         }
         else {
-            return createCategoricalColorColumn(settings, data, width);
+            return createCategoricalColorColumn(selectedColumn, settings, data, width);
         }
     }
     return null;
 }
-function createNumericalColorColumn(settings, data, width) {
-    const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, settings.selectedColumn);
+function createNumericalColorColumn(selectedColumn, settings, data, width) {
+    const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, selectedColumn);
     const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
     let formattingOptions = {
         maxDigitsAfterComma,
         roundingBucketBorders,
     };
-    const legendData = legendHelpers.getNumericalLegend(data, settings, maxDigitsAfterComma, width);
+    const legendData = getNumericalLegend(selectedColumn, data, settings, maxDigitsAfterComma, width);
     const methodBox = methodBoxHelpers.getMethodBoxInfo(settings.numericalOptions.bucketType);
     methodBox.formattedBuckets = getFormattedBuckets(formattingOptions, legendData.buckets);
     const formattedValues = [];
     const colors = [];
-    const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
-    valuesByColumn.map((value) => {
-        const color = getColor(value, legendData);
-        colors.push(color);
-        const formattedValue = getFormattedValue(formattingOptions, value);
-        formattedValues.push(formattedValue);
-    });
+    if (typeof settings.selectedColumn == 'number') {
+        const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
+        valuesByColumn.map((value) => {
+            const color = getColor(value, legendData);
+            colors.push(color);
+            const formattedValue = getFormattedValue(formattingOptions, value);
+            formattedValues.push(formattedValue);
+        });
+    }
     return Object.assign({ legendData,
         methodBox,
-        formattedValues }, settings);
+        formattedValues,
+        colors }, settings);
 }
-function createCategoricalColorColumn(settings, data, width) {
-    const legendData = legendHelpers.getCategoricalLegend(data, settings);
-    const categoriesByColumn = getCategoricalValuesByColumn(data, settings.selectedColumn);
+function createCategoricalColorColumn(selectedColumn, settings, data, width) {
+    const legendData = getCategoricalLegend(data, settings);
+    const categoriesByColumn = getCategoricalValuesByColumn(data, selectedColumn);
     const colors = [];
     categoriesByColumn.map((category) => {
         const color = getColor(category, legendData);
         colors.push(color);
     });
-    return Object.assign({ legendData, methodBox: null, formattedValues: [] }, settings);
+    return Object.assign({ legendData, methodBox: null, formattedValues: [], colors }, settings);
 }
 /**
  * Internal.
  */
-function selectedColumnIsValid(settings) {
-    return settings !== null &&
-        settings !== undefined &&
-        settings.selectedColumn !== null &&
-        settings.selectedColumn !== undefined;
-}
 function getColor(value, legendData) {
     if (value === null || value === undefined) {
         return {

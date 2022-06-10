@@ -52,3 +52,5 @@ export function getCustomColorMap(colorOverwrites: ColorOverwrites[]) {
 export interface CustomColorMap {
 
 }
+
+
