@@ -1,76 +1,91 @@
-import Joi from "joi";
+import Joi from 'joi';
 import * as colorColumnHelpers from '../../helpers/colorColumn.js';
+import { DataMetaData, DivergingType, DivergingColorScaleFromBucket, DivergingColorScaleFromBorder, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
+import type { Request, ServerRoute } from '@hapi/hapi'
 
 const sequentialScaleMax = 7;
 const divergingScaleMax = sequentialScaleMax * 2;
 
-export default {
-    method: "POST",
-    path: "/notification/numberBucketsOutOfColorScale",
-    options: {
-        validate: {
-            options: {
-                allowUnknown: true,
-            },
-            payload: Joi.object().required(),
-        },
-        tags: ["api"],
+const route: ServerRoute = {
+  method: 'POST',
+  path: '/notification/numberBucketsOutOfColorScale',
+  options: {
+    validate: {
+      options: {
+        allowUnknown: true,
+      },
+      payload: Joi.object().required(),
     },
-    handler: function (request, h) {
-        try {
-            const item = request.payload.item;
+    tags: ['api'],
+  },
+  handler: function (request: Request) {
+    try {
+      const payload = request.payload as Payload;
+      const item = payload.item;
+      const colorColumnSettings = item.options.colorColumn;
+      const { colorColumnType, numericalOptions } = colorColumnSettings;
+      let scale = numericalOptions.scale;
 
-            if (item.options.colorColumn.colorColumnType === "numerical") {
-                const scale = item.options.colorColumn.numericalOptions.scale;
+      if (colorColumnType === 'numerical') {
+        let numberBuckets = colorColumnHelpers.getNumberBuckets(colorColumnSettings);
 
-                let numberBuckets = colorColumnHelpers.getNumberBuckets(
-                    item.options.colorColumn
-                );
+        if (scale === 'sequential' && numberBuckets > sequentialScaleMax) {
+            return {
+              message: {
+                title: 'notifications.numberBucketsOutOfColorScale.title',
+                body: 'notifications.numberBucketsOutOfColorScale.body',
+              },
+            };
+        } else {
 
-                if (scale === "sequential") {
-                    if (numberBuckets > sequentialScaleMax) {
-                        return {
-                            message: {
-                                title: "notifications.numberBucketsOutOfColorScale.title",
-                                body: "notifications.numberBucketsOutOfColorScale.body",
-                            },
-                        };
-                    }
-                } else {
-                    const divergingSpecification = scale.split("-");
-                    const divergingIndex = parseInt(divergingSpecification[1]);
+          const a = scale as unknown as (DivergingColorScaleFromBucket|DivergingColorScaleFromBorder)[];
+          const divergingSpec = scale.split('-') as unknown as (DivergingColorScaleFromBucket|DivergingColorScaleFromBorder)[];
 
-                    const numberBucketsLeft = divergingIndex;
-                    let numberBucketsRight = numberBuckets - divergingIndex;
 
-                    if (divergingSpecification[0] === "bucket") {
-                        numberBucketsRight -= 1;
-                    }
+          const divergingType = divergingSpec[0] as DivergingType;
+          const divergingIndex = parseInt(divergingSpec[1]);
 
-                    const numberBucketsBiggerSide = Math.max(
-                        numberBucketsLeft,
-                        numberBucketsRight
-                    );
+          const numberBucketsLeft = divergingIndex;
+          let numberBucketsRight = numberBuckets - divergingIndex;
 
-                    let scaleSize = numberBucketsBiggerSide * 2;
-                    if (divergingSpecification[0] === "bucket") {
-                        scaleSize += 1;
-                    }
+          if (divergingType === DivergingType.BUCKET) {
+            numberBucketsRight -= 1;
+          }
 
-                    if (scaleSize > divergingScaleMax) {
-                        return {
-                            message: {
-                                title: "notifications.numberBucketsOutOfColorScale.title",
-                                body: "notifications.numberBucketsOutOfColorScale.body",
-                            },
-                        };
-                    }
-                }
-            }
+          const numberBucketsBiggerSide = Math.max(numberBucketsLeft, numberBucketsRight);
 
-            return null;
-        } catch (err) {
-            return null;
+          let scaleSize = numberBucketsBiggerSide * 2;
+          if (divergingType === DivergingType.BUCKET) {
+            scaleSize += 1;
+          }
+
+          if (scaleSize > divergingScaleMax) {
+            return {
+              message: {
+                title: 'notifications.numberBucketsOutOfColorScale.title',
+                body: 'notifications.numberBucketsOutOfColorScale.body',
+              },
+            };
+          }
         }
-    },
+      }
+    } catch (err) {
+      console.log('Error processing /notification/numberBucketsOutOfColorScale', err);
+    }
+
+    return null;
+  },
 };
+
+export default route;
+
+interface Payload {
+  item: {
+    data: {
+      table: QTableDataRaw,
+      metaData: DataMetaData,
+    },
+    options: QTableConfigOptions,
+  },
+  roles: string[],
+}

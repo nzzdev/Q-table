@@ -1,7 +1,8 @@
 import Joi from 'joi';
-import type { QTableConfigOptions } from '../../interfaces';
+import type { NumericalScaleType, QTableConfigOptions } from '../../interfaces';
+import type { Request, ServerRoute } from '@hapi/hapi';
 
-export default {
+const route: ServerRoute = {
   method: 'POST',
   path: '/dynamic-schema/colorScale',
   options: {
@@ -9,11 +10,12 @@ export default {
       payload: Joi.object(),
     },
   },
-  handler: function (request, h): ReturnPayload {
-    const item = request.payload.item as Payload;
+  handler: function (request: Request): ReturnPayload {
+    const payload = request.payload as Payload;
+    const item = payload.item;
     const numericalOptions = item.options.colorColumn.numericalOptions;
 
-    let enumValues = ['sequential'];
+    let enumValues: NumericalScaleType[] = ['sequential'];
     let enumTitles = ['Sequentiell'];
 
     let bucketNumber = 0;
@@ -47,11 +49,15 @@ export default {
   },
 };
 
+export default route;
+
 /**
  * Interfaces.
  */
 interface Payload {
-  options: QTableConfigOptions,
+  item: {
+    options: QTableConfigOptions,
+  }
 }
 
 interface ReturnPayload {

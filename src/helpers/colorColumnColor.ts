@@ -24,7 +24,7 @@ const gray7 = 's-color-gray-7';
 const gray8 = 's-color-gray-8';
 const gray9 = 's-color-gray-9';
 
-export function getTextColor(customColor, colorClass): string {
+export function getTextColor(customColor: { color: string, textColor: string} | undefined, colorClass: string): string {
   if(customColor?.textColor !== undefined) {
     return customColor.textColor === 'light' ? gray1 : gray9;
   }
@@ -36,7 +36,7 @@ export function getTextColor(customColor, colorClass): string {
   return gray9;
 }
 
-export function getCustomColorMap(colorOverwrites: ColorOverwrites[]) {
+export function getCustomColorMap(colorOverwrites: ColorOverwrites[]): CustomColorMap {
   return new Map(
     colorOverwrites.map(({ color, position, textColor }) => [
       position - 1,
@@ -49,8 +49,7 @@ export function getCustomColorMap(colorOverwrites: ColorOverwrites[]) {
  * Interfaces.
  */
 
-export interface CustomColorMap {
-
-}
-
-
+export type CustomColorMap = Map<number, {
+  color: string;
+  textColor: string;
+}>;

@@ -1,5 +1,5 @@
 import Joi from 'joi';
-export default {
+const route = {
     method: 'POST',
     path: '/dynamic-schema/colorScale',
     options: {
@@ -7,8 +7,9 @@ export default {
             payload: Joi.object(),
         },
     },
-    handler: function (request, h) {
-        const item = request.payload.item;
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
         const numericalOptions = item.options.colorColumn.numericalOptions;
         let enumValues = ['sequential'];
         let enumTitles = ['Sequentiell'];
@@ -40,3 +41,4 @@ export default {
         };
     },
 };
+export default route;

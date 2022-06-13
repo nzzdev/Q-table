@@ -1,3 +1,5 @@
+/// <reference path="../modules.d.ts" />
+
 import Array2D from 'array2d';
 import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
@@ -5,6 +7,7 @@ import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 // Types.
 import type { StructuredFootnote } from './footnotes';
 import type { ColorColumnSettings, QTableDataFormatted, QTableDataRaw, QTableConfigOptions } from '../interfaces';
+import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
@@ -35,9 +38,9 @@ export function getNumericColumns(data: QTableDataRaw): IndexedColumnTitle[] {
   const columns = getColumnsType(data);
   const numericColumns: IndexedColumnTitle[] = [];
 
-  // data[0].length is undefined when creating a new item
+  // data[0].length is undefined when creating a new item.
   if (data[0] !== undefined) {
-    Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
+    Array2D.forRow<string>(data, 0, (cell, rowIndex, columnIndex) => {
       if (columns[columnIndex] && columns[columnIndex].isNumeric) {
         numericColumns.push({ title: cell, index: columnIndex });
       }
@@ -47,12 +50,12 @@ export function getNumericColumns(data: QTableDataRaw): IndexedColumnTitle[] {
   return numericColumns;
 }
 
-export function getCategoricalColumns(data): IndexedColumnTitle[] {
+export function getCategoricalColumns(data: QTableDataRaw): IndexedColumnTitle[] {
   const categoricalColumns: IndexedColumnTitle[] = [];
 
   // data[0].length is undefined when creating a new item
   if (data[0] !== undefined) {
-    Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
+    Array2D.forRow<string>(data, 0, (cell, rowIndex, columnIndex) => {
       categoricalColumns.push({ title: cell, index: columnIndex });
     });
   }
@@ -78,22 +81,30 @@ function getColumnsType(data: QTableDataRaw): ColumnType[] {
   const columns: ColumnType[]  = [];
   const table = getDataWithoutHeaderRow(data);
 
-  Array2D.eachColumn(table, (column) => {
+  Array2D.eachColumn<string|null>(table, (column) => {
     let withFormating = false;
     const columnNumeric = isColumnNumeric(column);
 
     if (columnNumeric) {
-      const numbersOfColumn = column.map((number) =>
-        isNumeric(number) ? parseFloat(number) : null
-      );
+      const numericValuesInColumn: number[] = [];
+
+      for (let i = 0; i < column.length; i++) {
+        const parsedValue = parseFloat(column[i] || '');
+
+        if(!isNaN(parsedValue)) {
+          numericValuesInColumn.push(parsedValue);
+        }
+      }
 
       withFormating =
-        Math.max(...numbersOfColumn) >= 10000 ||
-        Math.min(...numbersOfColumn) <= -10000;
+        Math.max(...numericValuesInColumn) >= 10000 ||
+        Math.min(...numericValuesInColumn) <= -10000;
     }
 
     columns.push({ isNumeric: columnNumeric, withFormating });
   });
+
+
   return columns;
 }
 
@@ -115,7 +126,7 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
   const columns = getColumnsType(data);
   let tableData: QTableDataFormatted[][] = [];
 
-  Array2D.eachRow(data, (row, rowIndex) => {
+  Array2D.eachRow<string|null>(data, (row, rowIndex) => {
     let cells = row.map((cell, columnIndex) => {
       let type = 'text';
       let value = cell;
@@ -126,7 +137,7 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
         type = 'numeric';
         classes.push('s-font-note--tabularnums');
 
-        // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
+        // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
         if (
           rowIndex > 0 &&
           cell !== null &&
@@ -134,10 +145,11 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
           cell != '-' &&
           cell != enDash
         ) {
+          const parsedValue = parseFloat(cell);
           if (columns[columnIndex].withFormating) {
-            value = formatWithGroupingSeparator(cell);
+            value = formatWithGroupingSeparator(parsedValue);
           } else {
-            value = formatNoGroupingSeparator(cell);
+            value = formatNoGroupingSeparator(parsedValue);
           }
         }
       }
@@ -176,9 +188,10 @@ export function getNumericalValuesByColumn(data: QTableDataRaw, column: number):
   });
 }
 
-export function getCategoricalValuesByColumn(data, column) {
-  return data.map((row) => {
+export function getCategoricalValuesByColumn(data: QTableDataRaw, column: number): (string|null)[] {
+  return data.map(row => {
     if (!row[column]) row[column] = null;
+
     return row[column];
   });
 }
@@ -187,7 +200,7 @@ export function getNonNullValues(values: Array<number|null>): number[] {
   return values.filter(value => value !== null) as number[];
 }
 
-export function getMetaData(values, numberValues, maxDigitsAfterComma: number): MetaData {
+export function getMetaData(values: (number|null)[], numberValues: number[], maxDigitsAfterComma: number): MetaData {
   return {
     hasNullValues: values.find((value) => value === null) !== undefined,
     hasZeroValues: numberValues.find((value) => value === 0) !== undefined,
@@ -304,7 +317,7 @@ export function getFormattedValue(formattingOptions: DataFormattingOptions, valu
   }
 }
 
-export function getFormattedBuckets(formattingOptions: DataFormattingOptions, buckets) {
+export function getFormattedBuckets(formattingOptions: DataFormattingOptions, buckets: Bucket[]): FormattedBucket[] {
   return buckets.map((bucket) => {
     let { from, to, color } = bucket;
 
@@ -315,6 +328,7 @@ export function getFormattedBuckets(formattingOptions: DataFormattingOptions, bu
         color,
       };
     }
+
     return {
       from: getFormattedValue({}, from),
       to: getFormattedValue({}, to),
@@ -367,7 +381,7 @@ function getAverage(values: number[]): number {
   return values.reduce((a, b) => a + b, 0) / values.length;
 }
 
-function getRoundedAverage(values, maxDigitsAfterComma: number): number {
+function getRoundedAverage(values: number[], maxDigitsAfterComma: number): number {
   const averageValue = getAverage(values);
   return getRoundedValue(averageValue, maxDigitsAfterComma);
 }
@@ -375,12 +389,6 @@ function getRoundedAverage(values, maxDigitsAfterComma: number): number {
 /**
  * Interfaces.
  */
-export interface FormattedBucket {
-  from: string,
-  to: string,
-  color: any,
-}
-
 export interface MetaData {
   hasNullValues: boolean,
   hasZeroValues: boolean,

@@ -3,7 +3,7 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const localesDir = __dirname + '/../../resources/locales/';
-export default {
+const route = {
     path: '/locales/{lng}/translation.json',
     method: 'GET',
     options: {
@@ -21,3 +21,4 @@ export default {
             .type('application/json');
     }
 };
+export default route;

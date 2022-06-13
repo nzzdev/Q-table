@@ -1,3 +1,4 @@
+/// <reference path="../modules.d.ts" />
 import Array2D from 'array2d';
 import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
@@ -24,7 +25,7 @@ const formatNoGroupingSeparator = formatLocale.format('');
 export function getNumericColumns(data) {
     const columns = getColumnsType(data);
     const numericColumns = [];
-    // data[0].length is undefined when creating a new item
+    // data[0].length is undefined when creating a new item.
     if (data[0] !== undefined) {
         Array2D.forRow(data, 0, (cell, rowIndex, columnIndex) => {
             if (columns[columnIndex] && columns[columnIndex].isNumeric) {
@@ -61,10 +62,16 @@ function getColumnsType(data) {
         let withFormating = false;
         const columnNumeric = isColumnNumeric(column);
         if (columnNumeric) {
-            const numbersOfColumn = column.map((number) => isNumeric(number) ? parseFloat(number) : null);
+            const numericValuesInColumn = [];
+            for (let i = 0; i < column.length; i++) {
+                const parsedValue = parseFloat(column[i] || '');
+                if (!isNaN(parsedValue)) {
+                    numericValuesInColumn.push(parsedValue);
+                }
+            }
             withFormating =
-                Math.max(...numbersOfColumn) >= 10000 ||
-                    Math.min(...numbersOfColumn) <= -10000;
+                Math.max(...numericValuesInColumn) >= 10000 ||
+                    Math.min(...numericValuesInColumn) <= -10000;
         }
         columns.push({ isNumeric: columnNumeric, withFormating });
     });
@@ -91,17 +98,18 @@ export function formatTableData(data, footnotes, options) {
             if (columns[columnIndex] && columns[columnIndex].isNumeric) {
                 type = 'numeric';
                 classes.push('s-font-note--tabularnums');
-                // do not format the header row, empty cells, a hyphen(-) or a en dash (–)
+                // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
                 if (rowIndex > 0 &&
                     cell !== null &&
                     cell !== '' &&
                     cell != '-' &&
                     cell != enDash) {
+                    const parsedValue = parseFloat(cell);
                     if (columns[columnIndex].withFormating) {
-                        value = formatWithGroupingSeparator(cell);
+                        value = formatWithGroupingSeparator(parsedValue);
                     }
                     else {
-                        value = formatNoGroupingSeparator(cell);
+                        value = formatNoGroupingSeparator(parsedValue);
                     }
                 }
             }
@@ -134,7 +142,7 @@ export function getNumericalValuesByColumn(data, column) {
     });
 }
 export function getCategoricalValuesByColumn(data, column) {
-    return data.map((row) => {
+    return data.map(row => {
         if (!row[column])
             row[column] = null;
         return row[column];

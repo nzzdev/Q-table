@@ -9,10 +9,8 @@ import { fileURLToPath } from 'url';
 // Setup svelte environment.
 require('svelte/register');
 
-import type { Request, ServerInjectResponse } from 'hapi';
-import type { AvailabilityResponseObject, QTableConfig, ToolRuntimeConfig, RenderingInfo, WebPayload, QTableConfigOptions, QTableDataRaw, WebContextObject  } from '../../interfaces';
-import type { StructuredFootnote } from '../../helpers/footnotes';
-import type { Minibar } from '../../helpers/minibars';
+import type { Request, ServerRoute } from '@hapi/hapi';
+import type { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject  } from '../../interfaces';
 
 // Require tools.
 import Ajv from 'ajv';
@@ -43,7 +41,6 @@ import { getMinibar } from '../../helpers/minibars.js';
 import { getColorColumn } from '../../helpers/colorColumn.js';
 import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
-import { min } from 'd3';
 
 // POSTed item will be validated against given schema
 // hence we fetch the JSON schema...
@@ -54,9 +51,9 @@ const schemaString = JSON.parse(
 );
 
 const ajv = new Ajv();
-
 const validate = ajv.compile(schemaString);
-function validateAgainstSchema(item, options) {
+
+function validateAgainstSchema(item: QTableConfig) {
   if (validate(item)) {
     return item;
   } else {
@@ -64,20 +61,7 @@ function validateAgainstSchema(item, options) {
   }
 }
 
-async function validatePayload(payload, options, next) {
-  if (typeof payload !== 'object') {
-    return next(Boom.badRequest(), payload);
-  }
-  if (typeof payload.item !== 'object') {
-    return next(Boom.badRequest(), payload);
-  }
-  if (typeof payload.toolRuntimeConfig !== 'object') {
-    return next(Boom.badRequest(), payload);
-  }
-  await validateAgainstSchema(payload.item, options);
-}
-
-export default {
+const route: ServerRoute = {
   method: 'POST',
   path: '/rendering-info/web',
   options: {
@@ -85,10 +69,20 @@ export default {
       options: {
         allowUnknown: true,
       },
-      payload: validatePayload,
+      payload: async (payload: WebPayload) => {
+        if (
+          typeof payload !== 'object' ||
+          typeof payload.item !== 'object' ||
+          typeof payload.toolRuntimeConfig !== 'object'
+        ) {
+          throw Boom.badRequest('The given payload for this route is not correct.');
+        }
+
+        await validateAgainstSchema(payload.item);
+      },
     },
   },
-  handler: async function (request: Request, h) {
+  handler: async function (request: Request) {
     const renderingInfo: RenderingInfo = {
       polyfills: ['Promise'],
       stylesheets: [{
@@ -129,7 +123,7 @@ export default {
       colorColumn,
       numberOfRows: config.data.table.length - 1, // do not count the header
       displayOptions: payload.toolRuntimeConfig.displayOptions || {},
-      noInteraction: payload.toolRuntimeConfig.noInteraction,
+      noInteraction: payload.toolRuntimeConfig.noInteraction || false,
       id: `q_table_${request.query._id}_${Math.floor(
         Math.random() * 100000
       )}`.replace(/-/g, ''),
@@ -293,3 +287,5 @@ async function isColorColumnAvailable(request: Request, config: QTableConfig): P
     return false;
   }
 }
+
+export default route;

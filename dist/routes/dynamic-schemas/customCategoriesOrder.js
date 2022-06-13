@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { getDataWithoutHeaderRow, getUniqueCategoriesCount } from '../../helpers/data.js';
-export default {
+const route = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrder',
     options: {
@@ -8,8 +8,9 @@ export default {
             payload: Joi.object(),
         },
     },
-    handler: function (request, h) {
-        const item = request.payload.item;
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
         const data = getDataWithoutHeaderRow(item.data.table);
         const colorColumnSettings = item.options.colorColumn;
         return {
@@ -17,3 +18,4 @@ export default {
         };
     },
 };
+export default route;

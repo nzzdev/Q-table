@@ -11,8 +11,9 @@ export default {
             payload: Joi.object(),
         },
     },
-    handler: function (request, h) {
-        const item = request.payload.item;
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
         const optionName = request.params.optionName;
         if (optionName === 'cardLayoutIfSmall') {
             return {

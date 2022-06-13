@@ -4,16 +4,19 @@ import * as simpleStatistics from 'simple-statistics';
 import { LABEL_LEGEND_ID } from '../interfaces';
 
 import type { MetaData } from './data';
-import type { BucketType, ColorColumnSettings, QTableDataRaw } from '../interfaces';
+import type { ColorColumnSettings, NumericalScaleType, QTableDataRaw } from '../interfaces';
+import type { CustomColorMap } from './colorColumnColor';
 
 const ckmeans = simpleStatistics.ckmeans;
 const quantile = simpleStatistics.quantile;
 
 const widthConfig = {
-  legendSmall: 640, // pixel
-  legendLarge: 100, // percent
+  [LABEL_LEGEND_ID.SMALL]: 640, // pixel
+  [LABEL_LEGEND_ID.LARGE]: 100, // percent
   [LABEL_LEGEND_ID.AVERAGE]: 100,
   [LABEL_LEGEND_ID.MEDIAN]: 60,
+
+  [LABEL_LEGEND_ID.NO_LABEL]: 0 // Here to avoid TS linting errors.
 };
 
 export function getNumericalLegend(selectedColumn: number, data: QTableDataRaw, colorColumnSettings: ColorColumnSettings, maxDigitsAfterComma: number, width: number): NumericalLegend {
@@ -87,7 +90,10 @@ export function getCategoricalLegend(data: QTableDataRaw, colorColumnSettings: C
   };
 }
 
-export function getCategoryColor(index: number, customColorMap): CategoryColor {
+/**
+ * Internal.
+ */
+function getCategoryColor(index: number, customColorMap: CustomColorMap): CategoryColor {
   const customColor = customColorMap.get(index);
   const colorScheme = digitWords[index];
   const colorClass = `s-viz-color-${colorScheme}-5`;
@@ -101,10 +107,6 @@ export function getCategoryColor(index: number, customColorMap): CategoryColor {
     textColor: getTextColor(customColor, colorClass),
   };
 }
-
-/**
- * Internal.
- */
 
 function getLabelLegend(labelType: LABEL_LEGEND_ID, metaData: MetaData, width: number, maxDigitsAfterComma: number): LabelLegend | null {
   if (labelType === LABEL_LEGEND_ID.NO_LABEL) return null;
@@ -149,13 +151,12 @@ function hasSingleValueBucket(buckets: Bucket[]): boolean {
 }
 
 function getBucketsForLegend(
-  filteredValues,
+  filteredValues: number[],
   colorColumn: ColorColumnSettings,
   minValue: number,
   maxValue: number,
-  customColorMap,
-  maxDigitsAfterComma: number
-): Bucket[] {
+  customColorMap: CustomColorMap,
+  maxDigitsAfterComma: number): Bucket[] {
   const bucketType = colorColumn.numericalOptions.bucketType;
   const numberBuckets = colorColumn.numericalOptions.numberBuckets;
   const scale = colorColumn.numericalOptions.scale;
@@ -195,7 +196,11 @@ function getBucketsForLegend(
   return [];
 }
 
-function getCkMeansBuckets(filteredValues, numberBuckets, scale, colorOptions) {
+function getCkMeansBuckets(
+  filteredValues: number[],
+  numberBuckets: number,
+  scale: NumericalScaleType,
+  colorOptions: { colorScheme: string, colorOverwrites: CustomColorMap }): Bucket[] {
   const ckmeansBuckets = ckmeans(filteredValues, numberBuckets);
 
   return ckmeansBuckets.map((bucket, index) => {
@@ -217,13 +222,21 @@ function getCkMeansBuckets(filteredValues, numberBuckets, scale, colorOptions) {
   });
 }
 
-function getQuantileBuckets(filteredValues, numberBuckets, minValue, scale, colorOptions) {
+function getQuantileBuckets(
+  filteredValues: number[],
+  numberBuckets: number,
+  minValue: number,
+  scale: NumericalScaleType,
+  colorOptions: { colorScheme: string, colorOverwrites: CustomColorMap }): Bucket[] {
   const quantilePortion = 1 / numberBuckets;
   let quantiles: number[] = [];
+
   for (let i = 1; i <= numberBuckets; i++) {
     quantiles.push(i * quantilePortion);
   }
+
   const quantileUpperBorders = quantile(filteredValues, quantiles);
+
   return quantileUpperBorders.map((quantileBorder, index) => {
     const from = index === 0 ? minValue : quantileUpperBorders[index - 1];
     return {
@@ -240,13 +253,12 @@ function getQuantileBuckets(filteredValues, numberBuckets, minValue, scale, colo
 }
 
 function getEqualBuckets(
-  numberBuckets,
-  minValue,
-  maxValue,
-  scale,
-  colorOptions,
-  maxDigitsAfterComma
-) {
+  numberBuckets: number,
+  minValue: number,
+  maxValue: number,
+  scale: NumericalScaleType,
+  colorOptions: { colorScheme: string, colorOverwrites: CustomColorMap },
+  maxDigitsAfterComma: number): Bucket[] {
   const portion = 1 / numberBuckets;
   const range = maxValue - minValue;
 
@@ -270,7 +282,10 @@ function getEqualBuckets(
   return equalBuckets;
 }
 
-function getCustomBuckets(colorColumnSettings: ColorColumnSettings, scale, colorOptions): Bucket[] {
+function getCustomBuckets(
+  colorColumnSettings: ColorColumnSettings,
+  scale: NumericalScaleType,
+  colorOptions: { colorScheme: string, colorOverwrites: CustomColorMap }): Bucket[] {
   const { numericalOptions } = colorColumnSettings;
 
   if (numericalOptions.customBuckets !== undefined) {
@@ -317,9 +332,9 @@ function getAvailableSpaceForLabel(position: number, width: number): number {
   let legendPixelWidth;
 
   if (width > 640) {
-    legendPixelWidth = widthConfig.legendSmall;
+    legendPixelWidth = widthConfig[LABEL_LEGEND_ID.SMALL];
   } else {
-    legendPixelWidth = (width * widthConfig.legendLarge) / 100;
+    legendPixelWidth = (width * widthConfig[LABEL_LEGEND_ID.LARGE]) / 100;
   }
 
   return (legendPixelWidth * (100 - position)) / 100;
@@ -329,7 +344,11 @@ function getValueLength(value: number, maxDigitsAfterComma: number): number {
   return value.toFixed(0).length + maxDigitsAfterComma;
 }
 
-function getBucketColor(numberBuckets: number, index: number, scale, colorOptions): BucketColor  {
+function getBucketColor(
+  numberBuckets: number,
+  index: number,
+  scale: NumericalScaleType,
+  colorOptions: { colorScheme: string, colorOverwrites: CustomColorMap }): BucketColor  {
   const colorScheme = colorOptions.colorScheme;
   const customColor = colorOptions.colorOverwrites.get(index);
   let colorClass = '';
@@ -397,7 +416,6 @@ function getBucketColor(numberBuckets: number, index: number, scale, colorOption
 /**
  * Interfaces.
  */
-
 export interface NumericalLegend extends MetaData {
   hasNullValues: boolean;
   hasZeroValues: boolean;
@@ -413,7 +431,7 @@ export interface NumericalLegend extends MetaData {
 export interface CategoricalLegend {
   type: 'categorical',
   hasNullValues: boolean,
-  categories: Array<{label: string, color}>,
+  categories: Array<{label: string, color: CategoryColor}>,
 }
 
 export interface LabelLegend {
@@ -438,9 +456,15 @@ interface CategoryColor {
   textColor: string,
 }
 
-interface Bucket {
+export interface Bucket {
   from: number,
   to: number,
+  color: BucketColor,
+}
+
+export interface FormattedBucket {
+  from: string,
+  to: string,
   color: BucketColor,
 }
 

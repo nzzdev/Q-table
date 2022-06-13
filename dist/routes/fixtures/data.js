@@ -52,13 +52,14 @@ const fixtureData = [
     require(`${fixtureDataDirectory}/colorColumn-categorical-custom-order.json`),
     require(`${fixtureDataDirectory}/colorColumn-categorical-custom-colors.json`),
 ];
-export default {
+const route = {
     path: '/fixtures/data',
     method: 'GET',
     options: {
         tags: ['api'],
     },
-    handler: (request, h) => {
+    handler: () => {
         return fixtureData;
     },
 };
+export default route;

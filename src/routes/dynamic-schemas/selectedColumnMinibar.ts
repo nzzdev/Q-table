@@ -1,8 +1,9 @@
 import Joi from 'joi';
 import {getNumericColumns } from '../../helpers/data.js';
 import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces';
+import type { Request, ServerRoute } from '@hapi/hapi';
 
-export default {
+const route: ServerRoute = {
   method: 'POST',
   path: '/dynamic-schema/selectedColumnMinibar',
   options: {
@@ -10,8 +11,9 @@ export default {
       payload: Joi.object(),
     },
   },
-  handler: function (request, h): ReturnPayload {
-    const item = request.payload.item as Payload;
+  handler: function (request: Request): ReturnPayload {
+    const payload = request.payload as Payload;
+    const item = payload.item;
 
     const settings = getMinibarDropdownSettings(item.data.table);
 
@@ -49,15 +51,19 @@ function getMinibarDropdownSettings(data: QTableDataRaw): DropdownSettings {
   return dropdownSettings;
 }
 
+export default route;
+
 /**
  * Interfaces.
  */
 interface Payload {
-  data: {
-    table: QTableDataRaw,
-    metaData: DataMetaData,
-  },
-  options: QTableConfigOptions,
+  item: {
+    data: {
+      table: QTableDataRaw,
+      metaData: DataMetaData,
+    },
+    options: QTableConfigOptions,
+  }
 }
 
 interface DropdownSettings {

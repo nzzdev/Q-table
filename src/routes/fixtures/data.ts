@@ -4,6 +4,8 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
+import type { ServerRoute } from '@hapi/hapi';
+
 const fixtureDataDirectory = '../../../resources/fixtures/data';
 
 // Provide every fixture data file present in ../../resources/fixtures/data
@@ -55,13 +57,15 @@ const fixtureData = [
   require(`${fixtureDataDirectory}/colorColumn-categorical-custom-colors.json`),
 ];
 
-export default {
+const route: ServerRoute = {
   path: '/fixtures/data',
   method: 'GET',
   options: {
     tags: ['api'],
   },
-  handler: (request, h) => {
+  handler: () => {
     return fixtureData;
   },
 };
+
+export default route;

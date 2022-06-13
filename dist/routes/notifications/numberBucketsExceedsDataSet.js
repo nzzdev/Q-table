@@ -1,8 +1,8 @@
-import Joi from "joi";
-import * as dataHelpers from '../../helpers/data.js';
+import Joi from 'joi';
+import { getDataWithoutHeaderRow, getUniqueCategoriesCount } from '../../helpers/data.js';
 export default {
-    method: "POST",
-    path: "/notification/numberBucketsExceedsDataSet",
+    method: 'POST',
+    path: '/notification/numberBucketsExceedsDataSet',
     options: {
         validate: {
             options: {
@@ -10,29 +10,31 @@ export default {
             },
             payload: Joi.object().required(),
         },
-        tags: ["api"],
+        tags: ['api'],
     },
-    handler: function (request, h) {
+    handler: function (request) {
         try {
-            const item = request.payload.item;
-            // removing the header row first
-            item.data.table = dataHelpers.getDataWithoutHeaderRow(item.data.table);
-            if (item.options.bucketType !== "custom") {
-                const numberUniqueValues = dataHelpers.getUniqueCategoriesCount(item.data.table, item.options.colorColumn);
-                const numberBuckets = item.options.colorColumn.numericalOptions.numberBuckets;
+            const payload = request.payload;
+            const item = payload.item;
+            const data = getDataWithoutHeaderRow(item.data.table);
+            const colorColumnSettings = item.options.colorColumn;
+            const { numericalOptions } = colorColumnSettings;
+            if (numericalOptions.bucketType !== 'custom') {
+                const numberUniqueValues = getUniqueCategoriesCount(data, colorColumnSettings);
+                const numberBuckets = numericalOptions.numberBuckets;
                 if (numberBuckets > numberUniqueValues) {
                     return {
                         message: {
-                            title: "notifications.numberBucketsExceedsDataSet.title",
-                            body: "notifications.numberBucketsExceedsDataSet.body",
+                            title: 'notifications.numberBucketsExceedsDataSet.title',
+                            body: 'notifications.numberBucketsExceedsDataSet.body',
                         },
                     };
                 }
             }
-            return null;
         }
         catch (err) {
-            return null;
+            console.log('Error processing /notification/numberBucketsExceedsDataSet', err);
         }
+        return null;
     },
 };

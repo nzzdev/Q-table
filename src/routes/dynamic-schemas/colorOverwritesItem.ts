@@ -7,8 +7,9 @@ import type {
   QTableConfigOptions,
   QTableDataRaw
 } from '../../interfaces';
+import type { Request, ServerRoute } from '@hapi/hapi';
 
-export default {
+const route: ServerRoute = {
   method: 'POST',
   path: '/dynamic-schema/colorOverwritesItem',
   options: {
@@ -16,8 +17,9 @@ export default {
       payload: Joi.object(),
     },
   },
-  handler: function (request, h): ReturnPayload {
-    const item = request.payload.item as Payload;
+  handler: function (request: Request): ReturnPayload {
+    const payload = request.payload as Payload;
+    const item = payload.item;
     const data = item.data.table;
 
     const colorColumnSettings = item.options.colorColumn;
@@ -30,6 +32,8 @@ export default {
     }
   },
 };
+
+export default route;
 
 function getDropdownSettingsNumerical(colorColumnSettings: ColorColumnSettings): ReturnPayload  {
   const ids: (number | null)[] = [null];
@@ -79,11 +83,13 @@ function getDropdownSettingsCategorical(data: QTableDataRaw, colorColumnSettings
  * Interfaces.
  */
 interface Payload {
-  data: {
-    table: QTableDataRaw,
-    metaData: DataMetaData,
-  },
-  options: QTableConfigOptions,
+  item: {
+    data: {
+      table: QTableDataRaw,
+      metaData: DataMetaData,
+    },
+    options: QTableConfigOptions,
+  }
 }
 
 interface ReturnPayload {

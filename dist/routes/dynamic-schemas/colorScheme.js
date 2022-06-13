@@ -1,5 +1,5 @@
 import Joi from 'joi';
-export default {
+const route = {
     method: 'POST',
     path: '/dynamic-schema/colorScheme',
     options: {
@@ -7,9 +7,10 @@ export default {
             payload: Joi.object(),
         },
     },
-    handler: function (request, h) {
-        const item = request.payload.item;
-        const numericalOptions = item.options.colorColumn.numericalOptions;
+    handler: function (request) {
+        const payload = request.payload;
+        const options = payload.item.options;
+        const numericalOptions = options.colorColumn.numericalOptions;
         if (numericalOptions.scale === 'sequential') {
             return {
                 enum: ['one', 'two', 'three', 'female', 'male'],
@@ -37,3 +38,4 @@ export default {
         };
     },
 };
+export default route;

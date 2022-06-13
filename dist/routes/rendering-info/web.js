@@ -44,7 +44,7 @@ const schemaString = JSON.parse(fs.readFileSync(resourcesDir + 'schema.json', {
 }));
 const ajv = new Ajv();
 const validate = ajv.compile(schemaString);
-function validateAgainstSchema(item, options) {
+function validateAgainstSchema(item) {
     if (validate(item)) {
         return item;
     }
@@ -52,21 +52,7 @@ function validateAgainstSchema(item, options) {
         throw Boom.badRequest(JSON.stringify(validate.errors));
     }
 }
-function validatePayload(payload, options, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (typeof payload !== 'object') {
-            return next(Boom.badRequest(), payload);
-        }
-        if (typeof payload.item !== 'object') {
-            return next(Boom.badRequest(), payload);
-        }
-        if (typeof payload.toolRuntimeConfig !== 'object') {
-            return next(Boom.badRequest(), payload);
-        }
-        yield validateAgainstSchema(payload.item, options);
-    });
-}
-export default {
+const route = {
     method: 'POST',
     path: '/rendering-info/web',
     options: {
@@ -74,10 +60,17 @@ export default {
             options: {
                 allowUnknown: true,
             },
-            payload: validatePayload,
+            payload: (payload) => __awaiter(void 0, void 0, void 0, function* () {
+                if (typeof payload !== 'object' ||
+                    typeof payload.item !== 'object' ||
+                    typeof payload.toolRuntimeConfig !== 'object') {
+                    throw Boom.badRequest('The given payload for this route is not correct.');
+                }
+                yield validateAgainstSchema(payload.item);
+            }),
         },
     },
-    handler: function (request, h) {
+    handler: function (request) {
         return __awaiter(this, void 0, void 0, function* () {
             const renderingInfo = {
                 polyfills: ['Promise'],
@@ -110,7 +103,7 @@ export default {
                 colorColumn,
                 numberOfRows: config.data.table.length - 1,
                 displayOptions: payload.toolRuntimeConfig.displayOptions || {},
-                noInteraction: payload.toolRuntimeConfig.noInteraction,
+                noInteraction: payload.toolRuntimeConfig.noInteraction || false,
                 id: `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, ''),
                 width,
                 initWithCardLayout: false,
@@ -251,3 +244,4 @@ function isColorColumnAvailable(request, config) {
         }
     });
 }
+export default route;

@@ -3,19 +3,32 @@ import { StructuredFootnote } from './helpers/footnotes';
 import { Minibar } from './helpers/minibars';
 
 export const enum LABEL_LEGEND_ID {
+  SMALL = 'small',
   MEDIAN = 'median',
+  LARGE = 'large',
   AVERAGE = 'average',
   NO_LABEL = 'noLabel',
 }
 
 export interface WebPayload {
   item: QTableConfig,
+  itemStateInDb: boolean,
   toolRuntimeConfig: ToolRuntimeConfig,
 }
 
 export type BucketType = 'ckmeans' | 'quantile' | 'equal' | 'custom';
 export type ColorColumnType = 'numerical' | 'categorical';
 export type QTableDataRaw = (string | null)[][];
+
+
+export const enum DivergingType {
+  BUCKET = 'bucket',
+  BORDER = 'border',
+};
+
+export type DivergingColorScaleFromBucket = `${DivergingType.BUCKET}-${number}`;
+export type DivergingColorScaleFromBorder = `${DivergingType.BORDER}-${number}`;
+export type NumericalScaleType = 'sequential' | DivergingColorScaleFromBucket | DivergingColorScaleFromBorder;
 
 export interface ColorOverwrites {
   textColor: string,
@@ -29,7 +42,7 @@ export interface ColorColumnSettings {
     labelLegend: LABEL_LEGEND_ID,
     bucketType: BucketType,
     numberBuckets: number,
-    scale: string,
+    scale: NumericalScaleType,
     colorScheme: string,
     colorOverwrites: ColorOverwrites[],
     customBuckets: string,
@@ -86,9 +99,9 @@ export interface QTableConfig {
 
 export interface QTableDataFormatted {
   type: string,
-  value: string,
+  value: string|null,
   classes: string[],
-  footnote: {
+  footnote?: {
     value: number,
     unicode: string,
     class: string | null,
@@ -100,7 +113,7 @@ export interface DisplayOptions {
 }
 
 export interface ToolRuntimeConfig {
-  displayOptions: DisplayOptions,
+  displayOptions?: DisplayOptions,
   fileRequestBaseUrl: string,
   toolBaseUrl: string,
   id: string,
@@ -109,8 +122,8 @@ export interface ToolRuntimeConfig {
   },
   isPure: Boolean,
   requestId: string,
-  markup: string,
-  noInteraction: boolean,
+  markup?: string,
+  noInteraction?: boolean,
 }
 
 export interface RenderingInfo {

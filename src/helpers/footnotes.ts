@@ -18,7 +18,7 @@ interface Spacing {
 }
 
 export function appendFootnoteAnnotationsToTableData(tableData: QTableDataFormatted[][], footnotes: StructuredFootnote[], options: QTableConfigOptions) {
-  const unicodes = {
+  const unicodes: Record<number, string> = {
     1: '\u00b9',
     2: '\u00b2',
     3: '\u00b3',

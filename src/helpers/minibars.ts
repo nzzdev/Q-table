@@ -157,7 +157,7 @@ function getMinibarType(numbers: number[]): MINIBAR_TYPE {
   return MINIBAR_TYPE.MIXED;
 }
 
-function getPositiveColor(type): string {
+function getPositiveColor(type: string): string {
   let color;
 
   if (type === 'mixed') {
@@ -169,7 +169,7 @@ function getPositiveColor(type): string {
   return color;
 }
 
-function getNegativeColor(type): string {
+function getNegativeColor(type: string): string {
   let color;
 
   if (type === 'mixed') {

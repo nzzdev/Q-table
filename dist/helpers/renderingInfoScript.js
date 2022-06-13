@@ -30,12 +30,13 @@ export function getDefaultScript(context) {
 export function getCardLayoutScript(context) {
     const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
     const dataObject = `window.${context.id}Data`;
+    const minibar = context.minibar;
     let renderMinibarsFunction = "";
-    if (Object.keys(context.minibar).length !== 0) {
+    if (minibar !== null) {
         renderMinibarsFunction = `renderMinibars${context.id}()`;
     }
     let renderColorColumnNumericalLegendFunction = "";
-    if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+    if (context.colorColumn && context.colorColumn.colorColumnType === 'numerical') {
         renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.width)`;
     }
     return `

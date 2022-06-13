@@ -12,14 +12,17 @@ export default {
         },
         tags: ['api'],
     },
-    handler: function (request, h) {
+    handler: function (request) {
         try {
-            const item = request.payload.item;
-            // removing the header row first
-            item.data.table = getDataWithoutHeaderRow(item.data.table);
-            if (item.options.colorColumn.bucketType === 'custom') {
-                const bucketBorders = getCustomBucketBorders(item.options.colorColumn.customBuckets);
-                const values = getNumericalValuesByColumn(item.data.table, item.options.colorColumn.selectedColumn);
+            const payload = request.payload;
+            const item = payload.item;
+            const data = getDataWithoutHeaderRow(item.data.table);
+            const colorColumnSettings = item.options.colorColumn;
+            const { numericalOptions, selectedColumn } = colorColumnSettings;
+            const { bucketType, customBuckets } = numericalOptions;
+            if (bucketType === 'custom' && typeof selectedColumn === 'number') {
+                const bucketBorders = getCustomBucketBorders(customBuckets);
+                const values = getNumericalValuesByColumn(data, selectedColumn);
                 const numberValues = getNonNullValues(values);
                 const metaData = getMetaData(values, numberValues, 0);
                 if (bucketBorders[0] > metaData.minValue ||
@@ -32,10 +35,10 @@ export default {
                     };
                 }
             }
-            return null;
         }
         catch (err) {
-            return null;
+            console.log('Error processing /notification/customBuckets', err);
         }
+        return null;
     },
 };

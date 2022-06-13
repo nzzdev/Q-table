@@ -1,8 +1,9 @@
 import Joi from 'joi';
 import { getCategoricalColumns } from '../../helpers/data.js';
 import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces';
+import type { Request, ServerRoute } from '@hapi/hapi';
 
-export default {
+const route: ServerRoute = {
   method: 'POST',
   path: '/dynamic-schema/selectedColorColumn',
   options: {
@@ -10,8 +11,10 @@ export default {
       payload: Joi.object(),
     },
   },
-  handler: function (request, h): ReturnPayload {
-    const item = request.payload.item as Payload;
+  handler: function (request: Request): ReturnPayload {
+    const payload = request.payload as Payload;
+    const item = payload.item;
+
     const settings = getDropdownSettings(item.data.table);
 
     return {
@@ -22,6 +25,8 @@ export default {
       };
   },
 };
+
+export default route;
 
 /**
  * Internal.
@@ -52,11 +57,13 @@ function getDropdownSettings(data: QTableDataRaw): DropdownSettings {
  * Interfaces.
  */
 interface Payload {
-  data: {
-    table: QTableDataRaw,
-    metaData: DataMetaData,
-  },
-  options: QTableConfigOptions,
+  item : {
+    data: {
+      table: QTableDataRaw,
+      metaData: DataMetaData,
+    },
+    options: QTableConfigOptions,
+  }
 }
 
 interface DropdownSettings {

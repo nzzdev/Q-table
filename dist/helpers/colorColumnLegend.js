@@ -4,10 +4,11 @@ import * as simpleStatistics from 'simple-statistics';
 const ckmeans = simpleStatistics.ckmeans;
 const quantile = simpleStatistics.quantile;
 const widthConfig = {
-    legendSmall: 640,
-    legendLarge: 100,
+    ["small" /* LABEL_LEGEND_ID.SMALL */]: 640,
+    ["large" /* LABEL_LEGEND_ID.LARGE */]: 100,
     ["average" /* LABEL_LEGEND_ID.AVERAGE */]: 100,
     ["median" /* LABEL_LEGEND_ID.MEDIAN */]: 60,
+    ["noLabel" /* LABEL_LEGEND_ID.NO_LABEL */]: 0 // Here to avoid TS linting errors.
 };
 export function getNumericalLegend(selectedColumn, data, colorColumnSettings, maxDigitsAfterComma, width) {
     const { numericalOptions } = colorColumnSettings;
@@ -56,7 +57,10 @@ export function getCategoricalLegend(data, colorColumnSettings) {
         categories,
     };
 }
-export function getCategoryColor(index, customColorMap) {
+/**
+ * Internal.
+ */
+function getCategoryColor(index, customColorMap) {
     const customColor = customColorMap.get(index);
     const colorScheme = digitWords[index];
     const colorClass = `s-viz-color-${colorScheme}-5`;
@@ -68,9 +72,6 @@ export function getCategoryColor(index, customColorMap) {
         textColor: getTextColor(customColor, colorClass),
     };
 }
-/**
- * Internal.
- */
 function getLabelLegend(labelType, metaData, width, maxDigitsAfterComma) {
     if (labelType === "noLabel" /* LABEL_LEGEND_ID.NO_LABEL */)
         return null;
@@ -209,10 +210,10 @@ function getDescriptionAlignment(id, value, position, width, maxDigitsAfterComma
 function getAvailableSpaceForLabel(position, width) {
     let legendPixelWidth;
     if (width > 640) {
-        legendPixelWidth = widthConfig.legendSmall;
+        legendPixelWidth = widthConfig["small" /* LABEL_LEGEND_ID.SMALL */];
     }
     else {
-        legendPixelWidth = (width * widthConfig.legendLarge) / 100;
+        legendPixelWidth = (width * widthConfig["large" /* LABEL_LEGEND_ID.LARGE */]) / 100;
     }
     return (legendPixelWidth * (100 - position)) / 100;
 }

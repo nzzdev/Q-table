@@ -1,7 +1,8 @@
 import Joi from 'joi';
 import type { QTableConfigOptions } from '../../interfaces';
+import type { Request, ServerRoute } from '@hapi/hapi';
 
-export default {
+const route: ServerRoute = {
   method: 'POST',
   path: '/dynamic-schema/colorScheme',
   options: {
@@ -9,9 +10,10 @@ export default {
       payload: Joi.object(),
     },
   },
-  handler: function (request, h): ReturnPayload {
-    const item = request.payload.item as Payload;
-    const numericalOptions = item.options.colorColumn.numericalOptions;
+  handler: function (request: Request): ReturnPayload {
+    const payload = request.payload as Payload;
+    const options = payload.item.options;
+    const numericalOptions = options.colorColumn.numericalOptions;
 
     if (numericalOptions.scale === 'sequential') {
       return {
@@ -42,11 +44,15 @@ export default {
   },
 };
 
+export default route;
+
 /**
  * Interfaces.
  */
 interface Payload {
-  options: QTableConfigOptions,
+  item: {
+    options: QTableConfigOptions,
+  }
 }
 
 interface ReturnPayload {

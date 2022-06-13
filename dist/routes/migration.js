@@ -8,15 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import Joi from 'joi';
-import * as migrationToV2 from '../../migration-scripts/to-v2.0.0.js';
-import * as migrationToV3 from '../../migration-scripts/to-v3.0.0.js';
+import * as migrationToV2 from '../migration-scripts/to-v2.0.0.js';
+import * as migrationToV3 from '../migration-scripts/to-v3.0.0.js';
 // register migration scripts here in order of version,
 // i.e. list the smallest version first!
 const migrationScripts = [
     migrationToV2,
     migrationToV3,
 ];
-export default {
+const route = {
     method: 'POST',
     path: '/migration',
     options: {
@@ -27,7 +27,8 @@ export default {
         }
     },
     handler: (request, h) => __awaiter(void 0, void 0, void 0, function* () {
-        let item = request.payload.item;
+        const payload = request.payload;
+        let item = payload.item;
         const results = migrationScripts.map(script => {
             const result = script.migrate(item);
             if (result.isChanged) {
@@ -46,3 +47,4 @@ export default {
         return h.response().code(304);
     })
 };
+export default route;

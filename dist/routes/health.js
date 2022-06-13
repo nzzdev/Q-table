@@ -1,10 +1,11 @@
-export default {
+const route = {
     path: '/health',
     method: 'GET',
     options: {
         tags: ['api']
     },
-    handler: (request, h) => {
+    handler: () => {
         return 'ok';
     }
 };
+export default route;

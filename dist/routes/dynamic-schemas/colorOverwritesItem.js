@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { getNumberBuckets } from '../../helpers/colorColumn.js';
 import { getDataWithoutHeaderRow, getUniqueCategoriesObject } from '../../helpers/data.js';
-export default {
+const route = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwritesItem',
     options: {
@@ -9,8 +9,9 @@ export default {
             payload: Joi.object(),
         },
     },
-    handler: function (request, h) {
-        const item = request.payload.item;
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
         const data = item.data.table;
         const colorColumnSettings = item.options.colorColumn;
         const colorColumnType = colorColumnSettings.colorColumnType;
@@ -22,6 +23,7 @@ export default {
         }
     },
 };
+export default route;
 function getDropdownSettingsNumerical(colorColumnSettings) {
     const ids = [null];
     const titles = [];

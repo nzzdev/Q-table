@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { getCategoricalColumns } from '../../helpers/data.js';
-export default {
+const route = {
     method: 'POST',
     path: '/dynamic-schema/selectedColorColumn',
     options: {
@@ -8,8 +8,9 @@ export default {
             payload: Joi.object(),
         },
     },
-    handler: function (request, h) {
-        const item = request.payload.item;
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
         const settings = getDropdownSettings(item.data.table);
         return {
             enum: settings.ids,
@@ -19,6 +20,7 @@ export default {
         };
     },
 };
+export default route;
 /**
  * Internal.
  */

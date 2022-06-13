@@ -3,7 +3,8 @@ import Joi from 'joi';
 import { getNumericColumns } from '../helpers/data.js';
 import { getMinibarNumbersWithType } from '../helpers/minibars.js';
 import { hasCustomBuckets } from '../helpers/colorColumn.js';
-import type { AvailabilityResponseObject, QTableConfig } from '../interfaces';
+import type { AvailabilityResponseObject, QTableConfig, WebPayload } from '../interfaces';
+import type { Request } from 'hapi__hapi'
 
 export default {
   method: 'POST',
@@ -13,8 +14,9 @@ export default {
       payload: Joi.object(),
     },
   },
-  handler: function (request, h): AvailabilityResponseObject | Boom.Boom {
-    const item = request.payload.item as QTableConfig;
+  handler: function (request: Request): AvailabilityResponseObject | Boom.Boom {
+    const payload = request.payload as WebPayload;
+    const item = payload.item as QTableConfig;
     const optionName = request.params.optionName as string;
 
     if (optionName === 'cardLayoutIfSmall') {

@@ -1,11 +1,12 @@
 import Joi from 'joi';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import type { Request, ServerRoute, ResponseToolkit } from '@hapi/hapi';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const localesDir = __dirname + '/../../resources/locales/';
 
-export default {
+const route: ServerRoute = {
   path: '/locales/{lng}/translation.json',
   method: 'GET',
   options: {
@@ -17,9 +18,11 @@ export default {
       }
     }
   },
-  handler: (request, h) => {
+  handler: (request: Request, h: ResponseToolkit) => {
     return h
       .file(localesDir + request.params.lng + '/translation.json')
       .type('application/json');
   }
 };
+
+export default route;

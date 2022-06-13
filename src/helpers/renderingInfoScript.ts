@@ -1,4 +1,6 @@
-export function getDefaultScript(context) {
+import { WebContextObject } from '../interfaces';
+
+export function getDefaultScript(context: WebContextObject) {
   const dataObject = `window.${context.id}Data`;
   return `
     if (!window.q_domready) {
@@ -28,17 +30,18 @@ export function getDefaultScript(context) {
   `;
 }
 
-export function getCardLayoutScript(context) {
+export function getCardLayoutScript(context: WebContextObject) {
   const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
   const dataObject = `window.${context.id}Data`;
-
+  const minibar = context.minibar;
   let renderMinibarsFunction = "";
-  if (Object.keys(context.minibar).length !== 0) {
+
+  if (minibar !== null) {
     renderMinibarsFunction = `renderMinibars${context.id}()`;
   }
 
   let renderColorColumnNumericalLegendFunction = "";
-  if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+  if (context.colorColumn && context.colorColumn.colorColumnType === 'numerical') {
     renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.width)`;
   }
 
@@ -88,7 +91,7 @@ export function getCardLayoutScript(context) {
   `;
 }
 
-export function getShowMoreButtonScript(context) {
+export function getShowMoreButtonScript(context: WebContextObject) {
   const dataObject = `window.${context.id}Data`;
   const handleShowMoreButtonFunctionName = `handleShowMoreButton${context.id}`;
   const hideRowsFunctionName = `hideRows${context.id}`;
@@ -152,7 +155,7 @@ export function getShowMoreButtonScript(context) {
   `;
 }
 
-export function getMinibarsScript(context) {
+export function getMinibarsScript(context: WebContextObject) {
   const dataObject = `window.${context.id}Data`;
   const getColumnFunctionName = `getColumn${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
@@ -222,7 +225,7 @@ export function getMinibarsScript(context) {
   `;
 }
 
-export function getSearchFormInputScript(context) {
+export function getSearchFormInputScript(context: WebContextObject) {
   const dataObject = `window.${context.id}Data`;
   const searchFormInputAddEventListeners = `searchFormInputAddEventListeners${context.id}`;
   const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
@@ -310,7 +313,7 @@ export function getSearchFormInputScript(context) {
   `;
 }
 
-export function getColorColumnScript(context) {
+export function getColorColumnScript(context: WebContextObject) {
 
   const dataObject = `window.${context.id}Data`;
   const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;

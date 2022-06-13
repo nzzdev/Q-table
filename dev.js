@@ -5,5 +5,3 @@ process.env.METHOD_BOX_ARTICLE = `{
 
 
 import './index.js';
-
-// require("./index.cjs");

@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { getNumericColumns } from '../../helpers/data.js';
-export default {
+const route = {
     method: 'POST',
     path: '/dynamic-schema/selectedColumnMinibar',
     options: {
@@ -8,8 +8,9 @@ export default {
             payload: Joi.object(),
         },
     },
-    handler: function (request, h) {
-        const item = request.payload.item;
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
         const settings = getMinibarDropdownSettings(item.data.table);
         return {
             enum: settings.ids,
@@ -39,3 +40,4 @@ function getMinibarDropdownSettings(data) {
     }
     return dropdownSettings;
 }
+export default route;
