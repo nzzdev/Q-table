@@ -1,6 +1,5 @@
 /// <reference path="../modules.d.ts" />
 
-import Array2D from 'array2d';
 import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 
@@ -11,7 +10,6 @@ import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
-
 
 // Formatting for numbers of >= 10000.
 const formatLocale = d3FormatLocale({
@@ -40,11 +38,14 @@ export function getNumericColumns(data: QTableDataRaw): IndexedColumnTitle[] {
 
   // data[0].length is undefined when creating a new item.
   if (data[0] !== undefined) {
-    Array2D.forRow<string>(data, 0, (cell, rowIndex, columnIndex) => {
+    const row = data[0];
+
+    for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
       if (columns[columnIndex] && columns[columnIndex].isNumeric) {
+        const cell = row[columnIndex] as string; // TODO: check.
         numericColumns.push({ title: cell, index: columnIndex });
       }
-    });
+    }
   }
 
   return numericColumns;
@@ -55,9 +56,12 @@ export function getCategoricalColumns(data: QTableDataRaw): IndexedColumnTitle[]
 
   // data[0].length is undefined when creating a new item
   if (data[0] !== undefined) {
-    Array2D.forRow<string>(data, 0, (cell, rowIndex, columnIndex) => {
+    const row = data[0];
+
+    for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
+      const cell = row[columnIndex] as string; // TODO: check.
       categoricalColumns.push({ title: cell, index: columnIndex });
-    });
+    }
   }
 
   return categoricalColumns;
@@ -81,7 +85,18 @@ function getColumnsType(data: QTableDataRaw): ColumnType[] {
   const columns: ColumnType[]  = [];
   const table = getDataWithoutHeaderRow(data);
 
-  Array2D.eachColumn<string|null>(table, (column) => {
+
+  const columnAmount = data[0].length;
+
+  for (let c = 0; c < columnAmount; c++) {
+    const column: (string|null)[] = [];
+
+    // Take all columns in one array
+
+    for (let r = 0; r < data.length; r++) {
+      column.push(data[r][c])
+    }
+
     let withFormating = false;
     const columnNumeric = isColumnNumeric(column);
 
@@ -102,8 +117,7 @@ function getColumnsType(data: QTableDataRaw): ColumnType[] {
     }
 
     columns.push({ isNumeric: columnNumeric, withFormating });
-  });
-
+  }
 
   return columns;
 }
@@ -119,14 +133,16 @@ function isColumnNumeric(column: (string|null)[]): boolean {
   }
 
   return false;
-
 }
 
 export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): QTableDataFormatted[][] {
   const columns = getColumnsType(data);
   let tableData: QTableDataFormatted[][] = [];
 
-  Array2D.eachRow<string|null>(data, (row, rowIndex) => {
+
+  for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+    const row = data[rowIndex];
+
     let cells = row.map((cell, columnIndex) => {
       let type = 'text';
       let value = cell;
@@ -162,7 +178,7 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
     });
 
     tableData.push(cells);
-  });
+  }
 
   if (footnotes.length > 0) {
     tableData = appendFootnoteAnnotationsToTableData(tableData, footnotes, options);

@@ -1,60 +1,97 @@
-// These lines make "require" available.
-// We do this because otherwise we need a build system
-// to bundle this and it is too much work.
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
 import type { ServerRoute } from '@hapi/hapi';
 
-const fixtureDataDirectory = '../../../resources/fixtures/data';
+import twoColumn from '../../../resources/fixtures/data/two-column.json';
+import fourColumn from '../../../resources/fixtures/data/four-column.json';
+import fourColumnNoHeader from '../../../resources/fixtures/data/four-column-no-header.json';
+import datesInData from '../../../resources/fixtures/data/dates-in-data.json';
+import mixedNumbersAndTextInCell from '../../../resources/fixtures/data/mixed-numbers-and-text-in-cell.json';
+import hyphenSignAsNumber from '../../../resources/fixtures/data/hyphen-sign-as-number.json';
+import multilineText from '../../../resources/fixtures/data/multiline-text.json';
+import showMoreButton from '../../../resources/fixtures/data/show-more-button.json';
+import disappearingColumns from '../../../resources/fixtures/data/disappearing-columns.json';
+import columnSpacing from '../../../resources/fixtures/data/column-spacing.json';
+import minibarsMixed from '../../../resources/fixtures/data/minibars-mixed.json';
+import minibarsPositive from '../../../resources/fixtures/data/minibars-positive.json';
+import minibarsMegative from '../../../resources/fixtures/data/minibars-negative.json';
+import minibarsHeaderWithNumbers from '../../../resources/fixtures/data/minibars-header-with-numbers.json';
+import minibarsCustomClassName from '../../../resources/fixtures/data/minibars-custom-className.json';
+import minibarsCustomColorCode from '../../../resources/fixtures/data/minibars-custom-colorCode.json';
+import displayFootnotes from '../../../resources/fixtures/data/display-footnotes.json';
+import displayMergedFootnotes from '../../../resources/fixtures/data/display-merged-footnotes.json';
+import displayMergedFootnotesMultiple from '../../../resources/fixtures/data/display-merged-footnotes-multiple.json';
+import displayFootnotesBeforeMinibar from '../../../resources/fixtures/data/display-footnotes-before-minibar.json';
+import displayAlotOfFootnotes from '../../../resources/fixtures/data/display-alot-of-footnotes.json';
+import hideFootnotesInHeader from '../../../resources/fixtures/data/hide-footnotes-in-header.json';
+import displayFootnotesInCardlayout from '../../../resources/fixtures/data/display-footnotes-in-cardlayout.json';
+import footnotesPositiveMinibars from '../../../resources/fixtures/data/footnotes-positive-minibars.json';
+import footnotesNegativeMinibars from '../../../resources/fixtures/data/footnotes-negative-minibars.json';
+import footnotesMixedMinibars from '../../../resources/fixtures/data/footnotes-mixed-minibars.json';
+import cardlayout from '../../../resources/fixtures/data/cardlayout.json';
+import cardlayoutMobile from '../../../resources/fixtures/data/cardlayout-mobile.json';
+import lotsOfData from '../../../resources/fixtures/data/lots-of-data.json';
+import specialCharacters from '../../../resources/fixtures/data/special-characters.json';
+import formattedNumbers from '../../../resources/fixtures/data/formatted-numbers.json';
+import formattedNumbersMixed from '../../../resources/fixtures/data/formatted-numbers-mixed.json';
+import formattedNumbersNegative from '../../../resources/fixtures/data/formatted-numbers-negative.json';
+import tableSearchHidden from '../../../resources/fixtures/data/table-search-hidden.json';
+import tableSearchShow from '../../../resources/fixtures/data/table-search-show.json';
+import tableSearchWithMultipleColumns from '../../../resources/fixtures/data/table-search-with-multiple-columns.json';
+import colorColumnNumerical from '../../../resources/fixtures/data/colorColumn-numerical.json';
+import colorColumnNumericalNoLabel from '../../../resources/fixtures/data/colorColumn-numerical-no-label.json';
+import colorColumnNumericalNoData from '../../../resources/fixtures/data/colorColumn-numerical-no-data.json';
+import colorColumnNumericalFootnotes from '../../../resources/fixtures/data/colorColumn-numerical-footnotes.json';
+import colorColumnNumericalCustomColors from '../../../resources/fixtures/data/colorColumn-numerical-custom-colors.json';
+import colorColumnCategorical from '../../../resources/fixtures/data/colorColumn-categorical.json';
+import colorColumnCategoricalFootnotes from '../../../resources/fixtures/data/colorColumn-categorical-footnotes.json';
+import colorColumnCategoricalCustomOrder from '../../../resources/fixtures/data/colorColumn-categorical-custom-order.json';
+import colorColumnCategoricalCustomColors from '../../../resources/fixtures/data/colorColumn-categorical-custom-colors.json';
 
-// Provide every fixture data file present in ../../resources/fixtures/data
 const fixtureData = [
-  require(`${fixtureDataDirectory}/two-column.json`),
-  require(`${fixtureDataDirectory}/four-column.json`),
-  require(`${fixtureDataDirectory}/four-column-no-header.json`),
-  require(`${fixtureDataDirectory}/dates-in-data.json`),
-  require(`${fixtureDataDirectory}/mixed-numbers-and-text-in-cell.json`),
-  require(`${fixtureDataDirectory}/hyphen-sign-as-number.json`),
-  require(`${fixtureDataDirectory}/multiline-text.json`),
-  require(`${fixtureDataDirectory}/show-more-button.json`),
-  require(`${fixtureDataDirectory}/disappearing-columns.json`),
-  require(`${fixtureDataDirectory}/column-spacing.json`),
-  require(`${fixtureDataDirectory}/minibars-mixed.json`),
-  require(`${fixtureDataDirectory}/minibars-positive.json`),
-  require(`${fixtureDataDirectory}/minibars-negative.json`),
-  require(`${fixtureDataDirectory}/minibars-header-with-numbers.json`),
-  require(`${fixtureDataDirectory}/minibars-custom-className.json`),
-  require(`${fixtureDataDirectory}/minibars-custom-colorCode.json`),
-  require(`${fixtureDataDirectory}/display-footnotes.json`),
-  require(`${fixtureDataDirectory}/display-merged-footnotes.json`),
-  require(`${fixtureDataDirectory}/display-merged-footnotes-multiple.json`),
-  require(`${fixtureDataDirectory}/display-footnotes-before-minibar.json`),
-  require(`${fixtureDataDirectory}/display-alot-of-footnotes.json`),
-  require(`${fixtureDataDirectory}/hide-footnotes-in-header.json`),
-  require(`${fixtureDataDirectory}/display-footnotes-in-cardlayout.json`),
-  require(`${fixtureDataDirectory}/footnotes-positive-minibars.json`),
-  require(`${fixtureDataDirectory}/footnotes-negative-minibars.json`),
-  require(`${fixtureDataDirectory}/footnotes-mixed-minibars.json`),
-  require(`${fixtureDataDirectory}/cardlayout.json`),
-  require(`${fixtureDataDirectory}/cardlayout-mobile.json`),
-  require(`${fixtureDataDirectory}/lots-of-data.json`),
-  require(`${fixtureDataDirectory}/special-characters.json`),
-  require(`${fixtureDataDirectory}/formatted-numbers.json`),
-  require(`${fixtureDataDirectory}/formatted-numbers-mixed.json`),
-  require(`${fixtureDataDirectory}/formatted-numbers-negative.json`),
-  require(`${fixtureDataDirectory}/table-search-hidden.json`),
-  require(`${fixtureDataDirectory}/table-search-show.json`),
-  require(`${fixtureDataDirectory}/table-search-with-multiple-columns.json`),
-  require(`${fixtureDataDirectory}/colorColumn-numerical.json`),
-  require(`${fixtureDataDirectory}/colorColumn-numerical-no-label.json`),
-  require(`${fixtureDataDirectory}/colorColumn-numerical-no-data.json`),
-  require(`${fixtureDataDirectory}/colorColumn-numerical-footnotes.json`),
-  require(`${fixtureDataDirectory}/colorColumn-numerical-custom-colors.json`),
-  require(`${fixtureDataDirectory}/colorColumn-categorical.json`),
-  require(`${fixtureDataDirectory}/colorColumn-categorical-footnotes.json`),
-  require(`${fixtureDataDirectory}/colorColumn-categorical-custom-order.json`),
-  require(`${fixtureDataDirectory}/colorColumn-categorical-custom-colors.json`),
+  twoColumn,
+  fourColumn,
+  fourColumnNoHeader,
+  datesInData,
+  mixedNumbersAndTextInCell,
+  hyphenSignAsNumber,
+  multilineText,
+  showMoreButton,
+  disappearingColumns,
+  columnSpacing,
+  minibarsMixed,
+  minibarsPositive,
+  minibarsMegative,
+  minibarsHeaderWithNumbers,
+  minibarsCustomClassName,
+  minibarsCustomColorCode,
+  displayFootnotes,
+  displayMergedFootnotes,
+  displayMergedFootnotesMultiple,
+  displayFootnotesBeforeMinibar,
+  displayAlotOfFootnotes,
+  hideFootnotesInHeader,
+  displayFootnotesInCardlayout,
+  footnotesPositiveMinibars,
+  footnotesNegativeMinibars,
+  footnotesMixedMinibars,
+  cardlayout,
+  cardlayoutMobile,
+  lotsOfData,
+  specialCharacters,
+  formattedNumbers,
+  formattedNumbersMixed,
+  formattedNumbersNegative,
+  tableSearchHidden,
+  tableSearchShow,
+  tableSearchWithMultipleColumns,
+  colorColumnNumerical,
+  colorColumnNumericalNoLabel,
+  colorColumnNumericalNoData,
+  colorColumnNumericalFootnotes,
+  colorColumnNumericalCustomColors,
+  colorColumnCategorical,
+  colorColumnCategoricalFootnotes,
+  colorColumnCategoricalCustomOrder,
+  colorColumnCategoricalCustomColors,
 ];
 
 const route: ServerRoute = {

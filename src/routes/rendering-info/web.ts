@@ -1,13 +1,6 @@
 // These lines make "require" available.
-// Todo comment.
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-// Setup svelte environment.
-require('svelte/register');
 
 import type { Request, ServerRoute } from '@hapi/hapi';
 import type { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject  } from '../../interfaces';
@@ -15,23 +8,14 @@ import type { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayloa
 // Require tools.
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
-import fs from 'fs';
 import UglifyJS from 'uglify-js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 // Directories.
-const rootDir = __dirname + '/../../../';
-const distDir = rootDir + 'dist/';
+const stylesDir = './styles/';
 
-const resourcesDir = rootDir + 'resources/';
-const viewsDir = distDir + 'components/';
-const stylesDir = distDir + 'styles/';
+import tableTemplate2 from '../../components/Table.svelte';
 
-// @ts-ignore
-import tableTemplate2 from '../../components/Table.js';
-// console.log('aa', tableTemplate2);
-
+// Fill only exists in dist folder.
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
@@ -42,13 +26,7 @@ import { getColorColumn } from '../../helpers/colorColumn.js';
 import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
 
-// POSTed item will be validated against given schema
-// hence we fetch the JSON schema...
-const schemaString = JSON.parse(
-  fs.readFileSync(resourcesDir + 'schema.json', {
-    encoding: 'utf-8',
-  })
-);
+import schemaString from '../../../resources/schema.json';
 
 const ajv = new Ajv();
 const validate = ajv.compile(schemaString);

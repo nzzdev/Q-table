@@ -15,7 +15,9 @@ function elementCount(markup: string, selector: string) {
 let server: Hapi.Server;
 
 // @ts-ignore
-import routes from '../dist/routes/routes.js';
+// import routes from '../dist/routes/routes.js';
+
+import routes2 from '../dist/routes.js';
 
 // const routes: ServerRoute[] = [];
 
@@ -25,7 +27,7 @@ beforeAll(async () => {
       port: process.env.PORT || 3000,
     });
     server.validator(Joi);
-    server.route(routes);
+    server.route(routes2);
   } catch (err) {
     expect(err).not.toBeDefined();
   }
@@ -48,6 +50,8 @@ describe('column headers', () => {
     // @ts-ignore
     const markup = response.result.markup as unknown as string;
 
+
+    console.log(response.result);
 
     elementCount(markup, '.q-table-cell--head').then(
       (value) => {

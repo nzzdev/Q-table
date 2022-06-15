@@ -1,16 +1,12 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import schema from '../../resources/schema.json';
+import displayOptionsSchema from '../../resources/display-options-schema.json';
 import type { Request, ResponseToolkit, ServerRoute } from '@hapi/hapi'
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const resourcesDir = __dirname + '/../../resources/';
-
 
 const schemaRoute: ServerRoute = {
   method: 'GET',
   path: '/schema.json',
   handler: function(request: Request, h: ResponseToolkit) {
-    return h.file(resourcesDir + 'schema.json');
+    return h.response(schema);
   }
 }
 
@@ -18,7 +14,7 @@ const displayOptionsRoute: ServerRoute = {
   method: 'GET',
   path: '/display-options-schema.json',
   handler: function(request: Request, h: ResponseToolkit) {
-    return h.file(resourcesDir + 'display-options-schema.json');
+    return h.response(displayOptionsSchema);
   }
 }
 

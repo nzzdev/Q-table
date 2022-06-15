@@ -1,7 +1,3 @@
-// The references is required to register the inert extension onto hapi__hapi so that
-// the h.file line is registered correctly by typescript.
-/// <reference path="../../node_modules/@types/hapi__inert/index.d.ts"/>
-
 import path from 'path';
 import type { Request, ResponseToolkit } from 'hapi__hapi'
 import { dirname } from 'path';
@@ -14,7 +10,7 @@ export default {
   path: '/stylesheet/{filename}.{hash}.{extension}',
   options: {
     files: {
-      relativeTo: path.join(__dirname, '/../styles/')
+      relativeTo:  path.join(__dirname, '/styles/')
     }
   },
   handler: function(request: Request, h: ResponseToolkit) {

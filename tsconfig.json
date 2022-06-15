@@ -3,12 +3,13 @@
         "allowSyntheticDefaultImports": true,
         "declaration": false,
         "esModuleInterop": true,
-        "module": "es2022",
+        "module": "es2020",
         "moduleResolution": "node",
         "noImplicitAny": true,
         "strictNullChecks": true,
         "target": "ES2015",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "types": ["svelte", "jest"]
     },
     "ts-node": {
         "esm": true,
