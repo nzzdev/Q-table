@@ -1,19 +1,19 @@
-const Lab = require("@hapi/lab");
-const Code = require("@hapi/code");
-const Hapi = require("@hapi/hapi");
-const Joi = require("joi");
+const Lab = require('@hapi/lab');
+const Code = require('@hapi/code');
+const Hapi = require('@hapi/hapi');
+const Joi = require('joi');
 const lab = (exports.lab = Lab.script());
-const jsdom = require("jsdom");
+const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
-const minify = require("html-minifier").minify;
+const minify = require('html-minifier').minify;
 
 const expect = Code.expect;
 const before = lab.before;
 const after = lab.after;
 const it = lab.it;
 
-const routes = require("../routes/routes.js");
-const { row } = require("array2d");
+const routes = require('../routes/routes.js');
+const { row } = require('array2d');
 let server;
 
 before(async () => {
@@ -54,35 +54,35 @@ function elementCount(markup, selector) {
   });
 }
 
-lab.experiment("column headers", () => {
-  it("shows column headers", async () => {
+lab.experiment('column headers', () => {
+  it('shows column headers', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/four-column.json"),
+        item: require('../resources/fixtures/data/four-column.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, ".q-table-cell--head").then(
+    elementCount(response.result.markup, '.q-table-cell--head').then(
       (value) => {
         expect(value).to.be.equal(4);
       }
     );
   });
 
-  it("doesn't show column headers", async () => {
+  it('doesn\'t show column headers', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/four-column-no-header.json"),
+        item: require('../resources/fixtures/data/four-column-no-header.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, ".q-table-cell--head").then(
+    elementCount(response.result.markup, '.q-table-cell--head').then(
       (value) => {
         expect(value).to.be.equal(0);
       }
@@ -90,35 +90,35 @@ lab.experiment("column headers", () => {
   });
 });
 
-lab.experiment("cell values", () => {
-  it("should display special characters as text", async () => {
+lab.experiment('cell values', () => {
+  it('should display special characters as text', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/special-characters.json"),
+        item: require('../resources/fixtures/data/special-characters.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, ".q-table__cell--text").then(
+    elementCount(response.result.markup, '.q-table__cell--text').then(
       (value) => {
         expect(value).to.be.equals(32);
       }
     );
   });
 
-  it("should display > 10000 show formatted", async () => {
+  it('should display > 10000 show formatted', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/formatted-numbers.json"),
+        item: require('../resources/fixtures/data/formatted-numbers.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, ".q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)").then(
+    elements(response.result.markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
       (elements) => {
         elements.forEach((element) => {
           expect(element.innerHTML.charCodeAt(8)).to.be.equals(8197);
@@ -127,34 +127,34 @@ lab.experiment("cell values", () => {
     );
   });
 
-  it("should display < -10000 show formatted", async () => {
+  it('should display < -10000 show formatted', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/formatted-numbers-negative.json"),
+        item: require('../resources/fixtures/data/formatted-numbers-negative.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, ".q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)").then(
+    elements(response.result.markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
       (elements) => {
         expect(elements[1].innerHTML.charCodeAt(9)).to.be.equals(8197);
       }
     );
   });
 
-  it("should display > 1000 when column contains >10000", async () => {
+  it('should display > 1000 when column contains >10000', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/formatted-numbers-mixed.json"),
+        item: require('../resources/fixtures/data/formatted-numbers-mixed.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, ".q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)").then(
+    elements(response.result.markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
       (elements) => {
         expect(elements[0].innerHTML.charCodeAt(7)).to.be.equals(8197);
 
@@ -163,50 +163,50 @@ lab.experiment("cell values", () => {
   });
 });
 
-lab.experiment("cardlayout", () => {
-  it("shows the cardlayout in mobile width", async () => {
+lab.experiment('cardlayout', () => {
+  it('shows the cardlayout in mobile width', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/cardlayout.json"),
-        toolRuntimeConfig: { size: { width: [350, "<"] } },
+        item: require('../resources/fixtures/data/cardlayout.json'),
+        toolRuntimeConfig: { size: { width: [350, '<'] } },
       },
     });
 
-    elementCount(response.result.markup, ".q-table--card-layout").then(
+    elementCount(response.result.markup, '.q-table--card-layout').then(
       (value) => {
         expect(value).to.be.equal(1);
       }
     );
   });
-  it("shows the cardlayout in article width", async () => {
+  it('shows the cardlayout in article width', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/cardlayout.json"),
-        toolRuntimeConfig: { size: { width: [500, ">"] } },
+        item: require('../resources/fixtures/data/cardlayout.json'),
+        toolRuntimeConfig: { size: { width: [500, '>'] } },
       },
     });
 
-    elementCount(response.result.markup, ".q-table--card-layout").then(
+    elementCount(response.result.markup, '.q-table--card-layout').then(
       (value) => {
         expect(value).to.be.equal(1);
       }
     );
   });
-  it("shows the cardlayout in full width", async () => {
+  it('shows the cardlayout in full width', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/cardlayout.json"),
-        toolRuntimeConfig: { size: { width: [800, ">"] } },
+        item: require('../resources/fixtures/data/cardlayout.json'),
+        toolRuntimeConfig: { size: { width: [800, '>'] } },
       },
     });
 
-    elementCount(response.result.markup, ".q-table--card-layout").then(
+    elementCount(response.result.markup, '.q-table--card-layout').then(
       (value) => {
         expect(value).to.be.equal(1);
       }
@@ -214,140 +214,140 @@ lab.experiment("cardlayout", () => {
   });
 });
 
-lab.experiment("cardlayout on mobile", () => {
-  it("shows the cardlayout in mobile width", async () => {
+lab.experiment('cardlayout on mobile', () => {
+  it('shows the cardlayout in mobile width', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/cardlayout-mobile.json"),
-        toolRuntimeConfig: { size: { width: [400, "<"] } },
+        item: require('../resources/fixtures/data/cardlayout-mobile.json'),
+        toolRuntimeConfig: { size: { width: [400, '<'] } },
       },
     });
 
     expect(
-      response.result.scripts[1].content.includes("applyCardLayoutClass")
+      response.result.scripts[1].content.includes('applyCardLayoutClass')
     ).to.be.equal(true);
   });
-  it("doesn't show the cardlayout in article width", async () => {
+  it('doesn\'t show the cardlayout in article width', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/cardlayout-mobile.json"),
-        toolRuntimeConfig: { size: { width: [500, ">"] } },
+        item: require('../resources/fixtures/data/cardlayout-mobile.json'),
+        toolRuntimeConfig: { size: { width: [500, '>'] } },
       },
     });
 
     expect(
-      response.result.scripts[1].content.includes("applyCardLayoutClass")
+      response.result.scripts[1].content.includes('applyCardLayoutClass')
     ).to.be.equal(true);
   });
-  it("doesn't show the cardlayout in full width", async () => {
+  it('doesn\'t show the cardlayout in full width', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/cardlayout-mobile.json"),
-        toolRuntimeConfig: { size: { width: [800, ">"] } },
+        item: require('../resources/fixtures/data/cardlayout-mobile.json'),
+        toolRuntimeConfig: { size: { width: [800, '>'] } },
       },
     });
     expect(
-      response.result.scripts[1].content.includes("applyCardLayoutClass")
+      response.result.scripts[1].content.includes('applyCardLayoutClass')
     ).to.be.equal(true);
   });
 });
 
-lab.experiment("minibars", () => {
-  it("shows table correctly when no minibar-options", async () => {
+lab.experiment('minibars', () => {
+  it('shows table correctly when no minibar-options', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/four-column.json"),
+        item: require('../resources/fixtures/data/four-column.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, "td").then((value) => {
+    elementCount(response.result.markup, 'td').then((value) => {
       expect(value).to.be.equal(28);
     });
   });
 
-  it("uses correct cell type", async () => {
+  it('uses correct cell type', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json"),
+        item: require('../resources/fixtures/data/minibars-negative.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, "td.q-table-minibar-cell").then(
+    elementCount(response.result.markup, 'td.q-table-minibar-cell').then(
       (value) => {
         expect(value).to.be.equal(4);
       }
     );
   });
 
-  it("uses the negative bar type", async () => {
+  it('uses the negative bar type', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json"),
+        item: require('../resources/fixtures/data/minibars-negative.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, "div.q-table-minibar-bar--negative").then(
+    elementCount(response.result.markup, 'div.q-table-minibar-bar--negative').then(
       (value) => {
         expect(value).to.be.equal(3);
       }
     );
   });
 
-  it("shows negative bar and number", async () => {
+  it('shows negative bar and number', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json"),
+        item: require('../resources/fixtures/data/minibars-negative.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, "td.q-table-minibar-cell").then(
+    elementCount(response.result.markup, 'td.q-table-minibar-cell').then(
       (value) => {
         expect(value).to.be.equal(4);
       }
     );
 
-    elementCount(response.result.markup, "td.q-table-minibar-cell--value").then(
+    elementCount(response.result.markup, 'td.q-table-minibar-cell--value').then(
       (value) => {
         expect(value).to.be.equal(4);
       }
     );
   });
 
-  it("shows the correct negative bar length", async () => {
+  it('shows the correct negative bar length', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-negative.json"),
+        item: require('../resources/fixtures/data/minibars-negative.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const bars = dom.window.document.querySelectorAll(
-      "div.q-table-minibar-bar--negative"
+      'div.q-table-minibar-bar--negative'
     );
 
     let widths = []
@@ -360,64 +360,64 @@ lab.experiment("minibars", () => {
     expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
   });
 
-  it("uses the positive bar type", async () => {
+  it('uses the positive bar type', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-positive.json"),
+        item: require('../resources/fixtures/data/minibars-positive.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, "div.q-table-minibar-bar--positive").then(
+    elementCount(response.result.markup, 'div.q-table-minibar-bar--positive').then(
       (value) => {
         expect(value).to.be.equal(3);
       }
     );
   });
 
-  it("uses the positive number and bar", async () => {
+  it('uses the positive number and bar', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-positive.json"),
+        item: require('../resources/fixtures/data/minibars-positive.json'),
         toolRuntimeConfig: {},
       },
     });
 
 
-    elementCount(response.result.markup, "td.q-table-minibar-cell--value").then(
+    elementCount(response.result.markup, 'td.q-table-minibar-cell--value').then(
       (value) => {
         expect(value).to.be.equal(4);
       }
     );
 
 
-    elementCount(response.result.markup, "td.q-table-minibar-cell").then(
+    elementCount(response.result.markup, 'td.q-table-minibar-cell').then(
       (value) => {
         expect(value).to.be.equal(4);
       }
     );
   });
 
-  it("show the corrent positive bar length", async () => {
+  it('show the corrent positive bar length', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-positive.json"),
+        item: require('../resources/fixtures/data/minibars-positive.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const bars = dom.window.document.querySelectorAll(
-      "div.q-table-minibar-bar--positive"
+      'div.q-table-minibar-bar--positive'
     );
 
     let widths = []
@@ -430,79 +430,79 @@ lab.experiment("minibars", () => {
     expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
   });
 
-  it("uses the mixed cell type", async () => {
+  it('uses the mixed cell type', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-mixed.json"),
+        item: require('../resources/fixtures/data/minibars-mixed.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, "td.q-table-minibar--mixed").then(
+    elementCount(response.result.markup, 'td.q-table-minibar--mixed').then(
       (value) => {
         expect(value).to.be.equal(4);
       }
     );
   });
 
-  it("shows mixed number and bar", async () => {
+  it('shows mixed number and bar', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-mixed.json"),
+        item: require('../resources/fixtures/data/minibars-mixed.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, ".q-table-minibar-alignment--positive")
+    elementCount(response.result.markup, '.q-table-minibar-alignment--positive')
       .then((value) => {
         expect(value).to.be.equal(2);
       });
 
-    elementCount(response.result.markup, ".q-table-minibar-bar--positive")
+    elementCount(response.result.markup, '.q-table-minibar-bar--positive')
       .then((value) => {
         expect(value).to.be.equal(2);
       });
 
-    elementCount(response.result.markup, ".q-table-minibar-alignment--negative")
+    elementCount(response.result.markup, '.q-table-minibar-alignment--negative')
       .then((value) => {
         expect(value).to.be.equal(1);
       });
 
-    elementCount(response.result.markup, ".q-table-minibar-bar--negative")
+    elementCount(response.result.markup, '.q-table-minibar-bar--negative')
       .then((value) => {
         expect(value).to.be.equal(1);
       });
 
-    elementCount(response.result.markup, ".q-table-minibar-alignment--empty")
+    elementCount(response.result.markup, '.q-table-minibar-alignment--empty')
       .then((value) => {
         expect(value).to.be.equal(1);
       });
 
   });
 
-  it("show the corrent mixed bar length", async () => {
+  it('show the corrent mixed bar length', async () => {
 
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/minibars-positive.json"),
+        item: require('../resources/fixtures/data/minibars-positive.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const positiveBars = dom.window.document.querySelectorAll(
-      "div.q-table-minibar-bar--positive"
+      'div.q-table-minibar-bar--positive'
     );
 
     const negativeBars = dom.window.document.querySelectorAll(
-      "div.q-table-minibar-bar--negative"
+      'div.q-table-minibar-bar--negative'
     );
 
     let widths = []
@@ -523,20 +523,20 @@ lab.experiment("minibars", () => {
 
 })
 
-lab.experiment("footnotes", () => {
-  it("shows annotations for footnotes in table numbering downwords", async () => {
+lab.experiment('footnotes', () => {
+  it('shows annotations for footnotes in table numbering downwords', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-footnotes.json"),
+        item: require('../resources/fixtures/data/display-footnotes.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      "span.q-table-footnote-annotation"
+      'span.q-table-footnote-annotation'
     );
 
     let annotationIndexes = [];
@@ -545,22 +545,22 @@ lab.experiment("footnotes", () => {
       annotationIndexes.push(annotation.dataset.annotation);
     });
 
-    expect(annotationIndexes).to.be.equal(["1", "2", "3", "4"]);
+    expect(annotationIndexes).to.be.equal(['1', '2', '3', '4']);
   });
 
-  it("shows text of footnotes in footer of table with right index", async () => {
+  it('shows text of footnotes in footer of table with right index', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-footnotes.json"),
+        item: require('../resources/fixtures/data/display-footnotes.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footnote-footer"
+      'div.q-table-footnote-footer'
     );
 
     let arrayOfFootnotes = [];
@@ -574,37 +574,37 @@ lab.experiment("footnotes", () => {
 
     expect(arrayOfFootnotes).to.be.equal([
       {
-        index: "1",
-        text: "Frisch verheiratet, früher Hanspeter Mustermann",
+        index: '1',
+        text: 'Frisch verheiratet, früher Hanspeter Mustermann',
       },
       {
-        index: "2",
-        text: "Verhalten in letzter Spalte",
+        index: '2',
+        text: 'Verhalten in letzter Spalte',
       },
       {
-        index: "3",
-        text: "Frisch verheiratet, früher Peter Vorderbach",
+        index: '3',
+        text: 'Frisch verheiratet, früher Peter Vorderbach',
       },
       {
-        index: "4",
-        text: "Frisch verheiratet, früher Ralf Hinterbach",
+        index: '4',
+        text: 'Frisch verheiratet, früher Ralf Hinterbach',
       },
     ]);
   });
 
-  it("shows merged footnotes in footer of table with right index", async () => {
+  it('shows merged footnotes in footer of table with right index', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-merged-footnotes.json"),
+        item: require('../resources/fixtures/data/display-merged-footnotes.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footnote-footer"
+      'div.q-table-footnote-footer'
     );
 
     let arrayOfFootnotes = [];
@@ -618,25 +618,25 @@ lab.experiment("footnotes", () => {
 
     expect(arrayOfFootnotes).to.be.equal([
       {
-        index: "1",
-        text: "Frisch verheiratet, früher Hanspeter Mustermann",
+        index: '1',
+        text: 'Frisch verheiratet, früher Hanspeter Mustermann',
       },
     ]);
   });
 
-  it("shows multiple merged footnotes in footer of table with right index", async () => {
+  it('shows multiple merged footnotes in footer of table with right index', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-merged-footnotes-multiple.json"),
+        item: require('../resources/fixtures/data/display-merged-footnotes-multiple.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const footnotes = dom.window.document.querySelectorAll(
-      "div.q-table-footnote-footer"
+      'div.q-table-footnote-footer'
     );
 
     let arrayOfFootnotes = [];
@@ -650,202 +650,202 @@ lab.experiment("footnotes", () => {
 
     expect(arrayOfFootnotes).to.be.equal([
       {
-        index: "1",
-        text: "Frisch verheiratet, früher Hanspeter Mustermann",
+        index: '1',
+        text: 'Frisch verheiratet, früher Hanspeter Mustermann',
       },
       {
-        index: "2",
-        text: "Frisch verheiratet, früher Hanspeter Musterfrau",
+        index: '2',
+        text: 'Frisch verheiratet, früher Hanspeter Musterfrau',
       },
     ]);
   });
 
-  it("shows annotation of footnotes in header of cardlayout", async () => {
+  it('shows annotation of footnotes in header of cardlayout', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
+        item: require('../resources/fixtures/data/display-footnotes-in-cardlayout.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
-    const annotations = dom.window.document.querySelectorAll("td");
+    const annotations = dom.window.document.querySelectorAll('td');
 
     const footnoteOne = decodeURI(
-      annotations[0].getAttribute("data-label").split("Rank")[1]
+      annotations[0].getAttribute('data-label').split('Rank')[1]
     );
     const footnoteTwo = decodeURI(
-      annotations[1].getAttribute("data-label").split("Name")[1]
+      annotations[1].getAttribute('data-label').split('Name')[1]
     );
 
-    expect(footnoteOne).to.be.equal("\u00b9");
-    expect(footnoteTwo).to.be.equal("\u00b2");
+    expect(footnoteOne).to.be.equal('\u00b9');
+    expect(footnoteTwo).to.be.equal('\u00b2');
   });
 
-  it("hides footnotes because header is hidden", async () => {
+  it('hides footnotes because header is hidden', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/hide-footnotes-in-header.json"),
+        item: require('../resources/fixtures/data/hide-footnotes-in-header.json'),
         toolRuntimeConfig: {},
       },
     });
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      ".q-table-footnote-annotation"
+      '.q-table-footnote-annotation'
     );
 
     const footnoteIndexes = dom.window.document.querySelectorAll(
-      ".q-table-footnote-index"
+      '.q-table-footnote-index'
     );
 
-    expect(annotations[0].innerHTML).to.be.equal("1");
+    expect(annotations[0].innerHTML).to.be.equal('1');
     expect(footnoteIndexes[0].innerHTML).to.be.equal(
-      "1"
+      '1'
     );
     expect(annotations.length).to.be.equal(6);
     expect(footnoteIndexes.length).to.be.equal(6);
   });
 
-  it("displays a bigger padding in column with footnotes when column with minibars follows", async () => {
+  it('displays a bigger padding in column with footnotes when column with minibars follows', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-footnotes-before-minibar.json"),
+        item: require('../resources/fixtures/data/display-footnotes-before-minibar.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column--single"
+      '.q-table-footnote-column--single'
     ).then((value) => {
       expect(value).to.be.equal(12);
     });
   });
 
-  it("displays a even bigger padding in column with footnotes with there are more than 9", async () => {
+  it('displays a even bigger padding in column with footnotes with there are more than 9', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-alot-of-footnotes.json"),
+        item: require('../resources/fixtures/data/display-alot-of-footnotes.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column--double"
+      '.q-table-footnote-column--double'
     ).then((value) => {
       expect(value).to.be.equal(12);
     });
   });
 
-  it("displays a bigger margin in column when table has footnotes and cardlayout ", async () => {
+  it('displays a bigger margin in column when table has footnotes and cardlayout ', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/display-footnotes-in-cardlayout.json"),
+        item: require('../resources/fixtures/data/display-footnotes-in-cardlayout.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column-card-layout--single"
+      '.q-table-footnote-column-card-layout--single'
     ).then((value) => {
       expect(value).to.be.equal(20);
     });
   });
 
-  it("displays the margin correctly when table has positive minibars", async () => {
+  it('displays the margin correctly when table has positive minibars', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/footnotes-positive-minibars.json"),
+        item: require('../resources/fixtures/data/footnotes-positive-minibars.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column--single"
+      '.q-table-footnote-column--single'
     ).then((value) => {
       expect(value).to.be.equal(16);
     });
   });
 
-  it("displays the margin correctly when table has negative minibars", async () => {
+  it('displays the margin correctly when table has negative minibars', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/footnotes-negative-minibars.json"),
+        item: require('../resources/fixtures/data/footnotes-negative-minibars.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column--single"
+      '.q-table-footnote-column--single'
     ).then((value) => {
       expect(value).to.be.equal(16);
     });
   });
 
-  it("displays the margin correctly when table has mixed minibars", async () => {
+  it('displays the margin correctly when table has mixed minibars', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/footnotes-mixed-minibars.json"),
+        item: require('../resources/fixtures/data/footnotes-mixed-minibars.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column--single"
+      '.q-table-footnote-column--single'
     ).then((value) => {
       expect(value).to.be.equal(18);
     });
   });
 
-  it("behaves correctly with other metaData in cells", async () => {
-    let item = require("../resources/fixtures/data/display-footnotes.json");
+  it('behaves correctly with other metaData in cells', async () => {
+    let item = require('../resources/fixtures/data/display-footnotes.json');
     item.data.metaData.cells = [
       {
         data: {
-          test: "test",
+          test: 'test',
         },
         rowIndex: 1,
         colIndex: 2,
       },
       {
         data: {
-          test1: "test1",
+          test1: 'test1',
         },
         rowIndex: 2,
         colIndex: 1,
       },
       {
         data: {
-          test2: "test2",
+          test2: 'test2',
         },
         rowIndex: 3,
         colIndex: 1,
       },
       {
         data: {
-          footnote: "test3",
+          footnote: 'test3',
           multipleData: true,
         },
         rowIndex: 4,
@@ -853,8 +853,8 @@ lab.experiment("footnotes", () => {
       },
     ];
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
         item: item,
         toolRuntimeConfig: {},
@@ -863,115 +863,115 @@ lab.experiment("footnotes", () => {
 
     const dom = new JSDOM(response.result.markup);
     const annotations = dom.window.document.querySelectorAll(
-      "span.q-table-footnote-annotation"
+      'span.q-table-footnote-annotation'
     );
     let annotationIndexes = [];
     annotations.forEach((annotation) => {
       annotationIndexes.push(annotation.dataset.annotation);
     });
 
-    expect(annotationIndexes).to.be.equal(["1"]);
+    expect(annotationIndexes).to.be.equal(['1']);
     expect(response.statusCode).to.be.equal(200);
   });
 
-  it("displays the footnote when the table has colorColumn (numerical)", async () => {
+  it('displays the footnote when the table has colorColumn (numerical)', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical-footnotes.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical-footnotes.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column--single"
+      '.q-table-footnote-column--single'
     ).then((value) => {
       expect(value).to.be.equal(7);
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-annotation--colorColumn"
+      '.q-table-footnote-annotation--colorColumn'
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
 
   })
 
-  it("displays the footnote when the table has colorColumn (categorical)", async () => {
+  it('displays the footnote when the table has colorColumn (categorical)', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-categorical-footnotes.json"),
+        item: require('../resources/fixtures/data/colorColumn-categorical-footnotes.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-column--single"
+      '.q-table-footnote-column--single'
     ).then((value) => {
       expect(value).to.be.equal(7);
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-footnote-annotation--colorColumn"
+      '.q-table-footnote-annotation--colorColumn'
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
   })
 });
 
-lab.experiment("table search", () => {
-  it("shows table search", async () => {
+lab.experiment('table search', () => {
+  it('shows table search', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/table-search-show.json"),
+        item: require('../resources/fixtures/data/table-search-show.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, ".q-table__search__input").then(
+    elementCount(response.result.markup, '.q-table__search__input').then(
       (value) => {
         expect(value).to.be.equal(1);
       }
     );
   });
 
-  it("doesn't show table search", async () => {
+  it('doesn\'t show table search', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/table-search-hidden.json"),
+        item: require('../resources/fixtures/data/table-search-hidden.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, ".q-table__search__input").then(
+    elementCount(response.result.markup, '.q-table__search__input').then(
       (value) => {
         expect(value).to.be.equal(0);
       }
     );
   });
 
-  it("doesn't show table search if property is true but not enough elements", async () => {
+  it('doesn\'t show table search if property is true but not enough elements', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/hyphen-sign-as-number.json"),
+        item: require('../resources/fixtures/data/hyphen-sign-as-number.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, ".q-table__search__input").then(
+    elementCount(response.result.markup, '.q-table__search__input').then(
       (value) => {
         expect(value).to.be.equal(0);
       }
@@ -979,200 +979,200 @@ lab.experiment("table search", () => {
   })
 });
 
-lab.experiment("color column", () => {
-  it("displays the numerical legend", async () => {
+lab.experiment('color column', () => {
+  it('displays the numerical legend', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend--numerical"
+      '.q-table-colorColumn-legend--numerical'
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
   })
 
-  it("displays the correct amount of buckets", async () => {
+  it('displays the correct amount of buckets', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend .q-table-colorColumn-legend-bucket"
+      '.q-table-colorColumn-legend .q-table-colorColumn-legend-bucket'
     ).then((value) => {
       expect(value).to.be.equal(5);
     });
   })
 
-  it("displays label legend", async () => {
+  it('displays label legend', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend-marker"
+      '.q-table-colorColumn-legend-marker'
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
   })
 
-  it("doesnt display label legend", async () => {
+  it('doesnt display label legend', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical-no-label.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical-no-label.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend-marker"
+      '.q-table-colorColumn-legend-marker'
     ).then((value) => {
       expect(value).to.be.equal(0);
     });
   })
 
-  it("displays no-data in legend", async () => {
+  it('displays no-data in legend', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical-no-data.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical-no-data.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend-info--no-data"
+      '.q-table-colorColumn-legend-info--no-data'
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
   })
 
-  it("doesn't displays no-data in legend", async () => {
+  it('doesn\'t displays no-data in legend', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical-no-label.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical-no-label.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend-info--no-data"
+      '.q-table-colorColumn-legend-info--no-data'
     ).then((value) => {
       expect(value).to.be.equal(0);
     });
   })
 
-  it("displays single-bucket in legend", async () => {
+  it('displays single-bucket in legend', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical-no-data.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical-no-data.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend-info--single-bucket"
+      '.q-table-colorColumn-legend-info--single-bucket'
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
   })
 
-  it("displays the categorical legend", async () => {
+  it('displays the categorical legend', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-categorical.json"),
+        item: require('../resources/fixtures/data/colorColumn-categorical.json'),
         toolRuntimeConfig: {},
       },
     });
 
     elementCount(
       response.result.markup,
-      ".q-table-colorColumn-legend--categorical"
+      '.q-table-colorColumn-legend--categorical'
     ).then((value) => {
       expect(value).to.be.equal(1);
     });
   })
 
-  it("displays buckets in custonm color (numerical)", async () => {
+  it('displays buckets in custonm color (numerical)', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-numerical-custom-colors.json"),
+        item: require('../resources/fixtures/data/colorColumn-numerical-custom-colors.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    element(response.result.markup, ".q-table-colorColumn-legend-info--single-bucket .q-table-colorColumn-legend-bucket").then(
+    element(response.result.markup, '.q-table-colorColumn-legend-info--single-bucket .q-table-colorColumn-legend-bucket').then(
       (elem) => {
-        expect(elem.style["color"]).to.be.equal("yellow");
+        expect(elem.style['color']).to.be.equal('yellow');
       }
     );
   })
 
-  it("displays buckets in custonm order (categorical)", async () => {
+  it('displays buckets in custonm order (categorical)', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-categorical-custom-order.json"),
+        item: require('../resources/fixtures/data/colorColumn-categorical-custom-order.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, ".q-table-colorColumn-legend--categorical .s-legend-item-label__item__label").then(
+    elements(response.result.markup, '.q-table-colorColumn-legend--categorical .s-legend-item-label__item__label').then(
       (elements) => {
-        expect(elements[0].innerHTML).to.be.equal("Test1");
-        expect(elements[1].innerHTML).to.be.equal("Test2");
+        expect(elements[0].innerHTML).to.be.equal('Test1');
+        expect(elements[1].innerHTML).to.be.equal('Test2');
       }
     );
   })
 
-  it("displays buckets in custonm color (categorical)", async () => {
+  it('displays buckets in custonm color (categorical)', async () => {
     const response = await server.inject({
-      url: "/rendering-info/web?_id=someid",
-      method: "POST",
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
       payload: {
-        item: require("../resources/fixtures/data/colorColumn-categorical-custom-colors.json"),
+        item: require('../resources/fixtures/data/colorColumn-categorical-custom-colors.json'),
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, ".q-table-colorColumn-legend--categorical .s-legend-item-label__item").then(
+    elements(response.result.markup, '.q-table-colorColumn-legend--categorical .s-legend-item-label__item').then(
       (elements) => {
-        expect(elements[0].style["color"]).to.be.equal("pink");
-        expect(elements[1].style["color"]).to.be.equal("lightblue");
+        expect(elements[0].style['color']).to.be.equal('pink');
+        expect(elements[1].style['color']).to.be.equal('lightblue');
       }
     );
   })
