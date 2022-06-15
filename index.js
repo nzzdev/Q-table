@@ -2,7 +2,7 @@ import Hapi from '@hapi/hapi';
 import routes from './dist/routes/routes.js';
 
 // These lines make "require" available.
-import { createRequire } from "module";
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 const server = Hapi.server({

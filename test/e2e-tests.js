@@ -9,7 +9,7 @@ const before = lab.before;
 const after = lab.after;
 const it = lab.it;
 
-const routes = require('../routes/routes.js');
+const routes = require('../dist/routes/routes.js');
 
 let server;
 

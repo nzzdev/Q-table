@@ -1,3 +1,9 @@
+// These lines make "require" available.
+// Todo comment.
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const exports = {};
+
 const Lab = require('@hapi/lab');
 const Code = require('@hapi/code');
 const Hapi = require('@hapi/hapi');
@@ -12,7 +18,7 @@ const before = lab.before;
 const after = lab.after;
 const it = lab.it;
 
-const routes = require('../routes/routes.js');
+import routes from '../dist/routes/routes.js';
 const { row } = require('array2d');
 let server;
 

@@ -27,8 +27,9 @@ const distDir = rootDir + 'dist/';
 const resourcesDir = rootDir + 'resources/';
 const viewsDir = distDir + 'components/';
 const stylesDir = distDir + 'styles/';
-// Template file.
-const tableTemplate = require(viewsDir + 'Table.svelte').default;
+// @ts-ignore
+import tableTemplate2 from '../../components/Table.js';
+console.log('aa', tableTemplate2);
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
@@ -133,7 +134,7 @@ const route = {
                 context.numberOfRowsToHide = undefined;
             }
             try {
-                renderingInfo.markup = tableTemplate.render(context).html;
+                renderingInfo.markup = tableTemplate2.render(context).html;
             }
             catch (ex) {
                 console.log('Failed rendering html', ex);

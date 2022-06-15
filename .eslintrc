@@ -4,5 +4,8 @@
     "rules": {
         "quotes": [2, "single"],
         "@typescript-eslint/no-explicit-any": 2
+    },
+    "parserOptions": {
+        "sourceType": "module"
     }
 }
