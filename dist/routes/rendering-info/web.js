@@ -25,8 +25,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = __dirname + '/../../../';
 const distDir = rootDir + 'dist/';
 const resourcesDir = rootDir + 'resources/';
-// const viewsDir = distDir + 'components/'; // New views.
-const viewsDir = __dirname + '/../../../views/';
+const viewsDir = distDir + 'components/';
 const stylesDir = distDir + 'styles/';
 // Template file.
 const tableTemplate = require(viewsDir + 'Table.svelte').default;
