@@ -1,5 +1,5 @@
 import Hapi from'@hapi/hapi';
-import Joi from 'Joi';
+import Joi from 'joi';
 import * as fixtures from '../resources/fixtures/data';
 import { getAvailabilityResponse, getMarkup, getScripts, getStylesheets } from './helpers';
 // @ts-ignore
