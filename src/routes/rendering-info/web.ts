@@ -3,7 +3,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 import type { Request, ServerRoute } from '@hapi/hapi';
-import type { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject  } from '../../interfaces';
+import type { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject, QTableDataFormatted  } from '../../interfaces';
 
 // Require tools.
 import Ajv from 'ajv';
@@ -22,7 +22,7 @@ import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 
 import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
 import { getMinibar } from '../../helpers/minibars.js';
-import { getColorColumn } from '../../helpers/colorColumn.js';
+import { ColorColumn, getColorColumn } from '../../helpers/colorColumn.js';
 import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
 
@@ -87,10 +87,22 @@ const route: ServerRoute = {
     const minibarsAvailable = await areMinibarsAvailable(request, config);
     const colorColumnAvailable = await isColorColumnAvailable(request, config);
 
-    const tableData = formatTableData(config.data.table, footnotes, options);
+    let tableData: QTableDataFormatted[][] = [];
+
+    try {
+      tableData = formatTableData(config.data.table, footnotes, options);
+    } catch (e) {
+      console.error('Execption during formatting table data', e);
+    }
 
     const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
-    const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
+    let colorColumn: ColorColumn | null = null;
+
+    try {
+      colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
+    } catch (e) {
+      console.error('Execption during creating colorColumn', e);
+    }
 
     const context: WebContextObject = {
       item: config, // To make renderingInfoScripts working. refactor later.

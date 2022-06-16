@@ -1,11 +1,11 @@
 import path from 'path';
-import type { Request, ResponseToolkit } from 'hapi__hapi'
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import type { Request, ResponseToolkit, ServerRoute } from '@hapi/hapi'
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default {
+const route: ServerRoute = {
   method: 'GET',
   path: '/stylesheet/{filename}.{hash}.{extension}',
   options: {
@@ -19,3 +19,5 @@ export default {
       .header('cache-control', `max-age=${60 * 60 * 24 * 365}, immutable`); // 1 year
   }
 };
+
+export default route;

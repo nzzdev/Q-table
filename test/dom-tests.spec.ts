@@ -1,28 +1,55 @@
-// These lines make "require" available.
-// Todo comment.
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const exports = {};
+import { JSDOM } from 'jsdom';
+import Hapi from'@hapi/hapi';
+import Joi from 'Joi';
+import * as fixtures from '../resources/fixtures/data';
+import type { RenderingInfo } from '../src/interfaces';
 
-const Lab = require('@hapi/lab');
-const Code = require('@hapi/code');
-const Hapi = require('@hapi/hapi');
-const Joi = require('joi');
-const lab = (exports.lab = Lab.script());
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-const minify = require('html-minifier').minify;
+function element(markup: string, selector: string): Promise<HTMLElement> {
+  return new Promise((resolve) => {
+    const dom = new JSDOM(markup);
 
-const expect = Code.expect;
-const before = lab.before;
-const after = lab.after;
-const it = lab.it;
+    // We cast it because if it does not exist the test will simply crash.
+    // Much easier for writing tests this way.
+    const el = dom.window.document.querySelector(selector) as HTMLElement;
+    resolve(el);
+  });
+}
 
-import routes from '../dist/routes/routes.js';
-const { row } = require('array2d');
-let server;
+function elements(markup: string, selector: string): Promise<NodeListOf<HTMLElement>> {
+  return new Promise((resolve) => {
+    const dom = new JSDOM(markup);
+    const els = dom.window.document.querySelectorAll(selector) as NodeListOf<HTMLElement>;
 
-before(async () => {
+    resolve(els);
+  });
+}
+
+function elementCount(markup: string, selector: string): Promise<number> {
+  return new Promise((resolve) => {
+
+    const dom = new JSDOM(markup);
+    resolve(dom.window.document.querySelectorAll(selector).length);
+  });
+}
+
+function getMarkup(result: object | undefined): string {
+  const casted = result as RenderingInfo;
+  return casted.markup;
+}
+
+function getScripts(result: object | undefined): {content: string}[] {
+  const casted = result as RenderingInfo;
+  return casted.scripts;
+}
+
+let server: Hapi.Server;
+const fourEmSpaceCharCode = 8197;
+
+// @ts-ignore
+import routes from '../dist/routes.js';
+
+// Start the server before the tests.
+beforeAll(async () => {
   try {
     server = Hapi.server({
       port: process.env.PORT || 3000,
@@ -30,51 +57,32 @@ before(async () => {
     server.validator(Joi);
     server.route(routes);
   } catch (err) {
-    expect(err).to.not.exist();
+    expect(err).not.toBeDefined();
   }
 });
 
-after(async () => {
+afterAll(async () => {
   await server.stop({ timeout: 2000 });
+
+  // @ts-ignore.
   server = null;
 });
 
-function element(markup, selector) {
-  return new Promise((resolve, reject) => {
-    const dom = new JSDOM(markup);
-    resolve(dom.window.document.querySelector(selector));
-  });
-}
-
-function elements(markup, selector) {
-  return new Promise((resolve, reject) => {
-    const dom = new JSDOM(markup);
-    resolve(dom.window.document.querySelectorAll(selector));
-  });
-}
-
-function elementCount(markup, selector) {
-  return new Promise((resolve, reject) => {
-    const dom = new JSDOM(markup);
-    resolve(dom.window.document.querySelectorAll(selector).length);
-  });
-}
-
-lab.experiment('column headers', () => {
+describe('column headers', () => {
   it('shows column headers', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/four-column.json'),
+        item: fixtures.fourColumn,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, '.q-table-cell--head').then(
-      (value) => {
-        expect(value).to.be.equal(4);
-      }
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-cell--head').then(
+      value => expect(value).toEqual(4)
     );
   });
 
@@ -83,33 +91,35 @@ lab.experiment('column headers', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/four-column-no-header.json'),
+        item: fixtures.fourColumnNoHeader,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, '.q-table-cell--head').then(
-      (value) => {
-        expect(value).to.be.equal(0);
-      }
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-cell--head').then(
+      value => expect(value).toEqual(0)
     );
   });
 });
 
-lab.experiment('cell values', () => {
+describe('cell values', () => {
   it('should display special characters as text', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/special-characters.json'),
+        item: fixtures.specialCharacters,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, '.q-table__cell--text').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table__cell--text').then(
       (value) => {
-        expect(value).to.be.equals(32);
+        expect(value).toEqual(32);
       }
     );
   });
@@ -119,15 +129,17 @@ lab.experiment('cell values', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/formatted-numbers.json'),
+        item: fixtures.formattedNumbers,
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
+    const markup = getMarkup(response.result);
+
+    elements(markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
       (elements) => {
         elements.forEach((element) => {
-          expect(element.innerHTML.charCodeAt(8)).to.be.equals(8197);
+          expect(element.innerHTML.charCodeAt(8)).toEqual(fourEmSpaceCharCode);
         });
       }
     );
@@ -138,14 +150,16 @@ lab.experiment('cell values', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/formatted-numbers-negative.json'),
+        item: fixtures.formattedNumbersNegative,
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
+    const markup = getMarkup(response.result);
+
+    elements(markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
       (elements) => {
-        expect(elements[1].innerHTML.charCodeAt(9)).to.be.equals(8197);
+        expect(elements[1].innerHTML.charCodeAt(9)).toEqual(fourEmSpaceCharCode);
       }
     );
   });
@@ -155,285 +169,307 @@ lab.experiment('cell values', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/formatted-numbers-mixed.json'),
+        item: fixtures.formattedNumbersMixed,
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
-      (elements) => {
-        expect(elements[0].innerHTML.charCodeAt(7)).to.be.equals(8197);
+    const markup = getMarkup(response.result);
 
+    elements(markup, '.q-table__cell + .q-table__cell--numeric:not(.q-table-cell--head)').then(
+      (elements) => {
+        expect(elements[0].innerHTML.charCodeAt(7)).toEqual(fourEmSpaceCharCode);
       }
     );
   });
 });
 
-lab.experiment('cardlayout', () => {
+describe('cardlayout', () => {
   it('shows the cardlayout in mobile width', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/cardlayout.json'),
+        item: fixtures.cardlayout,
         toolRuntimeConfig: { size: { width: [350, '<'] } },
       },
     });
 
-    elementCount(response.result.markup, '.q-table--card-layout').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table--card-layout').then(
       (value) => {
-        expect(value).to.be.equal(1);
+        expect(value).toEqual(1);
       }
     );
   });
+
   it('shows the cardlayout in article width', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/cardlayout.json'),
+        item: fixtures.cardlayout,
         toolRuntimeConfig: { size: { width: [500, '>'] } },
       },
     });
 
-    elementCount(response.result.markup, '.q-table--card-layout').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table--card-layout').then(
       (value) => {
-        expect(value).to.be.equal(1);
+        expect(value).toEqual(1);
       }
     );
   });
+
   it('shows the cardlayout in full width', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/cardlayout.json'),
+        item: fixtures.cardlayout,
         toolRuntimeConfig: { size: { width: [800, '>'] } },
       },
     });
 
-    elementCount(response.result.markup, '.q-table--card-layout').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table--card-layout').then(
       (value) => {
-        expect(value).to.be.equal(1);
+        expect(value).toEqual(1);
       }
     );
   });
 });
 
-lab.experiment('cardlayout on mobile', () => {
+describe('cardlayout on mobile', () => {
   it('shows the cardlayout in mobile width', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/cardlayout-mobile.json'),
+        item: fixtures.cardlayoutMobile,
         toolRuntimeConfig: { size: { width: [400, '<'] } },
       },
     });
 
-    expect(
-      response.result.scripts[1].content.includes('applyCardLayoutClass')
-    ).to.be.equal(true);
+    const scripts = getScripts(response.result);
+    const includedClass = scripts[1].content.includes('applyCardLayoutClass');
+
+    expect(includedClass).toEqual(true);
   });
+
   it('doesn\'t show the cardlayout in article width', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/cardlayout-mobile.json'),
+        item: fixtures.cardlayoutMobile,
         toolRuntimeConfig: { size: { width: [500, '>'] } },
       },
     });
 
-    expect(
-      response.result.scripts[1].content.includes('applyCardLayoutClass')
-    ).to.be.equal(true);
+    const scripts = getScripts(response.result);
+    const includedClass = scripts[1].content.includes('applyCardLayoutClass');
+
+    expect(includedClass).toEqual(true);
   });
+
   it('doesn\'t show the cardlayout in full width', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/cardlayout-mobile.json'),
+        item: fixtures.cardlayoutMobile,
         toolRuntimeConfig: { size: { width: [800, '>'] } },
       },
     });
-    expect(
-      response.result.scripts[1].content.includes('applyCardLayoutClass')
-    ).to.be.equal(true);
+
+    const scripts = getScripts(response.result);
+    const includedClass = scripts[1].content.includes('applyCardLayoutClass');
+
+    expect(includedClass).toEqual(true);
   });
 });
 
-lab.experiment('minibars', () => {
+describe('minibars', () => {
   it('shows table correctly when no minibar-options', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/four-column.json'),
+        item: fixtures.fourColumn,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, 'td').then((value) => {
-      expect(value).to.be.equal(28);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, 'td').then(
+      value => expect(value).toEqual(28)
+    );
   });
 
   it('uses correct cell type', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-negative.json'),
+        item: fixtures.minibarsNegative,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, 'td.q-table-minibar-cell').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, 'td.q-table-minibar-cell').then(
       (value) => {
-        expect(value).to.be.equal(4);
+        expect(value).toEqual(4);
       }
     );
   });
 
   it('uses the negative bar type', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-negative.json'),
+        item: fixtures.minibarsNegative,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, 'div.q-table-minibar-bar--negative').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, 'div.q-table-minibar-bar--negative').then(
       (value) => {
-        expect(value).to.be.equal(3);
+        expect(value).toEqual(3);
       }
     );
   });
 
   it('shows negative bar and number', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-negative.json'),
+        item: fixtures.minibarsNegative,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, 'td.q-table-minibar-cell').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, 'td.q-table-minibar-cell').then(
       (value) => {
-        expect(value).to.be.equal(4);
+        expect(value).toEqual(4);
       }
     );
 
-    elementCount(response.result.markup, 'td.q-table-minibar-cell--value').then(
+    elementCount(markup, 'td.q-table-minibar-cell--value').then(
       (value) => {
-        expect(value).to.be.equal(4);
+        expect(value).toEqual(4);
       }
     );
   });
 
   it('shows the correct negative bar length', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-negative.json'),
+        item: fixtures.minibarsNegative,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
     const bars = dom.window.document.querySelectorAll(
       'div.q-table-minibar-bar--negative'
     );
 
-    let widths = []
+    let widths: string[] = [];
     bars.forEach((bar) => {
       const regex = /\s*width\s*:\s*([^;"]*)/;
-      let width = bar.outerHTML.match(regex)
-      widths = [...widths, width[1]];
+      let width = bar.outerHTML.match(regex);
+
+      if (width) widths.push(width[1])
     });
 
-    expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
+    expect(widths).toEqual(['46.15384615384615%', '38.46153846153846%', '100%'])
   });
 
   it('uses the positive bar type', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-positive.json'),
+        item: fixtures.minibarsPositive,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, 'div.q-table-minibar-bar--positive').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, 'div.q-table-minibar-bar--positive').then(
       (value) => {
-        expect(value).to.be.equal(3);
+        expect(value).toEqual(3);
       }
     );
   });
 
   it('uses the positive number and bar', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-positive.json'),
+        item: fixtures.minibarsPositive,
         toolRuntimeConfig: {},
       },
     });
 
+    const markup = getMarkup(response.result);
 
-    elementCount(response.result.markup, 'td.q-table-minibar-cell--value').then(
+    elementCount(markup, 'td.q-table-minibar-cell--value').then(
       (value) => {
-        expect(value).to.be.equal(4);
+        expect(value).toEqual(4);
       }
     );
 
-
-    elementCount(response.result.markup, 'td.q-table-minibar-cell').then(
+    elementCount(markup, 'td.q-table-minibar-cell').then(
       (value) => {
-        expect(value).to.be.equal(4);
+        expect(value).toEqual(4);
       }
     );
   });
 
   it('show the corrent positive bar length', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-positive.json'),
+        item: fixtures.minibarsPositive,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
     const bars = dom.window.document.querySelectorAll(
       'div.q-table-minibar-bar--positive'
     );
 
-    let widths = []
+    let widths: string[] = [];
     bars.forEach((bar) => {
       const regex = /\s*width\s*:\s*([^;"]*)/;
       let width = bar.outerHTML.match(regex)
-      widths = [...widths, width[1]];
+
+      if (width) widths.push(width[1])
     });
 
-    expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
+    expect(widths).toEqual(['46.15384615384615%', '38.46153846153846%', '100%'])
   });
 
   it('uses the mixed cell type', async () => {
@@ -442,14 +478,16 @@ lab.experiment('minibars', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-mixed.json'),
+        item: fixtures.minibarsMixed,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, 'td.q-table-minibar--mixed').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, 'td.q-table-minibar--mixed').then(
       (value) => {
-        expect(value).to.be.equal(4);
+        expect(value).toEqual(4);
       }
     );
   });
@@ -459,99 +497,74 @@ lab.experiment('minibars', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-mixed.json'),
+        item: fixtures.minibarsMixed,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, '.q-table-minibar-alignment--positive')
-      .then((value) => {
-        expect(value).to.be.equal(2);
-      });
-
-    elementCount(response.result.markup, '.q-table-minibar-bar--positive')
-      .then((value) => {
-        expect(value).to.be.equal(2);
-      });
-
-    elementCount(response.result.markup, '.q-table-minibar-alignment--negative')
-      .then((value) => {
-        expect(value).to.be.equal(1);
-      });
-
-    elementCount(response.result.markup, '.q-table-minibar-bar--negative')
-      .then((value) => {
-        expect(value).to.be.equal(1);
-      });
-
-    elementCount(response.result.markup, '.q-table-minibar-alignment--empty')
-      .then((value) => {
-        expect(value).to.be.equal(1);
-      });
-
+    const markup = getMarkup(response.result);
+    elementCount(markup, '.q-table-minibar-alignment--positive').then(value => expect(value).toEqual(2));
+    elementCount(markup, '.q-table-minibar-bar--positive').then(value => expect(value).toEqual(2));
+    elementCount(markup, '.q-table-minibar-alignment--negative').then(value => expect(value).toEqual(1));
+    elementCount(markup, '.q-table-minibar-bar--negative').then(value => expect(value).toEqual(1));
+    elementCount(markup, '.q-table-minibar-alignment--empty').then(value => expect(value).toEqual(1));
   });
 
   it('show the corrent mixed bar length', async () => {
-
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/minibars-positive.json'),
+        item: fixtures.minibarsPositive,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
-    const positiveBars = dom.window.document.querySelectorAll(
-      'div.q-table-minibar-bar--positive'
-    );
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
+    const positiveBars = dom.window.document.querySelectorAll('div.q-table-minibar-bar--positive');
+    const negativeBars = dom.window.document.querySelectorAll('div.q-table-minibar-bar--negative');
 
-    const negativeBars = dom.window.document.querySelectorAll(
-      'div.q-table-minibar-bar--negative'
-    );
-
-    let widths = []
+    let widths: string[] = []
     const regex = /\s*width\s*:\s*([^;"]*)/;
 
     positiveBars.forEach((bar) => {
-      let width = bar.outerHTML.match(regex)
-      widths = [...widths, width[1]];
+      let width = bar.outerHTML.match(regex);
+      if (width) widths.push(width[1]);
     });
 
     negativeBars.forEach((bar) => {
-      let width = bar.outerHTML.match(regex)
-      widths = [...widths, width[1]];
+      let width = bar.outerHTML.match(regex);
+      if (width) widths.push(width[1]);
     });
 
-    expect(widths).to.be.equals(['46.15384615384615%', '38.46153846153846%', '100%'])
+    expect(widths).toEqual(['46.15384615384615%', '38.46153846153846%', '100%'])
   });
+});
 
-})
-
-lab.experiment('footnotes', () => {
+describe('footnotes', () => {
   it('shows annotations for footnotes in table numbering downwords', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-footnotes.json'),
+        item: fixtures.displayFootnotes,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
-    const annotations = dom.window.document.querySelectorAll(
-      'span.q-table-footnote-annotation'
-    );
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
+    const annotations = dom.window.document.querySelectorAll('span.q-table-footnote-annotation');
 
-    let annotationIndexes = [];
+    let annotationIndexes: string[] = [];
 
     annotations.forEach((annotation) => {
+      // @ts-ignore
       annotationIndexes.push(annotation.dataset.annotation);
     });
 
-    expect(annotationIndexes).to.be.equal(['1', '2', '3', '4']);
+    expect(annotationIndexes).toEqual(['1', '2', '3', '4']);
   });
 
   it('shows text of footnotes in footer of table with right index', async () => {
@@ -559,26 +572,27 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-footnotes.json'),
+        item: fixtures.displayFootnotes,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
-    const footnotes = dom.window.document.querySelectorAll(
-      'div.q-table-footnote-footer'
-    );
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
+    const footnotes = dom.window.document.querySelectorAll('div.q-table-footnote-footer') as NodeListOf<HTMLDialogElement>;
 
-    let arrayOfFootnotes = [];
+    let arrayOfFootnotes: {index: string, text: string}[] = [];
 
     footnotes.forEach((footnote) => {
-      arrayOfFootnotes.push({
-        index: footnote.childNodes[0].innerHTML,
-        text: footnote.childNodes[1].innerHTML,
-      });
+        arrayOfFootnotes.push({
+          // @ts-ignore
+          index: footnote.childNodes[0].innerHTML,
+          // @ts-ignore
+          text: footnote.childNodes[1].innerHTML,
+        });
     });
 
-    expect(arrayOfFootnotes).to.be.equal([
+    expect(arrayOfFootnotes).toEqual([
       {
         index: '1',
         text: 'Frisch verheiratet, früher Hanspeter Mustermann',
@@ -603,26 +617,29 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-merged-footnotes.json'),
+        item: fixtures.displayMergedFootnotes,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
     const footnotes = dom.window.document.querySelectorAll(
       'div.q-table-footnote-footer'
     );
 
-    let arrayOfFootnotes = [];
+    let arrayOfFootnotes: {index: string, text: string}[] = [];
 
     footnotes.forEach((footnote) => {
       arrayOfFootnotes.push({
+        // @ts-ignore
         index: footnote.childNodes[0].innerHTML,
+        // @ts-ignore
         text: footnote.childNodes[1].innerHTML,
       });
     });
 
-    expect(arrayOfFootnotes).to.be.equal([
+    expect(arrayOfFootnotes).toEqual([
       {
         index: '1',
         text: 'Frisch verheiratet, früher Hanspeter Mustermann',
@@ -635,26 +652,29 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-merged-footnotes-multiple.json'),
+        item: fixtures.displayMergedFootnotesMultiple,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
     const footnotes = dom.window.document.querySelectorAll(
       'div.q-table-footnote-footer'
     );
 
-    let arrayOfFootnotes = [];
+    let arrayOfFootnotes:  {index: string, text: string}[] = [];
 
     footnotes.forEach((footnote) => {
       arrayOfFootnotes.push({
+        // @ts-ignore
         index: footnote.childNodes[0].innerHTML,
+        // @ts-ignore
         text: footnote.childNodes[1].innerHTML,
       });
     });
 
-    expect(arrayOfFootnotes).to.be.equal([
+    expect(arrayOfFootnotes).toEqual([
       {
         index: '1',
         text: 'Frisch verheiratet, früher Hanspeter Mustermann',
@@ -671,23 +691,23 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-footnotes-in-cardlayout.json'),
+        item: fixtures.displayFootnotesInCardlayout,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
     const annotations = dom.window.document.querySelectorAll('td');
 
-    const footnoteOne = decodeURI(
-      annotations[0].getAttribute('data-label').split('Rank')[1]
-    );
-    const footnoteTwo = decodeURI(
-      annotations[1].getAttribute('data-label').split('Name')[1]
-    );
+    const rawFootnote1 =  annotations[0].getAttribute('data-label') || '';
+    const rawFootnote2 =  annotations[1].getAttribute('data-label') || '';
 
-    expect(footnoteOne).to.be.equal('\u00b9');
-    expect(footnoteTwo).to.be.equal('\u00b2');
+    const footnoteOne = decodeURI(rawFootnote1.split('Rank')[1]);
+    const footnoteTwo = decodeURI(rawFootnote2.split('Name')[1]);
+
+    expect(footnoteOne).toEqual('\u00b9');
+    expect(footnoteTwo).toEqual('\u00b2');
   });
 
   it('hides footnotes because header is hidden', async () => {
@@ -695,26 +715,22 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/hide-footnotes-in-header.json'),
+        item: fixtures.hideFootnotesInHeader,
         toolRuntimeConfig: {},
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
-    const annotations = dom.window.document.querySelectorAll(
-      '.q-table-footnote-annotation'
-    );
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
+    const annotations = dom.window.document.querySelectorAll('.q-table-footnote-annotation');
+    const footnoteIndexes = dom.window.document.querySelectorAll('.q-table-footnote-index');
 
-    const footnoteIndexes = dom.window.document.querySelectorAll(
-      '.q-table-footnote-index'
-    );
-
-    expect(annotations[0].innerHTML).to.be.equal('1');
-    expect(footnoteIndexes[0].innerHTML).to.be.equal(
+    expect(annotations[0].innerHTML).toEqual('1');
+    expect(footnoteIndexes[0].innerHTML).toEqual(
       '1'
     );
-    expect(annotations.length).to.be.equal(6);
-    expect(footnoteIndexes.length).to.be.equal(6);
+    expect(annotations.length).toEqual(6);
+    expect(footnoteIndexes.length).toEqual(6);
   });
 
   it('displays a bigger padding in column with footnotes when column with minibars follows', async () => {
@@ -722,16 +738,16 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-footnotes-before-minibar.json'),
+        item: fixtures.displayFootnotesBeforeMinibar,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column--single'
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-footnote-column--single'
     ).then((value) => {
-      expect(value).to.be.equal(12);
+      expect(value).toEqual(12);
     });
   });
 
@@ -740,17 +756,16 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-alot-of-footnotes.json'),
+        item: fixtures.displayAlotOfFootnotes,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column--double'
-    ).then((value) => {
-      expect(value).to.be.equal(12);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-footnote-column--double').then(
+      value => expect(value).toEqual(12)
+    );
   });
 
   it('displays a bigger margin in column when table has footnotes and cardlayout ', async () => {
@@ -758,17 +773,16 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/display-footnotes-in-cardlayout.json'),
+        item: fixtures.displayFootnotesInCardlayout,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column-card-layout--single'
-    ).then((value) => {
-      expect(value).to.be.equal(20);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-footnote-column-card-layout--single').then(
+      value => expect(value).toEqual(20)
+    );
   });
 
   it('displays the margin correctly when table has positive minibars', async () => {
@@ -776,17 +790,16 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/footnotes-positive-minibars.json'),
+        item: fixtures.footnotesPositiveMinibars,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column--single'
-    ).then((value) => {
-      expect(value).to.be.equal(16);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-footnote-column--single').then(
+      value => expect(value).toEqual(16)
+    );
   });
 
   it('displays the margin correctly when table has negative minibars', async () => {
@@ -794,17 +807,16 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/footnotes-negative-minibars.json'),
+        item: fixtures.footnotesNegativeMinibars,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column--single'
-    ).then((value) => {
-      expect(value).to.be.equal(16);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-footnote-column--single').then(
+      value => expect(value).toEqual(16)
+    );
   });
 
   it('displays the margin correctly when table has mixed minibars', async () => {
@@ -812,24 +824,25 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/footnotes-mixed-minibars.json'),
+        item: fixtures.footnotesMixedMinibars,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column--single'
-    ).then((value) => {
-      expect(value).to.be.equal(18);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-footnote-column--single').then(
+      value => expect(value).toEqual(18)
+    );
   });
 
   it('behaves correctly with other metaData in cells', async () => {
-    let item = require('../resources/fixtures/data/display-footnotes.json');
+    let item = fixtures.displayFootnotes;
+
     item.data.metaData.cells = [
       {
         data: {
+          // @ts-ignore
           test: 'test',
         },
         rowIndex: 1,
@@ -837,6 +850,7 @@ lab.experiment('footnotes', () => {
       },
       {
         data: {
+          // @ts-ignore
           test1: 'test1',
         },
         rowIndex: 2,
@@ -844,6 +858,7 @@ lab.experiment('footnotes', () => {
       },
       {
         data: {
+          // @ts-ignore
           test2: 'test2',
         },
         rowIndex: 3,
@@ -852,12 +867,14 @@ lab.experiment('footnotes', () => {
       {
         data: {
           footnote: 'test3',
+          // @ts-ignore
           multipleData: true,
         },
         rowIndex: 4,
         colIndex: 1,
       },
     ];
+
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
@@ -867,17 +884,18 @@ lab.experiment('footnotes', () => {
       },
     });
 
-    const dom = new JSDOM(response.result.markup);
-    const annotations = dom.window.document.querySelectorAll(
-      'span.q-table-footnote-annotation'
-    );
-    let annotationIndexes = [];
+    const markup = getMarkup(response.result);
+    const dom = new JSDOM(markup);
+    const annotations = dom.window.document.querySelectorAll('span.q-table-footnote-annotation');
+
+    let annotationIndexes: string[] = [];
     annotations.forEach((annotation) => {
+      // @ts-ignore
       annotationIndexes.push(annotation.dataset.annotation);
     });
 
-    expect(annotationIndexes).to.be.equal(['1']);
-    expect(response.statusCode).to.be.equal(200);
+    expect(annotationIndexes).toEqual(['1']);
+    expect(response.statusCode).toEqual(200);
   });
 
   it('displays the footnote when the table has colorColumn (numerical)', async () => {
@@ -885,25 +903,20 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical-footnotes.json'),
+        item: fixtures.colorColumnNumericalFootnotes,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column--single'
-    ).then((value) => {
-      expect(value).to.be.equal(7);
-    });
+    const markup = getMarkup(response.result);
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-annotation--colorColumn'
-    ).then((value) => {
-      expect(value).to.be.equal(1);
-    });
+    elementCount(markup, '.q-table-footnote-column--single').then(
+      value => expect(value).toEqual(7)
+    );
 
+    elementCount(markup, '.q-table-footnote-annotation--colorColumn').then(
+      value => expect(value).toEqual(1)
+    );
   })
 
   it('displays the footnote when the table has colorColumn (categorical)', async () => {
@@ -911,41 +924,39 @@ lab.experiment('footnotes', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-categorical-footnotes.json'),
+        item: fixtures.colorColumnCategoricalFootnotes,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-column--single'
-    ).then((value) => {
-      expect(value).to.be.equal(7);
-    });
+    const markup = getMarkup(response.result);
 
-    elementCount(
-      response.result.markup,
-      '.q-table-footnote-annotation--colorColumn'
-    ).then((value) => {
-      expect(value).to.be.equal(1);
-    });
+    elementCount(markup, '.q-table-footnote-column--single').then(
+      value => expect(value).toEqual(7)
+    );
+
+    elementCount(markup, '.q-table-footnote-annotation--colorColumn').then(
+      value => expect(value).toEqual(1)
+    );
   })
 });
 
-lab.experiment('table search', () => {
+describe('table search', () => {
   it('shows table search', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/table-search-show.json'),
+        item: fixtures.tableSearchShow,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, '.q-table__search__input').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table__search__input').then(
       (value) => {
-        expect(value).to.be.equal(1);
+        expect(value).toEqual(1);
       }
     );
   });
@@ -955,14 +966,16 @@ lab.experiment('table search', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/table-search-hidden.json'),
+        item: fixtures.tableSearchHidden,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, '.q-table__search__input').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table__search__input').then(
       (value) => {
-        expect(value).to.be.equal(0);
+        expect(value).toEqual(0);
       }
     );
   });
@@ -972,36 +985,37 @@ lab.experiment('table search', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/hyphen-sign-as-number.json'),
+        item: fixtures.hyphenSignAsNumber,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(response.result.markup, '.q-table__search__input').then(
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table__search__input').then(
       (value) => {
-        expect(value).to.be.equal(0);
+        expect(value).toEqual(0);
       }
     );
   })
 });
 
-lab.experiment('color column', () => {
+describe('color column', () => {
   it('displays the numerical legend', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
+        item: fixtures.colorColumnNumerical,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend--numerical'
-    ).then((value) => {
-      expect(value).to.be.equal(1);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend--numerical').then(
+      value => expect(value).toEqual(1)
+    );
   })
 
   it('displays the correct amount of buckets', async () => {
@@ -1009,17 +1023,16 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
+        item: fixtures.colorColumnNumerical,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend .q-table-colorColumn-legend-bucket'
-    ).then((value) => {
-      expect(value).to.be.equal(5);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend .q-table-colorColumn-legend-bucket').then(
+      value => expect(value).toEqual(5)
+    );
   })
 
   it('displays label legend', async () => {
@@ -1027,17 +1040,16 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
+        item: fixtures.colorColumnNumerical,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend-marker'
-    ).then((value) => {
-      expect(value).to.be.equal(1);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend-marker').then(
+      value => expect(value).toEqual(1)
+    );
   })
 
   it('doesnt display label legend', async () => {
@@ -1045,17 +1057,16 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical-no-label.json'),
+        item: fixtures.colorColumnNumericalNoLabel,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend-marker'
-    ).then((value) => {
-      expect(value).to.be.equal(0);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend-marker').then(
+      value => expect(value).toEqual(0)
+    );
   })
 
   it('displays no-data in legend', async () => {
@@ -1063,35 +1074,33 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical-no-data.json'),
+        item: fixtures.colorColumnNumericalNoData,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend-info--no-data'
-    ).then((value) => {
-      expect(value).to.be.equal(1);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend-info--no-data').then(
+      value => expect(value).toEqual(1)
+    );
   })
 
-  it('doesn\'t displays no-data in legend', async () => {
+  it('does not display no-data in legend', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical-no-label.json'),
+        item: fixtures.colorColumnNumericalNoLabel,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend-info--no-data'
-    ).then((value) => {
-      expect(value).to.be.equal(0);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend-info--no-data').then(
+      value => expect(value).toEqual(0)
+    );
   })
 
   it('displays single-bucket in legend', async () => {
@@ -1099,17 +1108,16 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical-no-data.json'),
+        item: fixtures.colorColumnNumericalNoData,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend-info--single-bucket'
-    ).then((value) => {
-      expect(value).to.be.equal(1);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend-info--single-bucket').then(
+      value => expect(value).toEqual(1)
+    );
   })
 
   it('displays the categorical legend', async () => {
@@ -1117,17 +1125,16 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-categorical.json'),
+        item: fixtures.colorColumnCategorical,
         toolRuntimeConfig: {},
       },
     });
 
-    elementCount(
-      response.result.markup,
-      '.q-table-colorColumn-legend--categorical'
-    ).then((value) => {
-      expect(value).to.be.equal(1);
-    });
+    const markup = getMarkup(response.result);
+
+    elementCount(markup, '.q-table-colorColumn-legend--categorical').then(
+      value => expect(value).toEqual(1)
+    );
   })
 
   it('displays buckets in custonm color (numerical)', async () => {
@@ -1135,14 +1142,17 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical-custom-colors.json'),
+        item: fixtures.colorColumnNumericalCustomColors,
         toolRuntimeConfig: {},
       },
     });
 
-    element(response.result.markup, '.q-table-colorColumn-legend-info--single-bucket .q-table-colorColumn-legend-bucket').then(
+    const markup = getMarkup(response.result);
+    const sel = '.q-table-colorColumn-legend-info--single-bucket .q-table-colorColumn-legend-bucket';
+
+    element(markup, sel).then(
       (elem) => {
-        expect(elem.style['color']).to.be.equal('yellow');
+        expect(elem.style['color']).toEqual('yellow');
       }
     );
   })
@@ -1152,15 +1162,17 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-categorical-custom-order.json'),
+        item: fixtures.colorColumnCategoricalCustomOrder,
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, '.q-table-colorColumn-legend--categorical .s-legend-item-label__item__label').then(
+    const markup = getMarkup(response.result);
+
+    elements(markup, '.q-table-colorColumn-legend--categorical .s-legend-item-label__item__label').then(
       (elements) => {
-        expect(elements[0].innerHTML).to.be.equal('Test1');
-        expect(elements[1].innerHTML).to.be.equal('Test2');
+        expect(elements[0].innerHTML).toEqual('Test1');
+        expect(elements[1].innerHTML).toEqual('Test2');
       }
     );
   })
@@ -1170,16 +1182,20 @@ lab.experiment('color column', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-categorical-custom-colors.json'),
+        item: fixtures.colorColumnCategoricalCustomColors,
         toolRuntimeConfig: {},
       },
     });
 
-    elements(response.result.markup, '.q-table-colorColumn-legend--categorical .s-legend-item-label__item').then(
+    const markup = getMarkup(response.result);
+
+    elements(markup, '.q-table-colorColumn-legend--categorical .s-legend-item-label__item').then(
       (elements) => {
-        expect(elements[0].style['color']).to.be.equal('pink');
-        expect(elements[1].style['color']).to.be.equal('lightblue');
+        expect(elements[0].style['color']).toEqual('pink');
+        expect(elements[1].style['color']).toEqual('lightblue');
       }
     );
   })
 })
+
+

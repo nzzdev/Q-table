@@ -1,5 +1,3 @@
-import type { ServerRoute } from '@hapi/hapi';
-
 import twoColumn from '../../../resources/fixtures/data/two-column.json';
 import fourColumn from '../../../resources/fixtures/data/four-column.json';
 import fourColumnNoHeader from '../../../resources/fixtures/data/four-column-no-header.json';
@@ -46,7 +44,7 @@ import colorColumnCategoricalFootnotes from '../../../resources/fixtures/data/co
 import colorColumnCategoricalCustomOrder from '../../../resources/fixtures/data/colorColumn-categorical-custom-order.json';
 import colorColumnCategoricalCustomColors from '../../../resources/fixtures/data/colorColumn-categorical-custom-colors.json';
 
-const fixtureData = [
+export {
   twoColumn,
   fourColumn,
   fourColumnNoHeader,
@@ -92,17 +90,4 @@ const fixtureData = [
   colorColumnCategoricalFootnotes,
   colorColumnCategoricalCustomOrder,
   colorColumnCategoricalCustomColors,
-];
-
-const route: ServerRoute = {
-  path: '/fixtures/data',
-  method: 'GET',
-  options: {
-    tags: ['api'],
-  },
-  handler: () => {
-    return fixtureData;
-  },
-};
-
-export default route;
+}

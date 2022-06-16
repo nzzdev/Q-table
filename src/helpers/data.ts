@@ -72,8 +72,11 @@ export function isNumeric(cell: string | null): boolean {
     return false
   }
 
-  const parsed = parseFloat(cell);
+  // If it does not match a number signature abort.
+  if (!cell.match(/^[+-]?\d+(\.\d+)?$/)) return false;
 
+  // Check if it parses should it match a number signature.
+  const parsed = parseFloat(cell);
   if (isNaN(parsed)) {
     return false;
   }
@@ -85,16 +88,14 @@ function getColumnsType(data: QTableDataRaw): ColumnType[] {
   const columns: ColumnType[]  = [];
   const table = getDataWithoutHeaderRow(data);
 
-
-  const columnAmount = data[0].length;
+  const columnAmount = table[0].length;
 
   for (let c = 0; c < columnAmount; c++) {
     const column: (string|null)[] = [];
 
     // Take all columns in one array
-
-    for (let r = 0; r < data.length; r++) {
-      column.push(data[r][c])
+    for (let r = 0; r < table.length; r++) {
+      column.push(table[r][c])
     }
 
     let withFormating = false;
@@ -122,6 +123,12 @@ function getColumnsType(data: QTableDataRaw): ColumnType[] {
   return columns;
 }
 
+/**
+ * TODO:
+ * This is quite a rough function.
+ * Will fail under mixed values.
+ * Need better to logic.
+ */
 function isColumnNumeric(column: (string|null)[]): boolean {
   // If we find one cell that is numeric then it is a numeric column.
   for (let i = 0 ; i < column.length; i++) {
@@ -138,7 +145,6 @@ function isColumnNumeric(column: (string|null)[]): boolean {
 export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): QTableDataFormatted[][] {
   const columns = getColumnsType(data);
   let tableData: QTableDataFormatted[][] = [];
-
 
   for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
     const row = data[rowIndex];
@@ -196,8 +202,6 @@ export function getNumericalValuesByColumn(data: QTableDataRaw, column: number):
 
     if (typeof val === 'string' && val.match(/^[+-]?\d+(\.\d+)?$/)) {
         return_val = parseFloat(val);
-    } else {
-      throw new Error('value is not a valid floating point number');
     }
 
     return return_val;

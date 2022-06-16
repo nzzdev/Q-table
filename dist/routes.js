@@ -863,6 +863,10 @@ function isNumeric(cell) {
     if (typeof cell !== 'string') {
         return false;
     }
+    // If it does not match a number signature abort.
+    if (!cell.match(/^[+-]?\d+(\.\d+)?$/))
+        return false;
+    // Check if it parses should it match a number signature.
     const parsed = parseFloat(cell);
     if (isNaN(parsed)) {
         return false;
@@ -871,13 +875,13 @@ function isNumeric(cell) {
 }
 function getColumnsType(data) {
     const columns = [];
-    getDataWithoutHeaderRow(data);
-    const columnAmount = data[0].length;
+    const table = getDataWithoutHeaderRow(data);
+    const columnAmount = table[0].length;
     for (let c = 0; c < columnAmount; c++) {
         const column = [];
         // Take all columns in one array
-        for (let r = 0; r < data.length; r++) {
-            column.push(data[r][c]);
+        for (let r = 0; r < table.length; r++) {
+            column.push(table[r][c]);
         }
         let withFormating = false;
         const columnNumeric = isColumnNumeric(column);
@@ -897,6 +901,12 @@ function getColumnsType(data) {
     }
     return columns;
 }
+/**
+ * TODO:
+ * This is quite a rough function.
+ * Will fail under mixed values.
+ * Need better to logic.
+ */
 function isColumnNumeric(column) {
     // If we find one cell that is numeric then it is a numeric column.
     for (let i = 0; i < column.length; i++) {
@@ -955,9 +965,6 @@ function getNumericalValuesByColumn(data, column) {
         let return_val = null;
         if (typeof val === 'string' && val.match(/^[+-]?\d+(\.\d+)?$/)) {
             return_val = parseFloat(val);
-        }
-        else {
-            throw new Error('value is not a valid floating point number');
         }
         return return_val;
     });
@@ -3462,7 +3469,7 @@ function validateAgainstSchema(item) {
         throw Boom.badRequest(JSON.stringify(validate.errors));
     }
 }
-const route$e = {
+const route$f = {
     method: 'POST',
     path: '/rendering-info/web',
     options: {
@@ -3501,9 +3508,21 @@ const route$e = {
             const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
             const minibarsAvailable = yield areMinibarsAvailable(request, config);
             const colorColumnAvailable = yield isColorColumnAvailable(request, config);
-            const tableData = formatTableData(config.data.table, footnotes, options);
+            let tableData = [];
+            try {
+                tableData = formatTableData(config.data.table, footnotes, options);
+            }
+            catch (e) {
+                console.error('Execption during formatting table data', e);
+            }
             const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
-            const colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
+            let colorColumn = null;
+            try {
+                colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
+            }
+            catch (e) {
+                console.error('Execption during creating colorColumn', e);
+            }
             const context = {
                 item: config,
                 config,
@@ -3656,7 +3675,7 @@ function isColorColumnAvailable(request, config) {
 }
 
 const __dirname$1 = dirname(fileURLToPath(import.meta.url));
-var stylesheet = {
+const route$e = {
     method: 'GET',
     path: '/stylesheet/{filename}.{hash}.{extension}',
     options: {
@@ -5563,7 +5582,7 @@ var options$w = {
 };
 var tool$d = "table";
 var subtitle$k = "State by state breakdown";
-var minibarsMegative = {
+var minibarsNegative = {
 	title: title$x,
 	data: data$w,
 	sources: sources$w,
@@ -15834,7 +15853,7 @@ const fixtureData = [
     columnSpacing,
     minibarsMixed,
     minibarsPositive,
-    minibarsMegative,
+    minibarsNegative,
     minibarsHeaderWithNumbers,
     minibarsCustomClassName,
     minibarsCustomColorCode,
@@ -16099,8 +16118,8 @@ var schema = [
 ];
 
 const allRoutes = [
+    route$f,
     route$e,
-    stylesheet,
     optionAvailability,
     ...dynamicSchemas,
     route$5,

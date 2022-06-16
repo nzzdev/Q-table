@@ -2,14 +2,15 @@
   "name": "q-table",
   "version": "5.0.9",
   "description": "",
-  "main": "index.cjs",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "compile-style-files": "node tasks/compileStyleFiles.cjs",
     "build": "rollup -c rollup.config.js",
     "dev": "run-p build compile-style-files && node dev.js",
     "start": "nodemon --exec \"npm run dev\"",
-    "test": "NODE_OPTIONS='--experimental-vm-modules --experimental-specifier-resolution=node' jest --config jest.config.ts",
+    "test": "npm run build && npm run jest",
+    "jest": "NODE_OPTIONS='--experimental-vm-modules --experimental-specifier-resolution=node' jest --config jest.config.ts",
     "update-local-fixtureData": "node tasks/updateFixtureData.js"
   },
   "author": "",
