@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import Hapi from'@hapi/hapi';
 import Joi from 'Joi';
 import * as fixtures from '../resources/fixtures/data';
-import type { RenderingInfo } from '../src/interfaces';
+import { getMarkup, getScripts } from './helpers';
 
 function element(markup: string, selector: string): Promise<HTMLElement> {
   return new Promise((resolve) => {
@@ -30,16 +30,6 @@ function elementCount(markup: string, selector: string): Promise<number> {
     const dom = new JSDOM(markup);
     resolve(dom.window.document.querySelectorAll(selector).length);
   });
-}
-
-function getMarkup(result: object | undefined): string {
-  const casted = result as RenderingInfo;
-  return casted.markup;
-}
-
-function getScripts(result: object | undefined): {content: string}[] {
-  const casted = result as RenderingInfo;
-  return casted.scripts;
 }
 
 let server: Hapi.Server;

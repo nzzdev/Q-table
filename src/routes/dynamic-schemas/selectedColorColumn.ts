@@ -11,7 +11,7 @@ const route: ServerRoute = {
       payload: Joi.object(),
     },
   },
-  handler: function (request: Request): ReturnPayload {
+  handler: function (request: Request): SelectedColorColumnReturnPayload {
     const payload = request.payload as Payload;
     const item = payload.item;
 
@@ -71,7 +71,7 @@ interface DropdownSettings {
   titles: string[],
 }
 
-interface ReturnPayload {
+export interface SelectedColorColumnReturnPayload {
   enum: (number | null)[],
   'Q:options': {
     enum_titles: string[]

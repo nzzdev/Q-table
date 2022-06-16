@@ -1,19 +1,16 @@
-const Lab = require('@hapi/lab');
-const Code = require('@hapi/code');
-const Hapi = require('@hapi/hapi');
-const Joi = require('joi');
-const lab = (exports.lab = Lab.script());
+import Hapi from'@hapi/hapi';
+import Joi from 'Joi';
+import * as fixtures from '../resources/fixtures/data';
+import { getAvailabilityResponse, getMarkup, getScripts, getStylesheets } from './helpers';
+// @ts-ignore
+import routes from '../dist/routes.js';
+import { SelectedColumnMinibarReturnPayload } from '../src/routes/dynamic-schemas/selectedColumnMinibar';
+import { SelectedColorColumnReturnPayload } from '../src/routes/dynamic-schemas/selectedColorColumn';
 
-const expect = Code.expect;
-const before = lab.before;
-const after = lab.after;
-const it = lab.it;
+let server: Hapi.Server;
 
-const routes = require('../dist/routes/routes.js');
-
-let server;
-
-before(async () => {
+// Start the server before the tests.
+beforeAll(async () => {
   try {
     server = Hapi.server({
       port: process.env.PORT || 3000,
@@ -21,42 +18,52 @@ before(async () => {
     server.validator(Joi);
     server.route(routes);
   } catch (err) {
-    expect(err).to.not.exist();
+    expect(err).not.toBeDefined();
   }
 });
 
-after(async () => {
+afterAll(async () => {
   await server.stop({ timeout: 2000 });
+
+  // @ts-ignore.
   server = null;
 });
 
-lab.experiment('basics', () => {
+describe('basics', () => {
   it('starts the server', () => {
-    expect(server.info.created).to.be.a.number();
+    expect(server.info.created).toEqual(expect.any(Number));
   });
 
   it('is healthy', async () => {
     const response = await server.inject('/health');
-    expect(response.payload).to.equal('ok');
+    expect(response.payload).toEqual('ok');
   });
 });
 
-lab.experiment('rendering-info/web', () => {
+describe('rendering-info/web', () => {
   it('renders a table', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/four-column-no-header.json'),
+        item: fixtures.fourColumnNoHeader,
         toolRuntimeConfig: {},
       },
     });
-    expect(response.statusCode).to.be.equal(200);
-    expect(response.result.markup).includes(
-      '<div class="s-q-item q-table" id="q_table_someid_'
-    );
-    expect(response.result.stylesheets[0].name).startsWith('q-table.');
-    expect(response.result.scripts[0].content).to.be.a.string();
+
+    expect(response.statusCode).toEqual(200);
+
+    const markup = getMarkup(response.result);
+    const stylesheets = getStylesheets(response.result);
+    const scripts = getScripts(response.result);
+
+    const foundMarkup = markup.includes('<div class="s-q-item q-table" id="q_table_someid_');
+    expect(foundMarkup).toBe(true);
+
+    const foundStylesheet = stylesheets[0].name.startsWith('q-table.');
+    expect(foundStylesheet).toBe(true);
+
+    expect(scripts[0].content).toEqual(expect.any(String));
   });
 
   it('returns 400 if no payload given', async () => {
@@ -64,7 +71,7 @@ lab.experiment('rendering-info/web', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
     });
-    expect(response.statusCode).to.be.equal(400);
+    expect(response.statusCode).toEqual(400);
   });
 
   it('returns 400 if no item given in payload', async () => {
@@ -72,10 +79,10 @@ lab.experiment('rendering-info/web', () => {
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
       payload: {
-        item: require('../resources/fixtures/data/four-column-no-header.json'),
+        item: fixtures.fourColumnNoHeader,
       },
     });
-    expect(response.statusCode).to.be.equal(400);
+    expect(response.statusCode).toEqual(400);
   });
 
   it('returns 400 if no toolRuntimeConfig given in payload', async () => {
@@ -86,7 +93,7 @@ lab.experiment('rendering-info/web', () => {
         toolRuntimeConfig: {},
       },
     });
-    expect(response.statusCode).to.be.equal(400);
+    expect(response.statusCode).toEqual(400);
   });
 
   it('returns 400 if invalid item given', async () => {
@@ -98,35 +105,38 @@ lab.experiment('rendering-info/web', () => {
         toolRuntimeConfig: {},
       },
     });
-    expect(response.statusCode).to.be.equal(400);
+    expect(response.statusCode).toEqual(400);
   });
 });
 
-lab.experiment('migration endpoint', () => {
+describe('migration endpoint', () => {
   it('returns 304 for /migration', async () => {
     const request = {
       method: 'POST',
       url: '/migration',
       payload: {
-        item: require('../resources/fixtures/data/minibars-negative.json'),
+        item: fixtures.minibarsNegative,
       },
     };
     const response = await server.inject(request);
-    expect(response.statusCode).to.be.equal(304);
+    expect(response.statusCode).toEqual(304);
   });
 });
 
-lab.experiment('option availability endpoint', () => {
+describe('option availability endpoint', () => {
   it('returns true for option availability of minibar selectedColumn', async () => {
     const request = {
       method: 'POST',
       url: '/option-availability/selectedColumnMinibar',
       payload: {
-        item: require('../resources/fixtures/data/minibars-mixed.json'),
+        item: fixtures.minibarsMixed,
       },
     };
+
     const response = await server.inject(request);
-    expect(response.result.available).to.be.equal(true);
+
+    const available = getAvailabilityResponse(response.result);
+    expect(available).toEqual(true);
   });
 
   it('returns true for option availability of minibar selectedColumn', async () => {
@@ -134,11 +144,13 @@ lab.experiment('option availability endpoint', () => {
       method: 'POST',
       url: '/option-availability/selectedColumnMinibar',
       payload: {
-        item: require('../resources/fixtures/data/two-column.json'),
+        item: fixtures.twoColumn,
       },
     };
     const response = await server.inject(request);
-    expect(response.result.available).to.be.equal(true);
+
+    const available = getAvailabilityResponse(response.result);
+    expect(available).toEqual(true);
   });
 
   it('Minibar is not available from a certain number of columns', async () => {
@@ -146,11 +158,13 @@ lab.experiment('option availability endpoint', () => {
       method: 'POST',
       url: '/option-availability/selectedColumnMinibar',
       payload: {
-        item: require('../resources/fixtures/data/one-column.json'),
+        item: fixtures.oneColumn,
       },
     };
     const response = await server.inject(request);
-    expect(response.result.available).to.be.equal(false);
+
+    const available = getAvailabilityResponse(response.result);
+    expect(available).toEqual(false);
   });
 
   it('returns true for option availability of colorColumn selectedColumn', async () => {
@@ -158,11 +172,13 @@ lab.experiment('option availability endpoint', () => {
       method: 'POST',
       url: '/option-availability/selectedColorColumn',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
+        item: fixtures.colorColumnNumerical,
       },
     };
     const response = await server.inject(request);
-    expect(response.result.available).to.be.equal(true);
+
+    const available = getAvailabilityResponse(response.result);
+    expect(available).toEqual(true);
   });
 
   it('returns true for option availability of colorColumn selectedColumn', async () => {
@@ -170,11 +186,13 @@ lab.experiment('option availability endpoint', () => {
       method: 'POST',
       url: '/option-availability/selectedColorColumn',
       payload: {
-        item: require('../resources/fixtures/data/two-column.json'),
+        item: fixtures.twoColumn,
       },
     };
     const response = await server.inject(request);
-    expect(response.result.available).to.be.equal(true);
+
+    const available = getAvailabilityResponse(response.result);
+    expect(available).toEqual(true);
   });
 
   it('ColorColumn is not available from a certain number of columns', async () => {
@@ -182,26 +200,32 @@ lab.experiment('option availability endpoint', () => {
       method: 'POST',
       url: '/option-availability/selectedColorColumn',
       payload: {
-        item: require('../resources/fixtures/data/one-column.json'),
+        item: fixtures.oneColumn,
       },
     };
     const response = await server.inject(request);
-    expect(response.result.available).to.be.equal(false);
+
+    const available = getAvailabilityResponse(response.result);
+    expect(available).toEqual(false);
   });
 });
 
-lab.experiment('dynamic schema endpoint', () => {
+describe('dynamic schema endpoint', () => {
   it('returns enums of minibar selectedColumn', async () => {
     const request = {
       method: 'POST',
       url: '/dynamic-schema/selectedColumnMinibar',
       payload: {
-        item: require('../resources/fixtures/data/minibars-negative.json'),
+        item: fixtures.minibarsNegative,
       },
     };
+
     const response = await server.inject(request);
-    expect(response.result.enum).to.be.equal([null, 1, 2, 3]);
-    expect(response.result['Q:options'].enum_titles).to.be.equal([
+
+    const result = response.result as SelectedColumnMinibarReturnPayload;
+
+    expect(result.enum).toEqual([null, 1, 2, 3]);
+    expect(result['Q:options'].enum_titles).toEqual([
       'keine',
       '2016',
       '2017',
@@ -214,12 +238,15 @@ lab.experiment('dynamic schema endpoint', () => {
       method: 'POST',
       url: '/dynamic-schema/selectedColorColumn',
       payload: {
-        item: require('../resources/fixtures/data/colorColumn-numerical.json'),
+        item: fixtures.colorColumnNumerical,
       },
     };
+
     const response = await server.inject(request);
-    expect(response.result.enum).to.be.equal([null, 0, 1, 2, 3]);
-    expect(response.result['Q:options'].enum_titles).to.be.equal([
+    const result = response.result as SelectedColorColumnReturnPayload;
+
+    expect(result.enum).toEqual([null, 0, 1, 2, 3]);
+    expect(result['Q:options'].enum_titles).toEqual([
       'keine',
       'String',
       'Number',
@@ -229,9 +256,9 @@ lab.experiment('dynamic schema endpoint', () => {
   });
 });
 
-lab.experiment('fixture data endpoint', () => {
+describe('fixture data endpoint', () => {
   it('returns fixture data items for /fixtures/data', async () => {
     const response = await server.inject('/fixtures/data');
-    expect(response.statusCode).to.be.equal(200);
+    expect(response.statusCode).toEqual(200);
   });
 });
