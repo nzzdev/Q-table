@@ -41,12 +41,6 @@
     }
     return { colspan, classes };
   }
-
-function click() {
-  console.log("CLICKED");
-}
-
-
 </script>
 
 <div
@@ -54,10 +48,9 @@ function click() {
   class:q-table--card-layout={initWithCardLayout}
   {id}
   style="opacity: 0;"
-  on:click={click}
 >
   {#if displayOptions.hideTitle !== true}
-    <h3 class="s-q-item__title">{item.title} + 222</h3>
+    <h3 class="s-q-item__title">{item.title}</h3>
   {/if}
   {#if item.subtitle && item.subtitle !== ""}
     <div class="s-q-item__subtitle">{item.subtitle}</div>
