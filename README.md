@@ -1,6 +1,6 @@
 # Q Table [![Build Status](https://travis-ci.com/nzzdev/Q-table.svg?token=g43MZxbtUcZ6QyxqUoJM&branch=dev)](https://travis-ci.com/nzzdev/Q-table)
 
-**Maintainer**: [Franco Gervasi](https://github.com/fgervasi)
+**Maintainer**: [Danijel Beljan](https://github.com/dnlbln)
 
 Q Table is one tool of the Q toolbox to create tables.
 Test it in the [demo](https://editor.q.tools).

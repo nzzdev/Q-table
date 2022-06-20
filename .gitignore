@@ -2,5 +2,3 @@ node_modules
 .idea
 .DS_STORE
 .env.json
-scripts
-styles

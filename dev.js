@@ -3,4 +3,5 @@ process.env.METHOD_BOX_ARTICLE = `{
     "url": "https://www.nzz.ch/ld.1580452"
 }`;
 
-require("./index.js");
+
+import './index.js';
