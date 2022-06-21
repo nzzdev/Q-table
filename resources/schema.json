@@ -152,10 +152,15 @@
             ]
           }
         },
+        "hideLegend": {
+          "title": "Legende Ausblenden",
+          "type": "boolean",
+          "default": false
+        },
         "cardLayout": {
           "title": "Card-Layout",
           "type": "boolean",
-          "default": false
+          "default": true
         },
         "cardLayoutIfSmall": {
           "title": "Card-Layout für Mobile",

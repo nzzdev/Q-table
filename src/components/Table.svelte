@@ -1,46 +1,65 @@
-<script>
-  import Legend from "./Legend.svelte";
-  import Footer from "./Footer.svelte";
-  import MinibarBox from "./minibar/MinibarBox.svelte";
-  import MinibarValue from "./minibar/MinibarValue.svelte";
-  import MixedMinibars from "./minibar/MixedMinibars.svelte";
-  import MethodBox from "./MethodBox.svelte";
-  import Cell from "./Cell.svelte";
-  export let item;
-  export let initWithCardLayout;
-  export let tableData;
-  export let minibar;
-  export let footnotes;
-  export let colorColumn;
-  export let numberOfRowsToHide;
-  export let displayOptions;
-  export let noInteraction;
-  export let id;
+<script lang="ts">
+import Legend from "./Legend.svelte";
+import Footer from "./Footer.svelte";
+import MinibarBox from "./minibar/MinibarBox.svelte";
+import MinibarValue from "./minibar/MinibarValue.svelte";
+import MixedMinibars from "./minibar/MixedMinibars.svelte";
+import MethodBox from "./MethodBox.svelte";
+import Cell from "./Cell.svelte";
+import Footnotes from "./Footnotes.svelte";
+import type { DisplayOptions, QTableConfig, QTableDataFormatted } from "../interfaces";
+import type { ColorColumn } from "../helpers/colorColumn";
+import type { Minibar } from "../helpers/minibars";
+import type { StructuredFootnote } from "../helpers/footnotes";
 
-  function getAttributes(colIndex) {
-    let colspan = 0;
-    let classes = "";
-    if (
-      minibar &&
-      minibar.type &&
-      item.options.minibar &&
-      item.options.minibar.selectedColumn === colIndex &&
-      minibar.type !== "mixed" &&
-      !initWithCardLayout
-    ) {
-      colspan = 2;
-      classes = "q-table-minibar-header";
-    } else if (
-      minibar &&
-      minibar.type === "mixed" &&
-      item.options.minibar &&
-      item.options.minibar.selectedColumn === colIndex
-    ) {
-      colspan = 0;
-      classes = "q-table-minibar-header";
-    }
-    return { colspan, classes };
+export let config: QTableConfig;
+export let item: QTableConfig;
+export let initWithCardLayout: boolean;
+export let tableData: QTableDataFormatted[][];
+export let minibar: Minibar | null;
+export let footnotes: StructuredFootnote[] | null;
+export let colorColumn: ColorColumn | null;
+export let numberOfRowsToHide: number | undefined;
+export let displayOptions: DisplayOptions;
+export let noInteraction: boolean;
+export let id: string;
+
+const options = config.options;
+
+function getAttributes(colIndex: number) {
+  let colspan = 0;
+  let classes = "";
+
+  if (
+    minibar &&
+    minibar.type &&
+    options.minibar &&
+    options.minibar.selectedColumn === colIndex &&
+    minibar.type !== "mixed" &&
+    !initWithCardLayout
+  ) {
+    colspan = 2;
+    classes = "q-table-minibar-header";
+  } else if (
+    minibar &&
+    minibar.type === "mixed" &&
+    options.minibar &&
+    options.minibar.selectedColumn === colIndex
+  ) {
+    colspan = 0;
+    classes = "q-table-minibar-header";
   }
+
+  return { colspan, classes };
+}
+
+function shouldShowLegend(): boolean {
+  return options.hideLegend !== true &&
+         colorColumn !== null &&
+         colorColumn.selectedColumn !== undefined &&
+         colorColumn.selectedColumn !== options.minibar.selectedColumn &&
+         !initWithCardLayout
+}
 </script>
 
 <div
@@ -50,13 +69,15 @@
   style="opacity: 0;"
 >
   {#if displayOptions.hideTitle !== true}
-    <h3 class="s-q-item__title">{item.title}</h3>
+    <h3 class="s-q-item__title">{config.title}</h3>
   {/if}
-  {#if item.subtitle && item.subtitle !== ""}
-    <div class="s-q-item__subtitle">{item.subtitle}</div>
+
+  {#if config.subtitle && config.subtitle !== ""}
+    <div class="s-q-item__subtitle">{config.subtitle}</div>
   {/if}
+
   <div style="overflow-x: auto;">
-    {#if noInteraction !== true && item.options.showTableSearch === true && tableData.length > 16}
+    {#if noInteraction !== true && options.showTableSearch === true && tableData.length > 16}
       <div class="q-table__search">
         <input
           class="q-table__search__input s-input-field"
@@ -71,11 +92,13 @@
         />
       </div>
     {/if}
-    {#if colorColumn && colorColumn.selectedColumn !== undefined && colorColumn.selectedColumn !== item.options.minibar.selectedColumn && !initWithCardLayout}
+
+    {#if shouldShowLegend() === true}
       <Legend {colorColumn} {noInteraction} />
     {/if}
+
     <table class="q-table__table">
-      {#if item.options.hideTableHeader !== true}
+      {#if options.hideTableHeader !== true}
         <thead class="s-font-note s-font-note--strong">
           {#each tableData[0] as head, colIndex}
             <th
@@ -100,11 +123,11 @@
         {#each tableData.slice(1) as row, rowIndex}
           <tr
             class:hidden={numberOfRowsToHide &&
-              rowIndex.index >= tableData.length - numberOfRowsToHide}
+              rowIndex >= tableData.length - numberOfRowsToHide}
           >
             {#each row as cell, colIndex}
-              {#if item.options.minibar && item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined && item.options.minibar.selectedColumn === colIndex}
-                {#if minibar.type === "positive"}
+              {#if options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex}
+                {#if minibar && minibar.type === "positive"}
                   <MinibarValue
                     {item}
                     {tableData}
@@ -121,7 +144,7 @@
                     {colIndex}
                     {rowIndex}
                   />
-                {:else if minibar.type === "negative"}
+                {:else if minibar && minibar.type === "negative"}
                   <MinibarBox
                     {item}
                     {tableData}
@@ -138,7 +161,7 @@
                     {colIndex}
                     {rowIndex}
                   />
-                {:else if minibar.type === "mixed"}
+                {:else if minibar && minibar.type === "mixed"}
                   <MixedMinibars
                     {item}
                     {tableData}
@@ -176,23 +199,20 @@
       </tbody>
     </table>
   </div>
-  {#if footnotes.length > 0}
-    {#each footnotes as footnote}
-      <div class="q-table-footnote-footer s-font-note-s">
-        <span class="q-table-footnote-index s-font-note--tabularnums"
-          >{footnote.index}</span
-        ><span class="q-table-footnote-text">{footnote.value}</span>
-      </div>
-    {/each}
+
+  {#if footnotes && footnotes.length > 0}
+    <Footnotes {footnotes}/>
   {/if}
+
   {#if colorColumn && colorColumn.methodBox !== null}
     <MethodBox {colorColumn} {noInteraction} />
   {/if}
+
   <Footer {item} />
 </div>
 
 <style>
-  .hidden {
-    display: none;
-  }
+.hidden {
+  display: none;
+}
 </style>
