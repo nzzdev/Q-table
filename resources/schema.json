@@ -160,7 +160,7 @@
         "cardLayout": {
           "title": "Card-Layout",
           "type": "boolean",
-          "default": true
+          "default": false
         },
         "cardLayoutIfSmall": {
           "title": "Card-Layout für Mobile",
