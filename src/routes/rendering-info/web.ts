@@ -77,8 +77,6 @@ const route: ServerRoute = {
     const toolRuntimeConfig = payload.toolRuntimeConfig;
     const options = config.options;
 
-    console.log(config);
-
     let width = getExactPixelWidth(toolRuntimeConfig);
 
     const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
