@@ -8,6 +8,8 @@ export let footnotes: StructuredFootnote[];
     <span class="q-table-footnote-index s-font-note--tabularnums">
       {footnote.index}
     </span>
-    <span class="q-table-footnote-text">{footnote.value}</span>
+    <span class="q-table-footnote-text">
+      {footnote.value}
+    </span>
   </div>
 {/each}

@@ -2749,7 +2749,7 @@ var properties$1 = {
 			cardLayout: {
 				title: "Card-Layout",
 				type: "boolean",
-				"default": true
+				"default": false
 			},
 			cardLayoutIfSmall: {
 				title: "Card-Layout für Mobile",
@@ -3561,7 +3561,6 @@ const route$f = {
             const config = payload.item;
             const toolRuntimeConfig = payload.toolRuntimeConfig;
             const options = config.options;
-            console.log(config);
             let width = getExactPixelWidth(toolRuntimeConfig);
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
             const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
