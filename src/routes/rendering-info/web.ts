@@ -2,21 +2,23 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-import type { Request, ServerRoute } from '@hapi/hapi';
-import { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject, QTableDataFormatted, FRONT_END_SCRIPT  } from '../../interfaces';
-
-// Require tools.
+import fs from 'fs';
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
 import UglifyJS from 'uglify-js';
+import { FRONT_END_SCRIPT } from '../../enums';
+import type { Request, ServerRoute } from '@hapi/hapi';
+import type {
+  AvailabilityResponseObject,
+  QTableConfig,
+  RenderingInfo,
+  WebPayload,
+  WebContextObject,
+  QTableDataFormatted,
+} from '../../interfaces';
 
-// Directories.
-const stylesDir = './styles/';
-
-import tableTemplate from '../../components/Table.svelte';
-
-// Fill only exists in dist folder.
-const styleHashMap = require(`${stylesDir}/hashMap.json`);
+// File only exists in dist folder.
+const styleHashMap = require('./styles/hashMap.json');
 
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 
@@ -66,14 +68,16 @@ const route: ServerRoute = {
     // Need to reset flags.
     addedDefaultScript = false;
 
-    const renderingInfo: RenderingInfo = {
-      polyfills: ['Promise'],
-      stylesheets: [{
-        name: styleHashMap['q-table'],
-      }],
-      scripts: [],
-      markup: '',
-    };
+    const id = createId(request);
+    let qtableCompiledScript = '';
+
+    try {
+      qtableCompiledScript = fs.readFileSync('dist/Q-Table.js', {
+        encoding: 'utf-8',
+      });
+    } catch(ex) {
+      console.log('ex', ex);
+    }
 
     const payload = request.payload as WebPayload;
 
@@ -119,9 +123,7 @@ const route: ServerRoute = {
       numberOfRows: config.data.table.length - 1, // do not count the header
       displayOptions: payload.toolRuntimeConfig.displayOptions || {},
       noInteraction: payload.toolRuntimeConfig.noInteraction || false,
-      id: `q_table_${request.query._id}_${Math.floor(
-        Math.random() * 100000
-      )}`.replace(/-/g, ''),
+      id,
       width,
       initWithCardLayout: false,
       numberOfRowsToHide: undefined,
@@ -151,12 +153,6 @@ const route: ServerRoute = {
       context.numberOfRowsToHide = undefined;
     }
 
-    try {
-      renderingInfo.markup = (tableTemplate as any).render(context).html
-    } catch (ex) {
-      console.log('Failed rendering html', ex);
-    }
-
     // The scripts need to know if we are confident that the numberOfRowsToHide is correct
     // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise
     // we reset it here to be calculated by the scripts again.
@@ -184,31 +180,57 @@ const route: ServerRoute = {
       possibleToHaveToHideRows = true;
     }
 
+    // need to look into this.
     if (toolRuntimeConfig.noInteraction) {
       possibleToHaveToHideRows = false;
     }
 
     // if we have cardLayoutIfSmall, we need to measure the width
     // to set the class not needed if we have cardLayout all the time.
-    if (options.cardLayout === false && options.cardLayoutIfSmall === true) {
-      addScript(FRONT_END_SCRIPT.CARD_LAYOUT, renderingInfo, context);
-    }
+    // if (options.cardLayout === false && options.cardLayoutIfSmall === true) {
+    //   addScript(FRONT_END_SCRIPT.CARD_LAYOUT, renderingInfo, context);
+    // }
 
-    if (possibleToHaveToHideRows) {
-      addScript(FRONT_END_SCRIPT.SHOW_MORE_BTN, renderingInfo, context);
-    }
+    // if (possibleToHaveToHideRows) {
+    //   addScript(FRONT_END_SCRIPT.SHOW_MORE_BTN, renderingInfo, context);
+    // }
 
-    if (context.noInteraction !== true && config.options.showTableSearch === true) {
-      addScript(FRONT_END_SCRIPT.SEARCH_FORM_INPUT, renderingInfo, context);
-    }
+    // if (context.noInteraction !== true && config.options.showTableSearch === true) {
+    //   addScript(FRONT_END_SCRIPT.SEARCH_FORM_INPUT, renderingInfo, context);
+    // }
 
-    if (context.minibar !== null) {
-      addScript(FRONT_END_SCRIPT.MINIBAR, renderingInfo, context);
-    }
+    // if (context.minibar !== null) {
+    //   addScript(FRONT_END_SCRIPT.MINIBAR, renderingInfo, context);
+    // }
 
-    if (context.colorColumn !== null) {
-      addScript(FRONT_END_SCRIPT.COLOR_COLUMN, renderingInfo, context);
-    }
+    // if (context.colorColumn !== null) {
+    //   addScript(FRONT_END_SCRIPT.COLOR_COLUMN, renderingInfo, context);
+    // }
+
+    const renderingInfo: RenderingInfo = {
+      polyfills: ['Promise'],
+      stylesheets: [{
+        name: styleHashMap['q-table'],
+      }],
+      scripts: [
+        {
+          content: qtableCompiledScript,
+        },
+        {
+          content: `
+          (function () {
+            var target = document.querySelector('#${id}_container');
+            target.innerHTML = "";
+            var props = ${JSON.stringify(context)};
+            new window.q_table({
+              "target": target,
+              "props": props
+            })
+          })();`,
+        },
+      ],
+      markup: `<div id="${id}_container" class="q-your-tool-container" />`,
+    };
 
     return renderingInfo;
   },
@@ -289,6 +311,10 @@ function addScript(id: FRONT_END_SCRIPT, renderingInfo: RenderingInfo, context: 
   renderingInfo.scripts.push({
     content: minified
   });
+}
+
+function createId(request: Request): string {
+  return `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, '');
 }
 
 export default route;

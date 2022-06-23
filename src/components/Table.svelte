@@ -60,6 +60,16 @@ function shouldShowLegend(): boolean {
          colorColumn.selectedColumn !== options.minibar.selectedColumn &&
          !initWithCardLayout
 }
+
+let isWorkingLabel = "";
+  let i = 0;
+
+  function worksOnClick() {
+    i++;
+    isWorkingLabel = i < 5 ? "is working!" : "is still working!";
+
+    alert('aa');
+  }
 </script>
 
 <div
@@ -67,6 +77,7 @@ function shouldShowLegend(): boolean {
   class:q-table--card-layout={initWithCardLayout}
   {id}
   style="opacity: 0;"
+  on:click={worksOnClick}
 >
   {#if displayOptions.hideTitle !== true}
     <h3 class="s-q-item__title">{config.title}</h3>

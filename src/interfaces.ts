@@ -1,23 +1,7 @@
+import { LABEL_LEGEND_ID } from './enums';
 import { ColorColumn } from './helpers/colorColumn';
 import { StructuredFootnote } from './helpers/footnotes';
 import { Minibar } from './helpers/minibars';
-
-export const enum LABEL_LEGEND_ID {
-  SMALL = 'small',
-  MEDIAN = 'median',
-  LARGE = 'large',
-  AVERAGE = 'average',
-  NO_LABEL = 'noLabel',
-}
-
-export const enum FRONT_END_SCRIPT {
-  DEFAULT = 'DEFAULT',
-  CARD_LAYOUT = 'CARD_LAYOUT',
-  SHOW_MORE_BTN = 'SHOW_MORE_BTN',
-  SEARCH_FORM_INPUT = 'SEARCH_FORM_INPUT',
-  MINIBAR = 'MINIBAR',
-  COLOR_COLUMN = 'COLOR_COLUMN',
-}
 
 export interface WebPayload {
   item: QTableConfig,

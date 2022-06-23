@@ -1,7 +1,7 @@
 import { getNumericalValuesByColumn, getNonNullValues, getMetaData, getCustomBucketBorders, getUniqueCategoriesObject, getRoundedValue  } from './data.js';
 import { digitWords, getCustomColorMap, getTextColor } from './colorColumnColor.js';
 import * as simpleStatistics from 'simple-statistics';
-import { LABEL_LEGEND_ID } from '../interfaces';
+import { LABEL_LEGEND_ID } from '../enums';
 
 import type { MetaData } from './data';
 import type { ColorColumnSettings, NumericalScaleType, QTableDataRaw } from '../interfaces';

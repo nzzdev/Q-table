@@ -30,6 +30,7 @@
   "devDependencies": {
     "@hapi/code": "^8.0.5",
     "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.3",
     "@types/d3": "^7.4.0",
     "@types/hapi__inert": "^5.2.3",
@@ -50,6 +51,7 @@
     "postcss-import": "^12.0.1",
     "rollup": "^2.75.6",
     "rollup-plugin-svelte": "^7.1.0",
+    "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.43.5",
     "svelte-jester": "^2.3.2",
     "svelte-preprocess": "^4.10.7",
