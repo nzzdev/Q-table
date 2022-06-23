@@ -152,6 +152,11 @@
             ]
           }
         },
+        "hideLegend": {
+          "title": "Legende ausblenden",
+          "type": "boolean",
+          "default": false
+        },
         "cardLayout": {
           "title": "Card-Layout",
           "type": "boolean",

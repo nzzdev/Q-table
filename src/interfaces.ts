@@ -72,7 +72,11 @@ export interface QTableConfigOptions {
   cardLayout: Boolean,
   cardLayoutIfSmall: Boolean,
   minibar: QTableConfigMinibarSettings,
-  colorColumn: ColorColumnSettings
+  colorColumn: ColorColumnSettings,
+
+  // This is added on 6.0.1 and we don't do any migration so earlier
+  // saved tables in the databases will not have this option.
+  hideLegend?: boolean
 }
 
 export interface QTableConfigMinibarSettings {
@@ -109,7 +113,7 @@ export interface QTableDataFormatted {
 }
 
 export interface DisplayOptions {
-
+  hideTitle?: boolean,
 }
 
 export interface ToolRuntimeConfig {

@@ -13,7 +13,7 @@ import UglifyJS from 'uglify-js';
 // Directories.
 const stylesDir = './styles/';
 
-import tableTemplate2 from '../../components/Table.svelte';
+import tableTemplate from '../../components/Table.svelte';
 
 // Fill only exists in dist folder.
 const styleHashMap = require(`${stylesDir}/hashMap.json`);
@@ -151,7 +151,7 @@ const route: ServerRoute = {
     }
 
     try {
-      renderingInfo.markup = (tableTemplate2 as any).render(context).html
+      renderingInfo.markup = (tableTemplate as any).render(context).html
     } catch (ex) {
       console.log('Failed rendering html', ex);
     }

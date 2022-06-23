@@ -569,16 +569,15 @@ describe('footnotes', () => {
 
     const markup = getMarkup(response.result);
     const dom = new JSDOM(markup);
-    const footnotes = dom.window.document.querySelectorAll('div.q-table-footnote-footer') as NodeListOf<HTMLDialogElement>;
-
+    const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;
     let arrayOfFootnotes: {index: string, text: string}[] = [];
 
     footnotes.forEach((footnote) => {
+      const spans = footnote.querySelectorAll('span');
+
         arrayOfFootnotes.push({
-          // @ts-ignore
-          index: footnote.childNodes[0].innerHTML,
-          // @ts-ignore
-          text: footnote.childNodes[1].innerHTML,
+          index: spans[0].innerHTML,
+          text: spans[1].innerHTML,
         });
     });
 
@@ -614,18 +613,16 @@ describe('footnotes', () => {
 
     const markup = getMarkup(response.result);
     const dom = new JSDOM(markup);
-    const footnotes = dom.window.document.querySelectorAll(
-      'div.q-table-footnote-footer'
-    );
+    const footnotes = dom.window.document.querySelectorAll('div.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;;
 
     let arrayOfFootnotes: {index: string, text: string}[] = [];
 
     footnotes.forEach((footnote) => {
+      const spans = footnote.querySelectorAll('span');
+
       arrayOfFootnotes.push({
-        // @ts-ignore
-        index: footnote.childNodes[0].innerHTML,
-        // @ts-ignore
-        text: footnote.childNodes[1].innerHTML,
+        index: spans[0].innerHTML,
+        text: spans[1].innerHTML,
       });
     });
 
@@ -649,18 +646,16 @@ describe('footnotes', () => {
 
     const markup = getMarkup(response.result);
     const dom = new JSDOM(markup);
-    const footnotes = dom.window.document.querySelectorAll(
-      'div.q-table-footnote-footer'
-    );
+    const footnotes = dom.window.document.querySelectorAll('div.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;;
 
     let arrayOfFootnotes:  {index: string, text: string}[] = [];
 
     footnotes.forEach((footnote) => {
+      const spans = footnote.querySelectorAll('span');
+
       arrayOfFootnotes.push({
-        // @ts-ignore
-        index: footnote.childNodes[0].innerHTML,
-        // @ts-ignore
-        text: footnote.childNodes[1].innerHTML,
+        index: spans[0].innerHTML,
+        text: spans[1].innerHTML,
       });
     });
 
@@ -1127,7 +1122,7 @@ describe('color column', () => {
     );
   })
 
-  it('displays buckets in custonm color (numerical)', async () => {
+  it('displays buckets in custom color (numerical)', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
@@ -1167,7 +1162,7 @@ describe('color column', () => {
     );
   })
 
-  it('displays buckets in custonm color (categorical)', async () => {
+  it('displays buckets in custom color (categorical)', async () => {
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
@@ -1187,5 +1182,3 @@ describe('color column', () => {
     );
   })
 })
-
-

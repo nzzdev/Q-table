@@ -417,6 +417,7 @@ function getBucketColor(
  * Interfaces.
  */
 export interface NumericalLegend extends MetaData {
+  hasSingleValueBucket: boolean;
   hasNullValues: boolean;
   hasZeroValues: boolean;
   maxValue: number;
