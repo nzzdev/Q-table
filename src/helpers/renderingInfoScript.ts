@@ -1,6 +1,6 @@
 import { WebContextObject } from '../interfaces';
 
-export function getDefaultScript(context: WebContextObject) {
+export function getDefaultScript(context: WebContextObject): string {
   const dataObject = `window.${context.id}Data`;
   return `
     if (!window.q_domready) {
@@ -30,17 +30,17 @@ export function getDefaultScript(context: WebContextObject) {
   `;
 }
 
-export function getCardLayoutScript(context: WebContextObject) {
+export function getCardLayoutScript(context: WebContextObject): string {
   const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
   const dataObject = `window.${context.id}Data`;
   const minibar = context.minibar;
-  let renderMinibarsFunction = "";
+  let renderMinibarsFunction = '';
 
   if (minibar !== null) {
     renderMinibarsFunction = `renderMinibars${context.id}()`;
   }
 
-  let renderColorColumnNumericalLegendFunction = "";
+  let renderColorColumnNumericalLegendFunction = '';
   if (context.colorColumn && context.colorColumn.colorColumnType === 'numerical') {
     renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.width)`;
   }
@@ -91,7 +91,7 @@ export function getCardLayoutScript(context: WebContextObject) {
   `;
 }
 
-export function getShowMoreButtonScript(context: WebContextObject) {
+export function getShowMoreButtonScript(context: WebContextObject): string {
   const dataObject = `window.${context.id}Data`;
   const handleShowMoreButtonFunctionName = `handleShowMoreButton${context.id}`;
   const hideRowsFunctionName = `hideRows${context.id}`;
@@ -155,7 +155,7 @@ export function getShowMoreButtonScript(context: WebContextObject) {
   `;
 }
 
-export function getMinibarsScript(context: WebContextObject) {
+export function getMinibarsScript(context: WebContextObject): string {
   const dataObject = `window.${context.id}Data`;
   const getColumnFunctionName = `getColumn${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
@@ -225,7 +225,7 @@ export function getMinibarsScript(context: WebContextObject) {
   `;
 }
 
-export function getSearchFormInputScript(context: WebContextObject) {
+export function getSearchFormInputScript(context: WebContextObject): string {
   const dataObject = `window.${context.id}Data`;
   const searchFormInputAddEventListeners = `searchFormInputAddEventListeners${context.id}`;
   const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
@@ -313,8 +313,7 @@ export function getSearchFormInputScript(context: WebContextObject) {
   `;
 }
 
-export function getColorColumnScript(context: WebContextObject) {
-
+export function getColorColumnScript(context: WebContextObject): string {
   const dataObject = `window.${context.id}Data`;
   const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;
   const prepareMethodBoxElementsFunctionName = `prepareMethodBoxElements${context.id}`;
@@ -325,13 +324,12 @@ export function getColorColumnScript(context: WebContextObject) {
   const addEventListenerToMethodBoxArticleLinkFunctionName = `addEventListenerToMethodBoxArticleLink${context.id}`;
   const handleClickOnMethodBoxArticleLinkFunctionName = `handleClickOnMethodBoxArticleLink${context.id}`;
 
-  let renderColorColumnNumericalLegendFunction = "";
-  if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+  let renderColorColumnNumericalLegendFunction = '';
+  if (context.colorColumn && context.colorColumn.colorColumnType === 'numerical') {
     renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.element.getBoundingClientRect().width)`;
   }
 
   return `
-
   function ${prepareMethodBoxElementsFunctionName}() {
     ${dataObject}.methodBoxToggleElement = ${dataObject}.element.querySelector(
       ".q-table-methods-link"
@@ -381,7 +379,6 @@ export function getColorColumnScript(context: WebContextObject) {
       });
     }
   }
-
 
   function ${handleClickOnMethodBoxToogleFunctionName}(event) {
     const eventDetail = {

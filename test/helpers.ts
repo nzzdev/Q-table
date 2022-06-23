@@ -21,7 +21,6 @@ export function getAvailabilityResponse(result: object | undefined): boolean {
   return casted.available;
 }
 
-
 export function element(markup: string, selector: string): Promise<HTMLElement> {
   return new Promise((resolve) => {
     const dom = new JSDOM(markup);

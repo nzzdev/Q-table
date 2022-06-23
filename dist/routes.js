@@ -2180,11 +2180,11 @@ function getCardLayoutScript(context) {
     const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
     const dataObject = `window.${context.id}Data`;
     const minibar = context.minibar;
-    let renderMinibarsFunction = "";
+    let renderMinibarsFunction = '';
     if (minibar !== null) {
         renderMinibarsFunction = `renderMinibars${context.id}()`;
     }
-    let renderColorColumnNumericalLegendFunction = "";
+    let renderColorColumnNumericalLegendFunction = '';
     if (context.colorColumn && context.colorColumn.colorColumnType === 'numerical') {
         renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.width)`;
     }
@@ -2458,12 +2458,11 @@ function getColorColumnScript(context) {
     const handleClickOnMethodBoxToogleFunctionName = `handleClickOnMethodBoxToogle${context.id}`;
     const addEventListenerToMethodBoxArticleLinkFunctionName = `addEventListenerToMethodBoxArticleLink${context.id}`;
     const handleClickOnMethodBoxArticleLinkFunctionName = `handleClickOnMethodBoxArticleLink${context.id}`;
-    let renderColorColumnNumericalLegendFunction = "";
-    if (context.colorColumn && context.colorColumn.colorColumnType === "numerical") {
+    let renderColorColumnNumericalLegendFunction = '';
+    if (context.colorColumn && context.colorColumn.colorColumnType === 'numerical') {
         renderColorColumnNumericalLegendFunction = `renderColorColumnNumericalLegend${context.id}(${dataObject}.element.getBoundingClientRect().width)`;
     }
     return `
-
   function ${prepareMethodBoxElementsFunctionName}() {
     ${dataObject}.methodBoxToggleElement = ${dataObject}.element.querySelector(
       ".q-table-methods-link"
@@ -2513,7 +2512,6 @@ function getColorColumnScript(context) {
       });
     }
   }
-
 
   function ${handleClickOnMethodBoxToogleFunctionName}(event) {
     const eventDetail = {
@@ -2717,6 +2715,16 @@ var properties$1 = {
 		title: "Optionen",
 		type: "object",
 		properties: {
+			hideRowsAfter: {
+				title: "Zeilen ausblenden nach",
+				type: "number",
+				"default": 10
+			},
+			usePagination: {
+				title: "Paginierung",
+				type: "boolean",
+				"default": false
+			},
 			hideTableHeader: {
 				title: "Spaltenüberschriften ausblenden",
 				type: "boolean",
@@ -3528,6 +3536,7 @@ function validateAgainstSchema(item) {
         throw Boom.badRequest(JSON.stringify(validate.errors));
     }
 }
+let addedDefaultScript = false;
 const route$f = {
     method: 'POST',
     path: '/rendering-info/web',
@@ -3548,6 +3557,8 @@ const route$f = {
     },
     handler: function (request) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Need to reset flags.
+            addedDefaultScript = false;
             const renderingInfo = {
                 polyfills: ['Promise'],
                 stylesheets: [{
@@ -3598,9 +3609,7 @@ const route$f = {
                 numberOfRowsToHide: undefined,
             };
             // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
-            if (context.width &&
-                context.width < 400 &&
-                config.options.cardLayoutIfSmall) {
+            if (context.width && context.width < 400 && config.options.cardLayoutIfSmall) {
                 context.initWithCardLayout = true;
             }
             else if (config.options.cardLayout) {
@@ -3627,18 +3636,19 @@ const route$f = {
             catch (ex) {
                 console.log('Failed rendering html', ex);
             }
-            // the scripts need to know if we are confident that the numberOfRowsToHide is correct
-            // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
+            // The scripts need to know if we are confident that the numberOfRowsToHide is correct
+            // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise
+            // we reset it here to be calculated by the scripts again.
             if (context.width === undefined) {
                 context.numberOfRowsToHide = undefined;
             }
             let possibleToHaveToHideRows = false;
             // if we show cards, we hide if more or equal than 6
-            if (config.options.cardLayout && context.numberOfRows >= 6) {
+            if (options.cardLayout && context.numberOfRows >= 6) {
                 possibleToHaveToHideRows = true;
             }
             // if we have cards for small, we hide if more or equal than 6
-            if (config.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
+            if (options.cardLayoutIfSmall && // we have cardLayoutIfSmall
                 (context.width === undefined || context.width < 400) && // width is unknown or below 400px
                 context.numberOfRows >= 6 // more than 6 rows
             ) {
@@ -3651,48 +3661,22 @@ const route$f = {
             if (toolRuntimeConfig.noInteraction) {
                 possibleToHaveToHideRows = false;
             }
-            // if we are going to add any script, we want the default script first
-            if ((config.options.cardLayout === false &&
-                config.options.cardLayoutIfSmall === true) ||
-                possibleToHaveToHideRows ||
-                context.minibar !== null ||
-                context.colorColumn !== null) {
-                renderingInfo.scripts.push({
-                    content: getDefaultScript(context),
-                });
-            }
-            // if we have cardLayoutIfSmall, we need to measure the width to set the class
-            // not needed if we have cardLayout all the time
-            if (config.options.cardLayout === false &&
-                config.options.cardLayoutIfSmall === true) {
-                renderingInfo.scripts.push({
-                    content: getCardLayoutScript(context),
-                });
+            // if we have cardLayoutIfSmall, we need to measure the width
+            // to set the class not needed if we have cardLayout all the time.
+            if (options.cardLayout === false && options.cardLayoutIfSmall === true) {
+                addScript("CARD_LAYOUT" /* FRONT_END_SCRIPT.CARD_LAYOUT */, renderingInfo, context);
             }
             if (possibleToHaveToHideRows) {
-                renderingInfo.scripts.push({
-                    content: getShowMoreButtonScript(context),
-                });
+                addScript("SHOW_MORE_BTN" /* FRONT_END_SCRIPT.SHOW_MORE_BTN */, renderingInfo, context);
             }
-            if (context.noInteraction !== true &&
-                config.options.showTableSearch === true) {
-                renderingInfo.scripts.push({
-                    content: getSearchFormInputScript(context),
-                });
+            if (context.noInteraction !== true && config.options.showTableSearch === true) {
+                addScript("SEARCH_FORM_INPUT" /* FRONT_END_SCRIPT.SEARCH_FORM_INPUT */, renderingInfo, context);
             }
             if (context.minibar !== null) {
-                renderingInfo.scripts.push({
-                    content: getMinibarsScript(context),
-                });
+                addScript("MINIBAR" /* FRONT_END_SCRIPT.MINIBAR */, renderingInfo, context);
             }
             if (context.colorColumn !== null) {
-                renderingInfo.scripts.push({
-                    content: getColorColumnScript(context),
-                });
-            }
-            // minify the scripts
-            for (let script of renderingInfo.scripts) {
-                script.content = UglifyJS.minify(script.content).code;
+                addScript("COLOR_COLUMN" /* FRONT_END_SCRIPT.COLOR_COLUMN */, renderingInfo, context);
             }
             return renderingInfo;
         });
@@ -3730,6 +3714,40 @@ function isColorColumnAvailable(request, config) {
             console.log('Error receiving result for /option-availability/selectedColorColumn', result);
             return false;
         }
+    });
+}
+function addScript(id, renderingInfo, context) {
+    let script = '';
+    // If we are going to add any script, we want the default script first.
+    if (addedDefaultScript === false) {
+        // Must set this to true before calling add script or infinite loop.
+        addedDefaultScript = true;
+        addScript("DEFAULT" /* FRONT_END_SCRIPT.DEFAULT */, renderingInfo, context);
+    }
+    switch (id) {
+        case "CARD_LAYOUT" /* FRONT_END_SCRIPT.CARD_LAYOUT */:
+            script = getCardLayoutScript(context);
+            break;
+        case "COLOR_COLUMN" /* FRONT_END_SCRIPT.COLOR_COLUMN */:
+            script = getColorColumnScript(context);
+            break;
+        case "MINIBAR" /* FRONT_END_SCRIPT.MINIBAR */:
+            script = getMinibarsScript(context);
+            break;
+        case "SEARCH_FORM_INPUT" /* FRONT_END_SCRIPT.SEARCH_FORM_INPUT */:
+            script = getSearchFormInputScript(context);
+            break;
+        case "SHOW_MORE_BTN" /* FRONT_END_SCRIPT.SHOW_MORE_BTN */:
+            script = getShowMoreButtonScript(context);
+            break;
+        default:
+            script = getDefaultScript(context);
+            console.log('aaa');
+            break;
+    }
+    const minified = UglifyJS.minify(script).code;
+    renderingInfo.scripts.push({
+        content: minified
     });
 }
 

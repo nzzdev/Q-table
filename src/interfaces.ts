@@ -10,6 +10,15 @@ export const enum LABEL_LEGEND_ID {
   NO_LABEL = 'noLabel',
 }
 
+export const enum FRONT_END_SCRIPT {
+  DEFAULT = 'DEFAULT',
+  CARD_LAYOUT = 'CARD_LAYOUT',
+  SHOW_MORE_BTN = 'SHOW_MORE_BTN',
+  SEARCH_FORM_INPUT = 'SEARCH_FORM_INPUT',
+  MINIBAR = 'MINIBAR',
+  COLOR_COLUMN = 'COLOR_COLUMN',
+}
+
 export interface WebPayload {
   item: QTableConfig,
   itemStateInDb: boolean,
@@ -76,7 +85,12 @@ export interface QTableConfigOptions {
 
   // This is added on 6.0.1 and we don't do any migration so earlier
   // saved tables in the databases will not have this option.
-  hideLegend?: boolean
+  hideLegend?: boolean,
+
+  // This is added on 6.2.0 and we don't do any migration so earlier
+  // saved tables in the databases will not have this option.
+  hideRowsAfter?: number,
+  usePagination?: boolean,
 }
 
 export interface QTableConfigMinibarSettings {

@@ -3,7 +3,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 import type { Request, ServerRoute } from '@hapi/hapi';
-import type { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject, QTableDataFormatted  } from '../../interfaces';
+import { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject, QTableDataFormatted, FRONT_END_SCRIPT  } from '../../interfaces';
 
 // Require tools.
 import Ajv from 'ajv';
@@ -39,6 +39,8 @@ function validateAgainstSchema(item: QTableConfig) {
   }
 }
 
+let addedDefaultScript = false;
+
 const route: ServerRoute = {
   method: 'POST',
   path: '/rendering-info/web',
@@ -61,6 +63,9 @@ const route: ServerRoute = {
     },
   },
   handler: async function (request: Request) {
+    // Need to reset flags.
+    addedDefaultScript = false;
+
     const renderingInfo: RenderingInfo = {
       polyfills: ['Promise'],
       stylesheets: [{
@@ -123,11 +128,7 @@ const route: ServerRoute = {
     };
 
     // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
-    if (
-      context.width &&
-      context.width < 400 &&
-      config.options.cardLayoutIfSmall
-    ) {
+    if (context.width && context.width < 400 && config.options.cardLayoutIfSmall) {
       context.initWithCardLayout = true;
     } else if (config.options.cardLayout) {
       context.initWithCardLayout = true;
@@ -156,9 +157,9 @@ const route: ServerRoute = {
       console.log('Failed rendering html', ex);
     }
 
-
-    // the scripts need to know if we are confident that the numberOfRowsToHide is correct
-    // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
+    // The scripts need to know if we are confident that the numberOfRowsToHide is correct
+    // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise
+    // we reset it here to be calculated by the scripts again.
     if (context.width === undefined) {
       context.numberOfRowsToHide = undefined;
     }
@@ -166,12 +167,13 @@ const route: ServerRoute = {
     let possibleToHaveToHideRows = false;
 
     // if we show cards, we hide if more or equal than 6
-    if (config.options.cardLayout && context.numberOfRows >= 6) {
+    if (options.cardLayout && context.numberOfRows >= 6) {
       possibleToHaveToHideRows = true;
     }
+
     // if we have cards for small, we hide if more or equal than 6
     if (
-      config.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
+      options.cardLayoutIfSmall && // we have cardLayoutIfSmall
       (context.width === undefined || context.width < 400) && // width is unknown or below 400px
       context.numberOfRows >= 6 // more than 6 rows
     ) {
@@ -186,60 +188,26 @@ const route: ServerRoute = {
       possibleToHaveToHideRows = false;
     }
 
-    // if we are going to add any script, we want the default script first
-    if (
-      (config.options.cardLayout === false &&
-        config.options.cardLayoutIfSmall === true) ||
-      possibleToHaveToHideRows ||
-      context.minibar !== null ||
-      context.colorColumn !== null
-    ) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getDefaultScript(context),
-      });
-    }
-
-    // if we have cardLayoutIfSmall, we need to measure the width to set the class
-    // not needed if we have cardLayout all the time
-    if (
-      config.options.cardLayout === false &&
-      config.options.cardLayoutIfSmall === true
-    ) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getCardLayoutScript(context),
-      });
+    // if we have cardLayoutIfSmall, we need to measure the width
+    // to set the class not needed if we have cardLayout all the time.
+    if (options.cardLayout === false && options.cardLayoutIfSmall === true) {
+      addScript(FRONT_END_SCRIPT.CARD_LAYOUT, renderingInfo, context);
     }
 
     if (possibleToHaveToHideRows) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getShowMoreButtonScript(context),
-      });
+      addScript(FRONT_END_SCRIPT.SHOW_MORE_BTN, renderingInfo, context);
     }
 
-    if (
-      context.noInteraction !== true &&
-      config.options.showTableSearch === true
-    ) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getSearchFormInputScript(context),
-      });
+    if (context.noInteraction !== true && config.options.showTableSearch === true) {
+      addScript(FRONT_END_SCRIPT.SEARCH_FORM_INPUT, renderingInfo, context);
     }
 
     if (context.minibar !== null) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getMinibarsScript(context),
-      });
+      addScript(FRONT_END_SCRIPT.MINIBAR, renderingInfo, context);
     }
 
     if (context.colorColumn !== null) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getColorColumnScript(context),
-      });
-    }
-
-    // minify the scripts
-    for (let script of renderingInfo.scripts) {
-      script.content = UglifyJS.minify(script.content).code;
+      addScript(FRONT_END_SCRIPT.COLOR_COLUMN, renderingInfo, context);
     }
 
     return renderingInfo;
@@ -276,6 +244,51 @@ async function isColorColumnAvailable(request: Request, config: QTableConfig): P
     console.log('Error receiving result for /option-availability/selectedColorColumn', result);
     return false;
   }
+}
+
+function addScript(id: FRONT_END_SCRIPT, renderingInfo: RenderingInfo, context: WebContextObject): void {
+  let script = '';
+
+  // If we are going to add any script, we want the default script first.
+  if (addedDefaultScript === false) {
+    // Must set this to true before calling add script or infinite loop.
+    addedDefaultScript = true;
+
+    addScript(FRONT_END_SCRIPT.DEFAULT, renderingInfo, context);
+  }
+
+  switch(id) {
+    case FRONT_END_SCRIPT.CARD_LAYOUT:
+      script = renderingInfoScripts.getCardLayoutScript(context);
+      break;
+
+    case FRONT_END_SCRIPT.COLOR_COLUMN:
+      script = renderingInfoScripts.getColorColumnScript(context);
+      break;
+
+    case FRONT_END_SCRIPT.MINIBAR:
+      script = renderingInfoScripts.getMinibarsScript(context);
+      break;
+
+    case FRONT_END_SCRIPT.SEARCH_FORM_INPUT:
+      script = renderingInfoScripts.getSearchFormInputScript(context);
+      break;
+
+    case FRONT_END_SCRIPT.SHOW_MORE_BTN:
+      script = renderingInfoScripts.getShowMoreButtonScript(context);
+      break;
+
+    default:
+      script = renderingInfoScripts.getDefaultScript(context);
+      console.log('aaa');
+      break;
+  }
+
+  const minified = UglifyJS.minify(script).code;
+
+  renderingInfo.scripts.push({
+    content: minified
+  });
 }
 
 export default route;
