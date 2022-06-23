@@ -16,9 +16,6 @@ function getBucketWidth(bucket: Bucket, minVal: number, maxVal: number): number 
 }
 </script>
 
-<div
-class="q-table-colorColumn-legend-container q-table-colorColumn-legend-container--desktopp"
->
 <div class="q-table-colorColumn-legend--numerical">
   <div class="s-legend-icon-label">
     <div class="q-table-colorColumn-legend-value-container">
@@ -147,5 +144,4 @@ class="q-table-colorColumn-legend-container q-table-colorColumn-legend-container
       {/if}
     </div>
   {/if}
-</div>
 </div>

@@ -8,9 +8,11 @@ export let noInteraction: boolean;
 </script>
 
 {#if colorColumn !== null}
-  {#if colorColumn.colorColumnType === "numerical"}
-    <NumericalLegend {colorColumn} {noInteraction} />
-  {:else}
-    <CategoricalLegend {colorColumn} {noInteraction} />
-  {/if}
+  <div class="q-table-legend-container q-table-legend-container--desktop">
+    {#if colorColumn.colorColumnType === "numerical"}
+      <NumericalLegend {colorColumn} {noInteraction} />
+    {:else}
+      <CategoricalLegend {colorColumn} {noInteraction} />
+    {/if}
+  </div>
 {/if}

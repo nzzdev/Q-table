@@ -28,6 +28,8 @@ import fourColumn from '../../../resources/fixtures/data/four-column.json';
 import fourColumnNoHeader from '../../../resources/fixtures/data/four-column-no-header.json';
 import hideFootnotesInHeader from '../../../resources/fixtures/data/hide-footnotes-in-header.json';
 import hyphenSignAsNumber from '../../../resources/fixtures/data/hyphen-sign-as-number.json';
+import legendHidden from '../../../resources/fixtures/data/legend-hidden.json';
+import legendShown from '../../../resources/fixtures/data/legend-shown.json';
 import lotsOfData from '../../../resources/fixtures/data/lots-of-data.json';
 import minibarsCustomClassName from '../../../resources/fixtures/data/minibars-custom-className.json';
 import minibarsCustomColorCode from '../../../resources/fixtures/data/minibars-custom-colorCode.json';
@@ -76,6 +78,8 @@ export {
   fourColumnNoHeader,
   hideFootnotesInHeader,
   hyphenSignAsNumber,
+  legendHidden,
+  legendShown,
   lotsOfData,
   minibarsCustomClassName,
   minibarsCustomColorCode,

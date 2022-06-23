@@ -430,15 +430,15 @@ export function getColorColumnScript(context: WebContextObject) {
 
   function ${renderColorColumnNumericalLegendFunctionName}(width) {
     var legend = ${dataObject}.element.querySelector(".q-table-colorColumn-legend--numerical");
-    var legendContainer = ${dataObject}.element.querySelector(".q-table-colorColumn-legend-container");
+    var legendContainer = ${dataObject}.element.querySelector(".q-table-legend-container");
     if (width <= 640) {
       legend.classList.remove("q-table-colorColumn-legend--fullwidth")
-      legendContainer.classList.add("q-table-colorColumn-legend-container--desktop");
-      legendContainer.classList.remove("q-table-colorColumn-legend-container--fullwidth");
+      legendContainer.classList.add("q-table-legend-container--desktop");
+      legendContainer.classList.remove("q-table-legend-container--fullwidth");
     } else {
       legend.classList.add("q-table-colorColumn-legend--fullwidth")
-      legendContainer.classList.remove("q-table-colorColumn-legend-container--desktop");
-      legendContainer.classList.add("q-table-colorColumn-legend-container--fullwidth");
+      legendContainer.classList.remove("q-table-legend-container--desktop");
+      legendContainer.classList.add("q-table-legend-container--fullwidth");
     }
   }
 
