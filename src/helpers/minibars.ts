@@ -85,7 +85,8 @@ function createMinibarObject(data: QTableDataRaw, minibarOptions: QTableConfigMi
   return {
     values: values,
     type: dataColumn.type,
-    barColor: minibarOptions.barColor
+    barColor: minibarOptions.barColor,
+    settings: minibarOptions,
   };
 }
 
@@ -191,6 +192,7 @@ export interface Minibar {
   },
   type: MINIBAR_TYPE,
   values: Array<{type: string, value: number | null}>,
+  settings: QTableConfigMinibarSettings,
 }
 
 interface MinibarNumbersWithType {

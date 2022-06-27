@@ -128,7 +128,7 @@
       "title": "Optionen",
       "type": "object",
       "properties": {
-        "hideRowsAfter": {
+        "pageSize": {
           "title": "Zeilen ausblenden nach",
           "type": "number",
           "default": 10

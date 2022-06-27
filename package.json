@@ -11,6 +11,7 @@
     "start": "nodemon --exec \"npm run dev\"",
     "test": "npm run build && npm run jest",
     "jest": "NODE_OPTIONS='--experimental-vm-modules --experimental-specifier-resolution=node' jest --config jest.config.ts",
+    "lint": "eslint --ext .js,.jsx,.svelte,.ts ./src",
     "update-local-fixtureData": "node tasks/updateFixtureData.js"
   },
   "author": "",
@@ -43,6 +44,7 @@
     "autoprefixer": "^9.8.8",
     "cssnano": "^4.1.11",
     "eslint": "^8.16.0",
+    "eslint-plugin-svelte3": "^4.0.0",
     "html-minifier": "^4.0.0",
     "jest": "^28.1.1",
     "jsdom": "^16.7.0",

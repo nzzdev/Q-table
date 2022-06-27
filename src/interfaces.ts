@@ -13,7 +13,6 @@ export type BucketType = 'ckmeans' | 'quantile' | 'equal' | 'custom';
 export type ColorColumnType = 'numerical' | 'categorical';
 export type QTableDataRaw = (string | null)[][];
 
-
 export const enum DivergingType {
   BUCKET = 'bucket',
   BORDER = 'border',
@@ -59,24 +58,6 @@ export interface DataMetaData {
   cells: dataMetaDataCell[],
 }
 
-export interface QTableConfigOptions {
-  hideTableHeader: Boolean,
-  showTableSearch: Boolean,
-  cardLayout: Boolean,
-  cardLayoutIfSmall: Boolean,
-  minibar: QTableConfigMinibarSettings,
-  colorColumn: ColorColumnSettings,
-
-  // This is added on 6.0.1 and we don't do any migration so earlier
-  // saved tables in the databases will not have this option.
-  hideLegend?: boolean,
-
-  // This is added on 6.2.0 and we don't do any migration so earlier
-  // saved tables in the databases will not have this option.
-  hideRowsAfter?: number,
-  usePagination?: boolean,
-}
-
 export interface QTableConfigMinibarSettings {
   invertColors: Boolean,
     barColor: {
@@ -97,6 +78,24 @@ export interface QTableConfig {
   title: string,
   subtitle: string,
   notes: string,
+}
+
+export interface QTableConfigOptions {
+  hideTableHeader: boolean,
+  showTableSearch: boolean,
+  cardLayout: boolean,
+  cardLayoutIfSmall: boolean,
+  minibar: QTableConfigMinibarSettings,
+  colorColumn: ColorColumnSettings,
+
+  // This is added on 6.0.1 and we don't do any migration so earlier
+  // saved tables in the databases will not have this option.
+  hideLegend?: boolean,
+
+  // This is added on 6.2.0 and we don't do any migration so earlier
+  // saved tables in the databases will not have this option.
+  pageSize?: number,
+  usePagination?: boolean,
 }
 
 export interface QTableDataFormatted {
@@ -139,18 +138,34 @@ export interface AvailabilityResponseObject {
   available: boolean;
 }
 
-export interface WebContextObject {
+export interface QTableSvelteProperties {
   item: QTableConfig, // To make renderingInfoScripts working. refactor later.
   config: QTableConfig,
-  tableData: QTableDataFormatted[][],
+  tableHead: QTableDataFormatted[],
+  rows: QTableDataFormatted[][],
   minibar: Minibar | null,
   footnotes: StructuredFootnote[] | null,
   colorColumn: ColorColumn | null,
   numberOfRows: number, // do not count the header
-  displayOptions: DisplayOptions | {},
+  displayOptions: DisplayOptions,
   noInteraction: boolean,
   id: string,
   width: number | undefined,
   initWithCardLayout: boolean,
-  numberOfRowsToHide: number | undefined,
+  pageSize: number,
+  usePagination: boolean,
+  hideTableHeader: boolean,
+}
+
+export interface QTableStateContext {
+  getState: () => {
+    page: number;
+    pageIndex: number;
+    pageSize: number;
+    rows: QTableDataFormatted[][];
+    filteredRows: QTableDataFormatted[][];
+};
+setPage: (_page: number) => void;
+setPageSize: (_pageSize: number) => void;
+setFilteredRows: (_rows: QTableDataFormatted[][]) => QTableDataFormatted[][];
 }

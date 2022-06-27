@@ -1,57 +1,66 @@
 <script lang="ts">
-import Legend from "./Legend.svelte";
-import Footer from "./Footer.svelte";
-import MinibarBox from "./minibar/MinibarBox.svelte";
-import MinibarValue from "./minibar/MinibarValue.svelte";
-import MixedMinibars from "./minibar/MixedMinibars.svelte";
-import MethodBox from "./MethodBox.svelte";
-import Cell from "./Cell.svelte";
-import Footnotes from "./Footnotes.svelte";
-import type { DisplayOptions, QTableConfig, QTableDataFormatted } from "../interfaces";
-import type { ColorColumn } from "../helpers/colorColumn";
-import type { Minibar } from "../helpers/minibars";
-import type { StructuredFootnote } from "../helpers/footnotes";
+import { setContext } from "svelte";
 
-export let config: QTableConfig;
-export let item: QTableConfig;
-export let initWithCardLayout: boolean;
-export let tableData: QTableDataFormatted[][];
-export let minibar: Minibar | null;
-export let footnotes: StructuredFootnote[] | null;
-export let colorColumn: ColorColumn | null;
-export let numberOfRowsToHide: number | undefined;
-export let displayOptions: DisplayOptions;
-export let noInteraction: boolean;
-export let id: string;
+import Legend from './Legend.svelte';
+import Footer from './Footer.svelte';
+import MinibarBox from './minibar/MinibarBox.svelte';
+import MinibarValue from './minibar/MinibarValue.svelte';
+import MixedMinibars from './minibar/MixedMinibars.svelte';
+import MethodBox from './MethodBox.svelte';
+import Cell from './Cell.svelte';
+import Footnotes from './Footnotes.svelte';
+import Pagination from './Pagination.svelte';
+import Thead from './Thead.svelte';
+import Search from './Search.svelte';
 
+import type { QTableSvelteProperties, QTableStateContext } from '../interfaces';
+import ToggleRowsBtn from '../routes/rendering-info/ToggleRowsBtn.svelte';
+
+export let componentConfiguration: QTableSvelteProperties;
+
+const {
+  config,
+  item,
+  initWithCardLayout,
+  tableHead,
+  rows,
+  minibar,
+  footnotes,
+  colorColumn,
+  displayOptions,
+  noInteraction,
+  id,
+  usePagination,
+  hideTableHeader
+} = componentConfiguration;
+
+let {
+  pageSize,
+} = componentConfiguration;
+
+const originalPageSize = pageSize;
 const options = config.options;
+let pageIndex = 0;
+let page = 0;
 
-function getAttributes(colIndex: number) {
-  let colspan = 0;
-  let classes = "";
+$: filteredRows = rows;
+$: visibleRows = filteredRows.slice(pageIndex, pageIndex + pageSize);
 
-  if (
-    minibar &&
-    minibar.type &&
-    options.minibar &&
-    options.minibar.selectedColumn === colIndex &&
-    minibar.type !== "mixed" &&
-    !initWithCardLayout
-  ) {
-    colspan = 2;
-    classes = "q-table-minibar-header";
-  } else if (
-    minibar &&
-    minibar.type === "mixed" &&
-    options.minibar &&
-    options.minibar.selectedColumn === colIndex
-  ) {
-    colspan = 0;
-    classes = "q-table-minibar-header";
-  }
-
-  return { colspan, classes };
-}
+setContext<QTableStateContext>("state", {
+  getState: () => ({
+    page,
+    pageIndex,
+    pageSize,
+    rows,
+    filteredRows
+  }),
+  setPage: (_page: number) => {
+    page = _page;
+    pageIndex = _page * pageSize;
+  },
+  setPageSize: (_pageSize) => pageSize = _pageSize,
+  setFilteredRows: _rows => (filteredRows = _rows)
+});
 
 function shouldShowLegend(): boolean {
   return options.hideLegend !== true &&
@@ -61,25 +70,26 @@ function shouldShowLegend(): boolean {
          !initWithCardLayout
 }
 
-let isWorkingLabel = "";
-  let i = 0;
+function shouldShowSearch(): boolean {
+  return noInteraction !== true && options.showTableSearch === true && rows.length > 16;
+}
 
-  function worksOnClick() {
-    i++;
-    isWorkingLabel = i < 5 ? "is working!" : "is still working!";
-
-    alert('aa');
+function shouldShowTitle(): boolean {
+  if (typeof displayOptions.hideTitle === 'boolean') {
+    return !displayOptions.hideTitle
   }
+
+  return true;
+}
 </script>
 
 <div
+  {id}
   class="s-q-item q-table"
   class:q-table--card-layout={initWithCardLayout}
-  {id}
   style="opacity: 0;"
-  on:click={worksOnClick}
 >
-  {#if displayOptions.hideTitle !== true}
+  {#if shouldShowTitle()}
     <h3 class="s-q-item__title">{config.title}</h3>
   {/if}
 
@@ -88,20 +98,16 @@ let isWorkingLabel = "";
   {/if}
 
   <div style="overflow-x: auto;">
-    {#if noInteraction !== true && options.showTableSearch === true && tableData.length > 16}
-      <div class="q-table__search">
-        <input
-          class="q-table__search__input s-input-field"
-          type="search"
-          placeholder="Bitte Suche eingeben"
-          maxlength="20"
-          value=""
-          autocapitalize="off"
-          autocomplete="off"
-          spellcheck="false"
-          aria-label="Suchen"
-        />
-      </div>
+    {#if shouldShowSearch()}
+      <Search />
+    {/if}
+
+    {#if noInteraction === false && typeof pageSize === 'number' && usePagination === true}
+      <Pagination
+        {page}
+        {pageSize}
+        count={filteredRows.length}
+      />
     {/if}
 
     {#if shouldShowLegend() === true}
@@ -109,39 +115,19 @@ let isWorkingLabel = "";
     {/if}
 
     <table class="q-table__table">
-      {#if options.hideTableHeader !== true}
-        <thead class="s-font-note s-font-note--strong">
-          {#each tableData[0] as head, colIndex}
-            <th
-              class="q-table__cell q-table-cell--head q-table__cell--{head.type} {head.classes.join(
-                ' '
-              )} {getAttributes(colIndex).classes}"
-              colspan={getAttributes(colIndex).colspan}
-            >
-              {#if head.footnote}
-                <span
-                  data-annotation={head.footnote.value}
-                  class="q-table-footnote-annotation">{head.value}</span
-                >
-              {:else if head.value}
-                {head.value}
-              {/if}
-            </th>
-          {/each}
-        </thead>
+      {#if hideTableHeader !== true}
+        <Thead {tableHead} {minibar} {initWithCardLayout} />
       {/if}
+
       <tbody class="s-font-note">
-        {#each tableData.slice(1) as row, rowIndex}
-          <tr
-            class:hidden={numberOfRowsToHide &&
-              rowIndex >= tableData.length - numberOfRowsToHide}
-          >
+        {#each visibleRows as row, rowIndex}
+          <tr>
             {#each row as cell, colIndex}
               {#if options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex}
                 {#if minibar && minibar.type === "positive"}
                   <MinibarValue
                     {item}
-                    {tableData}
+                    tableData={rows}
                     {minibar}
                     {cell}
                     {colIndex}
@@ -149,7 +135,6 @@ let isWorkingLabel = "";
                   />
                   <MinibarBox
                     {item}
-                    {tableData}
                     {minibar}
                     {cell}
                     {colIndex}
@@ -158,7 +143,6 @@ let isWorkingLabel = "";
                 {:else if minibar && minibar.type === "negative"}
                   <MinibarBox
                     {item}
-                    {tableData}
                     {minibar}
                     {cell}
                     {colIndex}
@@ -166,7 +150,7 @@ let isWorkingLabel = "";
                   />
                   <MinibarValue
                     {item}
-                    {tableData}
+                    tableData={rows}
                     {minibar}
                     {cell}
                     {colIndex}
@@ -175,7 +159,7 @@ let isWorkingLabel = "";
                 {:else if minibar && minibar.type === "mixed"}
                   <MixedMinibars
                     {item}
-                    {tableData}
+                    tableData={rows}
                     {minibar}
                     {cell}
                     {rowIndex}
@@ -186,7 +170,7 @@ let isWorkingLabel = "";
                   <Cell
                     {item}
                     {cell}
-                    {tableData}
+                    tableData={rows}
                     {colorColumn}
                     {colIndex}
                     {rowIndex}
@@ -197,7 +181,7 @@ let isWorkingLabel = "";
                 <Cell
                   {item}
                   {cell}
-                  {tableData}
+                  tableData={rows}
                   {colorColumn}
                   {colIndex}
                   {rowIndex}
@@ -219,11 +203,9 @@ let isWorkingLabel = "";
     <MethodBox {colorColumn} {noInteraction} />
   {/if}
 
-  <Footer {item} />
-</div>
+  {#if noInteraction === false && typeof pageSize === 'number' && usePagination !== true}
+    <ToggleRowsBtn totalNumberOfRows={rows.length} pageSize={originalPageSize} />
+  {/if}
 
-<style>
-.hidden {
-  display: none;
-}
-</style>
+  <Footer {config} />
+</div>

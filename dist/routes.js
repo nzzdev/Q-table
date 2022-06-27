@@ -2,7 +2,6 @@ import { createRequire } from 'module';
 import fs from 'fs';
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
-import 'uglify-js';
 import { formatLocale as formatLocale$1 } from 'd3-format';
 import * as simpleStatistics from 'simple-statistics';
 import path, { dirname } from 'path';
@@ -554,7 +553,8 @@ function createMinibarObject(data, minibarOptions) {
     return {
         values: values,
         type: dataColumn.type,
-        barColor: minibarOptions.barColor
+        barColor: minibarOptions.barColor,
+        settings: minibarOptions,
     };
 }
 function getMinibarValue(type, value, min, max) {
@@ -1585,7 +1585,7 @@ var properties$1 = {
 		title: "Optionen",
 		type: "object",
 		properties: {
-			hideRowsAfter: {
+			pageSize: {
 				title: "Zeilen ausblenden nach",
 				type: "number",
 				"default": 10
@@ -2431,20 +2431,26 @@ const route$f = {
                     encoding: 'utf-8',
                 });
             }
-            catch (ex) {
-                console.log('ex', ex);
+            catch (e) {
+                console.log('Failed  reading compiled Q-Table code', e);
             }
             const payload = request.payload;
             // Extract table configurations.
             const config = payload.item;
             const toolRuntimeConfig = payload.toolRuntimeConfig;
+            const displayOptions = toolRuntimeConfig.displayOptions || {};
             const options = config.options;
+            let colorColumn = null;
             let width = getExactPixelWidth(toolRuntimeConfig);
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
             const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+            const dataLength = dataWithoutHeaderRow.length;
             const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
             const minibarsAvailable = yield areMinibarsAvailable(request, config);
+            const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
             const colorColumnAvailable = yield isColorColumnAvailable(request, config);
+            const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
+            const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
             let tableData = [];
             try {
                 tableData = formatTableData(config.data.table, footnotes, options);
@@ -2452,85 +2458,30 @@ const route$f = {
             catch (e) {
                 console.error('Execption during formatting table data', e);
             }
-            const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
-            let colorColumn = null;
             try {
                 colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
             }
             catch (e) {
                 console.error('Execption during creating colorColumn', e);
             }
-            const context = {
+            const props = {
                 item: config,
                 config,
-                tableData,
+                tableHead: tableData[0],
+                rows: tableData.slice(1),
                 minibar,
                 footnotes,
                 colorColumn,
-                numberOfRows: config.data.table.length - 1,
-                displayOptions: payload.toolRuntimeConfig.displayOptions || {},
+                numberOfRows: dataLength,
+                displayOptions: displayOptions,
                 noInteraction: payload.toolRuntimeConfig.noInteraction || false,
                 id,
                 width,
-                initWithCardLayout: false,
-                numberOfRowsToHide: undefined,
+                initWithCardLayout,
+                usePagination: options.usePagination || false,
+                pageSize,
+                hideTableHeader: options.hideTableHeader,
             };
-            // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
-            if (context.width && context.width < 400 && config.options.cardLayoutIfSmall) {
-                context.initWithCardLayout = true;
-            }
-            else if (config.options.cardLayout) {
-                context.initWithCardLayout = true;
-            }
-            // calculate the number of rows to hide
-            // if we init with card layout, we need to have minimum of 6 rows to hide all but 3 of them
-            // this calculation here is not correct if we didn't get the width, as it doesn't take small/wide layout into account
-            // but it's good enough to already apply display: none; in the markup to not use the complete height until the stylesheets/scripts are loaded
-            if (context.initWithCardLayout && context.numberOfRows >= 6) {
-                context.numberOfRowsToHide = context.numberOfRows - 3; // show 3 initially
-            }
-            else if (context.numberOfRows >= 15) {
-                // if we init without cardLayout, we hide rows if we have more than 15
-                context.numberOfRowsToHide = context.numberOfRows - 10; // show 10 initially
-            }
-            // if we have toolRuntimeConfig.noInteraction, we do not hide rows because showing them is not possible
-            if (toolRuntimeConfig.noInteraction) {
-                context.numberOfRowsToHide = undefined;
-            }
-            // The scripts need to know if we are confident that the numberOfRowsToHide is correct
-            // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise
-            // we reset it here to be calculated by the scripts again.
-            if (context.width === undefined) {
-                context.numberOfRowsToHide = undefined;
-            }
-            // if we show cards, we hide if more or equal than 6
-            if (options.cardLayout && context.numberOfRows >= 6) ;
-            // if we have cards for small, we hide if more or equal than 6
-            if (options.cardLayoutIfSmall && // we have cardLayoutIfSmall
-                (context.width === undefined || context.width < 400) && // width is unknown or below 400px
-                context.numberOfRows >= 6 // more than 6 rows
-            ) ;
-            // if we have more than 15 rows, we probably have to hide rows
-            if (context.numberOfRows >= 15) ;
-            // need to look into this.
-            if (toolRuntimeConfig.noInteraction) ;
-            // if we have cardLayoutIfSmall, we need to measure the width
-            // to set the class not needed if we have cardLayout all the time.
-            // if (options.cardLayout === false && options.cardLayoutIfSmall === true) {
-            //   addScript(FRONT_END_SCRIPT.CARD_LAYOUT, renderingInfo, context);
-            // }
-            // if (possibleToHaveToHideRows) {
-            //   addScript(FRONT_END_SCRIPT.SHOW_MORE_BTN, renderingInfo, context);
-            // }
-            // if (context.noInteraction !== true && config.options.showTableSearch === true) {
-            //   addScript(FRONT_END_SCRIPT.SEARCH_FORM_INPUT, renderingInfo, context);
-            // }
-            // if (context.minibar !== null) {
-            //   addScript(FRONT_END_SCRIPT.MINIBAR, renderingInfo, context);
-            // }
-            // if (context.colorColumn !== null) {
-            //   addScript(FRONT_END_SCRIPT.COLOR_COLUMN, renderingInfo, context);
-            // }
             const renderingInfo = {
                 polyfills: ['Promise'],
                 stylesheets: [{
@@ -2545,15 +2496,17 @@ const route$f = {
           (function () {
             var target = document.querySelector('#${id}_container');
             target.innerHTML = "";
-            var props = ${JSON.stringify(context)};
+            var props = ${JSON.stringify(props)};
             new window.q_table({
               "target": target,
-              "props": props
+              "props": {
+                componentConfiguration: props
+              }
             })
           })();`,
                     },
                 ],
-                markup: `<div id="${id}_container" class="q-your-tool-container" />`,
+                markup: `<div id="${id}_container" class="q-table-container" />`,
             };
             return renderingInfo;
         });
@@ -2595,6 +2548,35 @@ function isColorColumnAvailable(request, config) {
 }
 function createId(request) {
     return `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, '');
+}
+function calculatePageSize(totalAmountOfRows, initWithCardLayout, options, toolRuntimeConfig) {
+    const { pageSize } = options;
+    // if we have noInteraction, we do not hide rows because showing them is not possible.
+    if (toolRuntimeConfig.noInteraction === true) {
+        return totalAmountOfRows;
+    }
+    // Use the user provided pagesize above
+    // auto calculated ones.
+    if (typeof pageSize === 'number') {
+        return pageSize;
+    }
+    if (initWithCardLayout && totalAmountOfRows >= 6) {
+        return 3;
+    }
+    if (totalAmountOfRows >= 15) {
+        return 10;
+    }
+    return totalAmountOfRows;
+}
+function getInitWithCardLayoutFlag(width, options) {
+    const { cardLayout, cardLayoutIfSmall } = options;
+    if (cardLayout === true) {
+        return true;
+    }
+    if (typeof width === 'number' && width < 400 && cardLayoutIfSmall === true) {
+        return true;
+    }
+    return false;
 }
 
 const __dirname$1 = dirname(fileURLToPath(import.meta.url));

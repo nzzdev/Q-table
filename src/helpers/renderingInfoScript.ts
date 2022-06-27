@@ -1,36 +1,6 @@
-import { WebContextObject } from '../interfaces';
+import { QTableSvelteProperties } from '../interfaces';
 
-export function getDefaultScript(context: WebContextObject): string {
-  const dataObject = `window.${context.id}Data`;
-  return `
-    if (!window.q_domready) {
-      window.q_domready = new Promise(function(resolve) {
-        if (document.readyState && (document.readyState === 'interactive' || document.readyState === 'complete')) {
-          resolve();
-        } else {
-          function onReady() {
-            resolve();
-            document.removeEventListener('DOMContentLoaded', onReady, true);
-          }
-          document.addEventListener('DOMContentLoaded', onReady, true);
-          document.onreadystatechange = function() {
-            if (document.readyState === "interactive") {
-              resolve();
-            }
-          }
-        }
-      });
-    }
-    if (${dataObject} === undefined) {
-      ${dataObject} = {};
-    }
-    ${dataObject}.element = document.querySelector("#${context.id}");
-    ${dataObject}.tableElement = ${dataObject}.element.querySelector(".q-table__table");
-    ${dataObject}.isCardLayout = ${context.item.options.cardLayout};
-  `;
-}
-
-export function getCardLayoutScript(context: WebContextObject): string {
+export function getCardLayoutScript(context: QTableSvelteProperties): string {
   const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;
   const dataObject = `window.${context.id}Data`;
   const minibar = context.minibar;
@@ -91,71 +61,7 @@ export function getCardLayoutScript(context: WebContextObject): string {
   `;
 }
 
-export function getShowMoreButtonScript(context: WebContextObject): string {
-  const dataObject = `window.${context.id}Data`;
-  const handleShowMoreButtonFunctionName = `handleShowMoreButton${context.id}`;
-  const hideRowsFunctionName = `hideRows${context.id}`;
-  const showRowsFunctionName = `showRows${context.id}`;
-
-  return `
-    ${dataObject}.rowVisibilityState = 'visible';
-    ${dataObject}.numberOfRows = ${context.numberOfRows};
-    ${dataObject}.numberOfRowsToHide = ${context.numberOfRowsToHide};
-    function ${hideRowsFunctionName}() {
-      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
-        if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
-          rowElement.classList.remove('q-table-state-visible');
-          rowElement.classList.add('q-table-state-hidden');
-        }
-      });
-      ${dataObject}.showMoreButtonElement.textContent = 'Alle ' + ${dataObject}.numberOfRows + ' anzeigen';
-      ${dataObject}.rowVisibilityState = 'hidden';
-    }
-    function ${showRowsFunctionName}() {
-      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
-        rowElement.classList.remove('q-table-state-hidden');
-        rowElement.classList.add('q-table-state-visible');
-      });
-      ${dataObject}.showMoreButtonElement.textContent = "Tabelle zuklappen";
-      ${dataObject}.rowVisibilityState = 'visible';
-    }
-    function ${handleShowMoreButtonFunctionName}() {
-      if (${dataObject}.numberOfRowsToHide === undefined) {
-        if (${dataObject}.isCardLayout && ${dataObject}.numberOfRows >= 6) {
-          ${dataObject}.numberOfRowsToHide = ${dataObject}.numberOfRows - 3; // show 3 initially
-        } else if (${dataObject}.numberOfRows >= 15) {
-          ${dataObject}.numberOfRowsToHide = ${dataObject}.numberOfRows - 10; // show 10 initially
-        }
-      }
-      if (${dataObject}.numberOfRowsToHide === undefined || ${dataObject}.numberOfRowsToHide < 1) {
-        return;
-      }
-
-      ${dataObject}.showMoreButtonElement = document.createElement('button');
-      ${dataObject}.showMoreButtonElement.classList.add('s-button');
-      ${dataObject}.showMoreButtonElement.classList.add('s-button--secondary');
-      ${dataObject}.showMoreButtonElement.classList.add('q-table_show-more-button');
-      ${dataObject}.showMoreButtonElement.setAttribute('type', 'button');
-      ${dataObject}.element.insertBefore(${dataObject}.showMoreButtonElement, ${dataObject}.element.querySelector(".s-q-item__footer"));
-
-      ${dataObject}.showMoreButtonElement.addEventListener('click', function(event) {
-        if (${dataObject}.rowVisibilityState === 'hidden') {
-          ${showRowsFunctionName}();
-        } else {
-          ${hideRowsFunctionName}();
-          ${dataObject}.tableElement.scrollIntoView(true);
-        }
-      });
-      ${hideRowsFunctionName}();
-    }
-
-    window.q_domready.then(function() {
-      ${handleShowMoreButtonFunctionName}();
-    });
-  `;
-}
-
-export function getMinibarsScript(context: WebContextObject): string {
+export function getMinibarsScript(context: QTableSvelteProperties): string {
   const dataObject = `window.${context.id}Data`;
   const getColumnFunctionName = `getColumn${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
@@ -225,95 +131,7 @@ export function getMinibarsScript(context: WebContextObject): string {
   `;
 }
 
-export function getSearchFormInputScript(context: WebContextObject): string {
-  const dataObject = `window.${context.id}Data`;
-  const searchFormInputAddEventListeners = `searchFormInputAddEventListeners${context.id}`;
-  const searchFormInputHideRows = `searchFormInputHideRows${context.id}`;
-  const searchFormInputShowRows = `searchFormInputShowRows${context.id}`;
-  const filterRows = `filterRows${context.id}`;
-
-  return `
-    function ${searchFormInputHideRows}() {
-      ${dataObject}.showMoreButtonElement.style.display = '';
-
-      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
-        if (index >= (${dataObject}.numberOfRows - ${dataObject}.numberOfRowsToHide)) {
-          rowElement.classList.remove('q-table-state-visible');
-          rowElement.classList.add('q-table-state-hidden');
-        }
-      });
-      ${dataObject}.showMoreButtonElement.textContent = 'Alle ' + ${dataObject}.numberOfRows + ' anzeigen';
-      ${dataObject}.rowVisibilityState = 'hidden';
-    }
-
-    function ${searchFormInputShowRows}() {
-      ${dataObject}.showMoreButtonElement.style.display = 'none';
-
-      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(function(rowElement, index) {
-        rowElement.classList.remove('q-table-state-hidden');
-        rowElement.classList.add('q-table-state-visible');
-      });
-      ${dataObject}.showMoreButtonElement.textContent = "Tabelle zuklappen";
-      ${dataObject}.rowVisibilityState = 'visible';
-    }
-
-    function ${filterRows}(filter) {
-      var foundString = false;
-      filter = filter.toUpperCase();
-
-      if (filter.length < 2) return;
-
-      // Loop through all table rows
-      ${dataObject}.tableElement.querySelectorAll('tbody tr').forEach(
-        function(rowElement) {
-          foundString = false;
-
-          // Loop through all text cells
-          rowElement.querySelectorAll('.q-table__cell--text').forEach(
-            function(textCellElement) {
-              textCellValue = textCellElement.innerText.toUpperCase();
-
-              if (textCellValue.indexOf(filter) > -1) {
-                foundString = true;
-                return;
-              }
-            }
-          )
-
-          if (foundString) {
-            rowElement.classList.remove('q-table-state-hidden');
-            rowElement.classList.add('q-table-state-visible');
-          } else {
-            rowElement.classList.remove('q-table-state-visible');
-            rowElement.classList.add('q-table-state-hidden');
-          }
-        }
-      );
-    }
-
-    function ${searchFormInputAddEventListeners}() {
-      ${dataObject}.element.querySelector('.q-table__search__input').addEventListener('input', function(event) {
-        var filter = event.target.value;
-
-        if (filter.length < 2) {
-          // Always make all rows visible again
-          ${searchFormInputShowRows}();
-
-          // No filter = show default view with show more button (15 rows)
-          if (filter.length == 0) ${searchFormInputHideRows}();
-        } else {
-          ${filterRows}(filter);
-        }
-      });
-    }
-
-    window.q_domready.then(function() {
-      ${searchFormInputAddEventListeners}();
-    });
-  `;
-}
-
-export function getColorColumnScript(context: WebContextObject): string {
+export function getColorColumnScript(context: QTableSvelteProperties): string {
   const dataObject = `window.${context.id}Data`;
   const setupMethodBoxFunctionName = `setupMethodBox${context.id}`;
   const prepareMethodBoxElementsFunctionName = `prepareMethodBoxElements${context.id}`;
