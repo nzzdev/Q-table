@@ -1,4 +1,4 @@
-import { Request } from '@hapi/hapi';
+import type { Request } from '@hapi/hapi';
 import Joi from 'joi';
 import {
   getCustomBucketBorders,
@@ -6,7 +6,7 @@ import {
   getNumericalValuesByColumn,
   getNonNullValues,
   getMetaData } from '../../helpers/data.js';
-import { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
+import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
 
 export default {
   method: 'POST',

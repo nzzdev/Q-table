@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { ColorColumn } from "../../helpers/colorColumn";
-import type { Bucket, NumericalLegend } from "../../helpers/colorColumnLegend";
+import type { ColorColumn } from '../../helpers/colorColumn';
+import type { Bucket, NumericalLegend } from '../../helpers/colorColumnLegend';
 export let colorColumn: ColorColumn;
 export let noInteraction: boolean;
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-import { getContext } from "svelte";
-import type { QTableDataFormatted, QTableStateContext } from "../interfaces";
+import { getContext } from 'svelte';
+import type { QTableDataFormatted, QTableStateContext } from '../interfaces';
 
-const stateContext = getContext<QTableStateContext>("state");
+const stateContext = getContext<QTableStateContext>('state');
 
 export let index = -1;
 export let text = '';
@@ -15,8 +15,6 @@ export let filter = (row: QTableDataFormatted[], search: string, index: number) 
     columnValue = columnValue.toString().toLowerCase();
 
     if (columnValue.indexOf(search) > -1) {
-
-      console.log(columnValue, search);
       return true;
     }
   }
@@ -34,19 +32,18 @@ async function onSearch() {
     page: state.page,
     pageIndex: state.pageIndex,
     pageSize: state.pageSize,
-    rows: state.filteredRows
+    rows: state.filteredRows,
   };
 
   if (detail.text.length <= 0) {
     stateContext.setFilteredRows(state.rows);
   } else {
-    const filteredRows = state.rows.filter(r => detail.filter(r, detail.text, index));
+    const filteredRows = state.rows.filter((r) => detail.filter(r, detail.text, index));
     stateContext.setFilteredRows(filteredRows);
   }
 
   stateContext.setPage(0);
 }
-
 </script>
 
 <div class="q-table__search">

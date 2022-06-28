@@ -75,7 +75,7 @@ export function getCategoricalLegend(data: QTableDataRaw, colorColumnSettings: C
   const categoryObject = getUniqueCategoriesObject(data, colorColumnSettings);
   const hasNullValues = categoryObject.hasNullValues;
 
-  let categories: Array<{label: string, color: CategoryColor}> = [];
+  const categories: Array<{label: string, color: CategoryColor}> = [];
   categoryObject.categories.forEach((label, index) => {
     categories.push({
       label,
@@ -229,7 +229,7 @@ function getQuantileBuckets(
   scale: NumericalScaleType,
   colorOptions: { colorScheme: string, colorOverwrites: CustomColorMap }): Bucket[] {
   const quantilePortion = 1 / numberBuckets;
-  let quantiles: number[] = [];
+  const quantiles: number[] = [];
 
   for (let i = 1; i <= numberBuckets; i++) {
     quantiles.push(i * quantilePortion);
@@ -262,7 +262,7 @@ function getEqualBuckets(
   const portion = 1 / numberBuckets;
   const range = maxValue - minValue;
 
-  let equalBuckets: Bucket[] = [];
+  const equalBuckets: Bucket[] = [];
 
   for (let i = 0; i < numberBuckets; i++) {
     let from = i === 0 ? minValue : minValue + range * portion * i;
@@ -294,7 +294,7 @@ function getCustomBuckets(
     const numberBuckets = customBorderValues.length - 1;
 
     const minBorder = customBorderValues.shift() || 0;
-    let customBuckets: Bucket[]= [];
+    const customBuckets: Bucket[]= [];
 
     customBorderValues.forEach((borderValue, index) => {
       customBuckets.push({

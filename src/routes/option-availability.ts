@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { getNumericColumns } from '../helpers/data.js';
 import { getMinibarNumbersWithType } from '../helpers/minibars.js';
 import { hasCustomBuckets } from '../helpers/colorColumn.js';
-import type { AvailabilityResponseObject, QTableConfig, WebPayload } from '../interfaces';
+import type { AvailabilityResponseObject, WebPayload } from '../interfaces';
 import type { Request } from 'hapi__hapi'
 
 export default {
@@ -16,7 +16,7 @@ export default {
   },
   handler: function (request: Request): AvailabilityResponseObject | Boom.Boom {
     const payload = request.payload as WebPayload;
-    const item = payload.item as QTableConfig;
+    const item = payload.item ;
     const optionName = request.params.optionName as string;
 
     if (optionName === 'cardLayoutIfSmall') {
@@ -51,7 +51,7 @@ export default {
     // properties minibar
     if (item.options.minibar !== null && item.options.minibar !== undefined) {
       if (optionName === 'barColor') {
-        let isAvailable =
+        const isAvailable =
           item.options.minibar.selectedColumn !== null &&
           item.options.minibar.selectedColumn !== undefined;
         return {
@@ -64,7 +64,7 @@ export default {
           item.options.minibar.selectedColumn !== null &&
           item.options.minibar.selectedColumn !== undefined;
         if (isAvailable) {
-          let type = getMinibarNumbersWithType(
+          const type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;
@@ -80,7 +80,7 @@ export default {
           item.options.minibar.selectedColumn !== null &&
           item.options.minibar.selectedColumn !== undefined;
         if (isAvailable) {
-          let type = getMinibarNumbersWithType(
+          const type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;
@@ -96,7 +96,7 @@ export default {
           item.options.minibar.selectedColumn !== null &&
           item.options.minibar.selectedColumn !== undefined;
         if (isAvailable) {
-          let type = getMinibarNumbersWithType(
+          const type = getMinibarNumbersWithType(
             item.data.table,
             item.options.minibar.selectedColumn
           ).type;

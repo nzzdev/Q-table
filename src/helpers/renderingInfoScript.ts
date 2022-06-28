@@ -1,4 +1,4 @@
-import { QTableSvelteProperties } from '../interfaces';
+import type { QTableSvelteProperties } from '../interfaces';
 
 export function getCardLayoutScript(context: QTableSvelteProperties): string {
   const applyCardLayoutClassFunctionName = `applyCardLayoutClass${context.id}`;

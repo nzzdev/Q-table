@@ -1,7 +1,7 @@
 <script lang="ts">
-import NumericalLegend from "./legends/NumericalLegend.svelte";
-import CategoricalLegend from "./legends/CategoricalLegend.svelte";
-import type { ColorColumn } from "../helpers/colorColumn";
+import NumericalLegend from './legends/NumericalLegend.svelte';
+import CategoricalLegend from './legends/CategoricalLegend.svelte';
+import type { ColorColumn } from '../helpers/colorColumn';
 
 export let colorColumn: ColorColumn | null;
 export let noInteraction: boolean;
@@ -9,7 +9,7 @@ export let noInteraction: boolean;
 
 {#if colorColumn !== null}
   <div class="q-table-legend-container q-table-legend-container--desktop">
-    {#if colorColumn.colorColumnType === "numerical"}
+    {#if colorColumn.colorColumnType === 'numerical'}
       <NumericalLegend {colorColumn} {noInteraction} />
     {:else}
       <CategoricalLegend {colorColumn} {noInteraction} />

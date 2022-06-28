@@ -1,5 +1,5 @@
 <script lang="ts">
-import { setContext } from "svelte";
+import { setContext } from 'svelte';
 
 import Legend from './Legend.svelte';
 import Footer from './Footer.svelte';
@@ -31,12 +31,10 @@ const {
   noInteraction,
   id,
   usePagination,
-  hideTableHeader
+  hideTableHeader,
 } = componentConfiguration;
 
-let {
-  pageSize,
-} = componentConfiguration;
+let { pageSize } = componentConfiguration;
 
 const originalPageSize = pageSize;
 const options = config.options;
@@ -46,28 +44,30 @@ let page = 0;
 $: filteredRows = rows;
 $: visibleRows = filteredRows.slice(pageIndex, pageIndex + pageSize);
 
-setContext<QTableStateContext>("state", {
+setContext<QTableStateContext>('state', {
   getState: () => ({
     page,
     pageIndex,
     pageSize,
     rows,
-    filteredRows
+    filteredRows,
   }),
   setPage: (_page: number) => {
     page = _page;
     pageIndex = _page * pageSize;
   },
-  setPageSize: (_pageSize) => pageSize = _pageSize,
-  setFilteredRows: _rows => (filteredRows = _rows)
+  setPageSize: (_pageSize) => (pageSize = _pageSize),
+  setFilteredRows: (_rows) => (filteredRows = _rows),
 });
 
 function shouldShowLegend(): boolean {
-  return options.hideLegend !== true &&
-         colorColumn !== null &&
-         colorColumn.selectedColumn !== undefined &&
-         colorColumn.selectedColumn !== options.minibar.selectedColumn &&
-         !initWithCardLayout
+  return (
+    options.hideLegend !== true &&
+    colorColumn !== null &&
+    colorColumn.selectedColumn !== undefined &&
+    colorColumn.selectedColumn !== options.minibar.selectedColumn &&
+    !initWithCardLayout
+  );
 }
 
 function shouldShowSearch(): boolean {
@@ -76,24 +76,19 @@ function shouldShowSearch(): boolean {
 
 function shouldShowTitle(): boolean {
   if (typeof displayOptions.hideTitle === 'boolean') {
-    return !displayOptions.hideTitle
+    return !displayOptions.hideTitle;
   }
 
   return true;
 }
 </script>
 
-<div
-  {id}
-  class="s-q-item q-table"
-  class:q-table--card-layout={initWithCardLayout}
-  style="opacity: 0;"
->
+<div {id} class="s-q-item q-table" class:q-table--card-layout={initWithCardLayout} style="opacity: 0;">
   {#if shouldShowTitle()}
     <h3 class="s-q-item__title">{config.title}</h3>
   {/if}
 
-  {#if config.subtitle && config.subtitle !== ""}
+  {#if config.subtitle && config.subtitle !== ''}
     <div class="s-q-item__subtitle">{config.subtitle}</div>
   {/if}
 
@@ -103,11 +98,7 @@ function shouldShowTitle(): boolean {
     {/if}
 
     {#if noInteraction === false && typeof pageSize === 'number' && usePagination === true}
-      <Pagination
-        {page}
-        {pageSize}
-        count={filteredRows.length}
-      />
+      <Pagination {page} {pageSize} count={filteredRows.length} />
     {/if}
 
     {#if shouldShowLegend() === true}
@@ -124,69 +115,19 @@ function shouldShowTitle(): boolean {
           <tr>
             {#each row as cell, colIndex}
               {#if options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex}
-                {#if minibar && minibar.type === "positive"}
-                  <MinibarValue
-                    {item}
-                    tableData={rows}
-                    {minibar}
-                    {cell}
-                    {colIndex}
-                    {rowIndex}
-                  />
-                  <MinibarBox
-                    {item}
-                    {minibar}
-                    {cell}
-                    {colIndex}
-                    {rowIndex}
-                  />
-                {:else if minibar && minibar.type === "negative"}
-                  <MinibarBox
-                    {item}
-                    {minibar}
-                    {cell}
-                    {colIndex}
-                    {rowIndex}
-                  />
-                  <MinibarValue
-                    {item}
-                    tableData={rows}
-                    {minibar}
-                    {cell}
-                    {colIndex}
-                    {rowIndex}
-                  />
-                {:else if minibar && minibar.type === "mixed"}
-                  <MixedMinibars
-                    {item}
-                    tableData={rows}
-                    {minibar}
-                    {cell}
-                    {rowIndex}
-                    {colIndex}
-                    {initWithCardLayout}
-                  />
+                {#if minibar && minibar.type === 'positive'}
+                  <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} />
+                  <MinibarBox {item} {minibar} {cell} {colIndex} {rowIndex} />
+                {:else if minibar && minibar.type === 'negative'}
+                  <MinibarBox {item} {minibar} {cell} {colIndex} {rowIndex} />
+                  <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} />
+                {:else if minibar && minibar.type === 'mixed'}
+                  <MixedMinibars {item} tableData={rows} {minibar} {cell} {rowIndex} {colIndex} {initWithCardLayout} />
                 {:else}
-                  <Cell
-                    {item}
-                    {cell}
-                    tableData={rows}
-                    {colorColumn}
-                    {colIndex}
-                    {rowIndex}
-                    {initWithCardLayout}
-                  />
+                  <Cell {item} {cell} tableData={rows} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
                 {/if}
               {:else}
-                <Cell
-                  {item}
-                  {cell}
-                  tableData={rows}
-                  {colorColumn}
-                  {colIndex}
-                  {rowIndex}
-                  {initWithCardLayout}
-                />
+                <Cell {item} {cell} tableData={rows} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
               {/if}
             {/each}
           </tr>
@@ -196,7 +137,7 @@ function shouldShowTitle(): boolean {
   </div>
 
   {#if footnotes && footnotes.length > 0}
-    <Footnotes {footnotes}/>
+    <Footnotes {footnotes} />
   {/if}
 
   {#if colorColumn && colorColumn.methodBox !== null}

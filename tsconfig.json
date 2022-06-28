@@ -1,4 +1,5 @@
 {
+    "extends": "@tsconfig/svelte/tsconfig.json",
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "declaration": false,
@@ -9,10 +10,19 @@
         "strictNullChecks": true,
         "target": "ES2015",
         "resolveJsonModule": true,
-        "types": ["svelte", "jest"]
+        "types": [
+            "node",
+            "svelte",
+            "jest"
+        ]
     },
     "ts-node": {
         "esm": true,
         "experimentalSpecifierResolution": true
-    }
+    },
+    "include": [
+        "src/**/*",
+        "resources/**/*",
+        "tests/**/*"
+    ]
 }

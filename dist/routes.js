@@ -37,7 +37,7 @@ function getExactPixelWidth(toolRuntimeConfig) {
     if (!toolRuntimeConfig.size || !Array.isArray(toolRuntimeConfig.size.width)) {
         return undefined;
     }
-    for (let width of toolRuntimeConfig.size.width) {
+    for (const width of toolRuntimeConfig.size.width) {
         if (width && width.value && width.comparison === '=' && (!width.unit || width.unit === 'px')) {
             return width.value;
         }
@@ -57,12 +57,12 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
         8: '\u2078',
         9: '\u2079',
     };
-    let spacings = [];
-    let flattenedFootnotes = getFlattenedFootnotes(footnotes);
+    const spacings = [];
+    const flattenedFootnotes = getFlattenedFootnotes(footnotes);
     flattenedFootnotes.forEach((footnote) => {
-        let footnoteClass = getClass(options, footnote, flattenedFootnotes.length, tableData[footnote.rowIndex][footnote.colIndex].type, tableData[footnote.rowIndex].length - 1);
+        const footnoteClass = getClass(options, footnote, flattenedFootnotes.length, tableData[footnote.rowIndex][footnote.colIndex].type, tableData[footnote.rowIndex].length - 1);
         if (footnoteClass) {
-            let space = {
+            const space = {
                 colIndex: footnote.colIndex,
                 class: footnoteClass,
             };
@@ -115,7 +115,7 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
     return null;
 }
 function getFootnotes(metaData, hideTableHeader) {
-    let footnotes = metaData.cells
+    const footnotes = metaData.cells
         .filter((cell) => {
         if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
             return false;
@@ -132,9 +132,9 @@ function getFootnotes(metaData, hideTableHeader) {
     return getStructuredFootnotes(footnotes);
 }
 function getStructuredFootnotes(footnotes) {
-    let structuredFootnotes = [];
+    const structuredFootnotes = [];
     footnotes.forEach((footnote) => {
-        let existingFootnote = structuredFootnotes.find((filterFootnote) => footnote.data.footnote === filterFootnote.value);
+        const existingFootnote = structuredFootnotes.find((filterFootnote) => footnote.data.footnote === filterFootnote.value);
         if (existingFootnote) {
             existingFootnote.coords.push({
                 colIndex: footnote.colIndex,
@@ -157,7 +157,7 @@ function getStructuredFootnotes(footnotes) {
     return structuredFootnotes;
 }
 function getFlattenedFootnotes(footnotes) {
-    let flattenedFootnotes = [];
+    const flattenedFootnotes = [];
     footnotes.forEach((footnote) => {
         footnote.coords.forEach((coord) => {
             flattenedFootnotes.push({
@@ -284,10 +284,10 @@ function formatTableData(data, footnotes, options) {
     let tableData = [];
     for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
         const row = data[rowIndex];
-        let cells = row.map((cell, columnIndex) => {
+        const cells = row.map((cell, columnIndex) => {
             let type = 'text';
             let value = cell;
-            let classes = [];
+            const classes = [];
             if (columns[columnIndex] && columns[columnIndex].isNumeric) {
                 type = 'numeric';
                 classes.push('s-font-note--tabularnums');
@@ -359,7 +359,7 @@ function getUniqueCategoriesCount(data, colorColumn) {
 }
 function getUniqueCategoriesObject(data, colorColumnSettings) {
     const { categoricalOptions, selectedColumn } = colorColumnSettings;
-    let customCategoriesOrder = categoricalOptions.customCategoriesOrder;
+    const customCategoriesOrder = categoricalOptions.customCategoriesOrder;
     let hasNullValues = false;
     let values = [];
     if (typeof selectedColumn === 'number') {
@@ -373,7 +373,7 @@ function getUniqueCategoriesObject(data, colorColumnSettings) {
             return false;
         });
     }
-    let sortedValuesbyCount = sortValuesByCount(values);
+    const sortedValuesbyCount = sortValuesByCount(values);
     // If the user has set a custom order, sort the categories accordingly
     if (customCategoriesOrder) {
         sortedValuesbyCount.sort(function (a, b) {
@@ -386,13 +386,13 @@ function getUniqueCategoriesObject(data, colorColumnSettings) {
 }
 function sortValuesByCount(values) {
     // Count how much each value appears.
-    let counter = {};
+    const counter = {};
     for (let i = 0; i < values.length; i++) {
         const key = values[i];
         counter[key] = 1 + counter[key] || 1;
     }
     // Sort counter by amount of appearance.
-    let sortedCounter = Object.entries(counter).sort((a, b) => b[1] - a[1]);
+    const sortedCounter = Object.entries(counter).sort((a, b) => b[1] - a[1]);
     // Return only the values. The amount of appearance is not necessary.
     return sortedCounter.map(x => x[0]);
 }
@@ -435,7 +435,7 @@ function getFormattedValue(formattingOptions, value) {
 }
 function getFormattedBuckets(formattingOptions, buckets) {
     return buckets.map((bucket) => {
-        let { from, to, color } = bucket;
+        const { from, to, color } = bucket;
         if (formattingOptions.roundingBucketBorders) {
             return {
                 from: getFormattedValue(formattingOptions, from),
@@ -470,8 +470,8 @@ function getCustomBucketBorders(customBuckets) {
  * Internal.
  */
 function getMedian(values) {
-    let middleIndex = Math.floor(values.length / 2);
-    let sortedNumbers = [...values].sort((a, b) => a - b);
+    const middleIndex = Math.floor(values.length / 2);
+    const sortedNumbers = [...values].sort((a, b) => a - b);
     if (values.length % 2 !== 0) {
         return sortedNumbers[middleIndex];
     }
@@ -489,6 +489,13 @@ function getRoundedAverage(values, maxDigitsAfterComma) {
     return getRoundedValue(averageValue, maxDigitsAfterComma);
 }
 
+var MINIBAR_TYPE;
+(function (MINIBAR_TYPE) {
+    MINIBAR_TYPE["POSITIVE"] = "positive";
+    MINIBAR_TYPE["NEGATIVE"] = "negative";
+    MINIBAR_TYPE["MIXED"] = "mixed";
+    MINIBAR_TYPE["EMPTY"] = "empty";
+})(MINIBAR_TYPE || (MINIBAR_TYPE = {}));
 function getMinibar(minibarsAvailable, options, itemDataCopy) {
     var _a;
     if (minibarsAvailable === true && typeof ((_a = options.minibar) === null || _a === void 0 ? void 0 : _a.selectedColumn) === 'number') {
@@ -504,21 +511,21 @@ function getMinibar(minibarsAvailable, options, itemDataCopy) {
     return null;
 }
 function getMinibarNumbersWithType(data, selectedColumnIndex) {
-    let minibarsWithType = {
+    const minibarsWithType = {
         items: [],
         numbers: [],
-        type: "mixed" /* MINIBAR_TYPE.MIXED */,
+        type: MINIBAR_TYPE.MIXED,
     };
     // First row is always header so we add a null entry for it.
     minibarsWithType.items.push({
         value: null,
-        type: "empty" /* MINIBAR_TYPE.EMPTY */
+        type: MINIBAR_TYPE.EMPTY
     });
     // First row is always header so start at 1.
     for (let i = 1; i < data.length; i++) {
         const row = data[i];
         const cell = row[selectedColumnIndex];
-        let value = parseFloat(cell || '');
+        const value = parseFloat(cell || '');
         const type = getTypeOfValue(value);
         if (isNaN(value)) {
             minibarsWithType.items.push({
@@ -541,10 +548,10 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
  * Internal.
  */
 function createMinibarObject(data, minibarOptions) {
-    let dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
-    let minValue = Math.min(...dataColumn.numbers);
-    let maxValue = Math.max(...dataColumn.numbers);
-    let values = dataColumn.items.map(item => {
+    const dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
+    const minValue = Math.min(...dataColumn.numbers);
+    const maxValue = Math.max(...dataColumn.numbers);
+    const values = dataColumn.items.map(item => {
         return {
             type: item.type,
             value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
@@ -561,9 +568,9 @@ function getMinibarValue(type, value, min, max) {
     if (value === null)
         return 0;
     switch (type) {
-        case "positive" /* MINIBAR_TYPE.POSITIVE */:
+        case MINIBAR_TYPE.POSITIVE:
             return Math.abs((value * 100) / max);
-        case "negative" /* MINIBAR_TYPE.NEGATIVE */:
+        case MINIBAR_TYPE.NEGATIVE:
             return Math.abs((value * 100) / min);
         default:
             return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
@@ -590,29 +597,29 @@ function checkNegativeBarColor(minibar) {
     }
 }
 function invertBarColors(minibar) {
-    let temp = minibar.barColor.negative;
+    const temp = minibar.barColor.negative;
     minibar.barColor.negative = minibar.barColor.positive;
     minibar.barColor.positive = temp;
 }
 function getTypeOfValue(value) {
     if (value < 0) {
-        return "negative" /* MINIBAR_TYPE.NEGATIVE */;
+        return MINIBAR_TYPE.NEGATIVE;
     }
     if (value > 0) {
-        return "positive" /* MINIBAR_TYPE.POSITIVE */;
+        return MINIBAR_TYPE.POSITIVE;
     }
-    return "empty" /* MINIBAR_TYPE.EMPTY */;
+    return MINIBAR_TYPE.EMPTY;
 }
 function getMinibarType(numbers) {
     const allPositive = numbers.every(number => number > 0);
     const allNegative = numbers.every(number => number < 0);
     if (allPositive) {
-        return "positive" /* MINIBAR_TYPE.POSITIVE */;
+        return MINIBAR_TYPE.POSITIVE;
     }
     else if (allNegative) {
-        return "negative" /* MINIBAR_TYPE.NEGATIVE */;
+        return MINIBAR_TYPE.NEGATIVE;
     }
-    return "mixed" /* MINIBAR_TYPE.MIXED */;
+    return MINIBAR_TYPE.MIXED;
 }
 function getPositiveColor(type) {
     let color;
@@ -1021,6 +1028,10 @@ const digitWords = [
     'twelve',
 ];
 const gray1 = 's-color-gray-1';
+// const gray4 = 's-color-gray-4';
+// const gray6 = 's-color-gray-6';
+// const gray7 = 's-color-gray-7';
+// const gray8 = 's-color-gray-8';
 const gray9 = 's-color-gray-9';
 function getTextColor(customColor, colorClass) {
     if ((customColor === null || customColor === void 0 ? void 0 : customColor.textColor) !== undefined) {
@@ -1038,14 +1049,23 @@ function getCustomColorMap(colorOverwrites) {
     ]));
 }
 
+var LABEL_LEGEND_ID;
+(function (LABEL_LEGEND_ID) {
+    LABEL_LEGEND_ID["SMALL"] = "small";
+    LABEL_LEGEND_ID["MEDIAN"] = "median";
+    LABEL_LEGEND_ID["LARGE"] = "large";
+    LABEL_LEGEND_ID["AVERAGE"] = "average";
+    LABEL_LEGEND_ID["NO_LABEL"] = "noLabel";
+})(LABEL_LEGEND_ID || (LABEL_LEGEND_ID = {}));
+
 const ckmeans = simpleStatistics.ckmeans;
 const quantile = simpleStatistics.quantile;
 const widthConfig = {
-    ["small" /* LABEL_LEGEND_ID.SMALL */]: 640,
-    ["large" /* LABEL_LEGEND_ID.LARGE */]: 100,
-    ["average" /* LABEL_LEGEND_ID.AVERAGE */]: 100,
-    ["median" /* LABEL_LEGEND_ID.MEDIAN */]: 60,
-    ["noLabel" /* LABEL_LEGEND_ID.NO_LABEL */]: 0 // Here to avoid TS linting errors.
+    [LABEL_LEGEND_ID.SMALL]: 640,
+    [LABEL_LEGEND_ID.LARGE]: 100,
+    [LABEL_LEGEND_ID.AVERAGE]: 100,
+    [LABEL_LEGEND_ID.MEDIAN]: 60,
+    [LABEL_LEGEND_ID.NO_LABEL]: 0 // Here to avoid TS linting errors.
 };
 function getNumericalLegend(selectedColumn, data, colorColumnSettings, maxDigitsAfterComma, width) {
     const { numericalOptions } = colorColumnSettings;
@@ -1081,7 +1101,7 @@ function getCategoricalLegend(data, colorColumnSettings) {
     const customColorMap = getCustomColorMap(categoricalOptions.colorOverwrites);
     const categoryObject = getUniqueCategoriesObject(data, colorColumnSettings);
     const hasNullValues = categoryObject.hasNullValues;
-    let categories = [];
+    const categories = [];
     categoryObject.categories.forEach((label, index) => {
         categories.push({
             label,
@@ -1110,7 +1130,7 @@ function getCategoryColor(index, customColorMap) {
     };
 }
 function getLabelLegend(labelType, metaData, width, maxDigitsAfterComma) {
-    if (labelType === "noLabel" /* LABEL_LEGEND_ID.NO_LABEL */)
+    if (labelType === LABEL_LEGEND_ID.NO_LABEL)
         return null;
     const { averageValue, minValue, maxValue, medianValue } = metaData;
     const range = maxValue - minValue;
@@ -1120,15 +1140,15 @@ function getLabelLegend(labelType, metaData, width, maxDigitsAfterComma) {
     let descriptionAlignment;
     let label;
     switch (labelType) {
-        case "median" /* LABEL_LEGEND_ID.MEDIAN */:
-            id = "median" /* LABEL_LEGEND_ID.MEDIAN */;
+        case LABEL_LEGEND_ID.MEDIAN:
+            id = LABEL_LEGEND_ID.MEDIAN;
             position = ((medianValue - minValue) * 100) / range;
             value = getRoundedValue(medianValue, maxDigitsAfterComma);
             descriptionAlignment = getDescriptionAlignment(id, value, position, width, maxDigitsAfterComma);
             label = 'Median';
             break;
         default:
-            id = "average" /* LABEL_LEGEND_ID.AVERAGE */;
+            id = LABEL_LEGEND_ID.AVERAGE;
             position = ((averageValue - minValue) * 100) / range;
             value = averageValue;
             descriptionAlignment = getDescriptionAlignment(id, value, position, width, maxDigitsAfterComma);
@@ -1184,7 +1204,7 @@ function getCkMeansBuckets(filteredValues, numberBuckets, scale, colorOptions) {
 }
 function getQuantileBuckets(filteredValues, numberBuckets, minValue, scale, colorOptions) {
     const quantilePortion = 1 / numberBuckets;
-    let quantiles = [];
+    const quantiles = [];
     for (let i = 1; i <= numberBuckets; i++) {
         quantiles.push(i * quantilePortion);
     }
@@ -1201,7 +1221,7 @@ function getQuantileBuckets(filteredValues, numberBuckets, minValue, scale, colo
 function getEqualBuckets(numberBuckets, minValue, maxValue, scale, colorOptions, maxDigitsAfterComma) {
     const portion = 1 / numberBuckets;
     const range = maxValue - minValue;
-    let equalBuckets = [];
+    const equalBuckets = [];
     for (let i = 0; i < numberBuckets; i++) {
         let from = i === 0 ? minValue : minValue + range * portion * i;
         let to = minValue + range * portion * (i + 1);
@@ -1223,7 +1243,7 @@ function getCustomBuckets(colorColumnSettings, scale, colorOptions) {
         const customBorderValues = getCustomBucketBorders(numericalOptions.customBuckets);
         const numberBuckets = customBorderValues.length - 1;
         const minBorder = customBorderValues.shift() || 0;
-        let customBuckets = [];
+        const customBuckets = [];
         customBorderValues.forEach((borderValue, index) => {
             customBuckets.push({
                 from: index === 0 ? minBorder : customBorderValues[index - 1],
@@ -1247,10 +1267,10 @@ function getDescriptionAlignment(id, value, position, width, maxDigitsAfterComma
 function getAvailableSpaceForLabel(position, width) {
     let legendPixelWidth;
     if (width > 640) {
-        legendPixelWidth = widthConfig["small" /* LABEL_LEGEND_ID.SMALL */];
+        legendPixelWidth = widthConfig[LABEL_LEGEND_ID.SMALL];
     }
     else {
-        legendPixelWidth = (width * widthConfig["large" /* LABEL_LEGEND_ID.LARGE */]) / 100;
+        legendPixelWidth = (width * widthConfig[LABEL_LEGEND_ID.LARGE]) / 100;
     }
     return (legendPixelWidth * (100 - position)) / 100;
 }
@@ -1359,7 +1379,7 @@ function getColorColumn(colorColumnAvailable, settings, data, width) {
 function createNumericalColorColumn(selectedColumn, settings, data, width) {
     const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, selectedColumn);
     const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
-    let formattingOptions = {
+    const formattingOptions = {
         maxDigitsAfterComma,
         roundingBucketBorders,
     };
@@ -1382,7 +1402,7 @@ function createNumericalColorColumn(selectedColumn, settings, data, width) {
         formattedValues,
         colors }, settings);
 }
-function createCategoricalColorColumn(selectedColumn, settings, data, width) {
+function createCategoricalColorColumn(selectedColumn, settings, data) {
     const legendData = getCategoricalLegend(data, settings);
     const categoriesByColumn = getCategoricalValuesByColumn(data, selectedColumn);
     const colors = [];
@@ -2440,8 +2460,9 @@ const route$f = {
             const toolRuntimeConfig = payload.toolRuntimeConfig;
             const displayOptions = toolRuntimeConfig.displayOptions || {};
             const options = config.options;
+            console.log('asda', config.sources);
             let colorColumn = null;
-            let width = getExactPixelWidth(toolRuntimeConfig);
+            const width = getExactPixelWidth(toolRuntimeConfig);
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
             const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
             const dataLength = dataWithoutHeaderRow.length;
@@ -2589,7 +2610,8 @@ const route$e = {
         }
     },
     handler: function (request, h) {
-        return h.file(`${request.params.filename}.${request.params.extension}`)
+        const params = request.params;
+        return h.file(`${params.filename}.${params.extension}`)
             .type('text/css')
             .header('cache-control', `max-age=${60 * 60 * 24 * 365}, immutable`); // 1 year
     }
@@ -2633,7 +2655,7 @@ var optionAvailability = {
         // properties minibar
         if (item.options.minibar !== null && item.options.minibar !== undefined) {
             if (optionName === 'barColor') {
-                let isAvailable = item.options.minibar.selectedColumn !== null &&
+                const isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 return {
                     available: isAvailable,
@@ -2643,7 +2665,7 @@ var optionAvailability = {
                 let isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
-                    let type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
+                    const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === 'mixed' || type === 'positive';
                 }
                 return {
@@ -2654,7 +2676,7 @@ var optionAvailability = {
                 let isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
-                    let type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
+                    const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === 'mixed' || type === 'negative';
                 }
                 return {
@@ -2665,7 +2687,7 @@ var optionAvailability = {
                 let isAvailable = item.options.minibar.selectedColumn !== null &&
                     item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
-                    let type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
+                    const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === 'mixed';
                 }
                 return {
@@ -2874,7 +2896,7 @@ function getDropdownSettingsCategorical(data, colorColumnSettings) {
     data = getDataWithoutHeaderRow(data);
     const categories = getUniqueCategoriesObject(data, colorColumnSettings).categories;
     const titles = [''];
-    let enumValues = [null];
+    const enumValues = [null];
     for (let i = 0; i < categories.length; i++) {
         const category = categories[i];
         const id = i + 1;
@@ -3026,8 +3048,8 @@ const route$6 = {
         const payload = request.payload;
         const item = payload.item;
         const numericalOptions = item.options.colorColumn.numericalOptions;
-        let enumValues = ['sequential'];
-        let enumTitles = ['Sequentiell'];
+        const enumValues = ['sequential'];
+        const enumTitles = ['Sequentiell'];
         let bucketNumber = 0;
         if (numericalOptions.bucketType === 'custom') {
             if (numericalOptions.customBuckets) {
@@ -3081,14 +3103,14 @@ const route$5 = {
 
 function migrate$1(uncastedItem) {
     const item = uncastedItem;
-    let result = {
+    const result = {
         isChanged: false,
         item: null,
     };
     if (item.options.minibar === undefined) {
         const parsedNumber = parseInt(item.options.minibarOptions || '');
         if (!isNaN(parsedNumber)) {
-            let minibars = {
+            const minibars = {
                 selectedColumn: parsedNumber + 1,
                 barColor: {
                     positive: {
@@ -3123,7 +3145,7 @@ var migrationToV2 = /*#__PURE__*/Object.freeze({
 function migrate(uncastedItem) {
     const item = uncastedItem;
     const data = item.data;
-    let result = {
+    const result = {
         isChanged: false,
         item: null,
     };
@@ -3133,7 +3155,7 @@ function migrate(uncastedItem) {
     }
     if (metaData === undefined || metaData === null) {
         const castedData = data;
-        let slicedData = castedData.slice();
+        const slicedData = castedData.slice();
         item.data = {
             table: slicedData,
             metaData: {
@@ -3167,7 +3189,7 @@ const route$4 = {
             }
         }
     },
-    handler: (request, h) => __awaiter(void 0, void 0, void 0, function* () {
+    handler: (request, h) => {
         const payload = request.payload;
         let item = payload.item;
         const results = migrationScripts.map(script => {
@@ -3186,7 +3208,7 @@ const route$4 = {
             };
         }
         return h.response().code(304);
-    })
+    }
 };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -14803,6 +14825,12 @@ const route$2 = {
     },
 };
 
+var DivergingType;
+(function (DivergingType) {
+    DivergingType["BUCKET"] = "bucket";
+    DivergingType["BORDER"] = "border";
+})(DivergingType || (DivergingType = {}));
+
 const sequentialScaleMax = 7;
 const divergingScaleMax = sequentialScaleMax * 2;
 const route$1 = {
@@ -14823,9 +14851,9 @@ const route$1 = {
             const item = payload.item;
             const colorColumnSettings = item.options.colorColumn;
             const { colorColumnType, numericalOptions } = colorColumnSettings;
-            let scale = numericalOptions.scale;
+            const scale = numericalOptions.scale;
             if (colorColumnType === 'numerical') {
-                let numberBuckets = getNumberBuckets(colorColumnSettings);
+                const numberBuckets = getNumberBuckets(colorColumnSettings);
                 if (scale === 'sequential' && numberBuckets > sequentialScaleMax) {
                     return {
                         message: {
@@ -14835,18 +14863,17 @@ const route$1 = {
                     };
                 }
                 else {
-                    const a = scale;
                     const divergingSpec = scale.split('-');
                     const divergingType = divergingSpec[0];
                     const divergingIndex = parseInt(divergingSpec[1]);
                     const numberBucketsLeft = divergingIndex;
                     let numberBucketsRight = numberBuckets - divergingIndex;
-                    if (divergingType === "bucket" /* DivergingType.BUCKET */) {
+                    if (divergingType === DivergingType.BUCKET) {
                         numberBucketsRight -= 1;
                     }
                     const numberBucketsBiggerSide = Math.max(numberBucketsLeft, numberBucketsRight);
                     let scaleSize = numberBucketsBiggerSide * 2;
-                    if (divergingType === "bucket" /* DivergingType.BUCKET */) {
+                    if (divergingType === DivergingType.BUCKET) {
                         scaleSize += 1;
                     }
                     if (scaleSize > divergingScaleMax) {

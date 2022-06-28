@@ -18,10 +18,10 @@ export const digitWords = [
 ];
 
 const gray1 = 's-color-gray-1';
-const gray4 = 's-color-gray-4';
-const gray6 = 's-color-gray-6';
-const gray7 = 's-color-gray-7';
-const gray8 = 's-color-gray-8';
+// const gray4 = 's-color-gray-4';
+// const gray6 = 's-color-gray-6';
+// const gray7 = 's-color-gray-7';
+// const gray8 = 's-color-gray-8';
 const gray9 = 's-color-gray-9';
 
 export function getTextColor(customColor: { color: string, textColor: string} | undefined, colorClass: string): string {

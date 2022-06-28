@@ -1,4 +1,5 @@
 import type { BucketType } from '../interfaces';
+import type { FormattedBucket } from './colorColumnLegend';
 
 export interface MethodBoxInfo {
     text: string;
@@ -6,7 +7,7 @@ export interface MethodBoxInfo {
         title: string;
         url: string;
     },
-    formattedBuckets?: any,
+    formattedBuckets?: FormattedBucket[],
 }
 
 const methodBoxTextConfig: Record<BucketType, string> = {
@@ -30,3 +31,14 @@ export function getMethodBoxInfo(bucketType: BucketType): MethodBoxInfo {
         }
     };
 }
+
+
+
+
+
+
+
+
+
+
+

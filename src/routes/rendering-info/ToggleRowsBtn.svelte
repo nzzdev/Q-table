@@ -1,12 +1,12 @@
 <script lang="ts">
-import { getContext } from "svelte";
-import type { QTableStateContext } from "../../interfaces";
+import { getContext } from 'svelte';
+import type { QTableStateContext } from '../../interfaces';
 
 export let totalNumberOfRows: number;
 export let pageSize: number;
 
 let showingAllRows = false;
-const stateContext = getContext<QTableStateContext>("state");
+const stateContext = getContext<QTableStateContext>('state');
 
 function toggle(): void {
   showingAllRows = !showingAllRows;

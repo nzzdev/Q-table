@@ -60,7 +60,7 @@ function getDropdownSettingsCategorical(data: QTableDataRaw, colorColumnSettings
   const categories = getUniqueCategoriesObject(data, colorColumnSettings).categories;
 
   const titles = [''];
-  let enumValues: (number | null)[] = [null];
+  const enumValues: (number | null)[] = [null];
 
   for (let i = 0; i < categories.length; i++) {
     const category = categories[i];

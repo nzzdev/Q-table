@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { getDataWithoutHeaderRow, getUniqueCategoriesCount } from '../../helpers/data.js';
 import type { Request } from '@hapi/hapi'
-import { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
+import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
 
 export default {
   method: 'POST',

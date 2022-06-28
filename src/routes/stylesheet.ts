@@ -10,14 +10,21 @@ const route: ServerRoute = {
   path: '/stylesheet/{filename}.{hash}.{extension}',
   options: {
     files: {
-      relativeTo:  path.join(__dirname, '/styles/')
+      relativeTo: path.join(__dirname, '/styles/')
     }
   },
-  handler: function(request: Request, h: ResponseToolkit) {
-    return h.file(`${request.params.filename}.${request.params.extension}`)
+  handler: function (request: Request, h: ResponseToolkit) {
+    const params = request.params as Params;
+
+    return h.file(`${params.filename}.${params.extension}`)
       .type('text/css')
       .header('cache-control', `max-age=${60 * 60 * 24 * 365}, immutable`); // 1 year
   }
 };
 
 export default route;
+
+interface Params {
+  filename: string;
+  extension: string;
+}

@@ -1,6 +1,6 @@
 <script>
-  import OpenIcon from "./svg/OpenIcon.svelte";
-  import CloseIcon from "./svg/CloseIcon.svelte";
+  import OpenIcon from './svg/OpenIcon.svelte';
+  import CloseIcon from './svg/CloseIcon.svelte';
   export let colorColumn;
   export let noInteraction;
 </script>

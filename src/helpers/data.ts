@@ -149,11 +149,11 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
   for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
     const row = data[rowIndex];
 
-    let cells = row.map((cell, columnIndex) => {
+    const cells = row.map((cell, columnIndex) => {
       let type = 'text';
       let value = cell;
 
-      let classes: string[] = [];
+      const classes: string[] = [];
 
       if (columns[columnIndex] && columns[columnIndex].isNumeric) {
         type = 'numeric';
@@ -241,7 +241,7 @@ export function getUniqueCategoriesCount(data: QTableDataRaw, colorColumn: Color
 
 export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettings: ColorColumnSettings) {
   const { categoricalOptions, selectedColumn } = colorColumnSettings;
-  let customCategoriesOrder = categoricalOptions.customCategoriesOrder;
+  const customCategoriesOrder = categoricalOptions.customCategoriesOrder;
   let hasNullValues = false;
   let values: string[] = [];
 
@@ -258,7 +258,7 @@ export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettin
       }) as string[];
   }
 
-  let sortedValuesbyCount = sortValuesByCount(values);
+  const sortedValuesbyCount = sortValuesByCount(values);
 
   // If the user has set a custom order, sort the categories accordingly
   if (customCategoriesOrder) {
@@ -277,14 +277,14 @@ export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettin
 
 function sortValuesByCount(values: string[]): string[] {
   // Count how much each value appears.
-  let counter: Record<string, number> = {};
+  const counter: Record<string, number> = {};
   for (let i = 0; i < values.length; i++) {
     const key = values[i];
     counter[key] = 1 + counter[key] || 1;
   }
 
   // Sort counter by amount of appearance.
-  let sortedCounter = Object.entries(counter).sort((a, b) => b[1] - a[1]);
+  const sortedCounter = Object.entries(counter).sort((a, b) => b[1] - a[1]);
 
   // Return only the values. The amount of appearance is not necessary.
   return sortedCounter.map(x => x[0]);
@@ -339,7 +339,7 @@ export function getFormattedValue(formattingOptions: DataFormattingOptions, valu
 
 export function getFormattedBuckets(formattingOptions: DataFormattingOptions, buckets: Bucket[]): FormattedBucket[] {
   return buckets.map((bucket) => {
-    let { from, to, color } = bucket;
+    const { from, to, color } = bucket;
 
     if (formattingOptions.roundingBucketBorders) {
       return {
@@ -382,8 +382,8 @@ export function getCustomBucketBorders(customBuckets: string): number[] {
  * Internal.
  */
 function getMedian(values: number[]): number {
-  let middleIndex = Math.floor(values.length / 2);
-  let sortedNumbers = [...values].sort((a, b) => a - b);
+  const middleIndex = Math.floor(values.length / 2);
+  const sortedNumbers = [...values].sort((a, b) => a - b);
 
   if (values.length % 2 !== 0) {
     return sortedNumbers[middleIndex];

@@ -5,7 +5,7 @@ export default function getExactPixelWidth(toolRuntimeConfig: ToolRuntimeConfig)
     return undefined;
   }
 
-  for (let width of toolRuntimeConfig.size.width) {
+  for (const width of toolRuntimeConfig.size.width) {
     if (width && width.value && width.comparison === '=' && (!width.unit || width.unit === 'px')) {
       return width.value;
     }

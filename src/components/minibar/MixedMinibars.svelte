@@ -11,7 +11,7 @@
   rowIndex += 1;
 
   function getDataLabelAttribute() {
-    let dataLabel = "";
+    let dataLabel = '';
     if (item.options.hideTableHeader !== true) {
       dataLabel = tableData[0][colIndex].value;
       if (
@@ -26,18 +26,18 @@
   }
 
   function getMinibarColor() {
-    return minibar.values[rowIndex].type === "positive"
+    return minibar.values[rowIndex].type === 'positive'
       ? minibar.barColor.positive.colorCode
       : minibar.barColor.negative.colorCode;
   }
 
   function getMinibarClasses() {
-    let classes = "";
+    let classes = '';
     if (
       item.options.minibar.selectedColumn === colIndex &&
       !initWithCardLayout
     ) {
-      classes = "q-table-minibar--mixed";
+      classes = 'q-table-minibar--mixed';
     } else {
       classes = `q-table__cell--${cell.type}`;
     }
@@ -46,15 +46,15 @@
 
   function getFootnoteClasses() {
     if (cell.footnote) {
-      return minibar.values[rowIndex].type === "positive"
+      return minibar.values[rowIndex].type === 'positive'
         ? cell.footnote.class
-        : "";
+        : '';
     }
-    return "";
+    return '';
   }
 
   function getMinibarClassName() {
-    return minibar.values[rowIndex].type === "positive"
+    return minibar.values[rowIndex].type === 'positive'
       ? minibar.barColor.positive.className
       : minibar.barColor.negative.className;
   }
@@ -96,7 +96,7 @@
     {/if}
   {/if}
   {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
-    {#if minibar.values[rowIndex].type !== "empty"}
+    {#if minibar.values[rowIndex].type !== 'empty'}
       <div
         data-minibar={minibar.values[rowIndex].type}
         class="q-table-minibar-bar--{minibar.values[rowIndex]

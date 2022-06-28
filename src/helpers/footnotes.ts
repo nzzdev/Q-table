@@ -29,11 +29,11 @@ export function appendFootnoteAnnotationsToTableData(tableData: QTableDataFormat
     8: '\u2078',
     9: '\u2079',
   };
-  let spacings: Spacing[] = [];
-  let flattenedFootnotes = getFlattenedFootnotes(footnotes);
+  const spacings: Spacing[] = [];
+  const flattenedFootnotes = getFlattenedFootnotes(footnotes);
 
   flattenedFootnotes.forEach((footnote) => {
-    let footnoteClass = getClass(
+    const footnoteClass = getClass(
       options,
       footnote,
       flattenedFootnotes.length,
@@ -42,7 +42,7 @@ export function appendFootnoteAnnotationsToTableData(tableData: QTableDataFormat
     );
 
     if (footnoteClass) {
-      let space = {
+      const space = {
         colIndex: footnote.colIndex,
         class: footnoteClass,
       };
@@ -102,8 +102,8 @@ function getClass(options: QTableConfigOptions, footnote: FlattenedFootnote, amo
   return null;
 }
 
-export function getFootnotes(metaData: DataMetaData, hideTableHeader: Boolean): StructuredFootnote[] {
-  let footnotes = metaData.cells
+export function getFootnotes(metaData: DataMetaData, hideTableHeader: boolean): StructuredFootnote[] {
+  const footnotes = metaData.cells
     .filter((cell) => {
       if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
         return false;
@@ -121,10 +121,10 @@ export function getFootnotes(metaData: DataMetaData, hideTableHeader: Boolean): 
 }
 
 function getStructuredFootnotes(footnotes: dataMetaDataCell[]): StructuredFootnote[] {
-  let structuredFootnotes: StructuredFootnote[] = [];
+  const structuredFootnotes: StructuredFootnote[] = [];
 
   footnotes.forEach((footnote) => {
-    let existingFootnote = structuredFootnotes.find(
+    const existingFootnote = structuredFootnotes.find(
       (filterFootnote) => footnote.data.footnote === filterFootnote.value
     );
 
@@ -151,7 +151,7 @@ function getStructuredFootnotes(footnotes: dataMetaDataCell[]): StructuredFootno
 }
 
 function getFlattenedFootnotes(footnotes: StructuredFootnote[]): FlattenedFootnote[] {
-  let flattenedFootnotes: FlattenedFootnote[] = [];
+  const flattenedFootnotes: FlattenedFootnote[] = [];
 
   footnotes.forEach((footnote) => {
     footnote.coords.forEach((coord) => {

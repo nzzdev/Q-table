@@ -7,7 +7,7 @@
   export let rowIndex;
 
   function getDataLabelAttribute() {
-    let dataLabel = "";
+    let dataLabel = '';
     if (item.options.hideTableHeader !== true) {
       dataLabel += tableData[0][colIndex].value;
       if (
@@ -34,26 +34,26 @@
   function getCellClass() {
     let classes = `q-table__cell q-table__cell--${
       cell.type
-    } ${cell.classes.join(" ")} `;
+    } ${cell.classes.join(' ')} `;
     if (
       item.options.minibar.selectedColumn === colIndex &&
       !item.options.initWithCardLayout
     ) {
-      classes += "q-table-minibar-cell--value";
+      classes += 'q-table-minibar-cell--value';
     }
     return classes;
   }
 
   function getCellStyles() {
-    let styles = "";
+    let styles = '';
     if (
       item.options.minibar.selectedColumn === colIndex &&
       !item.options.initWithCardLayout
     ) {
-      if (minibar.type === "positive") {
-        styles += "padding-left: 12px";
-      } else if (minibar.type === "negative") {
-        styles = "padding-right: 12px;";
+      if (minibar.type === 'positive') {
+        styles += 'padding-left: 12px';
+      } else if (minibar.type === 'negative') {
+        styles = 'padding-right: 12px;';
       }
     }
     return styles;

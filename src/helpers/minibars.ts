@@ -27,7 +27,7 @@ export function getMinibar(minibarsAvailable: boolean, options: QTableConfigOpti
 }
 
 export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnIndex: number): MinibarNumbersWithType {
-  let minibarsWithType: MinibarNumbersWithType = {
+  const minibarsWithType: MinibarNumbersWithType = {
     items: [],
     numbers: [],
     type: MINIBAR_TYPE.MIXED,
@@ -43,7 +43,7 @@ export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnInd
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
     const cell = row[selectedColumnIndex];
-    let value = parseFloat(cell || '');
+    const value = parseFloat(cell || '');
     const type = getTypeOfValue(value);
 
     if (isNaN(value)) {
@@ -70,12 +70,12 @@ export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnInd
  * Internal.
  */
 function createMinibarObject(data: QTableDataRaw, minibarOptions: QTableConfigMinibarSettings): Minibar {
-  let dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
+  const dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
 
-  let minValue = Math.min(...dataColumn.numbers);
-  let maxValue = Math.max(...dataColumn.numbers);
+  const minValue = Math.min(...dataColumn.numbers);
+  const maxValue = Math.max(...dataColumn.numbers);
 
-  let values = dataColumn.items.map(item => {
+  const values = dataColumn.items.map(item => {
     return {
       type: item.type,
       value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
@@ -128,7 +128,7 @@ function checkNegativeBarColor(minibar: Minibar) {
 }
 
 function invertBarColors(minibar: Minibar) {
-  let temp = minibar.barColor.negative;
+  const temp = minibar.barColor.negative;
   minibar.barColor.negative = minibar.barColor.positive;
   minibar.barColor.positive = temp;
 }

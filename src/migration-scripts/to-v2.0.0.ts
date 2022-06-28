@@ -1,7 +1,7 @@
 export function migrate(uncastedItem: unknown): ReturnPayload {
   const item = uncastedItem as Item;
 
-  let result: ReturnPayload = {
+  const result: ReturnPayload = {
     isChanged: false,
     item: null,
   };
@@ -10,7 +10,7 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
     const parsedNumber = parseInt(item.options.minibarOptions || '');
 
     if (!isNaN(parsedNumber)) {
-      let minibars: Minibar = {
+      const minibars: Minibar = {
         selectedColumn: parsedNumber + 1,
         barColor: {
           positive: {
@@ -36,7 +36,7 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
 
   result.item = item;
   return result;
-};
+}
 
 interface ReturnPayload {
   isChanged: boolean,

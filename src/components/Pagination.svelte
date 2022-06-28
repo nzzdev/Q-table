@@ -1,6 +1,6 @@
 <script lang="ts">
-import { getContext } from "svelte";
-import type { QTableStateContext } from "../interfaces";
+import { getContext } from 'svelte';
+import type { QTableStateContext } from '../interfaces';
 
 const stateContext = getContext<QTableStateContext>('state');
 
@@ -9,15 +9,15 @@ export let pageSize: number;
 export let page: number;
 
 export let labels = {
-  first: "<<",
-  last: ">>",
-  next: ">",
-  previous: "<"
+  first: '<<',
+  last: '>>',
+  next: '>',
+  previous: '<',
 };
 
 $: pageCount = Math.ceil(count / pageSize);
 
-function onClick(event, nextPage: number) {
+function onClick(event: MouseEvent, nextPage: number) {
   console.log(event, nextPage);
 
   stateContext.setPage(nextPage);
@@ -28,17 +28,13 @@ function onClick(event, nextPage: number) {
 
 <ul>
   <li>
-    <button
-      disabled={page === 0}
-      on:click={e => onClick(e, 0)}>
+    <button disabled={page === 0} on:click={e => onClick(e, 0)}>
       {labels.first}
     </button>
   </li>
 
   <li>
-    <button
-      disabled={page === 0}
-      on:click={e => onClick(e, page - 1)}>
+    <button disabled={page === 0} on:click={e => onClick(e, page - 1)}>
       {labels.previous}
     </button>
   </li>
@@ -47,22 +43,18 @@ function onClick(event, nextPage: number) {
     {#if count === 0}
       0 / 0
     {:else}
-      { page + 1 } / { pageCount }
+      {page + 1} / {pageCount}
     {/if}
   </li>
 
   <li>
-    <button
-      disabled={page >= pageCount - 1}
-      on:click={e => onClick(e, page + 1)}>
+    <button disabled={page >= pageCount - 1} on:click={e => onClick(e, page + 1)}>
       {labels.next}
     </button>
   </li>
 
   <li>
-    <button
-      disabled={page >= pageCount -1}
-      on:click={e => onClick(e, pageCount - 1)}>
+    <button disabled={page >= pageCount - 1} on:click={e => onClick(e, pageCount - 1)}>
       {labels.last}
     </button>
   </li>
@@ -81,9 +73,9 @@ ul {
   align-items: center;
   justify-content: end;
 }
-  .counters {
-    margin: 0 5px;
-  }
+.counters {
+  margin: 0 5px;
+}
 
 button {
   background: transparent;
@@ -95,6 +87,6 @@ button {
 }
 
 button[disabled] {
-  opacity: .5;
+  opacity: 0.5;
 }
 </style>

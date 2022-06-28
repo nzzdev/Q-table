@@ -6,6 +6,9 @@ import fs from 'fs';
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
 import type { Request, ServerRoute } from '@hapi/hapi';
+
+import type { ColorColumn } from '../../helpers/colorColumn.js';
+
 import type {
   AvailabilityResponseObject,
   QTableConfig,
@@ -25,7 +28,7 @@ import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
 
 import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
 import { getMinibar } from '../../helpers/minibars.js';
-import { ColorColumn, getColorColumn } from '../../helpers/colorColumn.js';
+import { getColorColumn } from '../../helpers/colorColumn.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
 
 import schemaString from '../../../resources/schema.json';
@@ -70,7 +73,7 @@ const route: ServerRoute = {
       qtableCompiledScript = fs.readFileSync('dist/Q-Table.js', {
         encoding: 'utf-8',
       });
-    } catch(e) {
+    } catch (e) {
       console.log('Failed  reading compiled Q-Table code', e);
     }
 
@@ -82,8 +85,10 @@ const route: ServerRoute = {
     const displayOptions = toolRuntimeConfig.displayOptions || {} as DisplayOptions;
     const options = config.options;
 
+    console.log('asda', config.sources);
+
     let colorColumn: ColorColumn | null = null;
-    let width = getExactPixelWidth(toolRuntimeConfig);
+    const width = getExactPixelWidth(toolRuntimeConfig);
 
     const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
     const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);

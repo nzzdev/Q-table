@@ -1,8 +1,8 @@
 import Joi from 'joi';
 import { getDataWithoutHeaderRow, getUniqueCategoriesCount } from '../../helpers/data.js';
 import { digitWords } from '../../helpers/colorColumnColor.js';
-import { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
 import type { Request, ServerRoute } from '@hapi/hapi'
+import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
 
 const numberMainColors = digitWords.length;
 

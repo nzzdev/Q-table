@@ -20,7 +20,7 @@ const route: ServerRoute = {
       }
     }
   },
-  handler: async (request: Request, h: ResponseToolkit) => {
+  handler: (request: Request, h: ResponseToolkit) => {
     const payload = request.payload as Payload;
     let item = payload.item;
 

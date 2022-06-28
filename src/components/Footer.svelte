@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { QTableConfig } from "../interfaces";
+import type { QTableConfig } from '../interfaces';
 
 export let config: QTableConfig;
 
@@ -20,16 +20,15 @@ const { notes, sources } = config;
           Quelle:
         {/if}
 
-
         {#each sources as source, index}
-          {#if source.text !== ""}
+          {#if source.text !== ''}
             {#if source.link && source.link.url && source.link.isValid}
               <a href={source.link.url} target="blank" rel="noopener noreferrer">{source.text}</a>
             {:else}
               {source.text}
             {/if}
 
-            {#if index !== sources.length - 1 && sources[index + 1] !== ""},&nbsp;{/if}
+            {#if index !== sources.length - 1 && sources[index + 1].text !== ''},&nbsp;{/if}
           {/if}
         {/each}
       </div>

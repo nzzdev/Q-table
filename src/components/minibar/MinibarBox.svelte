@@ -9,8 +9,8 @@
   rowIndex += 1;
 
   function getBarStyle() {
-    let style = "";
-    if (minibar.values[rowIndex].type !== "empty") {
+    let style = '';
+    if (minibar.values[rowIndex].type !== 'empty') {
       style = `width: ${minibar.values[rowIndex].value}%;`;
       if (
         minibar.barColor.positive.colorCode ||
@@ -28,18 +28,18 @@
   }
 
   function getCellStyle() {
-    let style = "";
+    let style = '';
     // check for type and return accordingly
-    if (minibar.type === "positive") {
-      style = "padding-right: 12px !important;";
-    } else if (minibar.type === "negative") {
-      style = "padding-left: 12px; padding-right: 0px !important;";
+    if (minibar.type === 'positive') {
+      style = 'padding-right: 12px !important;';
+    } else if (minibar.type === 'negative') {
+      style = 'padding-left: 12px; padding-right: 0px !important;';
     }
     return style;
   }
 
   function getMinibarClassName() {
-    return minibar.values[rowIndex].type === "positive"
+    return minibar.values[rowIndex].type === 'positive'
       ? minibar.barColor.positive.className
       : minibar.barColor.negative.className;
   }

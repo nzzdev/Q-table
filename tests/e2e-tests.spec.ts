@@ -4,8 +4,8 @@ import * as fixtures from '../resources/fixtures/data';
 import { getAvailabilityResponse, getMarkup, getScripts, getStylesheets } from './helpers';
 // @ts-ignore
 import routes from '../dist/routes.js';
-import { SelectedColumnMinibarReturnPayload } from '../src/routes/dynamic-schemas/selectedColumnMinibar';
-import { SelectedColorColumnReturnPayload } from '../src/routes/dynamic-schemas/selectedColorColumn';
+import type { SelectedColumnMinibarReturnPayload } from '../src/routes/dynamic-schemas/selectedColumnMinibar';
+import type { SelectedColorColumnReturnPayload } from '../src/routes/dynamic-schemas/selectedColorColumn';
 
 let server: Hapi.Server;
 

@@ -1,7 +1,7 @@
-import { LABEL_LEGEND_ID } from './enums';
-import { ColorColumn } from './helpers/colorColumn';
-import { StructuredFootnote } from './helpers/footnotes';
-import { Minibar } from './helpers/minibars';
+import type { LABEL_LEGEND_ID } from './enums';
+import type { ColorColumn } from './helpers/colorColumn';
+import type { StructuredFootnote } from './helpers/footnotes';
+import type { Minibar } from './helpers/minibars';
 
 export interface WebPayload {
   item: QTableConfig,
@@ -16,7 +16,7 @@ export type QTableDataRaw = (string | null)[][];
 export const enum DivergingType {
   BUCKET = 'bucket',
   BORDER = 'border',
-};
+}
 
 export type DivergingColorScaleFromBucket = `${DivergingType.BUCKET}-${number}`;
 export type DivergingColorScaleFromBorder = `${DivergingType.BORDER}-${number}`;
@@ -59,12 +59,12 @@ export interface DataMetaData {
 }
 
 export interface QTableConfigMinibarSettings {
-  invertColors: Boolean,
-    barColor: {
-      positive: { className: string, colorCode: string },
-      negative: { className: string, colorCode: string },
-    },
-    selectedColumn: number
+  invertColors: boolean,
+  barColor: {
+    positive: { className: string, colorCode: string },
+    negative: { className: string, colorCode: string },
+  },
+  selectedColumn: number
 }
 
 export interface QTableConfig {
@@ -73,7 +73,7 @@ export interface QTableConfig {
     table: QTableDataRaw,
     metaData: DataMetaData,
   },
-  sources: Array<any>,
+  sources: Array<Source>,
   options: QTableConfigOptions,
   title: string,
   subtitle: string,
@@ -100,7 +100,7 @@ export interface QTableConfigOptions {
 
 export interface QTableDataFormatted {
   type: string,
-  value: string|null,
+  value: string | null,
   classes: string[],
   footnote?: {
     value: number,
@@ -121,7 +121,7 @@ export interface ToolRuntimeConfig {
   size: {
     width: Array<{ value: number, unit: string, comparison: '=' | '>' | '<' | '>=' | '<=' }>
   },
-  isPure: Boolean,
+  isPure: boolean,
   requestId: string,
   markup?: string,
   noInteraction?: boolean,
@@ -129,8 +129,8 @@ export interface ToolRuntimeConfig {
 
 export interface RenderingInfo {
   polyfills: string[],
-  stylesheets:Array<{name: string}>,
-  scripts: Array<{content: string}>,
+  stylesheets: Array<{ name: string }>,
+  scripts: Array<{ content: string }>,
   markup: string,
 }
 
@@ -164,8 +164,16 @@ export interface QTableStateContext {
     pageSize: number;
     rows: QTableDataFormatted[][];
     filteredRows: QTableDataFormatted[][];
-};
-setPage: (_page: number) => void;
-setPageSize: (_pageSize: number) => void;
-setFilteredRows: (_rows: QTableDataFormatted[][]) => QTableDataFormatted[][];
+  };
+  setPage: (_page: number) => void;
+  setPageSize: (_pageSize: number) => void;
+  setFilteredRows: (_rows: QTableDataFormatted[][]) => QTableDataFormatted[][];
+}
+
+interface Source {
+  link: {
+    url: string,
+    isValid: boolean,
+  },
+  text: string
 }

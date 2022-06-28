@@ -32,7 +32,7 @@ export function getColorColumn(colorColumnAvailable: boolean, settings: ColorCol
     if (settings.colorColumnType === 'numerical') {
       return createNumericalColorColumn(selectedColumn, settings, data, width);
     } else {
-      return createCategoricalColorColumn(selectedColumn, settings, data, width);
+      return createCategoricalColorColumn(selectedColumn, settings, data);
     }
   }
 
@@ -43,7 +43,7 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
   const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, selectedColumn);
   const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
 
-  let formattingOptions = {
+  const formattingOptions = {
     maxDigitsAfterComma,
     roundingBucketBorders,
   };
@@ -56,7 +56,7 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
   const formattedValues: string[] = [];
   const colors: ColumnColorSettings[] = [];
 
-  if (typeof settings.selectedColumn =='number') {
+  if (typeof settings.selectedColumn == 'number') {
     const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
 
     valuesByColumn.map((value) => {
@@ -76,7 +76,7 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
   }
 }
 
-function createCategoricalColorColumn(selectedColumn: number, settings: ColorColumnSettings, data: QTableDataRaw, width: number): ColorColumn {
+function createCategoricalColorColumn(selectedColumn: number, settings: ColorColumnSettings, data: QTableDataRaw): ColorColumn {
   const legendData = getCategoricalLegend(data, settings);
   const categoriesByColumn = getCategoricalValuesByColumn(data, selectedColumn);
 
