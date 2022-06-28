@@ -9,6 +9,7 @@ cache:
   directories:
     - node_modules
 install:
+  - npm set-script prepare ""
   - npm install
 before_script:
   - DOCKER_IMAGE_NAME="q-table"

@@ -85,8 +85,6 @@ const route: ServerRoute = {
     const displayOptions = toolRuntimeConfig.displayOptions || {} as DisplayOptions;
     const options = config.options;
 
-    console.log('asda', config.sources);
-
     let colorColumn: ColorColumn | null = null;
     const width = getExactPixelWidth(toolRuntimeConfig);
 
