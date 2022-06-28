@@ -1,11 +1,7 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:@typescript-eslint/recommended-requiring-type-checking'],
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
@@ -36,5 +32,5 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 2,
     '@typescript-eslint/no-unused-vars': 2,
     '@typescript-eslint/triple-slash-reference': 0,
-  }
+  },
 };

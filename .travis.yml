@@ -15,8 +15,8 @@ before_script:
   - DOCKER_IMAGE_NAME="q-table"
   - DOCKER_TAG=${TRAVIS_BRANCH//[^a-zA-Z0-9\_\-\.]/_}
 script:
-  - npm run build
   - npm run lint
+  - npm run build
   - npm run jest
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker build -t $DOCKER_IMAGE_NAME:$DOCKER_TAG .; fi'
 after_success:
