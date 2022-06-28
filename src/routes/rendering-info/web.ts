@@ -53,11 +53,7 @@ const route: ServerRoute = {
         allowUnknown: true,
       },
       payload: async (payload: WebPayload) => {
-        if (
-          typeof payload !== 'object' ||
-          typeof payload.item !== 'object' ||
-          typeof payload.toolRuntimeConfig !== 'object'
-        ) {
+        if (typeof payload !== 'object' || typeof payload.item !== 'object' || typeof payload.toolRuntimeConfig !== 'object') {
           throw Boom.badRequest('The given payload for this route is not correct.');
         }
 
@@ -82,7 +78,7 @@ const route: ServerRoute = {
     // Extract table configurations.
     const config = payload.item;
     const toolRuntimeConfig = payload.toolRuntimeConfig;
-    const displayOptions = toolRuntimeConfig.displayOptions || {} as DisplayOptions;
+    const displayOptions = toolRuntimeConfig.displayOptions || ({} as DisplayOptions);
     const options = config.options;
 
     let colorColumn: ColorColumn | null = null;
@@ -99,7 +95,6 @@ const route: ServerRoute = {
     const colorColumnAvailable = await isColorColumnAvailable(request, config);
     const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
     const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
-
 
     let tableData: QTableDataFormatted[][] = [];
 
@@ -136,9 +131,11 @@ const route: ServerRoute = {
 
     const renderingInfo: RenderingInfo = {
       polyfills: ['Promise'],
-      stylesheets: [{
-        name: styleHashMap['q-table'],
-      }],
+      stylesheets: [
+        {
+          name: styleHashMap['q-table'],
+        },
+      ],
       scripts: [
         {
           content: qtableCompiledScript,
@@ -200,7 +197,6 @@ async function isColorColumnAvailable(request: Request, config: QTableConfig): P
 function createId(request: Request): string {
   return `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, '');
 }
-
 
 function calculatePageSize(totalAmountOfRows: number, initWithCardLayout: boolean, options: QTableConfigOptions, toolRuntimeConfig: ToolRuntimeConfig): number {
   const { pageSize } = options;

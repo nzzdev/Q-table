@@ -56,13 +56,13 @@ export default route;
  */
 interface Payload {
   item: {
-    options: QTableConfigOptions,
-  }
+    options: QTableConfigOptions;
+  };
 }
 
 interface ReturnPayload {
-  enum: string[],
+  enum: string[];
   'Q:options': {
-    enum_titles: string[]
-  },
+    enum_titles: string[];
+  };
 }

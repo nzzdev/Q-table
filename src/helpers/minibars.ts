@@ -2,9 +2,9 @@ import type { QTableConfigOptions, QTableDataRaw, QTableConfigMinibarSettings } 
 
 export const enum MINIBAR_TYPE {
   POSITIVE = 'positive',
-  NEGATIVE ='negative',
+  NEGATIVE = 'negative',
   MIXED = 'mixed',
-  EMPTY = 'empty'
+  EMPTY = 'empty',
 }
 
 export function getMinibar(minibarsAvailable: boolean, options: QTableConfigOptions, itemDataCopy: QTableDataRaw): Minibar | null {
@@ -36,7 +36,7 @@ export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnInd
   // First row is always header so we add a null entry for it.
   minibarsWithType.items.push({
     value: null,
-    type : MINIBAR_TYPE.EMPTY
+    type: MINIBAR_TYPE.EMPTY,
   });
 
   // First row is always header so start at 1.
@@ -49,14 +49,14 @@ export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnInd
     if (isNaN(value)) {
       minibarsWithType.items.push({
         value: null,
-        type
+        type,
       });
     } else {
       minibarsWithType.numbers.push(value);
 
       minibarsWithType.items.push({
         value,
-        type
+        type,
       });
     }
   }
@@ -78,7 +78,7 @@ function createMinibarObject(data: QTableDataRaw, minibarOptions: QTableConfigMi
   const values = dataColumn.items.map(item => {
     return {
       type: item.type,
-      value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
+      value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue),
     };
   });
 
@@ -93,7 +93,7 @@ function createMinibarObject(data: QTableDataRaw, minibarOptions: QTableConfigMi
 function getMinibarValue(type: MINIBAR_TYPE, value: number | null, min: number, max: number): number {
   if (value === null) return 0;
 
-  switch(type) {
+  switch (type) {
     case MINIBAR_TYPE.POSITIVE:
       return Math.abs((value * 100) / max);
 
@@ -133,7 +133,7 @@ function invertBarColors(minibar: Minibar) {
   minibar.barColor.positive = temp;
 }
 
-function getTypeOfValue(value: number):MINIBAR_TYPE  {
+function getTypeOfValue(value: number): MINIBAR_TYPE {
   if (value < 0) {
     return MINIBAR_TYPE.NEGATIVE;
   }
@@ -187,16 +187,16 @@ function getNegativeColor(type: string): string {
  */
 export interface Minibar {
   barColor: {
-    positive: { className: string, colorCode: string },
-    negative: { className: string, colorCode: string },
-  },
-  type: MINIBAR_TYPE,
-  values: Array<{type: string, value: number | null}>,
-  settings: QTableConfigMinibarSettings,
+    positive: { className: string; colorCode: string };
+    negative: { className: string; colorCode: string };
+  };
+  type: MINIBAR_TYPE;
+  values: Array<{ type: string; value: number | null }>;
+  settings: QTableConfigMinibarSettings;
 }
 
 interface MinibarNumbersWithType {
-  numbers: number[],
-  items: Array<{type: string, value: number | null}>,
-  type: MINIBAR_TYPE,
+  numbers: number[];
+  items: Array<{ type: string; value: number | null }>;
+  type: MINIBAR_TYPE;
 }

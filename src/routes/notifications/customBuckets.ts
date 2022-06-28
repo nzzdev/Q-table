@@ -1,11 +1,6 @@
 import type { Request } from '@hapi/hapi';
 import Joi from 'joi';
-import {
-  getCustomBucketBorders,
-  getDataWithoutHeaderRow,
-  getNumericalValuesByColumn,
-  getNonNullValues,
-  getMetaData } from '../../helpers/data.js';
+import { getCustomBucketBorders, getDataWithoutHeaderRow, getNumericalValuesByColumn, getNonNullValues, getMetaData } from '../../helpers/data.js';
 import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
 
 export default {
@@ -29,16 +24,13 @@ export default {
       const { numericalOptions, selectedColumn } = colorColumnSettings;
       const { bucketType, customBuckets } = numericalOptions;
 
-      if (bucketType === 'custom' && typeof selectedColumn === 'number' ) {
+      if (bucketType === 'custom' && typeof selectedColumn === 'number') {
         const bucketBorders = getCustomBucketBorders(customBuckets);
         const values = getNumericalValuesByColumn(data, selectedColumn);
         const numberValues = getNonNullValues(values);
         const metaData = getMetaData(values, numberValues, 0);
 
-        if (
-          bucketBorders[0] > metaData.minValue ||
-          bucketBorders[bucketBorders.length - 1] < metaData.maxValue
-        ) {
+        if (bucketBorders[0] > metaData.minValue || bucketBorders[bucketBorders.length - 1] < metaData.maxValue) {
           return {
             message: {
               title: 'notifications.customBuckets.title',
@@ -58,10 +50,10 @@ export default {
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  },
-  roles: string[],
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
+  roles: string[];
 }

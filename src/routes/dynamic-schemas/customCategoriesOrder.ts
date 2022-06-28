@@ -1,10 +1,6 @@
 import Joi from 'joi';
 import { getDataWithoutHeaderRow, getUniqueCategoriesCount } from '../../helpers/data.js';
-import type {
-  DataMetaData,
-  QTableConfigOptions,
-  QTableDataRaw
-} from '../../interfaces';
+import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces';
 import type { Request, ServerRoute } from '@hapi/hapi';
 
 const route: ServerRoute = {
@@ -36,11 +32,11 @@ export default route;
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  }
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
 }
 
 interface ReturnPayload {

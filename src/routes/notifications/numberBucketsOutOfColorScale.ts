@@ -2,7 +2,7 @@ import Joi from 'joi';
 import * as colorColumnHelpers from '../../helpers/colorColumn.js';
 import { DivergingType } from '../../interfaces.js';
 import type { DataMetaData, DivergingColorScaleFromBucket, DivergingColorScaleFromBorder, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
-import type { Request, ServerRoute } from '@hapi/hapi'
+import type { Request, ServerRoute } from '@hapi/hapi';
 
 const sequentialScaleMax = 7;
 const divergingScaleMax = sequentialScaleMax * 2;
@@ -31,14 +31,14 @@ const route: ServerRoute = {
         const numberBuckets = colorColumnHelpers.getNumberBuckets(colorColumnSettings);
 
         if (scale === 'sequential' && numberBuckets > sequentialScaleMax) {
-            return {
-              message: {
-                title: 'notifications.numberBucketsOutOfColorScale.title',
-                body: 'notifications.numberBucketsOutOfColorScale.body',
-              },
-            };
+          return {
+            message: {
+              title: 'notifications.numberBucketsOutOfColorScale.title',
+              body: 'notifications.numberBucketsOutOfColorScale.body',
+            },
+          };
         } else {
-          const divergingSpec = scale.split('-') as unknown as (DivergingColorScaleFromBucket|DivergingColorScaleFromBorder)[];
+          const divergingSpec = scale.split('-') as unknown as (DivergingColorScaleFromBucket | DivergingColorScaleFromBorder)[];
           const divergingType = divergingSpec[0] as DivergingType;
           const divergingIndex = parseInt(divergingSpec[1]);
 
@@ -79,10 +79,10 @@ export default route;
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  },
-  roles: string[],
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
+  roles: string[];
 }

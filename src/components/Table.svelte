@@ -56,8 +56,8 @@ setContext<QTableStateContext>('state', {
     page = _page;
     pageIndex = _page * pageSize;
   },
-  setPageSize: (_pageSize) => (pageSize = _pageSize),
-  setFilteredRows: (_rows) => (filteredRows = _rows),
+  setPageSize: _pageSize => (pageSize = _pageSize),
+  setFilteredRows: _rows => (filteredRows = _rows),
 });
 
 function shouldShowLegend(): boolean {

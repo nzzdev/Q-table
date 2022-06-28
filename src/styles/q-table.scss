@@ -55,9 +55,7 @@ td.q-table__cell--numeric {
   }
 }
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
-.q-table:not(.q-table--card-layout)
-  .q-table__cell--numeric:not(#q-table-minibar-header)
-  + .q-table__cell:not(.q-table__cell--numeric) {
+.q-table:not(.q-table--card-layout) .q-table__cell--numeric:not(#q-table-minibar-header) + .q-table__cell:not(.q-table__cell--numeric) {
   padding-left: 20px;
 }
 
@@ -115,7 +113,7 @@ td.q-table__cell--numeric {
       text-align: left !important;
     }
     td::after {
-      content: "";
+      content: '';
       display: block;
       clear: both;
     }
@@ -232,7 +230,7 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar-bar--positive::before {
-  content: "";
+  content: '';
   border-left: 0.5px solid #393855;
   position: absolute;
   height: 19px;
@@ -248,7 +246,7 @@ tr.q-table-state-visible {
 }
 
 .q-table-minibar-bar--negative::before {
-  content: "";
+  content: '';
   border-right: 0.5px solid #393855;
   position: absolute;
   width: 1px;

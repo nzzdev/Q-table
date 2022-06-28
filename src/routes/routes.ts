@@ -25,7 +25,7 @@ const allRoutes = [
   numberBucketsExceedsDataSet,
   numberCategoriesOutOfColorScale,
   customBuckets,
-  ...schema
+  ...schema,
 ];
 
 export default allRoutes;

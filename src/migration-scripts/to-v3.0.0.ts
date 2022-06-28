@@ -20,8 +20,8 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
     item.data = {
       table: slicedData,
       metaData: {
-        cells: []
-      }
+        cells: [],
+      },
     };
 
     result.isChanged = true;
@@ -32,17 +32,16 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
   return result;
 }
 
-
 interface Item {
-  data: Data | undefined | null | unknown[]
+  data: Data | undefined | null | unknown[];
 }
 
 interface Data {
-  table: unknown[],
-  metaData: {}
+  table: unknown[];
+  metaData: {};
 }
 
 interface ReturnPayload {
-  isChanged: boolean,
-  item: null | unknown,
+  isChanged: boolean;
+  item: null | unknown;
 }

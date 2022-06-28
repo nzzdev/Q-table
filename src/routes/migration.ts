@@ -5,10 +5,7 @@ import * as migrationToV3 from '../migration-scripts/to-v3.0.0.js';
 
 // register migration scripts here in order of version,
 // i.e. list the smallest version first!
-const migrationScripts = [
-  migrationToV2,
-  migrationToV3,
-];
+const migrationScripts = [migrationToV2, migrationToV3];
 
 const route: ServerRoute = {
   method: 'POST',
@@ -16,9 +13,9 @@ const route: ServerRoute = {
   options: {
     validate: {
       payload: {
-        item: Joi.object().required()
-      }
-    }
+        item: Joi.object().required(),
+      },
+    },
   },
   handler: (request: Request, h: ResponseToolkit) => {
     const payload = request.payload as Payload;
@@ -38,12 +35,12 @@ const route: ServerRoute = {
 
     if (isChanged >= 0) {
       return {
-        item: item
+        item: item,
       };
     }
 
     return h.response().code(304);
-  }
+  },
 };
 
 export default route;

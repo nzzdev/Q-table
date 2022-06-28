@@ -15,14 +15,14 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
         barColor: {
           positive: {
             className: '',
-            colorCode: ''
+            colorCode: '',
           },
           negative: {
             className: '',
-            colorCode: ''
-          }
+            colorCode: '',
+          },
         },
-        invertColors: false
+        invertColors: false,
       };
 
       item.options['minibar'] = minibars;
@@ -39,22 +39,22 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
 }
 
 interface ReturnPayload {
-  isChanged: boolean,
-  item: null | unknown,
+  isChanged: boolean;
+  item: null | unknown;
 }
 
 interface Item {
   options: {
-    minibarOptions?: string,
-    minibar: Minibar | undefined,
-  }
+    minibarOptions?: string;
+    minibar: Minibar | undefined;
+  };
 }
 
 interface Minibar {
-  selectedColumn: number,
+  selectedColumn: number;
   barColor: {
-    positive: { className: string, colorCode: string },
-    negative: { className: string, colorCode: string },
-  },
-  invertColors: boolean,
+    positive: { className: string; colorCode: string };
+    negative: { className: string; colorCode: string };
+  };
+  invertColors: boolean;
 }

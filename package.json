@@ -12,6 +12,7 @@
     "test": "npm run build && npm run jest",
     "jest": "NODE_OPTIONS='--experimental-vm-modules --experimental-specifier-resolution=node' jest --config jest.config.ts",
     "lint": "eslint --fix --ext .svelte,.ts --config ./src/.eslintrc.cjs ./src",
+    "prettier-format": "prettier --write src/",
     "update-local-fixtureData": "node tasks/updateFixtureData.js",
     "prepare": "husky install"
   },

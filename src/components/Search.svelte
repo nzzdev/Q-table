@@ -38,7 +38,7 @@ async function onSearch() {
   if (detail.text.length <= 0) {
     stateContext.setFilteredRows(state.rows);
   } else {
-    const filteredRows = state.rows.filter((r) => detail.filter(r, detail.text, index));
+    const filteredRows = state.rows.filter(r => detail.filter(r, detail.text, index));
     stateContext.setFilteredRows(filteredRows);
   }
 
@@ -57,6 +57,5 @@ async function onSearch() {
     spellcheck="false"
     aria-label="Suchen"
     on:keyup={onSearch}
-    bind:value={text}
-  />
+    bind:value={text} />
 </div>

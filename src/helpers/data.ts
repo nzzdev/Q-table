@@ -69,7 +69,7 @@ export function getCategoricalColumns(data: QTableDataRaw): IndexedColumnTitle[]
 
 export function isNumeric(cell: string | null): boolean {
   if (typeof cell !== 'string') {
-    return false
+    return false;
   }
 
   // If it does not match a number signature abort.
@@ -85,17 +85,17 @@ export function isNumeric(cell: string | null): boolean {
 }
 
 function getColumnsType(data: QTableDataRaw): ColumnType[] {
-  const columns: ColumnType[]  = [];
+  const columns: ColumnType[] = [];
   const table = getDataWithoutHeaderRow(data);
 
   const columnAmount = table[0].length;
 
   for (let c = 0; c < columnAmount; c++) {
-    const column: (string|null)[] = [];
+    const column: (string | null)[] = [];
 
     // Take all columns in one array
     for (let r = 0; r < table.length; r++) {
-      column.push(table[r][c])
+      column.push(table[r][c]);
     }
 
     let withFormating = false;
@@ -107,14 +107,12 @@ function getColumnsType(data: QTableDataRaw): ColumnType[] {
       for (let i = 0; i < column.length; i++) {
         const parsedValue = parseFloat(column[i] || '');
 
-        if(!isNaN(parsedValue)) {
+        if (!isNaN(parsedValue)) {
           numericValuesInColumn.push(parsedValue);
         }
       }
 
-      withFormating =
-        Math.max(...numericValuesInColumn) >= 10000 ||
-        Math.min(...numericValuesInColumn) <= -10000;
+      withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
     }
 
     columns.push({ isNumeric: columnNumeric, withFormating });
@@ -129,9 +127,9 @@ function getColumnsType(data: QTableDataRaw): ColumnType[] {
  * Will fail under mixed values.
  * Need better to logic.
  */
-function isColumnNumeric(column: (string|null)[]): boolean {
+function isColumnNumeric(column: (string | null)[]): boolean {
   // If we find one cell that is numeric then it is a numeric column.
-  for (let i = 0 ; i < column.length; i++) {
+  for (let i = 0; i < column.length; i++) {
     const value = column[i];
 
     if (isNumeric(value)) {
@@ -160,13 +158,7 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
         classes.push('s-font-note--tabularnums');
 
         // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
-        if (
-          rowIndex > 0 &&
-          cell !== null &&
-          cell !== '' &&
-          cell != '-' &&
-          cell != enDash
-        ) {
+        if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
           const parsedValue = parseFloat(cell);
           if (columns[columnIndex].withFormating) {
             value = formatWithGroupingSeparator(parsedValue);
@@ -193,22 +185,22 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
   return tableData;
 }
 
-export function getNumericalValuesByColumn(data: QTableDataRaw, column: number): Array<number|null> {
-  return data.map((row) => {
+export function getNumericalValuesByColumn(data: QTableDataRaw, column: number): Array<number | null> {
+  return data.map(row => {
     if (!row[column]) row[column] = null;
 
     const val = row[column];
     let return_val: number | null = null;
 
     if (typeof val === 'string' && val.match(/^[+-]?\d+(\.\d+)?$/)) {
-        return_val = parseFloat(val);
+      return_val = parseFloat(val);
     }
 
     return return_val;
   });
 }
 
-export function getCategoricalValuesByColumn(data: QTableDataRaw, column: number): (string|null)[] {
+export function getCategoricalValuesByColumn(data: QTableDataRaw, column: number): (string | null)[] {
   return data.map(row => {
     if (!row[column]) row[column] = null;
 
@@ -216,14 +208,14 @@ export function getCategoricalValuesByColumn(data: QTableDataRaw, column: number
   });
 }
 
-export function getNonNullValues(values: Array<number|null>): number[] {
+export function getNonNullValues(values: Array<number | null>): number[] {
   return values.filter(value => value !== null) as number[];
 }
 
-export function getMetaData(values: (number|null)[], numberValues: number[], maxDigitsAfterComma: number): MetaData {
+export function getMetaData(values: (number | null)[], numberValues: number[], maxDigitsAfterComma: number): MetaData {
   return {
-    hasNullValues: values.find((value) => value === null) !== undefined,
-    hasZeroValues: numberValues.find((value) => value === 0) !== undefined,
+    hasNullValues: values.find(value => value === null) !== undefined,
+    hasZeroValues: numberValues.find(value => value === 0) !== undefined,
     maxValue: Math.max(...numberValues),
     minValue: Math.min(...numberValues),
     averageValue: getRoundedAverage(numberValues, maxDigitsAfterComma),
@@ -248,7 +240,7 @@ export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettin
   if (typeof selectedColumn === 'number') {
     values = data
       .map(row => row[selectedColumn])
-      .filter((value) => {
+      .filter(value => {
         if (value !== null && value !== '') {
           return true;
         }
@@ -263,10 +255,7 @@ export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettin
   // If the user has set a custom order, sort the categories accordingly
   if (customCategoriesOrder) {
     sortedValuesbyCount.sort(function (a, b) {
-      return (
-        customCategoriesOrder.map((c) => c.category).indexOf(a) -
-        customCategoriesOrder.map((c) => c.category).indexOf(b)
-      );
+      return customCategoriesOrder.map(c => c.category).indexOf(a) - customCategoriesOrder.map(c => c.category).indexOf(b);
     });
   }
 
@@ -293,7 +282,7 @@ function sortValuesByCount(values: string[]): string[] {
 export function getMaxDigitsAfterCommaInDataByRow(data: QTableDataRaw, rowIndex: number): number {
   let maxDigitsAfterComma = 0;
 
-  data.forEach((row) => {
+  data.forEach(row => {
     const value = row[rowIndex];
 
     if (typeof value === 'string') {
@@ -338,7 +327,7 @@ export function getFormattedValue(formattingOptions: DataFormattingOptions, valu
 }
 
 export function getFormattedBuckets(formattingOptions: DataFormattingOptions, buckets: Bucket[]): FormattedBucket[] {
-  return buckets.map((bucket) => {
+  return buckets.map(bucket => {
     const { from, to, color } = bucket;
 
     if (formattingOptions.roundingBucketBorders) {
@@ -373,7 +362,7 @@ export function getRoundedValue(value: number, maxDigitsAfterComma: number): num
 export function getCustomBucketBorders(customBuckets: string): number[] {
   const customBorderStrings = customBuckets.split(',');
 
-  return customBorderStrings.map((value) => {
+  return customBorderStrings.map(value => {
     return parseFloat(value.trim());
   });
 }
@@ -410,25 +399,25 @@ function getRoundedAverage(values: number[], maxDigitsAfterComma: number): numbe
  * Interfaces.
  */
 export interface MetaData {
-  hasNullValues: boolean,
-  hasZeroValues: boolean,
-  maxValue: number,
-  minValue: number,
-  averageValue: number,
-  medianValue: number,
+  hasNullValues: boolean;
+  hasZeroValues: boolean;
+  maxValue: number;
+  minValue: number;
+  averageValue: number;
+  medianValue: number;
 }
 
 export interface DataFormattingOptions {
-  maxDigitsAfterComma?: number,
-  roundingBucketBorders?: boolean,
+  maxDigitsAfterComma?: number;
+  roundingBucketBorders?: boolean;
 }
 
 interface ColumnType {
-  isNumeric: boolean,
-  withFormating: boolean,
+  isNumeric: boolean;
+  withFormating: boolean;
 }
 
 interface IndexedColumnTitle {
-  index: number,
-  title: string,
+  index: number;
+  title: string;
 }

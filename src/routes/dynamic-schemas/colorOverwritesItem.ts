@@ -1,12 +1,7 @@
 import Joi from 'joi';
 import { getNumberBuckets } from '../../helpers/colorColumn.js';
 import { getDataWithoutHeaderRow, getUniqueCategoriesObject } from '../../helpers/data.js';
-import type {
-  ColorColumnSettings,
-  DataMetaData,
-  QTableConfigOptions,
-  QTableDataRaw
-} from '../../interfaces';
+import type { ColorColumnSettings, DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces';
 import type { Request, ServerRoute } from '@hapi/hapi';
 
 const route: ServerRoute = {
@@ -35,7 +30,7 @@ const route: ServerRoute = {
 
 export default route;
 
-function getDropdownSettingsNumerical(colorColumnSettings: ColorColumnSettings): ReturnPayload  {
+function getDropdownSettingsNumerical(colorColumnSettings: ColorColumnSettings): ReturnPayload {
   const ids: (number | null)[] = [null];
   const titles: string[] = [];
   const numberItems = getNumberBuckets(colorColumnSettings);
@@ -85,16 +80,16 @@ function getDropdownSettingsCategorical(data: QTableDataRaw, colorColumnSettings
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  }
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
 }
 
 interface ReturnPayload {
-  enum: (number | null)[],
+  enum: (number | null)[];
   'Q:options': {
-    enum_titles: string[]
-  },
+    enum_titles: string[];
+  };
 }

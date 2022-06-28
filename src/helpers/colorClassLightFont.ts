@@ -366,5 +366,5 @@ export default [
   's-color-primary-9',
   's-color-secondary-8',
   's-color-secondary-9',
-  's-color-negative'
+  's-color-negative',
 ];

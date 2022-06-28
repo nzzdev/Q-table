@@ -65,8 +65,7 @@ export function getMinibarsScript(context: QTableSvelteProperties): string {
   const dataObject = `window.${context.id}Data`;
   const getColumnFunctionName = `getColumn${context.id}`;
   const renderMinibarsFunctionName = `renderMinibars${context.id}`;
-  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${context.id
-    }`;
+  const handleMinibarsMinWidthFunctionName = `handleMinibarsMinWidth${context.id}`;
 
   return `
     function ${getColumnFunctionName}(table, col) {

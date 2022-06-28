@@ -1,8 +1,8 @@
 <script>
-  import OpenIcon from './svg/OpenIcon.svelte';
-  import CloseIcon from './svg/CloseIcon.svelte';
-  export let colorColumn;
-  export let noInteraction;
+import OpenIcon from './svg/OpenIcon.svelte';
+import CloseIcon from './svg/CloseIcon.svelte';
+export let colorColumn;
+export let noInteraction;
 </script>
 
 {#if noInteraction}
@@ -15,16 +15,11 @@
             {#if bucket.color.customColor}
               <div
                 class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default"
-                style="color: {bucket.color.customColor}"
-              />
+                style="color: {bucket.color.customColor}" />
             {:else}
-              <div
-                class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {bucket.color.colorClass}"
-              />
+              <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {bucket.color.colorClass}" />
             {/if}
-            <div
-              class="s-legend-item-label__item__label s-font-note--tabularnums"
-            >
+            <div class="s-legend-item-label__item__label s-font-note--tabularnums">
               {#if bucketIndex === 0 && colorColumn.legendData.hasSingleValueBucket}
                 {bucket.from} (nur ein Datenpunkt)
               {:else}
@@ -52,15 +47,10 @@
           <tr>
             <td>
               <div
-                class="{bucket.color.colorClass !== undefined
-                  ? bucket.color.colorClass
-                  : ''}
+                class="{bucket.color.colorClass !== undefined ? bucket.color.colorClass : ''}
                 q-table-methods-circle
                 q-table-methods-circle--circle-fill"
-                style="color: {bucket.color.customColor !== undefined
-                  ? bucket.color.customColor
-                  : ''}"
-              />
+                style="color: {bucket.color.customColor !== undefined ? bucket.color.customColor : ''}" />
             </td>
             {#if bucketIndex === 0 && colorColumn.legendData.hasSingleValueBucket}
               <td />
@@ -86,11 +76,7 @@
     <div class="q-table-methods-description">{colorColumn.methodBox.text}</div>
     {#if colorColumn.methodBox.article !== null && colorColumn.methodBox.article !== undefined}
       <div class="q-table-methods-article-container">
-        <a
-          href={colorColumn.methodBox.article.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={colorColumn.methodBox.article.url} target="_blank" rel="noopener noreferrer">
           {colorColumn.methodBox.article.title}
         </a>
       </div>

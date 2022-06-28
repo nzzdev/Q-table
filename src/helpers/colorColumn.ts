@@ -1,4 +1,11 @@
-import { getMaxDigitsAfterCommaInDataByRow, getNumericalValuesByColumn, getFormattedBuckets, getFormattedValue, getCategoricalValuesByColumn, getCustomBucketBorders } from './data.js';
+import {
+  getMaxDigitsAfterCommaInDataByRow,
+  getNumericalValuesByColumn,
+  getFormattedBuckets,
+  getFormattedValue,
+  getCategoricalValuesByColumn,
+  getCustomBucketBorders,
+} from './data.js';
 import { getCategoricalLegend, getNumericalLegend } from './colorColumnLegend.js';
 import * as methodBoxHelpers from './colorColomnMethodBox.js';
 
@@ -15,9 +22,7 @@ export function getNumberBuckets(colorColumn: ColorColumnSettings): number {
     if (colorColumn.numericalOptions.bucketType !== 'custom') {
       return colorColumn.numericalOptions.numberBuckets;
     } else {
-      const bucketBorderValues = getCustomBucketBorders(
-        colorColumn.numericalOptions.customBuckets
-      );
+      const bucketBorderValues = getCustomBucketBorders(colorColumn.numericalOptions.customBuckets);
       return bucketBorderValues.length - 1; // min value is part of border values and has to be excluded here
     }
   } catch {
@@ -59,12 +64,12 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
   if (typeof settings.selectedColumn == 'number') {
     const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
 
-    valuesByColumn.map((value) => {
+    valuesByColumn.map(value => {
       const color = getColorForNumericalColoredColoumn(value, legendData);
       colors.push(color);
 
       const formattedValue = getFormattedValue(formattingOptions, value);
-      formattedValues.push(formattedValue)
+      formattedValues.push(formattedValue);
     });
   }
   return {
@@ -73,7 +78,7 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
     formattedValues,
     colors,
     ...settings,
-  }
+  };
 }
 
 function createCategoricalColorColumn(selectedColumn: number, settings: ColorColumnSettings, data: QTableDataRaw): ColorColumn {
@@ -82,7 +87,7 @@ function createCategoricalColorColumn(selectedColumn: number, settings: ColorCol
 
   const colors: ColumnColorSettings[] = [];
 
-  categoriesByColumn.map((category) => {
+  categoriesByColumn.map(category => {
     const color = getColorForCategoricalColoredColumn(category, legendData);
     colors.push(color);
   });
@@ -93,7 +98,7 @@ function createCategoricalColorColumn(selectedColumn: number, settings: ColorCol
     formattedValues: [],
     colors,
     ...settings,
-  }
+  };
 }
 
 /**
@@ -166,20 +171,20 @@ function getColorForCategoricalColoredColumn(value: string | null, legend: Categ
  */
 
 export interface ColorColumn extends ColorColumnSettings {
-  legendData: NumericalLegend | CategoricalLegend,
-  methodBox: MethodBoxInfo | null,
-  formattedValues: string[],
-  colors: ColumnColorSettings[],
+  legendData: NumericalLegend | CategoricalLegend;
+  methodBox: MethodBoxInfo | null;
+  formattedValues: string[];
+  colors: ColumnColorSettings[];
 }
 
 export interface ColorColumnContext {
-  legendData?: NumericalLegend,
-  methodBox?: MethodBoxInfo,
-  formattedValues?: [],
+  legendData?: NumericalLegend;
+  methodBox?: MethodBoxInfo;
+  formattedValues?: [];
 }
 
 interface ColumnColorSettings {
-  colorClass: string,
-  customColor: string,
-  textColor: string,
+  colorClass: string;
+  customColor: string;
+  textColor: string;
 }
