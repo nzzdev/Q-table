@@ -110,6 +110,7 @@ const route: ServerRoute = {
       console.error('Execption during creating colorColumn', e);
     }
 
+    console.log('sa', config.sources);
     const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,

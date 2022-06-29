@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
 import OpenIcon from './svg/OpenIcon.svelte';
 import CloseIcon from './svg/CloseIcon.svelte';
-export let colorColumn;
-export let noInteraction;
+import type { ColorColumn } from '../helpers/colorColumn';
+export let colorColumn: ColorColumn;
+export let noInteraction: boolean;
 </script>
 
 {#if noInteraction}

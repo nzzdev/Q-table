@@ -1,6 +1,14 @@
 {
     "extends": "@tsconfig/svelte/tsconfig.json",
     "compilerOptions": {
+        "strict": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "*",
+                "generated/*"
+            ]
+        },
         "allowSyntheticDefaultImports": true,
         "declaration": false,
         "esModuleInterop": true,
@@ -21,8 +29,8 @@
         "experimentalSpecifierResolution": true
     },
     "include": [
-        "src/**/*",
-        "resources/**/*",
-        "tests/**/*"
+        "src",
+        "resources",
+        "tests"
     ]
 }

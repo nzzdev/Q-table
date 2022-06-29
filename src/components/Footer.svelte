@@ -4,6 +4,8 @@ import type { QTableConfig } from '../interfaces';
 export let config: QTableConfig;
 
 const { notes, sources } = config;
+
+console.log('sources', sources);
 </script>
 
 <div class="s-q-item__footer">
@@ -12,7 +14,7 @@ const { notes, sources } = config;
   {/if}
 
   <div class="s-q-item__footer__details">
-    {#if sources && sources.length > 0}
+    {#if sources.length > 0}
       <div class="s-q-item__footer__sources">
         {#if sources.length > 1}
           Quellen:

@@ -59,7 +59,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     };
     const spacings = [];
     const flattenedFootnotes = getFlattenedFootnotes(footnotes);
-    flattenedFootnotes.forEach((footnote) => {
+    flattenedFootnotes.forEach(footnote => {
         const footnoteClass = getClass(options, footnote, flattenedFootnotes.length, tableData[footnote.rowIndex][footnote.colIndex].type, tableData[footnote.rowIndex].length - 1);
         if (footnoteClass) {
             const space = {
@@ -81,14 +81,14 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
     tableData.forEach((row, index) => {
         // assign class when not cardlayout but cardlayoutifsmall
         if (!options.cardLayout || options.cardLayoutIfSmall) {
-            spacings.forEach((spacing) => {
+            spacings.forEach(spacing => {
                 row[spacing.colIndex].classes.push(spacing.class);
             });
         }
         // assign class when cardlayout or cardlayoutifsmall is active
         if (options.cardLayout || options.cardLayoutIfSmall) {
             if (!options.hideTableHeader && index !== 0) {
-                row.forEach((cell) => {
+                row.forEach(cell => {
                     flattenedFootnotes.length >= 10
                         ? cell.classes.push('q-table-footnote-column-card-layout--double')
                         : cell.classes.push('q-table-footnote-column-card-layout--single');
@@ -100,9 +100,10 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
 }
 function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
     // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
-    if ((type === 'numeric' &&
-        (options.minibar.selectedColumn === footnote.colIndex ||
-            options.minibar.selectedColumn === footnote.colIndex + 1)) || footnote.colIndex === lastColIndex || (options.colorColumn && options.colorColumn.selectedColumn === footnote.colIndex) || (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)) {
+    if ((type === 'numeric' && (options.minibar.selectedColumn === footnote.colIndex || options.minibar.selectedColumn === footnote.colIndex + 1)) ||
+        footnote.colIndex === lastColIndex ||
+        (options.colorColumn && options.colorColumn.selectedColumn === footnote.colIndex) ||
+        (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)) {
         let spacingClass = 'q-table-footnote-column';
         if (amountOfFootnotes >= 10) {
             spacingClass += '--double';
@@ -116,7 +117,7 @@ function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
 }
 function getFootnotes(metaData, hideTableHeader) {
     const footnotes = metaData.cells
-        .filter((cell) => {
+        .filter(cell => {
         if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
             return false;
         }
@@ -133,8 +134,8 @@ function getFootnotes(metaData, hideTableHeader) {
 }
 function getStructuredFootnotes(footnotes) {
     const structuredFootnotes = [];
-    footnotes.forEach((footnote) => {
-        const existingFootnote = structuredFootnotes.find((filterFootnote) => footnote.data.footnote === filterFootnote.value);
+    footnotes.forEach(footnote => {
+        const existingFootnote = structuredFootnotes.find(filterFootnote => footnote.data.footnote === filterFootnote.value);
         if (existingFootnote) {
             existingFootnote.coords.push({
                 colIndex: footnote.colIndex,
@@ -158,8 +159,8 @@ function getStructuredFootnotes(footnotes) {
 }
 function getFlattenedFootnotes(footnotes) {
     const flattenedFootnotes = [];
-    footnotes.forEach((footnote) => {
-        footnote.coords.forEach((coord) => {
+    footnotes.forEach(footnote => {
+        footnote.coords.forEach(coord => {
             flattenedFootnotes.push({
                 value: footnote.index,
                 colIndex: coord.colIndex,
@@ -255,9 +256,7 @@ function getColumnsType(data) {
                     numericValuesInColumn.push(parsedValue);
                 }
             }
-            withFormating =
-                Math.max(...numericValuesInColumn) >= 10000 ||
-                    Math.min(...numericValuesInColumn) <= -10000;
+            withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
         }
         columns.push({ isNumeric: columnNumeric, withFormating });
     }
@@ -292,11 +291,7 @@ function formatTableData(data, footnotes, options) {
                 type = 'numeric';
                 classes.push('s-font-note--tabularnums');
                 // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
-                if (rowIndex > 0 &&
-                    cell !== null &&
-                    cell !== '' &&
-                    cell != '-' &&
-                    cell != enDash) {
+                if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
                     const parsedValue = parseFloat(cell);
                     if (columns[columnIndex].withFormating) {
                         value = formatWithGroupingSeparator(parsedValue);
@@ -320,7 +315,7 @@ function formatTableData(data, footnotes, options) {
     return tableData;
 }
 function getNumericalValuesByColumn(data, column) {
-    return data.map((row) => {
+    return data.map(row => {
         if (!row[column])
             row[column] = null;
         const val = row[column];
@@ -343,8 +338,8 @@ function getNonNullValues(values) {
 }
 function getMetaData(values, numberValues, maxDigitsAfterComma) {
     return {
-        hasNullValues: values.find((value) => value === null) !== undefined,
-        hasZeroValues: numberValues.find((value) => value === 0) !== undefined,
+        hasNullValues: values.find(value => value === null) !== undefined,
+        hasZeroValues: numberValues.find(value => value === 0) !== undefined,
         maxValue: Math.max(...numberValues),
         minValue: Math.min(...numberValues),
         averageValue: getRoundedAverage(numberValues, maxDigitsAfterComma),
@@ -365,7 +360,7 @@ function getUniqueCategoriesObject(data, colorColumnSettings) {
     if (typeof selectedColumn === 'number') {
         values = data
             .map(row => row[selectedColumn])
-            .filter((value) => {
+            .filter(value => {
             if (value !== null && value !== '') {
                 return true;
             }
@@ -377,8 +372,7 @@ function getUniqueCategoriesObject(data, colorColumnSettings) {
     // If the user has set a custom order, sort the categories accordingly
     if (customCategoriesOrder) {
         sortedValuesbyCount.sort(function (a, b) {
-            return (customCategoriesOrder.map((c) => c.category).indexOf(a) -
-                customCategoriesOrder.map((c) => c.category).indexOf(b));
+            return customCategoriesOrder.map(c => c.category).indexOf(a) - customCategoriesOrder.map(c => c.category).indexOf(b);
         });
     }
     const categories = Array.from(new Set(sortedValuesbyCount));
@@ -398,7 +392,7 @@ function sortValuesByCount(values) {
 }
 function getMaxDigitsAfterCommaInDataByRow(data, rowIndex) {
     let maxDigitsAfterComma = 0;
-    data.forEach((row) => {
+    data.forEach(row => {
         const value = row[rowIndex];
         if (typeof value === 'string') {
             const digitsAfterComma = getDigitsAfterComma(value);
@@ -434,7 +428,7 @@ function getFormattedValue(formattingOptions, value) {
     }
 }
 function getFormattedBuckets(formattingOptions, buckets) {
-    return buckets.map((bucket) => {
+    return buckets.map(bucket => {
         const { from, to, color } = bucket;
         if (formattingOptions.roundingBucketBorders) {
             return {
@@ -462,7 +456,7 @@ function getRoundedValue(value, maxDigitsAfterComma) {
 }
 function getCustomBucketBorders(customBuckets) {
     const customBorderStrings = customBuckets.split(',');
-    return customBorderStrings.map((value) => {
+    return customBorderStrings.map(value => {
         return parseFloat(value.trim());
     });
 }
@@ -519,7 +513,7 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
     // First row is always header so we add a null entry for it.
     minibarsWithType.items.push({
         value: null,
-        type: MINIBAR_TYPE.EMPTY
+        type: MINIBAR_TYPE.EMPTY,
     });
     // First row is always header so start at 1.
     for (let i = 1; i < data.length; i++) {
@@ -530,14 +524,14 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
         if (isNaN(value)) {
             minibarsWithType.items.push({
                 value: null,
-                type
+                type,
             });
         }
         else {
             minibarsWithType.numbers.push(value);
             minibarsWithType.items.push({
                 value,
-                type
+                type,
             });
         }
     }
@@ -554,7 +548,7 @@ function createMinibarObject(data, minibarOptions) {
     const values = dataColumn.items.map(item => {
         return {
             type: item.type,
-            value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue)
+            value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue),
         };
     });
     return {
@@ -1010,23 +1004,10 @@ var colorClassWithLightFontList = [
     's-color-primary-9',
     's-color-secondary-8',
     's-color-secondary-9',
-    's-color-negative'
+    's-color-negative',
 ];
 
-const digitWords = [
-    'one',
-    'two',
-    'three',
-    'four',
-    'five',
-    'six',
-    'seven',
-    'eight',
-    'nine',
-    'ten',
-    'eleven',
-    'twelve',
-];
+const digitWords = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 const gray1 = 's-color-gray-1';
 // const gray4 = 's-color-gray-4';
 // const gray6 = 's-color-gray-6';
@@ -1043,10 +1024,7 @@ function getTextColor(customColor, colorClass) {
     return gray9;
 }
 function getCustomColorMap(colorOverwrites) {
-    return new Map(colorOverwrites.map(({ color, position, textColor }) => [
-        position - 1,
-        { color, textColor },
-    ]));
+    return new Map(colorOverwrites.map(({ color, position, textColor }) => [position - 1, { color, textColor }]));
 }
 
 var LABEL_LEGEND_ID;
@@ -1065,7 +1043,7 @@ const widthConfig = {
     [LABEL_LEGEND_ID.LARGE]: 100,
     [LABEL_LEGEND_ID.AVERAGE]: 100,
     [LABEL_LEGEND_ID.MEDIAN]: 60,
-    [LABEL_LEGEND_ID.NO_LABEL]: 0 // Here to avoid TS linting errors.
+    [LABEL_LEGEND_ID.NO_LABEL]: 0, // Here to avoid TS linting errors.
 };
 function getNumericalLegend(selectedColumn, data, colorColumnSettings, maxDigitsAfterComma, width) {
     const { numericalOptions } = colorColumnSettings;
@@ -1123,9 +1101,7 @@ function getCategoryColor(index, customColorMap) {
     const colorClass = `s-viz-color-${colorScheme}-5`;
     return {
         colorClass,
-        customColor: customColor !== undefined && customColor.color !== undefined
-            ? customColor.color
-            : '',
+        customColor: customColor !== undefined && customColor.color !== undefined ? customColor.color : '',
         textColor: getTextColor(customColor, colorClass),
     };
 }
@@ -1191,9 +1167,7 @@ function getBucketsForLegend(filteredValues, colorColumn, minValue, maxValue, cu
 function getCkMeansBuckets(filteredValues, numberBuckets, scale, colorOptions) {
     const ckmeansBuckets = ckmeans(filteredValues, numberBuckets);
     return ckmeansBuckets.map((bucket, index) => {
-        const from = index === 0
-            ? Math.min(...bucket)
-            : Math.max(...ckmeansBuckets[index - 1]);
+        const from = index === 0 ? Math.min(...bucket) : Math.max(...ckmeansBuckets[index - 1]);
         const to = Math.max(...bucket);
         return {
             from,
@@ -1323,9 +1297,7 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
     }
     return {
         colorClass,
-        customColor: customColor !== undefined && customColor.color !== undefined
-            ? customColor.color
-            : '',
+        customColor: customColor !== undefined && customColor.color !== undefined ? customColor.color : '',
         textColor,
     };
 }
@@ -1342,8 +1314,8 @@ function getMethodBoxInfo(bucketType) {
         text: methodBoxText || '',
         article: {
             title: 'Mehr zur Datenberechnung der NZZ',
-            url: 'https://www.nzz.ch/ld.1580452'
-        }
+            url: 'https://www.nzz.ch/ld.1580452',
+        },
     };
 }
 
@@ -1390,7 +1362,7 @@ function createNumericalColorColumn(selectedColumn, settings, data, width) {
     const colors = [];
     if (typeof settings.selectedColumn == 'number') {
         const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
-        valuesByColumn.map((value) => {
+        valuesByColumn.map(value => {
             const color = getColorForNumericalColoredColoumn(value, legendData);
             colors.push(color);
             const formattedValue = getFormattedValue(formattingOptions, value);
@@ -1406,7 +1378,7 @@ function createCategoricalColorColumn(selectedColumn, settings, data) {
     const legendData = getCategoricalLegend(data, settings);
     const categoriesByColumn = getCategoricalValuesByColumn(data, selectedColumn);
     const colors = [];
-    categoriesByColumn.map((category) => {
+    categoriesByColumn.map(category => {
         const color = getColorForCategoricalColoredColumn(category, legendData);
         colors.push(color);
     });
@@ -2433,9 +2405,7 @@ const route$f = {
                 allowUnknown: true,
             },
             payload: (payload) => __awaiter(void 0, void 0, void 0, function* () {
-                if (typeof payload !== 'object' ||
-                    typeof payload.item !== 'object' ||
-                    typeof payload.toolRuntimeConfig !== 'object') {
+                if (typeof payload !== 'object' || typeof payload.item !== 'object' || typeof payload.toolRuntimeConfig !== 'object') {
                     throw Boom.badRequest('The given payload for this route is not correct.');
                 }
                 yield validateAgainstSchema(payload.item);
@@ -2460,7 +2430,6 @@ const route$f = {
             const toolRuntimeConfig = payload.toolRuntimeConfig;
             const displayOptions = toolRuntimeConfig.displayOptions || {};
             const options = config.options;
-            console.log('asda', config.sources);
             let colorColumn = null;
             const width = getExactPixelWidth(toolRuntimeConfig);
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
@@ -2485,6 +2454,7 @@ const route$f = {
             catch (e) {
                 console.error('Execption during creating colorColumn', e);
             }
+            console.log('sa', config.sources);
             const props = {
                 item: config,
                 config,
@@ -2505,9 +2475,11 @@ const route$f = {
             };
             const renderingInfo = {
                 polyfills: ['Promise'],
-                stylesheets: [{
+                stylesheets: [
+                    {
                         name: styleHashMap['q-table'],
-                    }],
+                    },
+                ],
                 scripts: [
                     {
                         content: qtableCompiledScript,
@@ -2606,15 +2578,16 @@ const route$e = {
     path: '/stylesheet/{filename}.{hash}.{extension}',
     options: {
         files: {
-            relativeTo: path.join(__dirname$1, '/styles/')
-        }
+            relativeTo: path.join(__dirname$1, '/styles/'),
+        },
     },
     handler: function (request, h) {
         const params = request.params;
-        return h.file(`${params.filename}.${params.extension}`)
+        return h
+            .file(`${params.filename}.${params.extension}`)
             .type('text/css')
             .header('cache-control', `max-age=${60 * 60 * 24 * 365}, immutable`); // 1 year
-    }
+    },
 };
 
 var optionAvailability = {
@@ -2642,9 +2615,7 @@ var optionAvailability = {
         if (optionName === 'minibars' || optionName === 'selectedColumnMinibar') {
             let isAvailable = false;
             if (item.data.table.length !== 0) {
-                if (!item.options.cardLayout &&
-                    item.data.table[0].length >= 2 &&
-                    getNumericColumns(item.data.table).length >= 1) {
+                if (!item.options.cardLayout && item.data.table[0].length >= 2 && getNumericColumns(item.data.table).length >= 1) {
                     isAvailable = true;
                 }
             }
@@ -2655,15 +2626,13 @@ var optionAvailability = {
         // properties minibar
         if (item.options.minibar !== null && item.options.minibar !== undefined) {
             if (optionName === 'barColor') {
-                const isAvailable = item.options.minibar.selectedColumn !== null &&
-                    item.options.minibar.selectedColumn !== undefined;
+                const isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
                 return {
                     available: isAvailable,
                 };
             }
             if (optionName === 'barColorPositive') {
-                let isAvailable = item.options.minibar.selectedColumn !== null &&
-                    item.options.minibar.selectedColumn !== undefined;
+                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === 'mixed' || type === 'positive';
@@ -2673,8 +2642,7 @@ var optionAvailability = {
                 };
             }
             if (optionName === 'barColorNegative') {
-                let isAvailable = item.options.minibar.selectedColumn !== null &&
-                    item.options.minibar.selectedColumn !== undefined;
+                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === 'mixed' || type === 'negative';
@@ -2684,8 +2652,7 @@ var optionAvailability = {
                 };
             }
             if (optionName === 'invertColors') {
-                let isAvailable = item.options.minibar.selectedColumn !== null &&
-                    item.options.minibar.selectedColumn !== undefined;
+                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
                 if (isAvailable) {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     isAvailable = type === 'mixed';
@@ -2698,9 +2665,7 @@ var optionAvailability = {
         if (optionName === 'colorColumn' || optionName === 'selectedColorColumn') {
             let isAvailable = false;
             if (item.data.table.length > 2) {
-                if (!item.options.cardLayout &&
-                    item.data.table[0].length >= 2 &&
-                    item.data.table.length >= 1) {
+                if (!item.options.cardLayout && item.data.table[0].length >= 2 && item.data.table.length >= 1) {
                     isAvailable = true;
                 }
             }
@@ -2709,36 +2674,24 @@ var optionAvailability = {
             };
         }
         // properties colorColumn
-        if (item.options.colorColumn !== null &&
-            item.options.colorColumn !== undefined) {
+        if (item.options.colorColumn !== null && item.options.colorColumn !== undefined) {
             if (optionName === 'isNumerical') {
                 return {
-                    available: item.options.colorColumn.selectedColumn !== null &&
-                        item.options.colorColumn.colorColumnType === 'numerical',
+                    available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.colorColumnType === 'numerical',
                 };
             }
             if (optionName === 'isCategorical') {
                 return {
-                    available: item.options.colorColumn.selectedColumn !== null &&
-                        item.options.colorColumn.colorColumnType === 'categorical',
+                    available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.colorColumnType === 'categorical',
                 };
             }
-            if ([
-                'colorColumnType',
-                'bucketType',
-                'colorScale',
-                'colorOverwritesItem',
-                'colorScheme',
-                'customCategoriesOrder',
-            ].includes(optionName)) {
+            if (['colorColumnType', 'bucketType', 'colorScale', 'colorOverwritesItem', 'colorScheme', 'customCategoriesOrder'].includes(optionName)) {
                 return {
-                    available: item.options.colorColumn.selectedColumn !== null &&
-                        item.options.colorColumn.selectedColumn !== undefined,
+                    available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined,
                 };
             }
             if (optionName === 'customBuckets') {
-                let isAvailable = item.options.colorColumn.selectedColumn !== null &&
-                    item.options.colorColumn.selectedColumn !== undefined;
+                let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
                 if (isAvailable) {
                     isAvailable = hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
                 }
@@ -2747,8 +2700,7 @@ var optionAvailability = {
                 };
             }
             if (optionName === 'numberBuckets') {
-                let isAvailable = item.options.colorColumn.selectedColumn !== null &&
-                    item.options.colorColumn.selectedColumn !== undefined;
+                let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
                 if (isAvailable) {
                     isAvailable = !hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
                 }
@@ -2757,12 +2709,9 @@ var optionAvailability = {
                 };
             }
             if (optionName === 'customColors') {
-                let isAvailable = item.options.colorColumn.selectedColumn !== null &&
-                    item.options.colorColumn.selectedColumn !== undefined;
+                let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
                 if (isAvailable) {
-                    isAvailable =
-                        item.options.colorColumn.numericalOptions.scale === 'sequential' ||
-                            item.options.colorColumn.colorColumnType === 'categorical';
+                    isAvailable = item.options.colorColumn.numericalOptions.scale === 'sequential' || item.options.colorColumn.colorColumnType === 'categorical';
                 }
                 return {
                     available: isAvailable,
@@ -2789,25 +2738,14 @@ const route$d = {
             return {
                 enum: ['one', 'two', 'three', 'female', 'male'],
                 'Q:options': {
-                    enum_titles: [
-                        'Schema 1 (Standard)',
-                        'Schema 2 (Standard-Alternative)',
-                        'Schema 3 (negative Bedeutung)',
-                        'Schema weiblich',
-                        'Schema männlich',
-                    ],
+                    enum_titles: ['Schema 1 (Standard)', 'Schema 2 (Standard-Alternative)', 'Schema 3 (negative Bedeutung)', 'Schema weiblich', 'Schema männlich'],
                 },
             };
         }
         return {
             enum: ['one', 'two', 'three', 'gender'],
             'Q:options': {
-                enum_titles: [
-                    'Schema 1 (Standard negativ/positiv)',
-                    'Schema 2 (neutral)',
-                    'Schema 3 (Alternative negativ/positiv)',
-                    'Schema weiblich/männlich',
-                ],
+                enum_titles: ['Schema 1 (Standard negativ/positiv)', 'Schema 2 (neutral)', 'Schema 3 (Alternative negativ/positiv)', 'Schema weiblich/männlich'],
             },
         };
     },
@@ -3094,11 +3032,11 @@ const route$5 = {
     path: '/health',
     method: 'GET',
     options: {
-        tags: ['api']
+        tags: ['api'],
     },
     handler: () => {
         return 'ok';
-    }
+    },
 };
 
 function migrate$1(uncastedItem) {
@@ -3115,14 +3053,14 @@ function migrate$1(uncastedItem) {
                 barColor: {
                     positive: {
                         className: '',
-                        colorCode: ''
+                        colorCode: '',
                     },
                     negative: {
                         className: '',
-                        colorCode: ''
-                    }
+                        colorCode: '',
+                    },
                 },
-                invertColors: false
+                invertColors: false,
             };
             item.options['minibar'] = minibars;
             delete item.options.minibarOptions;
@@ -3159,8 +3097,8 @@ function migrate(uncastedItem) {
         item.data = {
             table: slicedData,
             metaData: {
-                cells: []
-            }
+                cells: [],
+            },
         };
         result.isChanged = true;
     }
@@ -3175,19 +3113,16 @@ var migrationToV3 = /*#__PURE__*/Object.freeze({
 
 // register migration scripts here in order of version,
 // i.e. list the smallest version first!
-const migrationScripts = [
-    migrationToV2,
-    migrationToV3,
-];
+const migrationScripts = [migrationToV2, migrationToV3];
 const route$4 = {
     method: 'POST',
     path: '/migration',
     options: {
         validate: {
             payload: {
-                item: Joi.object().required()
-            }
-        }
+                item: Joi.object().required(),
+            },
+        },
     },
     handler: (request, h) => {
         const payload = request.payload;
@@ -3204,11 +3139,11 @@ const route$4 = {
         });
         if (isChanged >= 0) {
             return {
-                item: item
+                item: item,
             };
         }
         return h.response().code(304);
-    }
+    },
 };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -3221,15 +3156,14 @@ const route$3 = {
         tags: ['api'],
         validate: {
             params: {
-                lng: Joi.string().required()
-            }
-        }
+                lng: Joi.string().required(),
+            },
+        },
     },
     handler: (request, h) => {
-        return h
-            .file(localesDir + request.params.lng + '/translation.json')
-            .type('application/json');
-    }
+        const params = request.params;
+        return h.file(localesDir + params.lng + '/translation.json').type('application/json');
+    },
 };
 
 var title$J = "FIXTURE: simple one-column short table with numeric values";
@@ -14996,8 +14930,7 @@ var customBuckets = {
                 const values = getNumericalValuesByColumn(data, selectedColumn);
                 const numberValues = getNonNullValues(values);
                 const metaData = getMetaData(values, numberValues, 0);
-                if (bucketBorders[0] > metaData.minValue ||
-                    bucketBorders[bucketBorders.length - 1] < metaData.maxValue) {
+                if (bucketBorders[0] > metaData.minValue || bucketBorders[bucketBorders.length - 1] < metaData.maxValue) {
                     return {
                         message: {
                             title: 'notifications.customBuckets.title',
@@ -15035,19 +14968,16 @@ const schemaRoute = {
     path: '/schema.json',
     handler: function (request, h) {
         return h.response(schema$1);
-    }
+    },
 };
 const displayOptionsRoute = {
     method: 'GET',
     path: '/display-options-schema.json',
     handler: function (request, h) {
         return h.response(displayOptionsSchema);
-    }
+    },
 };
-var schema = [
-    schemaRoute,
-    displayOptionsRoute,
-];
+var schema = [schemaRoute, displayOptionsRoute];
 
 const allRoutes = [
     route$f,
@@ -15062,7 +14992,7 @@ const allRoutes = [
     numberBucketsExceedsDataSet,
     route,
     customBuckets,
-    ...schema
+    ...schema,
 ];
 
 export { allRoutes as default };

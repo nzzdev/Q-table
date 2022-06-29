@@ -11,10 +11,13 @@ export let colIndex: number;
 
 export let initWithCardLayout: boolean;
 
+let styles: CellStyle;
+
 $: styles = getCellStyles(colIndex, rowIndex);
 
-function getDataLabel(colIndex: number) {
+function getDataLabel(colIndex: number): string {
   let dataLabel = '';
+
   const footnote = tableData[0][colIndex].footnote;
   if (tableData[0][colIndex] && tableData[0][colIndex].value) {
     if (item.options.hideTableHeader !== true) {
@@ -25,10 +28,11 @@ function getDataLabel(colIndex: number) {
       dataLabel += footnote.unicode;
     }
   }
+
   return dataLabel;
 }
 
-function getCellStyles(colIndex: number, rowIndex: number) {
+function getCellStyles(colIndex: number, rowIndex: number): CellStyle {
   let classes = `q-table__cell q-table__cell--${cell.type} ${cell.classes.join(' ')} `;
   let styles = '';
 
@@ -44,6 +48,11 @@ function getCellStyles(colIndex: number, rowIndex: number) {
   }
 
   return { class: classes, style: styles };
+}
+
+interface CellStyle {
+  class: string;
+  style: string;
 }
 </script>
 

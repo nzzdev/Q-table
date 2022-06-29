@@ -11,7 +11,7 @@
     "start": "nodemon --exec \"npm run dev\"",
     "test": "npm run build && npm run jest",
     "jest": "NODE_OPTIONS='--experimental-vm-modules --experimental-specifier-resolution=node' jest --config jest.config.ts",
-    "lint": "eslint --fix --ext .svelte,.ts --config ./src/.eslintrc.cjs ./src",
+    "lint": "eslint --ext .svelte,.ts --config src/.eslintrc.cjs src",
     "prettier-format": "prettier --write src/",
     "update-local-fixtureData": "node tasks/updateFixtureData.js",
     "prepare": "husky install"
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@hapi/code": "^8.0.5",
+    "@ota-meshi/eslint-plugin-svelte": "^0.34.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.3",
@@ -48,6 +49,7 @@
     "cssnano": "^4.1.11",
     "eslint": "^8.16.0",
     "eslint-plugin-svelte3": "^4.0.0",
+    "eslint-svelte3-preprocess": "^0.0.5",
     "html-minifier": "^4.0.0",
     "husky": "^8.0.1",
     "jest": "^28.1.1",

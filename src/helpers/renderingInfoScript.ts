@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import type { QTableSvelteProperties } from '../interfaces';
 
 export function getCardLayoutScript(context: QTableSvelteProperties): string {
