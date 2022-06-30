@@ -1,8 +1,8 @@
-import fs from 'fs';
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
 import { formatLocale as formatLocale$1 } from 'd3-format';
 import * as simpleStatistics from 'simple-statistics';
+import { readFileSync } from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import Joi from 'joi';
@@ -407,7 +407,7 @@ function getDigitsAfterComma(value) {
     }
     return 0;
 }
-function getFormattedValue(formattingOptions, value) {
+function getFormattedValue(value, maxDigitsAfterComma) {
     if (value === null) {
         return '';
     }
@@ -415,8 +415,8 @@ function getFormattedValue(formattingOptions, value) {
     // if we have float values in data set we extend all float values
     // to max number of positions after comma, e.g. format specifier
     // could be ",.2f" for 2 positions after comma
-    if (formattingOptions.maxDigitsAfterComma) {
-        formatSpecifier = `,.${formattingOptions.maxDigitsAfterComma}f`;
+    if (typeof maxDigitsAfterComma === 'number') {
+        formatSpecifier = `,.${maxDigitsAfterComma}f`;
     }
     // if we have number >= 10 000 we add a space after each 3 digits
     if (value >= Math.pow(10, 4)) {
@@ -431,14 +431,14 @@ function getFormattedBuckets(formattingOptions, buckets) {
         const { from, to, color } = bucket;
         if (formattingOptions.roundingBucketBorders) {
             return {
-                from: getFormattedValue(formattingOptions, from),
-                to: getFormattedValue(formattingOptions, to),
+                from: getFormattedValue(from, formattingOptions.maxDigitsAfterComma),
+                to: getFormattedValue(to, formattingOptions.maxDigitsAfterComma),
                 color,
             };
         }
         return {
-            from: getFormattedValue({}, from),
-            to: getFormattedValue({}, to),
+            from: getFormattedValue(null, from),
+            to: getFormattedValue(null, to),
             color,
         };
     });
@@ -480,159 +480,6 @@ function getAverage(values) {
 function getRoundedAverage(values, maxDigitsAfterComma) {
     const averageValue = getAverage(values);
     return getRoundedValue(averageValue, maxDigitsAfterComma);
-}
-
-var MINIBAR_TYPE;
-(function (MINIBAR_TYPE) {
-    MINIBAR_TYPE["POSITIVE"] = "positive";
-    MINIBAR_TYPE["NEGATIVE"] = "negative";
-    MINIBAR_TYPE["MIXED"] = "mixed";
-    MINIBAR_TYPE["EMPTY"] = "empty";
-})(MINIBAR_TYPE || (MINIBAR_TYPE = {}));
-function getMinibar(minibarsAvailable, options, itemDataCopy) {
-    var _a;
-    if (minibarsAvailable === true && typeof ((_a = options.minibar) === null || _a === void 0 ? void 0 : _a.selectedColumn) === 'number') {
-        const minibarSettings = options.minibar;
-        const minibar = createMinibarObject(itemDataCopy, minibarSettings);
-        checkPositiveBarColor(minibar);
-        checkNegativeBarColor(minibar);
-        if (minibarSettings.invertColors) {
-            invertBarColors(minibar);
-        }
-        return minibar;
-    }
-    return null;
-}
-function getMinibarNumbersWithType(data, selectedColumnIndex) {
-    const minibarsWithType = {
-        items: [],
-        numbers: [],
-        type: MINIBAR_TYPE.MIXED,
-    };
-    // First row is always header so we add a null entry for it.
-    minibarsWithType.items.push({
-        value: null,
-        type: MINIBAR_TYPE.EMPTY,
-    });
-    // First row is always header so start at 1.
-    for (let i = 1; i < data.length; i++) {
-        const row = data[i];
-        const cell = row[selectedColumnIndex];
-        const value = parseFloat(cell || '');
-        const type = getTypeOfValue(value);
-        if (isNaN(value)) {
-            minibarsWithType.items.push({
-                value: null,
-                type,
-            });
-        }
-        else {
-            minibarsWithType.numbers.push(value);
-            minibarsWithType.items.push({
-                value,
-                type,
-            });
-        }
-    }
-    minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
-    return minibarsWithType;
-}
-/**
- * Internal.
- */
-function createMinibarObject(data, minibarOptions) {
-    const dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
-    const minValue = Math.min(...dataColumn.numbers);
-    const maxValue = Math.max(...dataColumn.numbers);
-    const values = dataColumn.items.map(item => {
-        return {
-            type: item.type,
-            value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue),
-        };
-    });
-    return {
-        values: values,
-        type: dataColumn.type,
-        barColor: minibarOptions.barColor,
-        settings: minibarOptions,
-    };
-}
-function getMinibarValue(type, value, min, max) {
-    if (value === null)
-        return 0;
-    switch (type) {
-        case MINIBAR_TYPE.POSITIVE:
-            return Math.abs((value * 100) / max);
-        case MINIBAR_TYPE.NEGATIVE:
-            return Math.abs((value * 100) / min);
-        default:
-            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
-    }
-}
-function checkPositiveBarColor(minibar) {
-    const className = minibar.barColor.positive.className;
-    const colorCode = minibar.barColor.positive.colorCode;
-    if (className === '' && colorCode === '') {
-        minibar.barColor.positive.className = getPositiveColor(minibar.type);
-    }
-    else if (className !== '') {
-        minibar.barColor.positive.colorCode = '';
-    }
-}
-function checkNegativeBarColor(minibar) {
-    const className = minibar.barColor.negative.className;
-    const colorCode = minibar.barColor.negative.colorCode;
-    if (className === '' && colorCode === '') {
-        minibar.barColor.negative.className = getNegativeColor(minibar.type);
-    }
-    else if (className !== '') {
-        minibar.barColor.negative.colorCode = '';
-    }
-}
-function invertBarColors(minibar) {
-    const temp = minibar.barColor.negative;
-    minibar.barColor.negative = minibar.barColor.positive;
-    minibar.barColor.positive = temp;
-}
-function getTypeOfValue(value) {
-    if (value < 0) {
-        return MINIBAR_TYPE.NEGATIVE;
-    }
-    if (value > 0) {
-        return MINIBAR_TYPE.POSITIVE;
-    }
-    return MINIBAR_TYPE.EMPTY;
-}
-function getMinibarType(numbers) {
-    const allPositive = numbers.every(number => number > 0);
-    const allNegative = numbers.every(number => number < 0);
-    if (allPositive) {
-        return MINIBAR_TYPE.POSITIVE;
-    }
-    else if (allNegative) {
-        return MINIBAR_TYPE.NEGATIVE;
-    }
-    return MINIBAR_TYPE.MIXED;
-}
-function getPositiveColor(type) {
-    let color;
-    if (type === 'mixed') {
-        color = 's-viz-color-diverging-2-2';
-    }
-    else {
-        color = 's-viz-color-one-5';
-    }
-    return color;
-}
-function getNegativeColor(type) {
-    let color;
-    if (type === 'mixed') {
-        color = 's-viz-color-diverging-2-1';
-    }
-    else {
-        color = 's-viz-color-one-5';
-    }
-    return color;
 }
 
 /*
@@ -1035,6 +882,23 @@ var LABEL_LEGEND_ID;
     LABEL_LEGEND_ID["NO_LABEL"] = "noLabel";
 })(LABEL_LEGEND_ID || (LABEL_LEGEND_ID = {}));
 
+const methodBoxTextConfig = {
+    ckmeans: 'Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede zwischen den Regionen möglichst gut sichtbar werden (Jenks Natural Breaks).',
+    quantile: 'Die Gruppen wurden so gewählt, dass in jeder Gruppe möglichst gleich viele Werte vorhanden sind.',
+    equal: 'Die Gruppen wurden so gewählt, dass sie jeweils einen gleich grossen Bereich auf der Skala abdecken.',
+    custom: 'Die Gruppen wurden manuell definiert.',
+};
+function getMethodBoxInfo(bucketType) {
+    const methodBoxText = methodBoxTextConfig[bucketType];
+    return {
+        text: methodBoxText || '',
+        article: {
+            title: 'Mehr zur Datenberechnung der NZZ',
+            url: 'https://www.nzz.ch/ld.1580452',
+        },
+    };
+}
+
 const ckmeans = simpleStatistics.ckmeans;
 const quantile = simpleStatistics.quantile;
 const widthConfig = {
@@ -1044,33 +908,37 @@ const widthConfig = {
     [LABEL_LEGEND_ID.MEDIAN]: 60,
     [LABEL_LEGEND_ID.NO_LABEL]: 0, // Here to avoid TS linting errors.
 };
-function getNumericalLegend(selectedColumn, data, colorColumnSettings, maxDigitsAfterComma, width) {
+function getNumericalLegend(selectedColumn, data, colorColumnSettings, formattingOptions, width) {
     const { numericalOptions } = colorColumnSettings;
+    const maxDigitsAfterComma = formattingOptions.maxDigitsAfterComma;
     const customColorMap = getCustomColorMap(numericalOptions.colorOverwrites);
     const values = getNumericalValuesByColumn(data, selectedColumn);
     const nonNullValues = getNonNullValues(values);
     const metaData = getMetaData(values, nonNullValues, maxDigitsAfterComma);
     const buckets = getBucketsForLegend(nonNullValues, colorColumnSettings, metaData.minValue, metaData.maxValue, customColorMap, maxDigitsAfterComma);
     const labelLegend = getLabelLegend(numericalOptions.labelLegend, metaData, width, maxDigitsAfterComma);
-    const legendData = Object.assign({ buckets, hasSingleValueBucket: hasSingleValueBucket(buckets), type: 'numerical', labelLegend }, metaData);
+    const methodBox = getMethodBoxInfo(numericalOptions.bucketType);
+    methodBox.formattedBuckets = getFormattedBuckets(formattingOptions, buckets);
+    const legend = Object.assign({ buckets, hasSingleValueBucket: hasSingleValueBucket(buckets), type: 'numerical', labelLegend,
+        methodBox }, metaData);
     // For all bucket types we calculate the resulting buckets out of a given dataset,
     // custom bucketing need a special handling of min/max values because the first and the last
     // custom bucket value could be lower/higher than min/max.
     if (numericalOptions.bucketType === 'custom') {
         // If first custom bucket value is less than min value in given data set
         // we set min value of legend to starting value of custom buckets.
-        const minBucketValue = legendData.buckets[0].from;
-        if (legendData.minValue > minBucketValue) {
-            legendData.minValue = minBucketValue;
+        const minBucketValue = legend.buckets[0].from;
+        if (legend.minValue > minBucketValue) {
+            legend.minValue = minBucketValue;
         }
         // iI last custom bucket value is higher that max value in given data set
         // we set max value of legend to last custom bucket value.
-        const maxBucketValue = legendData.buckets[legendData.buckets.length - 1].to;
-        if (legendData.maxValue < maxBucketValue) {
-            legendData.maxValue = maxBucketValue;
+        const maxBucketValue = legend.buckets[legend.buckets.length - 1].to;
+        if (legend.maxValue < maxBucketValue) {
+            legend.maxValue = maxBucketValue;
         }
     }
-    return legendData;
+    return legend;
 }
 function getCategoricalLegend(data, colorColumnSettings) {
     const { categoricalOptions } = colorColumnSettings;
@@ -1301,23 +1169,6 @@ function getBucketColor(numberBuckets, index, scale, colorOptions) {
     };
 }
 
-const methodBoxTextConfig = {
-    ckmeans: 'Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede zwischen den Regionen möglichst gut sichtbar werden (Jenks Natural Breaks).',
-    quantile: 'Die Gruppen wurden so gewählt, dass in jeder Gruppe möglichst gleich viele Werte vorhanden sind.',
-    equal: 'Die Gruppen wurden so gewählt, dass sie jeweils einen gleich grossen Bereich auf der Skala abdecken.',
-    custom: 'Die Gruppen wurden manuell definiert.',
-};
-function getMethodBoxInfo(bucketType) {
-    const methodBoxText = methodBoxTextConfig[bucketType];
-    return {
-        text: methodBoxText || '',
-        article: {
-            title: 'Mehr zur Datenberechnung der NZZ',
-            url: 'https://www.nzz.ch/ld.1580452',
-        },
-    };
-}
-
 function hasCustomBuckets(bucketType) {
     return bucketType === 'custom';
 }
@@ -1350,38 +1201,32 @@ function getColorColumn(colorColumnAvailable, settings, data, width) {
 function createNumericalColorColumn(selectedColumn, settings, data, width) {
     const maxDigitsAfterComma = getMaxDigitsAfterCommaInDataByRow(data, selectedColumn);
     const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
-    const formattingOptions = {
-        maxDigitsAfterComma,
-        roundingBucketBorders,
-    };
-    const legendData = getNumericalLegend(selectedColumn, data, settings, maxDigitsAfterComma, width);
-    const methodBox = getMethodBoxInfo(settings.numericalOptions.bucketType);
-    methodBox.formattedBuckets = getFormattedBuckets(formattingOptions, legendData.buckets);
+    const formattingOptions = { maxDigitsAfterComma, roundingBucketBorders };
+    const legend = getNumericalLegend(selectedColumn, data, settings, formattingOptions, width);
     const formattedValues = [];
     const colors = [];
     if (typeof settings.selectedColumn == 'number') {
         const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
         valuesByColumn.map(value => {
-            const color = getColorForNumericalColoredColoumn(value, legendData);
+            const color = getColorForNumericalColoredColoumn(value, legend);
             colors.push(color);
-            const formattedValue = getFormattedValue(formattingOptions, value);
+            const formattedValue = getFormattedValue(value, formattingOptions.maxDigitsAfterComma);
             formattedValues.push(formattedValue);
         });
     }
-    return Object.assign({ legendData,
-        methodBox,
+    return Object.assign({ legend,
         formattedValues,
         colors }, settings);
 }
 function createCategoricalColorColumn(selectedColumn, settings, data) {
-    const legendData = getCategoricalLegend(data, settings);
+    const legend = getCategoricalLegend(data, settings);
     const categoriesByColumn = getCategoricalValuesByColumn(data, selectedColumn);
     const colors = [];
     categoriesByColumn.map(category => {
-        const color = getColorForCategoricalColoredColumn(category, legendData);
+        const color = getColorForCategoricalColoredColumn(category, legend);
         colors.push(color);
     });
-    return Object.assign({ legendData, methodBox: null, formattedValues: [], colors }, settings);
+    return Object.assign({ legend, formattedValues: [], colors }, settings);
 }
 /**
  * Internal.
@@ -1445,6 +1290,159 @@ function getColorForCategoricalColoredColumn(value, legend) {
             textColor: '',
         };
     }
+}
+
+var MINIBAR_TYPE;
+(function (MINIBAR_TYPE) {
+    MINIBAR_TYPE["POSITIVE"] = "positive";
+    MINIBAR_TYPE["NEGATIVE"] = "negative";
+    MINIBAR_TYPE["MIXED"] = "mixed";
+    MINIBAR_TYPE["EMPTY"] = "empty";
+})(MINIBAR_TYPE || (MINIBAR_TYPE = {}));
+function getMinibar(minibarsAvailable, options, itemDataCopy) {
+    var _a;
+    if (minibarsAvailable === true && typeof ((_a = options.minibar) === null || _a === void 0 ? void 0 : _a.selectedColumn) === 'number') {
+        const minibarSettings = options.minibar;
+        const minibar = createMinibarObject(itemDataCopy, minibarSettings);
+        checkPositiveBarColor(minibar);
+        checkNegativeBarColor(minibar);
+        if (minibarSettings.invertColors) {
+            invertBarColors(minibar);
+        }
+        return minibar;
+    }
+    return null;
+}
+function getMinibarNumbersWithType(data, selectedColumnIndex) {
+    const minibarsWithType = {
+        items: [],
+        numbers: [],
+        type: MINIBAR_TYPE.MIXED,
+    };
+    // First row is always header so we add a null entry for it.
+    minibarsWithType.items.push({
+        value: null,
+        type: MINIBAR_TYPE.EMPTY,
+    });
+    // First row is always header so start at 1.
+    for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const cell = row[selectedColumnIndex];
+        const value = parseFloat(cell || '');
+        const type = getTypeOfValue(value);
+        if (isNaN(value)) {
+            minibarsWithType.items.push({
+                value: null,
+                type,
+            });
+        }
+        else {
+            minibarsWithType.numbers.push(value);
+            minibarsWithType.items.push({
+                value,
+                type,
+            });
+        }
+    }
+    minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
+    return minibarsWithType;
+}
+/**
+ * Internal.
+ */
+function createMinibarObject(data, minibarOptions) {
+    const dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
+    const minValue = Math.min(...dataColumn.numbers);
+    const maxValue = Math.max(...dataColumn.numbers);
+    const values = dataColumn.items.map(item => {
+        return {
+            type: item.type,
+            value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue),
+        };
+    });
+    return {
+        values: values,
+        type: dataColumn.type,
+        barColor: minibarOptions.barColor,
+        settings: minibarOptions,
+    };
+}
+function getMinibarValue(type, value, min, max) {
+    if (value === null)
+        return 0;
+    switch (type) {
+        case MINIBAR_TYPE.POSITIVE:
+            return Math.abs((value * 100) / max);
+        case MINIBAR_TYPE.NEGATIVE:
+            return Math.abs((value * 100) / min);
+        default:
+            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
+    }
+}
+function checkPositiveBarColor(minibar) {
+    const className = minibar.barColor.positive.className;
+    const colorCode = minibar.barColor.positive.colorCode;
+    if (className === '' && colorCode === '') {
+        minibar.barColor.positive.className = getPositiveColor(minibar.type);
+    }
+    else if (className !== '') {
+        minibar.barColor.positive.colorCode = '';
+    }
+}
+function checkNegativeBarColor(minibar) {
+    const className = minibar.barColor.negative.className;
+    const colorCode = minibar.barColor.negative.colorCode;
+    if (className === '' && colorCode === '') {
+        minibar.barColor.negative.className = getNegativeColor(minibar.type);
+    }
+    else if (className !== '') {
+        minibar.barColor.negative.colorCode = '';
+    }
+}
+function invertBarColors(minibar) {
+    const temp = minibar.barColor.negative;
+    minibar.barColor.negative = minibar.barColor.positive;
+    minibar.barColor.positive = temp;
+}
+function getTypeOfValue(value) {
+    if (value < 0) {
+        return MINIBAR_TYPE.NEGATIVE;
+    }
+    if (value > 0) {
+        return MINIBAR_TYPE.POSITIVE;
+    }
+    return MINIBAR_TYPE.EMPTY;
+}
+function getMinibarType(numbers) {
+    const allPositive = numbers.every(number => number > 0);
+    const allNegative = numbers.every(number => number < 0);
+    if (allPositive) {
+        return MINIBAR_TYPE.POSITIVE;
+    }
+    else if (allNegative) {
+        return MINIBAR_TYPE.NEGATIVE;
+    }
+    return MINIBAR_TYPE.MIXED;
+}
+function getPositiveColor(type) {
+    let color;
+    if (type === 'mixed') {
+        color = 's-viz-color-diverging-2-2';
+    }
+    else {
+        color = 's-viz-color-one-5';
+    }
+    return color;
+}
+function getNegativeColor(type) {
+    let color;
+    if (type === 'mixed') {
+        color = 's-viz-color-diverging-2-1';
+    }
+    else {
+        color = 's-viz-color-one-5';
+    }
+    return color;
 }
 
 var $schema$1 = "http://json-schema.org/draft-07/schema#";
@@ -2414,7 +2412,7 @@ const route$f = {
             let qtableCompiledScript = '';
             let styleHashMap = null;
             try {
-                qtableCompiledScript = fs.readFileSync('dist/Q-Table.js', {
+                qtableCompiledScript = readFileSync('dist/Q-Table.js', {
                     encoding: 'utf-8',
                 });
             }
@@ -2422,7 +2420,7 @@ const route$f = {
                 console.log('Failed reading compiled Q-Table code', e);
             }
             try {
-                const rawString = fs.readFileSync('dist/styles/hashMap.json', {
+                const rawString = readFileSync('dist/styles/hashMap.json', {
                     encoding: 'utf-8',
                 });
                 styleHashMap = JSON.parse(rawString);

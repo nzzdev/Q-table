@@ -16,6 +16,8 @@ before_script:
   - DOCKER_TAG=${TRAVIS_BRANCH//[^a-zA-Z0-9\_\-\.]/_}
 script:
   - npm run lint
+  - npm run ts-check
+  - npm run svelte-check
   - npm run build
   - npm run jest
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker build -t $DOCKER_IMAGE_NAME:$DOCKER_TAG .; fi'

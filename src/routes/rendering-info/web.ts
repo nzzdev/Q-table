@@ -1,11 +1,11 @@
-import fs from 'fs';
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
-import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
-import { getMinibar } from '../../helpers/minibars.js';
 import { getColorColumn } from '../../helpers/colorColumn.js';
+import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
+import { getMinibar } from '../../helpers/minibars.js';
+import { readFileSync } from 'fs';
 import schemaString from '../../../resources/schema.json';
 import type { Request, ServerRoute } from '@hapi/hapi';
 import type { ColorColumn } from '../../helpers/colorColumn.js';
@@ -56,7 +56,7 @@ const route: ServerRoute = {
     let styleHashMap: StyleHashMap | null = null;
 
     try {
-      qtableCompiledScript = fs.readFileSync('dist/Q-Table.js', {
+      qtableCompiledScript = readFileSync('dist/Q-Table.js', {
         encoding: 'utf-8',
       });
     } catch (e) {
@@ -64,7 +64,7 @@ const route: ServerRoute = {
     }
 
     try {
-      const rawString = fs.readFileSync('dist/styles/hashMap.json', {
+      const rawString = readFileSync('dist/styles/hashMap.json', {
         encoding: 'utf-8',
       });
 
