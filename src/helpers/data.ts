@@ -305,7 +305,7 @@ function getDigitsAfterComma(value: string): number {
   return 0;
 }
 
-export function getFormattedValue(formattingOptions: DataFormattingOptions, value: number | null): string {
+export function getFormattedValue(value: number | null, maxDigitsAfterComma: number | null): string {
   if (value === null) {
     return '';
   }
@@ -315,8 +315,8 @@ export function getFormattedValue(formattingOptions: DataFormattingOptions, valu
   // if we have float values in data set we extend all float values
   // to max number of positions after comma, e.g. format specifier
   // could be ",.2f" for 2 positions after comma
-  if (formattingOptions.maxDigitsAfterComma) {
-    formatSpecifier = `,.${formattingOptions.maxDigitsAfterComma}f`;
+  if (typeof maxDigitsAfterComma === 'number') {
+    formatSpecifier = `,.${maxDigitsAfterComma}f`;
   }
 
   // if we have number >= 10 000 we add a space after each 3 digits
@@ -333,15 +333,15 @@ export function getFormattedBuckets(formattingOptions: DataFormattingOptions, bu
 
     if (formattingOptions.roundingBucketBorders) {
       return {
-        from: getFormattedValue(formattingOptions, from),
-        to: getFormattedValue(formattingOptions, to),
+        from: getFormattedValue(from, formattingOptions.maxDigitsAfterComma),
+        to: getFormattedValue(to, formattingOptions.maxDigitsAfterComma),
         color,
       };
     }
 
     return {
-      from: getFormattedValue({}, from),
-      to: getFormattedValue({}, to),
+      from: getFormattedValue(null, from),
+      to: getFormattedValue(null, to),
       color,
     };
   });

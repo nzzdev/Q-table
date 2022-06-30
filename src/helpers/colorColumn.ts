@@ -59,7 +59,7 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
       const color = getColorForNumericalColoredColoumn(value, legend);
       colors.push(color);
 
-      const formattedValue = getFormattedValue(formattingOptions, value);
+      const formattedValue = getFormattedValue(value, formattingOptions.maxDigitsAfterComma);
       formattedValues.push(formattedValue);
     });
   }
