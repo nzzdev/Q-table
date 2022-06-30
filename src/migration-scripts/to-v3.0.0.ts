@@ -7,7 +7,7 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
     item: null,
   };
 
-  let metaData: null | undefined | {} = null;
+  let metaData: null | undefined | Record<string, unknown> = null;
 
   if (data && typeof data === 'object' && !Array.isArray(data)) {
     metaData = data.metaData;
@@ -38,7 +38,7 @@ interface Item {
 
 interface Data {
   table: unknown[];
-  metaData: {};
+  metaData: Record<string, unknown>;
 }
 
 interface ReturnPayload {

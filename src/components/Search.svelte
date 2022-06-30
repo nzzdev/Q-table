@@ -7,10 +7,10 @@ const stateContext = getContext<QTableStateContext>('state');
 export let index = -1;
 export let text = '';
 
-export let filter = (row: QTableDataFormatted[], search: string) => {
+export let filter = (row: QTableDataFormatted[], search: string): boolean => {
   search = search.toLowerCase();
 
-  for (let i in row) {
+  for (let i = 0; i < row.length; i++) {
     let columnValue = row[i].value || '';
     columnValue = columnValue.toString().toLowerCase();
 
@@ -22,7 +22,7 @@ export let filter = (row: QTableDataFormatted[], search: string) => {
   return false;
 };
 
-function onSearch() {
+function onSearch(): void {
   const state = stateContext.getState();
 
   const detail = {
@@ -38,7 +38,7 @@ function onSearch() {
   if (detail.text.length <= 0) {
     stateContext.setFilteredRows(state.rows);
   } else {
-    const filteredRows = state.rows.filter(r => detail.filter(r, detail.text, index));
+    const filteredRows = state.rows.filter(r => detail.filter(r, detail.text));
     stateContext.setFilteredRows(filteredRows);
   }
 

@@ -5,12 +5,12 @@ import type { CategoricalLegend } from '../../helpers/colorColumnLegend';
 export let colorColumn: ColorColumn;
 export let noInteraction: boolean;
 
-const legendData = colorColumn.legendData as CategoricalLegend;
+const legendData = colorColumn.legend as CategoricalLegend;
 </script>
 
 <div class="q-table-colorColumn-legend--categorical">
   <div class="s-legend-icon-label">
-    {#each legendData.categories as category, categoryIndex}
+    {#each legendData.categories as category}
       {#if category.color.customColor}
         <div class="s-legend-item-label__item" style="color: {category.color.customColor}">
           <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default" />

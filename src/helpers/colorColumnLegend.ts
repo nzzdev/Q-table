@@ -1,9 +1,17 @@
-import { getNumericalValuesByColumn, getNonNullValues, getMetaData, getCustomBucketBorders, getUniqueCategoriesObject, getRoundedValue } from './data.js';
+import {
+  getCustomBucketBorders,
+  getFormattedBuckets,
+  getMetaData,
+  getNonNullValues,
+  getNumericalValuesByColumn,
+  getRoundedValue,
+  getUniqueCategoriesObject,
+} from './data.js';
 import { digitWords, getCustomColorMap, getTextColor } from './colorColumnColor.js';
 import * as simpleStatistics from 'simple-statistics';
 import { LABEL_LEGEND_ID } from '../enums';
-
-import type { MetaData } from './data';
+import { getMethodBoxInfo, type MethodBoxInfo } from './colorColomnMethodBox.js';
+import type { DataFormattingOptions, MetaData } from './data';
 import type { ColorColumnSettings, NumericalScaleType, QTableDataRaw } from '../interfaces';
 import type { CustomColorMap } from './colorColumnColor';
 
@@ -23,25 +31,29 @@ export function getNumericalLegend(
   selectedColumn: number,
   data: QTableDataRaw,
   colorColumnSettings: ColorColumnSettings,
-  maxDigitsAfterComma: number,
+  formattingOptions: DataFormattingOptions,
   width: number,
 ): NumericalLegend {
   const { numericalOptions } = colorColumnSettings;
-
+  const maxDigitsAfterComma = formattingOptions.maxDigitsAfterComma;
   const customColorMap = getCustomColorMap(numericalOptions.colorOverwrites);
   const values = getNumericalValuesByColumn(data, selectedColumn);
   const nonNullValues = getNonNullValues(values);
   const metaData = getMetaData(values, nonNullValues, maxDigitsAfterComma);
 
   const buckets = getBucketsForLegend(nonNullValues, colorColumnSettings, metaData.minValue, metaData.maxValue, customColorMap, maxDigitsAfterComma);
-
   const labelLegend = getLabelLegend(numericalOptions.labelLegend, metaData, width, maxDigitsAfterComma);
 
-  const legendData = {
+  const methodBox = getMethodBoxInfo(numericalOptions.bucketType);
+
+  methodBox.formattedBuckets = getFormattedBuckets(formattingOptions, buckets);
+
+  const legend: NumericalLegend = {
     buckets,
     hasSingleValueBucket: hasSingleValueBucket(buckets),
     type: 'numerical',
     labelLegend,
+    methodBox,
     ...metaData,
   };
 
@@ -51,20 +63,20 @@ export function getNumericalLegend(
   if (numericalOptions.bucketType === 'custom') {
     // If first custom bucket value is less than min value in given data set
     // we set min value of legend to starting value of custom buckets.
-    const minBucketValue = legendData.buckets[0].from;
-    if (legendData.minValue > minBucketValue) {
-      legendData.minValue = minBucketValue;
+    const minBucketValue = legend.buckets[0].from;
+    if (legend.minValue > minBucketValue) {
+      legend.minValue = minBucketValue;
     }
 
     // iI last custom bucket value is higher that max value in given data set
     // we set max value of legend to last custom bucket value.
-    const maxBucketValue = legendData.buckets[legendData.buckets.length - 1].to;
-    if (legendData.maxValue < maxBucketValue) {
-      legendData.maxValue = maxBucketValue;
+    const maxBucketValue = legend.buckets[legend.buckets.length - 1].to;
+    if (legend.maxValue < maxBucketValue) {
+      legend.maxValue = maxBucketValue;
     }
   }
 
-  return legendData;
+  return legend;
 }
 
 export function getCategoricalLegend(data: QTableDataRaw, colorColumnSettings: ColorColumnSettings): CategoricalLegend {
@@ -382,9 +394,10 @@ export interface NumericalLegend extends MetaData {
   minValue: number;
   averageValue: number;
   medianValue: number;
-  type: string;
-  labelLegend: any;
+  type: 'numerical';
+  labelLegend: LabelLegend | null;
   buckets: Bucket[];
+  methodBox: MethodBoxInfo;
 }
 
 export interface CategoricalLegend {
@@ -409,12 +422,6 @@ export interface LegendData {
   minValue: number;
 }
 
-interface CategoryColor {
-  colorClass: string;
-  customColor: string;
-  textColor: string;
-}
-
 export interface Bucket {
   from: number;
   to: number;
@@ -428,6 +435,12 @@ export interface FormattedBucket {
 }
 
 interface BucketColor {
+  colorClass: string;
+  customColor: string;
+  textColor: string;
+}
+
+interface CategoryColor {
   colorClass: string;
   customColor: string;
   textColor: string;

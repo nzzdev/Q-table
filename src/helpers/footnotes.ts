@@ -17,7 +17,11 @@ interface Spacing {
   class: string;
 }
 
-export function appendFootnoteAnnotationsToTableData(tableData: QTableDataFormatted[][], footnotes: StructuredFootnote[], options: QTableConfigOptions) {
+export function appendFootnoteAnnotationsToTableData(
+  tableData: QTableDataFormatted[][],
+  footnotes: StructuredFootnote[],
+  options: QTableConfigOptions,
+): QTableDataFormatted[][] {
   const unicodes: Record<number, string> = {
     1: '\u00b9',
     2: '\u00b2',

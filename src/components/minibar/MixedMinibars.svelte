@@ -1,48 +1,61 @@
-<script>
-export let item;
-export let tableData;
-export let cell;
-export let minibar;
-export let colIndex;
-export let rowIndex;
-export let initWithCardLayout;
+<script lang="ts">
+import type { Minibar } from 'src/helpers/minibars';
+import type { QTableConfig, QTableDataFormatted } from 'src/interfaces';
+
+export let item: QTableConfig;
+export let tableData: QTableDataFormatted[][];
+export let cell: QTableDataFormatted;
+export let minibar: Minibar;
+export let colIndex: number;
+export let rowIndex: number;
+export let initWithCardLayout: boolean;
+
+const options = item.options;
+const { cardLayout, cardLayoutIfSmall } = options;
 
 // this has to be done because the tableData will be sliced before iterating
 rowIndex += 1;
 
-function getDataLabelAttribute() {
+function getDataLabelAttribute(): string {
   let dataLabel = '';
+
   if (item.options.hideTableHeader !== true) {
-    dataLabel = tableData[0][colIndex].value;
-    if ((item.options.cardLayout || item.options.cardLayoutIfSmall) && tableData[0][colIndex].footnote && rowIndex === 0) {
-      dataLabel += tableData[0][colIndex].footnote.unicode;
+    dataLabel = tableData[0][colIndex].value || '';
+    const footnote = tableData[0][colIndex].footnote;
+
+    if ((cardLayout || cardLayoutIfSmall) && footnote && rowIndex === 0) {
+      dataLabel += footnote.unicode;
     }
   }
+
   return dataLabel;
 }
 
-function getMinibarColor() {
+function getMinibarColor(): string {
   return minibar.values[rowIndex].type === 'positive' ? minibar.barColor.positive.colorCode : minibar.barColor.negative.colorCode;
 }
 
-function getMinibarClasses() {
+function getMinibarClasses(): string {
   let classes = '';
-  if (item.options.minibar.selectedColumn === colIndex && !initWithCardLayout) {
+
+  if (options.minibar.selectedColumn === colIndex && !initWithCardLayout) {
     classes = 'q-table-minibar--mixed';
   } else {
     classes = `q-table__cell--${cell.type}`;
   }
+
   return classes;
 }
 
-function getFootnoteClasses() {
-  if (cell.footnote) {
-    return minibar.values[rowIndex].type === 'positive' ? cell.footnote.class : '';
+function getFootnoteClasses(): string {
+  if (cell.footnote && minibar.values[rowIndex].type === 'positive') {
+    return cell.footnote.class || '';
   }
+
   return '';
 }
 
-function getMinibarClassName() {
+function getMinibarClassName(): string {
   return minibar.values[rowIndex].type === 'positive' ? minibar.barColor.positive.className : minibar.barColor.negative.className;
 }
 </script>

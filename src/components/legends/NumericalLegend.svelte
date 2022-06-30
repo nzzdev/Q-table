@@ -4,7 +4,7 @@ import type { Bucket, NumericalLegend } from '../../helpers/colorColumnLegend';
 export let colorColumn: ColorColumn;
 export let noInteraction: boolean;
 
-const legendData = colorColumn.legendData as NumericalLegend;
+const legendData = colorColumn.legend as NumericalLegend;
 const { buckets, hasNullValues, hasSingleValueBucket, labelLegend, maxValue, minValue } = legendData;
 
 function getAspectXValue(bucket: Bucket, minVal: number, maxVal: number): number {

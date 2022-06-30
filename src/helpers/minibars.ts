@@ -105,7 +105,7 @@ function getMinibarValue(type: MINIBAR_TYPE, value: number | null, min: number, 
   }
 }
 
-function checkPositiveBarColor(minibar: Minibar) {
+function checkPositiveBarColor(minibar: Minibar): void {
   const className = minibar.barColor.positive.className;
   const colorCode = minibar.barColor.positive.colorCode;
 
@@ -116,7 +116,7 @@ function checkPositiveBarColor(minibar: Minibar) {
   }
 }
 
-function checkNegativeBarColor(minibar: Minibar) {
+function checkNegativeBarColor(minibar: Minibar): void {
   const className = minibar.barColor.negative.className;
   const colorCode = minibar.barColor.negative.colorCode;
 
@@ -127,7 +127,7 @@ function checkNegativeBarColor(minibar: Minibar) {
   }
 }
 
-function invertBarColors(minibar: Minibar) {
+function invertBarColors(minibar: Minibar): void {
   const temp = minibar.barColor.negative;
   minibar.barColor.negative = minibar.barColor.positive;
   minibar.barColor.positive = temp;

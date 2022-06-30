@@ -6,7 +6,7 @@ export let tableHead: QTableDataFormatted[];
 export let minibar: Minibar | null;
 export let initWithCardLayout: boolean;
 
-function getAttributes(colIndex: number) {
+function getAttributes(colIndex: number): Attribute {
   let colspan = 0;
   let classes = '';
 
@@ -19,6 +19,11 @@ function getAttributes(colIndex: number) {
   }
 
   return { colspan, classes };
+}
+
+interface Attribute {
+  colspan: number;
+  classes: string;
 }
 </script>
 

@@ -1,48 +1,29 @@
-// These lines make "require" available.
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
 import fs from 'fs';
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
-import type { Request, ServerRoute } from '@hapi/hapi';
-
-import type { ColorColumn } from '../../helpers/colorColumn.js';
-
-import type {
-  AvailabilityResponseObject,
-  QTableConfig,
-  RenderingInfo,
-  WebPayload,
-  QTableSvelteProperties,
-  QTableDataFormatted,
-  ToolRuntimeConfig,
-  QTableConfigOptions,
-  DisplayOptions,
-} from '../../interfaces';
-
-// File only exists in dist folder.
-const styleHashMap = require('./styles/hashMap.json');
-
 import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
-
 import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
 import { getMinibar } from '../../helpers/minibars.js';
 import { getColorColumn } from '../../helpers/colorColumn.js';
 import { getFootnotes } from '../../helpers/footnotes.js';
-
 import schemaString from '../../../resources/schema.json';
+import type { Request, ServerRoute } from '@hapi/hapi';
+import type { ColorColumn } from '../../helpers/colorColumn.js';
+import type {
+  AvailabilityResponseObject,
+  DisplayOptions,
+  QTableConfig,
+  QTableConfigOptions,
+  QTableDataFormatted,
+  QTableSvelteProperties,
+  RenderingInfo,
+  StyleHashMap,
+  ToolRuntimeConfig,
+  WebPayload,
+} from '../../interfaces';
 
 const ajv = new Ajv();
 const validate = ajv.compile(schemaString);
-
-function validateAgainstSchema(item: QTableConfig) {
-  if (validate(item)) {
-    return item;
-  } else {
-    throw Boom.badRequest(JSON.stringify(validate.errors));
-  }
-}
 
 const route: ServerRoute = {
   method: 'POST',
@@ -52,25 +33,46 @@ const route: ServerRoute = {
       options: {
         allowUnknown: true,
       },
-      payload: async (payload: WebPayload) => {
-        if (typeof payload !== 'object' || typeof payload.item !== 'object' || typeof payload.toolRuntimeConfig !== 'object') {
+      payload: async payload => {
+        const payloadTyped = payload as WebPayload;
+        const item = payloadTyped.item;
+        const toolRuntimeConfig = payloadTyped.toolRuntimeConfig;
+
+        if (typeof payloadTyped !== 'object' || typeof item !== 'object' || typeof toolRuntimeConfig !== 'object') {
           throw Boom.badRequest('The given payload for this route is not correct.');
         }
 
-        await validateAgainstSchema(payload.item);
+        if (await validate(item)) {
+          return item;
+        } else {
+          throw Boom.badRequest(JSON.stringify(validate.errors));
+        }
       },
     },
   },
   handler: async function (request: Request) {
     const id = createId(request);
     let qtableCompiledScript = '';
+    let styleHashMap: StyleHashMap | null = null;
 
     try {
       qtableCompiledScript = fs.readFileSync('dist/Q-Table.js', {
         encoding: 'utf-8',
       });
     } catch (e) {
-      console.log('Failed  reading compiled Q-Table code', e);
+      console.log('Failed reading compiled Q-Table code', e);
+    }
+
+    try {
+      const rawString = fs.readFileSync('dist/styles/hashMap.json', {
+        encoding: 'utf-8',
+      });
+
+      styleHashMap = JSON.parse(rawString) as StyleHashMap;
+
+      console.log('a', styleHashMap);
+    } catch (e) {
+      console.log('Failed reading compiled style hashmap', e);
     }
 
     const payload = request.payload as WebPayload;
@@ -110,7 +112,6 @@ const route: ServerRoute = {
       console.error('Execption during creating colorColumn', e);
     }
 
-    console.log('sa', config.sources);
     const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
@@ -132,11 +133,7 @@ const route: ServerRoute = {
 
     const renderingInfo: RenderingInfo = {
       polyfills: ['Promise'],
-      stylesheets: [
-        {
-          name: styleHashMap['q-table'],
-        },
-      ],
+      stylesheets: [],
       scripts: [
         {
           content: qtableCompiledScript,
@@ -158,6 +155,12 @@ const route: ServerRoute = {
       ],
       markup: `<div id="${id}_container" class="q-table-container" />`,
     };
+
+    if (styleHashMap !== null) {
+      renderingInfo.stylesheets.push({
+        name: styleHashMap['q-table'],
+      });
+    }
 
     return renderingInfo;
   },

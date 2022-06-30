@@ -227,13 +227,14 @@ export function getDataWithoutHeaderRow(data: QTableDataRaw): QTableDataRaw {
   return data.slice(1);
 }
 
-export function getUniqueCategoriesCount(data: QTableDataRaw, colorColumn: ColorColumnSettings) {
+export function getUniqueCategoriesCount(data: QTableDataRaw, colorColumn: ColorColumnSettings): number {
   return getUniqueCategoriesObject(data, colorColumn).categories.length;
 }
 
-export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettings: ColorColumnSettings) {
+export function getUniqueCategoriesObject(data: QTableDataRaw, colorColumnSettings: ColorColumnSettings): UniqueCategories {
   const { categoricalOptions, selectedColumn } = colorColumnSettings;
   const customCategoriesOrder = categoricalOptions.customCategoriesOrder;
+
   let hasNullValues = false;
   let values: string[] = [];
 
@@ -408,7 +409,7 @@ export interface MetaData {
 }
 
 export interface DataFormattingOptions {
-  maxDigitsAfterComma?: number;
+  maxDigitsAfterComma: number;
   roundingBucketBorders?: boolean;
 }
 
@@ -420,4 +421,9 @@ interface ColumnType {
 interface IndexedColumnTitle {
   index: number;
   title: string;
+}
+
+interface UniqueCategories {
+  hasNullValues: boolean;
+  categories: string[];
 }

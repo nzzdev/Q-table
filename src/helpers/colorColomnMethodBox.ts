@@ -1,15 +1,6 @@
 import type { BucketType } from '../interfaces';
 import type { FormattedBucket } from './colorColumnLegend';
 
-export interface MethodBoxInfo {
-  text: string;
-  article: {
-    title: string;
-    url: string;
-  };
-  formattedBuckets?: FormattedBucket[];
-}
-
 const methodBoxTextConfig: Record<BucketType, string> = {
   ckmeans:
     'Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede zwischen den Regionen möglichst gut sichtbar werden (Jenks Natural Breaks).',
@@ -28,4 +19,13 @@ export function getMethodBoxInfo(bucketType: BucketType): MethodBoxInfo {
       url: 'https://www.nzz.ch/ld.1580452',
     },
   };
+}
+
+export interface MethodBoxInfo {
+  text: string;
+  article: {
+    title: string;
+    url: string;
+  };
+  formattedBuckets?: FormattedBucket[];
 }

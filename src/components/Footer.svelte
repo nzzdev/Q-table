@@ -4,8 +4,6 @@ import type { QTableConfig } from '../interfaces';
 export let config: QTableConfig;
 
 const { notes, sources } = config;
-
-console.log('sources', sources);
 </script>
 
 <div class="s-q-item__footer">

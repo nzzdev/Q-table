@@ -41,7 +41,7 @@ export interface ColorColumnSettings {
   };
   categoricalOptions: {
     colorOverwrites: ColorOverwrites[];
-    customCategoriesOrder: Array<any>;
+    customCategoriesOrder: CustomCategoriesOrder[];
   };
   selectedColumn: number | null;
 }
@@ -176,4 +176,12 @@ interface Source {
     isValid: boolean;
   };
   text: string;
+}
+
+interface CustomCategoriesOrder {
+  category: string;
+}
+
+export interface StyleHashMap {
+  'q-table': string;
 }

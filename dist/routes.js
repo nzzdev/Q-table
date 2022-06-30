@@ -1,4 +1,3 @@
-import { createRequire } from 'module';
 import fs from 'fs';
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
@@ -2383,19 +2382,8 @@ var schema$1 = {
 	required: required
 };
 
-const require = createRequire(import.meta.url);
-// File only exists in dist folder.
-const styleHashMap = require('./styles/hashMap.json');
 const ajv = new Ajv();
 const validate = ajv.compile(schema$1);
-function validateAgainstSchema(item) {
-    if (validate(item)) {
-        return item;
-    }
-    else {
-        throw Boom.badRequest(JSON.stringify(validate.errors));
-    }
-}
 const route$f = {
     method: 'POST',
     path: '/rendering-info/web',
@@ -2405,10 +2393,18 @@ const route$f = {
                 allowUnknown: true,
             },
             payload: (payload) => __awaiter(void 0, void 0, void 0, function* () {
-                if (typeof payload !== 'object' || typeof payload.item !== 'object' || typeof payload.toolRuntimeConfig !== 'object') {
+                const payloadTyped = payload;
+                const item = payloadTyped.item;
+                const toolRuntimeConfig = payloadTyped.toolRuntimeConfig;
+                if (typeof payloadTyped !== 'object' || typeof item !== 'object' || typeof toolRuntimeConfig !== 'object') {
                     throw Boom.badRequest('The given payload for this route is not correct.');
                 }
-                yield validateAgainstSchema(payload.item);
+                if (yield validate(item)) {
+                    return item;
+                }
+                else {
+                    throw Boom.badRequest(JSON.stringify(validate.errors));
+                }
             }),
         },
     },
@@ -2416,13 +2412,24 @@ const route$f = {
         return __awaiter(this, void 0, void 0, function* () {
             const id = createId(request);
             let qtableCompiledScript = '';
+            let styleHashMap = null;
             try {
                 qtableCompiledScript = fs.readFileSync('dist/Q-Table.js', {
                     encoding: 'utf-8',
                 });
             }
             catch (e) {
-                console.log('Failed  reading compiled Q-Table code', e);
+                console.log('Failed reading compiled Q-Table code', e);
+            }
+            try {
+                const rawString = fs.readFileSync('dist/styles/hashMap.json', {
+                    encoding: 'utf-8',
+                });
+                styleHashMap = JSON.parse(rawString);
+                console.log('a', styleHashMap);
+            }
+            catch (e) {
+                console.log('Failed reading compiled style hashmap', e);
             }
             const payload = request.payload;
             // Extract table configurations.
@@ -2454,7 +2461,6 @@ const route$f = {
             catch (e) {
                 console.error('Execption during creating colorColumn', e);
             }
-            console.log('sa', config.sources);
             const props = {
                 item: config,
                 config,
@@ -2475,11 +2481,7 @@ const route$f = {
             };
             const renderingInfo = {
                 polyfills: ['Promise'],
-                stylesheets: [
-                    {
-                        name: styleHashMap['q-table'],
-                    },
-                ],
+                stylesheets: [],
                 scripts: [
                     {
                         content: qtableCompiledScript,
@@ -2501,6 +2503,11 @@ const route$f = {
                 ],
                 markup: `<div id="${id}_container" class="q-table-container" />`,
             };
+            if (styleHashMap !== null) {
+                renderingInfo.stylesheets.push({
+                    name: styleHashMap['q-table'],
+                });
+            }
             return renderingInfo;
         });
     },

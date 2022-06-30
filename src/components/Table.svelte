@@ -13,7 +13,7 @@ import Pagination from './Pagination.svelte';
 import Thead from './Thead.svelte';
 import Search from './Search.svelte';
 
-import type { QTableSvelteProperties, QTableStateContext } from '../interfaces';
+import type { QTableSvelteProperties, QTableStateContext, QTableDataFormatted } from '../interfaces';
 import ToggleRowsBtn from '../routes/rendering-info/ToggleRowsBtn.svelte';
 
 export let componentConfiguration: QTableSvelteProperties;
@@ -40,6 +40,8 @@ const originalPageSize = pageSize;
 const options = config.options;
 let pageIndex = 0;
 let page = 0;
+let visibleRows: QTableDataFormatted[][];
+let filteredRows: QTableDataFormatted[][];
 
 $: filteredRows = rows;
 $: visibleRows = filteredRows.slice(pageIndex, pageIndex + pageSize);
@@ -116,11 +118,11 @@ function shouldShowTitle(): boolean {
             {#each row as cell, colIndex}
               {#if options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex}
                 {#if minibar && minibar.type === 'positive'}
-                  <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} />
-                  <MinibarBox {item} {minibar} {cell} {colIndex} {rowIndex} />
+                  <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} {initWithCardLayout} />
+                  <MinibarBox {item} {minibar} {colIndex} {rowIndex} {initWithCardLayout} />
                 {:else if minibar && minibar.type === 'negative'}
-                  <MinibarBox {item} {minibar} {cell} {colIndex} {rowIndex} />
-                  <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} />
+                  <MinibarBox {item} {minibar} {colIndex} {rowIndex} {initWithCardLayout} />
+                  <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} {initWithCardLayout} />
                 {:else if minibar && minibar.type === 'mixed'}
                   <MixedMinibars {item} tableData={rows} {minibar} {cell} {rowIndex} {colIndex} {initWithCardLayout} />
                 {:else}
@@ -140,8 +142,8 @@ function shouldShowTitle(): boolean {
     <Footnotes {footnotes} />
   {/if}
 
-  {#if colorColumn && colorColumn.methodBox !== null}
-    <MethodBox {colorColumn} {noInteraction} />
+  {#if colorColumn && colorColumn.legend.type === 'numerical'}
+    <MethodBox legend={colorColumn.legend} {noInteraction} />
   {/if}
 
   {#if noInteraction === false && typeof pageSize === 'number' && usePagination !== true}
