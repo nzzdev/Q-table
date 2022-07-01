@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run prettier-format && npm run lint && npm run svelte-check && npm run ts-check
+npm run build
+
+npm run prettier-format && npm run lint && npm run svelte-check && npm run ts-check && npm run jest

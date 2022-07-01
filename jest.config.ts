@@ -1,25 +1,36 @@
+// Testing with Svelte + TS + ESM + Jest requires quite the setup.
+// https://github.com/svelteness/svelte-jester/issues/72#issuecomment-1021356664
+
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
   preset: 'ts-jest/presets/default-esm',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   verbose: true,
   transform: {
+    '^.+\\.ts$': 'ts-jest',
     '^.+\\.svelte$': [
-      'svelte-jester',
+      './node_modules/svelte-jester/dist/transformer.mjs',
       {
-        'preprocess': true
-      }
+        preprocess: true,
+      },
     ],
-    '^.+\\.tsx?$': 'ts-jest',
   },
   extensionsToTreatAsEsm: ['.svelte', '.ts'],
-};
-
-config.globals = {
-  'ts-jest': {
-    useESM: true,
-  }
+  moduleFileExtensions: ['js', 'ts', 'svelte'],
+  globals: {
+    'ts-jest': {
+      useESM: true,
+    },
+  },
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
+  testPathIgnorePatterns: ['node_modules'],
+  transformIgnorePatterns: ['node_modules'],
+  bail: false,
+  setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+  // moduleDirectories: ['src', 'node_modules'],
 };
 
 export default config;

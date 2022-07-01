@@ -7,57 +7,42 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 
 const backendConfig = {
   input: 'src/routes/routes.ts',
-	output: {
+  output: {
     file: 'dist/routes.js',
     format: 'es',
   },
-	plugins: [
+  plugins: [
     typescript(),
     json(),
-		svelte({
+    svelte({
       preprocess: sveltePreprocess(),
       emitCss: false,
       compilerOptions: {
-        generate: 'ssr'
-      }
-		})
-	],
-  external: [
-    '@hapi/boom',
-    'ajv',
-    'd3-format',
-    'joi',
-    'module',
-    'path',
-    'simple-statistics',,
-    'svelte/internal',
-    'uglify-js',
-    'url',
-  ]
+        generate: 'ssr',
+      },
+    }),
+  ],
+  external: ['@hapi/boom', 'ajv', 'd3-format', 'joi', 'module', 'path', 'simple-statistics', 'svelte/internal', 'uglify-js', 'url'],
 };
 
 const frontendConfig = {
   input: 'src/components/Table.svelte',
-	output: {
+  output: {
     name: 'window.q_table',
     file: 'dist/Q-Table.js',
     format: 'iife',
   },
-	plugins: [
+  plugins: [
     typescript(),
     json(),
-		svelte({
+    svelte({
       preprocess: sveltePreprocess(),
       emitCss: false,
-      compilerOptions: {
-      }
-		}),
+      compilerOptions: {},
+    }),
     nodeResolve({ browser: true }),
     terser(),
-	],
+  ],
 };
 
-export default [
-  frontendConfig,
-  backendConfig,
-]
+export default [frontendConfig, backendConfig];

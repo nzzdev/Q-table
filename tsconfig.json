@@ -23,6 +23,9 @@
             "node",
             "svelte",
             "jest"
+        ],
+        "lib": [
+            "DOM"
         ]
     },
     "ts-node": {

@@ -9,6 +9,19 @@ export interface WebPayload {
   toolRuntimeConfig: ToolRuntimeConfig;
 }
 
+export interface QTableConfig {
+  acronym: string;
+  data: {
+    table: QTableDataRaw;
+    metaData: DataMetaData;
+  };
+  sources: Source[];
+  options: QTableConfigOptions;
+  title: string;
+  subtitle: string;
+  notes: string;
+}
+
 export type BucketType = 'ckmeans' | 'quantile' | 'equal' | 'custom';
 export type ColorColumnType = 'numerical' | 'categorical';
 export type QTableDataRaw = (string | null)[][];
@@ -65,19 +78,6 @@ export interface QTableConfigMinibarSettings {
     negative: { className: string; colorCode: string };
   };
   selectedColumn: number;
-}
-
-export interface QTableConfig {
-  acronym: string;
-  data: {
-    table: QTableDataRaw;
-    metaData: DataMetaData;
-  };
-  sources: Array<Source>;
-  options: QTableConfigOptions;
-  title: string;
-  subtitle: string;
-  notes: string;
 }
 
 export interface QTableConfigOptions {
@@ -170,7 +170,7 @@ export interface QTableStateContext {
   setFilteredRows: (_rows: QTableDataFormatted[][]) => QTableDataFormatted[][];
 }
 
-interface Source {
+export interface Source {
   link: {
     url: string;
     isValid: boolean;
@@ -178,7 +178,7 @@ interface Source {
   text: string;
 }
 
-interface CustomCategoriesOrder {
+export interface CustomCategoriesOrder {
   category: string;
 }
 
