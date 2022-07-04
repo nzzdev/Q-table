@@ -60,7 +60,7 @@ const route: ServerRoute = {
         encoding: 'utf-8',
       });
     } catch (e) {
-      console.log('Failed reading compiled Q-Table code', e);
+      console.log('Failed reading compiled Q-Table code - ', e);
     }
 
     try {
@@ -69,17 +69,16 @@ const route: ServerRoute = {
       });
 
       styleHashMap = JSON.parse(rawString) as StyleHashMap;
-
-      console.log('a', styleHashMap);
     } catch (e) {
-      console.log('Failed reading compiled style hashmap', e);
+      console.log('Failed reading compiled style hashmap - ', e);
     }
 
-    const payload = request.payload as WebPayload;
+    const payload = request.orig.payload as WebPayload;
 
     // Extract table configurations.
     const config = payload.item;
-    const toolRuntimeConfig = payload.toolRuntimeConfig;
+
+    const toolRuntimeConfig = payload.toolRuntimeConfig || {};
     const displayOptions = toolRuntimeConfig.displayOptions || ({} as DisplayOptions);
     const options = config.options;
 
@@ -100,16 +99,17 @@ const route: ServerRoute = {
 
     let tableData: QTableDataFormatted[][] = [];
 
+    console.log(config.sources);
     try {
       tableData = formatTableData(config.data.table, footnotes, options);
     } catch (e) {
-      console.error('Execption during formatting table data', e);
+      console.error('Execption during formatting table data - ', e);
     }
 
     try {
       colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
     } catch (e) {
-      console.error('Execption during creating colorColumn', e);
+      console.error('Execption during creating colorColumn - ', e);
     }
 
     const props: QTableSvelteProperties = {

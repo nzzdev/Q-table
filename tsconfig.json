@@ -5,9 +5,14 @@
         "strict": true,
         "baseUrl": ".",
         "paths": {
-            "*": [
-                "*",
-                "generated/*"
+            "@src/*": [
+                "src/*"
+            ],
+            "@cps/*": [
+                "src/components/*"
+            ],
+            "@rs/*": [
+                "resources/*"
             ]
         },
         "allowSyntheticDefaultImports": true,

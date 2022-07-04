@@ -172,8 +172,8 @@ export interface QTableStateContext {
 
 export interface Source {
   link: {
-    url: string;
-    isValid: boolean;
+    url?: string;
+    isValid?: boolean;
   };
   text: string;
 }

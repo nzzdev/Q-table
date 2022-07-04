@@ -2417,22 +2417,21 @@ const route$f = {
                 });
             }
             catch (e) {
-                console.log('Failed reading compiled Q-Table code', e);
+                console.log('Failed reading compiled Q-Table code - ', e);
             }
             try {
                 const rawString = readFileSync('dist/styles/hashMap.json', {
                     encoding: 'utf-8',
                 });
                 styleHashMap = JSON.parse(rawString);
-                console.log('a', styleHashMap);
             }
             catch (e) {
-                console.log('Failed reading compiled style hashmap', e);
+                console.log('Failed reading compiled style hashmap - ', e);
             }
-            const payload = request.payload;
+            const payload = request.orig.payload;
             // Extract table configurations.
             const config = payload.item;
-            const toolRuntimeConfig = payload.toolRuntimeConfig;
+            const toolRuntimeConfig = payload.toolRuntimeConfig || {};
             const displayOptions = toolRuntimeConfig.displayOptions || {};
             const options = config.options;
             let colorColumn = null;
@@ -2447,17 +2446,18 @@ const route$f = {
             const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
             const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
             let tableData = [];
+            console.log(config.sources);
             try {
                 tableData = formatTableData(config.data.table, footnotes, options);
             }
             catch (e) {
-                console.error('Execption during formatting table data', e);
+                console.error('Execption during formatting table data - ', e);
             }
             try {
                 colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
             }
             catch (e) {
-                console.error('Execption during creating colorColumn', e);
+                console.error('Execption during creating colorColumn - ', e);
             }
             const props = {
                 item: config,

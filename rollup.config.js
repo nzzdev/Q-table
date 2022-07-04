@@ -1,9 +1,10 @@
-import svelte from 'rollup-plugin-svelte';
-import typescript from '@rollup/plugin-typescript';
+import alias from '@rollup/plugin-alias';
 import json from '@rollup/plugin-json';
-import sveltePreprocess from 'svelte-preprocess';
-import { terser } from 'rollup-plugin-terser';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import svelte from 'rollup-plugin-svelte';
+import sveltePreprocess from 'svelte-preprocess';
+import typescript from '@rollup/plugin-typescript';
+import { terser } from 'rollup-plugin-terser';
 
 const backendConfig = {
   input: 'src/routes/routes.ts',
@@ -42,6 +43,14 @@ const frontendConfig = {
     }),
     nodeResolve({ browser: true }),
     terser(),
+
+    alias({
+      entries: [
+        // If you add a new top-level-folder besides src which you want to use, add it here.
+        { find: /^@src(\/|$)/, replacement: `${__dirname}/src/` },
+        { find: /^@cps(\/|$)/, replacement: `${__dirname}/src/components/` },
+      ],
+    }),
   ],
 };
 

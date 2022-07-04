@@ -2,7 +2,7 @@
 import { setContext } from 'svelte';
 
 import Legend from './Legend.svelte';
-import Footer from './Footer.svelte';
+import Footer from '@cps/Footer/Footer.svelte';
 import MinibarBox from './minibar/MinibarBox.svelte';
 import MinibarValue from './minibar/MinibarValue.svelte';
 import MixedMinibars from './minibar/MixedMinibars.svelte';
@@ -150,5 +150,5 @@ function shouldShowTitle(): boolean {
     <ToggleRowsBtn totalNumberOfRows={rows.length} pageSize={originalPageSize} />
   {/if}
 
-  <Footer {config} />
+  <Footer notes={config.notes} sources={config.sources} />
 </div>
