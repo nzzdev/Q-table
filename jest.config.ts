@@ -24,8 +24,8 @@ const config: Config.InitialOptions = {
     },
   },
   moduleNameMapper: {
-    '^@rs(.*)$': '<rootDir>/resources$1',
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^@rs(.*)$': '<rootDir>/resources$1',
   },
   testPathIgnorePatterns: ['node_modules'],
   transformIgnorePatterns: ['node_modules'],
