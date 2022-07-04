@@ -1,7 +1,7 @@
 <script lang="ts">
-import NumericalLegend from './legends/NumericalLegend.svelte';
-import CategoricalLegend from './legends/CategoricalLegend.svelte';
-import type { ColorColumn } from '../helpers/colorColumn';
+import NumericalLegend from './NumericalLegend.svelte';
+import CategoricalLegend from './CategoricalLegend.svelte';
+import type { ColorColumn } from '@helpers/colorColumn';
 
 export let colorColumn: ColorColumn | null;
 export let noInteraction: boolean;

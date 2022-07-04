@@ -1,20 +1,18 @@
 <script lang="ts">
+import Cell from '@cps/cell/Cell.svelte';
+import Footer from '@cps/footer/Footer.svelte';
+import Footnotes from '@cps/footnotes/Footnotes.svelte';
+import Legend from '@cps/legend/Legend.svelte';
+import MethodBox from '@cps/methodbox/MethodBox.svelte';
+import MinibarBox from '@cps/minibar/MinibarBox.svelte';
+import MinibarValue from '@cps/minibar/MinibarValue.svelte';
+import MixedMinibars from '@cps/minibar/MixedMinibars.svelte';
+import Pagination from '@cps/pagination/Pagination.svelte';
+import Search from '@cps/search/Search.svelte';
+import Thead from '@cps/thead/Thead.svelte';
+import ToggleRowsBtn from '@cps/toggleRowsBtn/ToggleRowsBtn.svelte';
 import { setContext } from 'svelte';
-
-import Legend from './Legend.svelte';
-import Footer from '@cps/Footer/Footer.svelte';
-import MinibarBox from './minibar/MinibarBox.svelte';
-import MinibarValue from './minibar/MinibarValue.svelte';
-import MixedMinibars from './minibar/MixedMinibars.svelte';
-import MethodBox from './MethodBox.svelte';
-import Cell from './Cell.svelte';
-import Footnotes from './Footnotes.svelte';
-import Pagination from './Pagination.svelte';
-import Thead from './Thead.svelte';
-import Search from './Search.svelte';
-
-import type { QTableSvelteProperties, QTableStateContext, QTableDataFormatted } from '../interfaces';
-import ToggleRowsBtn from '../routes/rendering-info/ToggleRowsBtn.svelte';
+import type { QTableSvelteProperties, QTableStateContext, QTableDataFormatted } from '@src/interfaces';
 
 export let componentConfiguration: QTableSvelteProperties;
 

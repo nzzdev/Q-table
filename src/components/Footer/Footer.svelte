@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Source } from '@src/interfaces';
 
-export let notes: string = '';
+export let notes = '';
 export let sources: Source[] = [];
 </script>
 

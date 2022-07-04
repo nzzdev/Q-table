@@ -24,14 +24,13 @@ const config: Config.InitialOptions = {
     },
   },
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
     '^@rs(.*)$': '<rootDir>/resources$1',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   testPathIgnorePatterns: ['node_modules'],
   transformIgnorePatterns: ['node_modules'],
   bail: false,
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
-  // moduleDirectories: ['src', 'node_modules'],
 };
 
 export default config;

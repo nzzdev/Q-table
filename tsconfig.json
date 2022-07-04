@@ -13,6 +13,9 @@
             ],
             "@rs/*": [
                 "resources/*"
+            ],
+            "@helpers/*": [
+                "src/helpers/*"
             ]
         },
         "allowSyntheticDefaultImports": true,

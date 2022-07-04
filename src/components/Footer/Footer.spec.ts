@@ -30,7 +30,7 @@ describe('Footer', () => {
     const source = createSourceFixture();
     const container = renderFooter({ sources: [source] });
 
-    let el = container.getElementsByClassName('q-table-footer-sources-prefix')[0];
+    const el = container.getElementsByClassName('q-table-footer-sources-prefix')[0];
 
     expect(el.innerHTML).toBe('Quelle:');
   });

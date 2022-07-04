@@ -1,4 +1,4 @@
-import type { DataMetaData, dataMetaDataCell, QTableConfigOptions, QTableDataFormatted } from '../interfaces';
+import type { DataMetaData, dataMetaDataCell, QTableConfigOptions, QTableDataFormatted } from '@src/interfaces';
 
 export interface StructuredFootnote {
   value: string;

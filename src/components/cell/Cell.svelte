@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { ColorColumn } from '../helpers/colorColumn';
-import type { QTableConfig, QTableDataFormatted } from '../interfaces';
+import type { ColorColumn } from '@helpers/colorColumn';
+import type { QTableConfig, QTableDataFormatted } from '@src/interfaces';
 
 export let item: QTableConfig;
 export let cell: QTableDataFormatted;

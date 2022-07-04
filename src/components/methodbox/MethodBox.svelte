@@ -1,6 +1,6 @@
 <script lang="ts">
-import OpenIcon from './svg/OpenIcon.svelte';
-import CloseIcon from './svg/CloseIcon.svelte';
+import OpenIcon from '@cps/svg/OpenIcon.svelte';
+import CloseIcon from '@cps/svg/CloseIcon.svelte';
 import type { NumericalLegend } from 'src/helpers/colorColumnLegend';
 
 export let noInteraction: boolean;

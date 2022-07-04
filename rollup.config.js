@@ -27,7 +27,7 @@ const backendConfig = {
 };
 
 const frontendConfig = {
-  input: 'src/components/Table.svelte',
+  input: 'src/components/table/Table.svelte',
   output: {
     name: 'window.q_table',
     file: 'dist/Q-Table.js',
@@ -49,6 +49,7 @@ const frontendConfig = {
         // If you add a new top-level-folder besides src which you want to use, add it here.
         { find: /^@src(\/|$)/, replacement: `${__dirname}/src/` },
         { find: /^@cps(\/|$)/, replacement: `${__dirname}/src/components/` },
+        { find: /^@helpers(\/|$)/, replacement: `${__dirname}/src/helpers/` },
       ],
     }),
   ],

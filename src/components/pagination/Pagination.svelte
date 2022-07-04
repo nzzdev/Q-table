@@ -1,6 +1,6 @@
 <script lang="ts">
 import { getContext } from 'svelte';
-import type { QTableStateContext } from '../interfaces';
+import type { QTableStateContext } from '@src/interfaces';
 
 const stateContext = getContext<QTableStateContext>('state');
 

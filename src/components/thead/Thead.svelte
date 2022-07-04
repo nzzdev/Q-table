@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { Minibar } from '../helpers/minibars';
-import type { QTableDataFormatted } from '../interfaces';
+import type { Minibar } from '@helpers/minibars';
+import type { QTableDataFormatted } from '@src/interfaces';
 
 export let tableHead: QTableDataFormatted[];
 export let minibar: Minibar | null;

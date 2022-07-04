@@ -1,14 +1,14 @@
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
-import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
-import { getColorColumn } from '../../helpers/colorColumn.js';
-import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
-import { getFootnotes } from '../../helpers/footnotes.js';
-import { getMinibar } from '../../helpers/minibars.js';
+import getExactPixelWidth from '@helpers/toolRuntimeConfig.js';
+import { getColorColumn } from '@helpers/colorColumn.js';
+import { getDataWithoutHeaderRow, formatTableData } from '@helpers/data.js';
+import { getFootnotes } from '@helpers/footnotes.js';
+import { getMinibar } from '@helpers/minibars.js';
 import { readFileSync } from 'fs';
-import schemaString from '../../../resources/schema.json';
+import schemaString from '@rs/schema.json';
 import type { Request, ServerRoute } from '@hapi/hapi';
-import type { ColorColumn } from '../../helpers/colorColumn.js';
+import type { ColorColumn } from '@helpers/colorColumn.js';
 import type {
   AvailabilityResponseObject,
   DisplayOptions,
@@ -20,7 +20,7 @@ import type {
   StyleHashMap,
   ToolRuntimeConfig,
   WebPayload,
-} from '../../interfaces';
+} from '@src/interfaces';
 
 const ajv = new Ajv();
 const validate = ajv.compile(schemaString);
