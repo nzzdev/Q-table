@@ -1,6 +1,6 @@
 import Footer from './Footer.svelte';
 import { render } from '@testing-library/svelte';
-import { createSourceFixture } from '@rs/fixtures/fixture-generators';
+import { createSourceFixture } from '@src/helpers/fixture-generators';
 import type { Source } from '@src/interfaces';
 
 function renderFooter(props: { notes?: string; sources?: Source[] }): HTMLDivElement {
