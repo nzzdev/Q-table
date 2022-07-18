@@ -12,17 +12,7 @@ const backendConfig = {
     file: 'dist/routes.js',
     format: 'es',
   },
-  plugins: [
-    typescript(),
-    json(),
-    svelte({
-      preprocess: sveltePreprocess(),
-      emitCss: false,
-      compilerOptions: {
-        generate: 'ssr',
-      },
-    }),
-  ],
+  plugins: [typescript(), json()],
   external: ['@hapi/boom', 'ajv', 'd3-format', 'joi', 'module', 'path', 'simple-statistics', 'svelte/internal', 'uglify-js', 'url'],
 };
 

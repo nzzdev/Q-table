@@ -99,7 +99,6 @@ const route: ServerRoute = {
 
     let tableData: QTableDataFormatted[][] = [];
 
-    console.log(config.sources);
     try {
       tableData = formatTableData(config.data.table, footnotes, options);
     } catch (e) {

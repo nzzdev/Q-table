@@ -173,7 +173,6 @@ function hasFootnoteClass(classes, newClass) {
     return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
 }
 
-/// <reference path="../modules.d.ts" />
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 // Formatting for numbers of >= 10000.

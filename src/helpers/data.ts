@@ -1,5 +1,3 @@
-/// <reference path="../modules.d.ts" />
-
 import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 
