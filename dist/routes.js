@@ -3165,7 +3165,7 @@ var properties$1 = {
 									]
 								}
 							},
-							colorScale: {
+							scale: {
 								title: "Skala",
 								type: "string",
 								"Q:options": {
