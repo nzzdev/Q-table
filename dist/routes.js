@@ -955,21 +955,16 @@ function getColumnsType(data) {
     }
     return columns;
 }
-/**
- * TODO:
- * This is quite a rough function.
- * Will fail under mixed values.
- * Need better to logic.
- */
 function isColumnNumeric(column) {
-    // If we find one cell that is numeric then it is a numeric column.
+    // Loop through all cells and if one cell is not numeric
     for (let i = 0; i < column.length; i++) {
         const value = column[i];
-        if (isNumeric(value)) {
-            return true;
+        // If we detect any non numeric value then this column is not numeric anymore.
+        if (!isNumeric(value)) {
+            return false;
         }
     }
-    return false;
+    return true;
 }
 function formatTableData(data, footnotes, options) {
     const columns = getColumnsType(data);
