@@ -128,6 +128,13 @@ function isColumnNumeric(column: (string|null)[]): boolean {
   for (let i = 0 ; i < column.length; i++) {
     const value = column[i];
 
+    // TODO
+    // The question should we accept a string as an exception for a numeric column or force the user to
+    // keep it null or empty?
+    if (value === null || value === '-') {
+      continue;
+    }
+
     // If we detect any non numeric value then this column is not numeric anymore.
     if (!isNumeric(value)) {
       return false;

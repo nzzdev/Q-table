@@ -32,9 +32,8 @@
   }
 
   function getCellClass() {
-    let classes = `q-table__cell q-table__cell--${
-      cell.type
-    } ${cell.classes.join(" ")} `;
+    let classes = `q-table__cell q-table__cell--${cell.type} ${cell.classes.join(" ")} `;
+
     if (
       item.options.minibar.selectedColumn === colIndex &&
       !item.options.initWithCardLayout
