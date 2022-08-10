@@ -955,21 +955,22 @@ function getColumnsType(data) {
     }
     return columns;
 }
-/**
- * TODO:
- * This is quite a rough function.
- * Will fail under mixed values.
- * Need better to logic.
- */
 function isColumnNumeric(column) {
-    // If we find one cell that is numeric then it is a numeric column.
+    // Loop through all cells and if one cell is not numeric
     for (let i = 0; i < column.length; i++) {
         const value = column[i];
-        if (isNumeric(value)) {
-            return true;
+        // TODO
+        // The question should we accept a string as an exception for a numeric column or force the user to
+        // keep it null or empty?
+        if (value === null || value === '-') {
+            continue;
+        }
+        // If we detect any non numeric value then this column is not numeric anymore.
+        if (!isNumeric(value)) {
+            return false;
         }
     }
-    return false;
+    return true;
 }
 function formatTableData(data, footnotes, options) {
     const columns = getColumnsType(data);
@@ -1211,14 +1212,14 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
         const row = data[i];
         const cell = row[selectedColumnIndex];
         let value = parseFloat(cell || '');
-        const type = getTypeOfValue(value);
         if (isNaN(value)) {
             minibarsWithType.items.push({
                 value: null,
-                type
+                type: "empty" /* MINIBAR_TYPE.EMPTY */
             });
         }
         else {
+            const type = getTypeOfValue(value);
             minibarsWithType.numbers.push(value);
             minibarsWithType.items.push({
                 value,
@@ -1295,8 +1296,8 @@ function getTypeOfValue(value) {
     return "empty" /* MINIBAR_TYPE.EMPTY */;
 }
 function getMinibarType(numbers) {
-    const allPositive = numbers.every(number => number > 0);
-    const allNegative = numbers.every(number => number < 0);
+    const allPositive = numbers.every(number => number >= 0);
+    const allNegative = numbers.every(number => number <= 0);
     if (allPositive) {
         return "positive" /* MINIBAR_TYPE.POSITIVE */;
     }
