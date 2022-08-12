@@ -118,13 +118,15 @@ export interface ToolRuntimeConfig {
   fileRequestBaseUrl: string;
   toolBaseUrl: string;
   id: string;
-  size: {
-    width: Array<{ value: number; unit: string; comparison: '=' | '>' | '<' | '>=' | '<=' }>;
-  };
+  size: ToolRuntimeConfigSize;
   isPure: boolean;
   requestId: string;
   markup?: string;
   noInteraction?: boolean;
+}
+
+export interface ToolRuntimeConfigSize {
+  width: Array<{ value: number; unit: string; comparison: '=' | '>' | '<' | '>=' | '<=' }>;
 }
 
 export interface RenderingInfo {

@@ -2445,7 +2445,6 @@ const route$f = {
             const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
             const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
             let tableData = [];
-            console.log(config.sources);
             try {
                 tableData = formatTableData(config.data.table, footnotes, options);
             }
@@ -2570,7 +2569,7 @@ function getInitWithCardLayoutFlag(width, options) {
     if (cardLayout === true) {
         return true;
     }
-    if (typeof width === 'number' && width < 400 && cardLayoutIfSmall === true) {
+    if (typeof width === 'number' && width <= 400 && cardLayoutIfSmall === true) {
         return true;
     }
     return false;

@@ -233,7 +233,7 @@ function getInitWithCardLayoutFlag(width: number | undefined, options: QTableCon
     return true;
   }
 
-  if (typeof width === 'number' && width < 400 && cardLayoutIfSmall === true) {
+  if (typeof width === 'number' && width <= 400 && cardLayoutIfSmall === true) {
     return true;
   }
 
