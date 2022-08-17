@@ -44,14 +44,14 @@ export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnInd
     const row = data[i];
     const cell = row[selectedColumnIndex];
     const value = parseFloat(cell || '');
-    const type = getTypeOfValue(value);
 
     if (isNaN(value)) {
       minibarsWithType.items.push({
         value: null,
-        type,
+        type: MINIBAR_TYPE.EMPTY,
       });
     } else {
+      const type = getTypeOfValue(value);
       minibarsWithType.numbers.push(value);
 
       minibarsWithType.items.push({
@@ -146,8 +146,8 @@ function getTypeOfValue(value: number): MINIBAR_TYPE {
 }
 
 function getMinibarType(numbers: number[]): MINIBAR_TYPE {
-  const allPositive = numbers.every(number => number > 0);
-  const allNegative = numbers.every(number => number < 0);
+  const allPositive = numbers.every(number => number >= 0);
+  const allNegative = numbers.every(number => number <= 0);
 
   if (allPositive) {
     return MINIBAR_TYPE.POSITIVE;
