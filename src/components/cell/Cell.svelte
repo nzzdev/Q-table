@@ -4,11 +4,10 @@ import type { QTableConfig, QTableDataFormatted } from '@src/interfaces';
 
 export let item: QTableConfig;
 export let cell: QTableDataFormatted;
-export let tableData: QTableDataFormatted[][];
 export let colorColumn: ColorColumn | null;
 export let rowIndex: number;
 export let colIndex: number;
-
+export let tableHead: QTableDataFormatted[];
 export let initWithCardLayout: boolean;
 
 let styles: CellStyle;
@@ -17,11 +16,11 @@ $: styles = getCellStyles(colIndex, rowIndex);
 
 function getDataLabel(colIndex: number): string {
   let dataLabel = '';
+  const footnote = tableHead[colIndex].footnote;
 
-  const footnote = tableData[0][colIndex].footnote;
-  if (tableData[0][colIndex] && tableData[0][colIndex].value) {
+  if (tableHead[colIndex] && tableHead[colIndex].value) {
     if (item.options.hideTableHeader !== true) {
-      dataLabel += tableData[0][colIndex].value;
+      dataLabel += tableHead[colIndex].value;
     }
 
     if (initWithCardLayout && footnote !== undefined) {

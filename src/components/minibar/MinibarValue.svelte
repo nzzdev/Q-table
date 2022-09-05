@@ -10,6 +10,8 @@ export let colIndex: number;
 export let rowIndex: number;
 export let initWithCardLayout: boolean;
 
+// With v7 this is most likely not necessary anymore as I render always a cell if there is
+// a card layout. But need to investigate more later.
 function getDataLabelAttribute(): string {
   let dataLabel = '';
 

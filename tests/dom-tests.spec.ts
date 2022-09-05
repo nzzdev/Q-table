@@ -5,14 +5,10 @@ import { JSDOM } from 'jsdom';
 import Hapi from '@hapi/hapi';
 import Joi from 'joi';
 import * as fixtures from '../resources/fixtures/data';
-import { getMarkup, getScripts } from './helpers';
+import { createDOM, getMarkup, getScripts } from './helpers';
 
 // https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
 global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
-
-function createDOM(markup: string): JSDOM {
-  return new JSDOM(markup, { runScripts: 'dangerously' });
-}
 
 function element(markup: string, selector: string): Promise<HTMLElement> {
   return new Promise(resolve => {

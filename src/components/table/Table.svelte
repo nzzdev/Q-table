@@ -81,6 +81,16 @@ function shouldShowTitle(): boolean {
 
   return true;
 }
+
+function isMinibarColumn(colIndex: number): boolean {
+  return (
+    options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex
+  );
+}
+
+function shouldShowMoreRowsBtn(): boolean {
+  return noInteraction === false && typeof pageSize === 'number' && usePagination !== true && filteredRows.length > pageSize;
+}
 </script>
 
 <div {id} class="s-q-item q-table" class:q-table--card-layout={initWithCardLayout} style="opacity: 0;">
@@ -114,7 +124,7 @@ function shouldShowTitle(): boolean {
         {#each visibleRows as row, rowIndex}
           <tr>
             {#each row as cell, colIndex}
-              {#if options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex}
+              {#if initWithCardLayout === false && isMinibarColumn(colIndex)}
                 {#if minibar && minibar.type === 'positive'}
                   <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} {initWithCardLayout} />
                   <MinibarBox {item} {minibar} {colIndex} {rowIndex} {initWithCardLayout} />
@@ -124,10 +134,10 @@ function shouldShowTitle(): boolean {
                 {:else if minibar && minibar.type === 'mixed'}
                   <MixedMinibars {item} tableData={rows} {minibar} {cell} {rowIndex} {colIndex} {initWithCardLayout} />
                 {:else}
-                  <Cell {item} {cell} tableData={rows} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
+                  <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
                 {/if}
               {:else}
-                <Cell {item} {cell} tableData={rows} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
+                <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
               {/if}
             {/each}
           </tr>
@@ -144,7 +154,7 @@ function shouldShowTitle(): boolean {
     <MethodBox legend={colorColumn.legend} {noInteraction} />
   {/if}
 
-  {#if noInteraction === false && typeof pageSize === 'number' && usePagination !== true}
+  {#if shouldShowMoreRowsBtn()}
     <ToggleRowsBtn totalNumberOfRows={rows.length} pageSize={originalPageSize} />
   {/if}
 
