@@ -48,5 +48,6 @@ module.exports = {
         allowExpressions: true,
       },
     ],
+    '@ota-meshi/svelte/no-at-html-tags': 'off',
   },
 };

@@ -685,22 +685,13 @@ describe('footnotes', () => {
 
     const markup = createMarkupWithScript(response);
     const dom = createDOM(markup);
-    const annotations = dom.window.document.querySelectorAll('.q-table-footnote-annotation');
+    const annotations = dom.window.document.querySelectorAll('.q-table--card-head-footnote');
 
-    const rawFootnote1Attr = annotations[0].getAttribute('data-annotation') || '';
-    const rawFootnote2Attr = annotations[1].getAttribute('data-annotation') || '';
+    const rawFootnote1Attr = annotations[0].innerHTML || '';
+    const rawFootnote2Attr = annotations[1].innerHTML || '';
 
-    // TODO: Probably it is better to refactor the html instead of using css ::after to set this character.
-    // Future optimization.
-    // For now simply test if the attribute is set.
-    expect(rawFootnote1Attr).toEqual('1');
-    expect(rawFootnote2Attr).toEqual('2');
-
-    // const footnoteOne = decodeURI(rawFootnote1.split('Rank')[1]);
-    // const footnoteTwo = decodeURI(rawFootnote2.split('Name')[1]);
-
-    // expect(footnoteOne).toEqual('\u00b9');
-    // expect(footnoteTwo).toEqual('\u00b2');
+    expect(rawFootnote1Attr).toEqual('\u00b9');
+    expect(rawFootnote2Attr).toEqual('\u00b2');
   });
 
   it('hides footnotes because header is hidden', async () => {

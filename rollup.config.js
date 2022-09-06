@@ -17,7 +17,7 @@ const backendConfig = {
 };
 
 const frontendConfig = {
-  input: 'src/components/table/Table.svelte',
+  input: 'src/components/index.svelte',
   output: {
     name: 'window.q_table',
     file: 'dist/Q-Table.js',

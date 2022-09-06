@@ -1,6 +1,6 @@
 import type { QTableDataFormatted, Source } from '@src/interfaces';
 import type { StructuredFootnote } from '@src/helpers/footnotes';
-import { MINIBAR_TYPE, type Minibar } from './minibars';
+// import { MINIBAR_TYPE, type Minibar } from './minibars';
 
 export function createSourceFixture(override: Partial<Source> = {}): Source {
   return {
