@@ -8,7 +8,6 @@ export let cell: QTableDataFormatted;
 export let minibar: Minibar;
 export let colIndex: number;
 export let rowIndex: number;
-export let initWithCardLayout: boolean;
 
 const options = item.options;
 const { cardLayout, cardLayoutIfSmall } = options;
@@ -38,7 +37,7 @@ function getMinibarColor(): string {
 function getMinibarClasses(): string {
   let classes = '';
 
-  if (options.minibar.selectedColumn === colIndex && !initWithCardLayout) {
+  if (options.minibar.selectedColumn === colIndex) {
     classes = 'q-table-minibar--mixed';
   } else {
     classes = `q-table__cell--${cell.type}`;
@@ -61,7 +60,7 @@ function getMinibarClassName(): string {
 </script>
 
 <td data-label={getDataLabelAttribute()} data-minibar={minibar.type} class="q-table__cell {cell.classes.join(' ')} {getMinibarClasses()}">
-  {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
+  {#if item.options.minibar.selectedColumn === colIndex}
     <div
       data-minibar={minibar.values[rowIndex].type}
       class="q-table-minibar-alignment--{minibar.values[rowIndex].type} q-table__cell q-table__cell--{cell.type} {getFootnoteClasses()}">
@@ -84,7 +83,7 @@ function getMinibarClassName(): string {
   {:else if cell.value}
     {cell.value}
   {/if}
-  {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
+  {#if item.options.minibar.selectedColumn === colIndex}
     {#if minibar.values[rowIndex].type !== 'empty'}
       <div
         data-minibar={minibar.values[rowIndex].type}

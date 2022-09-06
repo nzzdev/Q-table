@@ -8,7 +8,6 @@ export let minibar: Minibar;
 export let cell: QTableDataFormatted;
 export let colIndex: number;
 export let rowIndex: number;
-export let initWithCardLayout: boolean;
 
 // With v7 this is most likely not necessary anymore as I render always a cell if there is
 // a card layout. But need to investigate more later.
@@ -30,7 +29,7 @@ function getDataLabelAttribute(): string {
 }
 
 function getMinibarDataAttribute(): MINIBAR_TYPE {
-  if (item.options.minibar.selectedColumn === colIndex && !initWithCardLayout) {
+  if (item.options.minibar.selectedColumn === colIndex) {
     return minibar.type;
   }
 
@@ -40,7 +39,7 @@ function getMinibarDataAttribute(): MINIBAR_TYPE {
 function getCellClass(): string {
   let classes = `q-table__cell q-table__cell--${cell.type} ${cell.classes.join(' ')} `;
 
-  if (item.options.minibar.selectedColumn === colIndex && !initWithCardLayout) {
+  if (item.options.minibar.selectedColumn === colIndex) {
     classes += 'q-table-minibar-cell--value';
   }
 
@@ -50,7 +49,7 @@ function getCellClass(): string {
 function getCellStyles(): string {
   let styles = '';
 
-  if (item.options.minibar.selectedColumn === colIndex && !initWithCardLayout) {
+  if (item.options.minibar.selectedColumn === colIndex) {
     if (minibar.type === 'positive') {
       styles += 'padding-left: 12px';
     } else if (minibar.type === 'negative') {

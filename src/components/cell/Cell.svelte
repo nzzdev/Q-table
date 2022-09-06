@@ -8,7 +8,6 @@ export let colorColumn: ColorColumn | null;
 export let rowIndex: number;
 export let colIndex: number;
 export let tableHead: QTableDataFormatted[];
-export let initWithCardLayout: boolean;
 
 let styles: CellStyle;
 
@@ -23,7 +22,7 @@ function getDataLabel(colIndex: number): string {
       dataLabel += tableHead[colIndex].value;
     }
 
-    if (initWithCardLayout && footnote !== undefined) {
+    if (footnote !== undefined) {
       dataLabel += footnote.unicode;
     }
   }
@@ -36,7 +35,7 @@ function getCellStyles(colIndex: number, rowIndex: number): CellStyle {
   let styles = '';
 
   if (colorColumn !== null) {
-    if (colorColumn.selectedColumn === colIndex && !initWithCardLayout) {
+    if (colorColumn.selectedColumn === colIndex) {
       if (colorColumn.colors[rowIndex].customColor) {
         styles += `background-color: ${colorColumn.colors[rowIndex].customColor};`;
       } else {
@@ -56,7 +55,7 @@ interface CellStyle {
 </script>
 
 <td data-label={getDataLabel(colIndex)} class={styles.class} style={styles.style}>
-  {#if colorColumn !== null && colorColumn.selectedColumn === colIndex && !initWithCardLayout}
+  {#if colorColumn !== null && colorColumn.selectedColumn === colIndex}
     {#if cell.footnote}
       <span class={colorColumn.colors[rowIndex].textColor}>
         {#if colorColumn.colorColumnType === 'numerical'}

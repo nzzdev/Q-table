@@ -6,7 +6,6 @@ export let item: QTableConfig;
 export let minibar: Minibar;
 export let rowIndex: number;
 export let colIndex: number;
-export let initWithCardLayout: boolean;
 
 // this has to be done because the tableData will be sliced before iterating
 rowIndex += 1;
@@ -47,7 +46,7 @@ function getMinibarClassName(): string {
 }
 </script>
 
-{#if minibar && item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
+{#if minibar && item.options.minibar.selectedColumn === colIndex}
   <td class="q-table-minibar-cell" data-minibar={minibar.type} style={getCellStyle()}>
     <div class="q-table-minibar-bar--{minibar.values[rowIndex].type} {getMinibarClassName()}" style={getBarStyle()} />
   </td>

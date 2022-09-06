@@ -28,20 +28,20 @@ function isMinibarColumn(colIndex: number): boolean {
     {#each rows as row, rowIndex}
       <tr>
         {#each row as cell, colIndex}
-          {#if initWithCardLayout === false && isMinibarColumn(colIndex)}
+          {#if isMinibarColumn(colIndex)}
             {#if minibar && minibar.type === 'positive'}
-              <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} {initWithCardLayout} />
-              <MinibarBox {item} {minibar} {colIndex} {rowIndex} {initWithCardLayout} />
+              <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} />
+              <MinibarBox {item} {minibar} {colIndex} {rowIndex} />
             {:else if minibar && minibar.type === 'negative'}
-              <MinibarBox {item} {minibar} {colIndex} {rowIndex} {initWithCardLayout} />
-              <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} {initWithCardLayout} />
+              <MinibarBox {item} {minibar} {colIndex} {rowIndex} />
+              <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} {rowIndex} />
             {:else if minibar && minibar.type === 'mixed'}
-              <MixedMinibars {item} tableData={rows} {minibar} {cell} {rowIndex} {colIndex} {initWithCardLayout} />
+              <MixedMinibars {item} tableData={rows} {minibar} {cell} {rowIndex} {colIndex} />
             {:else}
-              <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
+              <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} {rowIndex} />
             {/if}
           {:else}
-            <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} {rowIndex} {initWithCardLayout} />
+            <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} {rowIndex} />
           {/if}
         {/each}
       </tr>
