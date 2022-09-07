@@ -3,11 +3,12 @@ import type { Source } from '@src/interfaces';
 
 export let notes = '';
 export let sources: Source[] = [];
+export let acronym = '';
 </script>
 
 <div class="s-q-item__footer">
   {#if notes.length > 0}
-    <div class="s-q-item__footer__notes">{notes}</div>
+    <div class="s-q-item__footer__notes">{@html notes}</div>
   {/if}
 
   <div class="s-q-item__footer__details">
@@ -35,6 +36,11 @@ export let sources: Source[] = [];
           {/if}
         {/each}
       </div>
+    {/if}
+    {#if acronym}
+      <div class="s-q-item__footer__acronym">NZZ / {acronym}</div>
+    {:else}
+      <div class="s-q-item__footer__acronym">NZZ</div>
     {/if}
   </div>
 </div>

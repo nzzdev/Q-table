@@ -54,7 +54,7 @@ function shouldShowLegend(): boolean {
 }
 
 function shouldShowSearch(): boolean {
-  return noInteraction !== true && options.showTableSearch === true && rows.length > 16;
+  return noInteraction !== true && options.showTableSearch === true && rows.length > pageSize;
 }
 
 function shouldShowTitle(): boolean {
@@ -115,5 +115,5 @@ function shouldShowPagination(): boolean {
     <ToggleRowsBtn totalNumberOfRows={rows.length} pageSize={originalPageSize} />
   {/if}
 
-  <Footer notes={config.notes} sources={config.sources} />
+  <Footer notes={config.notes} sources={config.sources} acronym={config.acronym} />
 </div>

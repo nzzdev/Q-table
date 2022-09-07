@@ -19,7 +19,7 @@ function toggle(): void {
 }
 </script>
 
-<button class="s-button s-button--secondary 'q-table_show-more-button" on:click={toggle}>
+<button class="s-button s-button--secondary q-table_show-more-button" on:click={toggle}>
   {#if showingAllRows === true}
     Tabelle zuklappen
   {:else}
