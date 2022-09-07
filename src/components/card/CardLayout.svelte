@@ -44,7 +44,7 @@ function getCellFootnote(cell: QTableDataFormatted): string {
             {getHead(colIndex)}{@html getFootnote(colIndex)}
           </span>
 
-          <span class="q-table--card-cell-value">{cell.value}{@html getCellFootnote(cell)}</span>
+          <span class="q-table--card-cell-value">{cell.value || ''}{@html getCellFootnote(cell)}</span>
         </div>
       {/each}
     </div>
