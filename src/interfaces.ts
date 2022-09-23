@@ -98,17 +98,6 @@ export interface QTableConfigOptions {
   usePagination?: boolean;
 }
 
-export interface QTableDataFormatted {
-  type: string;
-  value: string | null;
-  classes: string[];
-  footnote?: {
-    value: number;
-    unicode: string;
-    class: string | null;
-  };
-}
-
 export interface DisplayOptions {
   hideTitle?: boolean;
 }
@@ -143,8 +132,8 @@ export interface AvailabilityResponseObject {
 export interface QTableSvelteProperties {
   item: QTableConfig; // To make renderingInfoScripts working. refactor later.
   config: QTableConfig;
-  tableHead: QTableDataFormatted[];
-  rows: QTableDataFormatted[][];
+  tableHead: Cell[];
+  rows: Row[];
   minibar: Minibar | null;
   footnotes: StructuredFootnote[] | null;
   colorColumn: ColorColumn | null;
@@ -164,12 +153,12 @@ export interface QTableStateContext {
     page: number;
     pageIndex: number;
     pageSize: number;
-    rows: QTableDataFormatted[][];
-    filteredRows: QTableDataFormatted[][];
+    rows: Row[];
+    filteredRows: Row[];
   };
   setPage: (_page: number) => void;
   setPageSize: (_pageSize: number) => void;
-  setFilteredRows: (_rows: QTableDataFormatted[][]) => QTableDataFormatted[][];
+  setFilteredRows: (_rows: Row[]) => Row[];
 }
 
 export interface Source {
@@ -186,4 +175,20 @@ export interface CustomCategoriesOrder {
 
 export interface StyleHashMap {
   'q-table': string;
+}
+
+export interface Cell {
+  type: string;
+  value: string | null;
+  classes: string[];
+  footnote?: {
+    value: number;
+    unicode: string;
+    class: string | null;
+  };
+}
+
+export interface Row {
+  key: number;
+  cells: Cell[];
 }

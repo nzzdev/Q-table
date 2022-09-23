@@ -3,7 +3,7 @@ import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 
 // Types.
 import type { StructuredFootnote } from './footnotes';
-import type { ColorColumnSettings, QTableDataFormatted, QTableDataRaw, QTableConfigOptions } from '../interfaces';
+import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row } from '../interfaces';
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 
 const fourPerEmSpace = '\u2005';
@@ -140,9 +140,9 @@ function isColumnNumeric(column: (string | null)[]): boolean {
   return true;
 }
 
-export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): QTableDataFormatted[][] {
+export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): Row[] {
   const columns = getColumnsType(data);
-  let tableData: QTableDataFormatted[][] = [];
+  let tableData: Row[] = [];
 
   for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
     const row = data[rowIndex];
@@ -175,7 +175,10 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
       };
     });
 
-    tableData.push(cells);
+    tableData.push({
+      key: rowIndex - 1, // we do -1 because we need to subtract the header from the indexing.
+      cells,
+    });
   }
 
   if (footnotes.length > 0) {

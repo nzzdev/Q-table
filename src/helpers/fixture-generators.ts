@@ -1,4 +1,4 @@
-import type { QTableDataFormatted, Source } from '@src/interfaces';
+import type { Cell, Source } from '@src/interfaces';
 import type { StructuredFootnote } from '@src/helpers/footnotes';
 // import { MINIBAR_TYPE, type Minibar } from './minibars';
 
@@ -27,7 +27,7 @@ export function createFootnoteFixture(override: Partial<StructuredFootnote> = {}
   };
 }
 
-export function createQTableDataFormattedFixture(override: Partial<QTableDataFormatted> = {}): QTableDataFormatted {
+export function createQTableDataFormattedFixture(override: Partial<Cell> = {}): Cell {
   return {
     type: 'type',
     value: 'value',

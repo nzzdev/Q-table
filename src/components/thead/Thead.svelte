@@ -1,10 +1,10 @@
 <script lang="ts">
 import type { Minibar } from '@helpers/minibars';
-import type { QTableDataFormatted } from '@src/interfaces';
+import type { Cell } from '@src/interfaces';
 
 export let initWithCardLayout = false;
 export let minibar: Minibar | null = null;
-export let tableHead: QTableDataFormatted[] = [];
+export let tableHead: Cell[] = [];
 
 function getAttributes(colIndex: number): Attribute {
   let classes = '';

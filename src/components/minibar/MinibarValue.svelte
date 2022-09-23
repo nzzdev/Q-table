@@ -1,11 +1,11 @@
 <script lang="ts">
 import { MINIBAR_TYPE, type Minibar } from 'src/helpers/minibars';
-import type { QTableConfig, QTableDataFormatted } from 'src/interfaces';
+import type { QTableConfig, Cell, Row } from 'src/interfaces';
 
 export let item: QTableConfig;
-export let tableData: QTableDataFormatted[][];
+export let tableData: Row[];
 export let minibar: Minibar;
-export let cell: QTableDataFormatted;
+export let cell: Cell;
 export let colIndex: number;
 export let rowIndex: number;
 
@@ -15,9 +15,10 @@ function getDataLabelAttribute(): string {
   let dataLabel = '';
 
   if (item.options.hideTableHeader !== true) {
-    dataLabel += tableData[0][colIndex].value;
-    if ((item.options.cardLayout || item.options.cardLayoutIfSmall) && tableData[0][colIndex].footnote && rowIndex === 0) {
-      const footnote = tableData[0][colIndex].footnote;
+    const cell = tableData[0].cells[colIndex];
+    dataLabel += cell.value;
+    if ((item.options.cardLayout || item.options.cardLayoutIfSmall) && cell.footnote && rowIndex === 0) {
+      const footnote = cell.footnote;
 
       if (footnote) {
         dataLabel += footnote.unicode;

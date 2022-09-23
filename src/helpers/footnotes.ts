@@ -1,4 +1,4 @@
-import type { DataMetaData, dataMetaDataCell, QTableConfigOptions, QTableDataFormatted } from '@src/interfaces';
+import type { DataMetaData, dataMetaDataCell, QTableConfigOptions, Row } from '@src/interfaces';
 
 export interface StructuredFootnote {
   value: string;
@@ -17,11 +17,7 @@ interface Spacing {
   class: string;
 }
 
-export function appendFootnoteAnnotationsToTableData(
-  tableData: QTableDataFormatted[][],
-  footnotes: StructuredFootnote[],
-  options: QTableConfigOptions,
-): QTableDataFormatted[][] {
+export function appendFootnoteAnnotationsToTableData(tableData: Row[], footnotes: StructuredFootnote[], options: QTableConfigOptions): Row[] {
   const unicodes: Record<number, string> = {
     1: '\u00b9',
     2: '\u00b2',
@@ -37,13 +33,10 @@ export function appendFootnoteAnnotationsToTableData(
   const flattenedFootnotes = getFlattenedFootnotes(footnotes);
 
   flattenedFootnotes.forEach(footnote => {
-    const footnoteClass = getClass(
-      options,
-      footnote,
-      flattenedFootnotes.length,
-      tableData[footnote.rowIndex][footnote.colIndex].type,
-      tableData[footnote.rowIndex].length - 1,
-    );
+    const row = tableData[footnote.rowIndex];
+    const cells = row.cells;
+
+    const footnoteClass = getClass(options, footnote, flattenedFootnotes.length, cells[footnote.colIndex].type, cells.length - 1);
 
     if (footnoteClass) {
       const space = {
@@ -57,7 +50,7 @@ export function appendFootnoteAnnotationsToTableData(
     }
 
     // create a new property to safe the index of the footnote
-    tableData[footnote.rowIndex][footnote.colIndex].footnote = {
+    cells[footnote.colIndex].footnote = {
       value: footnote.value,
       unicode: unicodes[footnote.value],
       class: footnoteClass,
@@ -69,14 +62,14 @@ export function appendFootnoteAnnotationsToTableData(
     // assign class when not cardlayout but cardlayoutifsmall
     if (!options.cardLayout || options.cardLayoutIfSmall) {
       spacings.forEach(spacing => {
-        row[spacing.colIndex].classes.push(spacing.class);
+        row.cells[spacing.colIndex].classes.push(spacing.class);
       });
     }
 
     // assign class when cardlayout or cardlayoutifsmall is active
     if (options.cardLayout || options.cardLayoutIfSmall) {
       if (!options.hideTableHeader && index !== 0) {
-        row.forEach(cell => {
+        row.cells.forEach(cell => {
           flattenedFootnotes.length >= 10
             ? cell.classes.push('q-table-footnote-column-card-layout--double')
             : cell.classes.push('q-table-footnote-column-card-layout--single');

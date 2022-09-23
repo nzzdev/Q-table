@@ -9,7 +9,7 @@ import ToggleRowsBtn from '@cps/toggleRowsBtn/ToggleRowsBtn.svelte';
 import Table from '@cps/table/Table.svelte';
 import CardLayout from './card/CardLayout.svelte';
 import { setContext } from 'svelte';
-import type { QTableSvelteProperties, QTableStateContext, QTableDataFormatted } from '@src/interfaces';
+import type { QTableSvelteProperties, QTableStateContext, Row } from '@src/interfaces';
 
 export let componentConfiguration: QTableSvelteProperties;
 
@@ -21,8 +21,8 @@ const originalPageSize = pageSize;
 const options = config.options;
 let pageIndex = 0;
 let page = 0;
-let visibleRows: QTableDataFormatted[][];
-let filteredRows: QTableDataFormatted[][];
+let visibleRows: Row[];
+let filteredRows: Row[];
 
 $: filteredRows = rows;
 $: visibleRows = filteredRows.slice(pageIndex, pageIndex + pageSize);

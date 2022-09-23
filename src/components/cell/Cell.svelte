@@ -1,13 +1,13 @@
 <script lang="ts">
 import type { ColorColumn } from '@helpers/colorColumn';
-import type { QTableConfig, QTableDataFormatted } from '@src/interfaces';
+import type { QTableConfig, Cell } from '@src/interfaces';
 
 export let item: QTableConfig;
-export let cell: QTableDataFormatted;
+export let cell: Cell;
 export let colorColumn: ColorColumn | null;
 export let rowIndex: number;
 export let colIndex: number;
-export let tableHead: QTableDataFormatted[];
+export let tableHead: Cell[];
 
 let styles: CellStyle;
 
@@ -36,11 +36,15 @@ function getCellStyles(colIndex: number, rowIndex: number): CellStyle {
 
   if (colorColumn !== null) {
     if (colorColumn.selectedColumn === colIndex) {
-      if (colorColumn.colors[rowIndex].customColor) {
-        styles += `background-color: ${colorColumn.colors[rowIndex].customColor};`;
+      if (colorColumn.colors[rowIndex]) {
+        if (colorColumn.colors[rowIndex].customColor) {
+          styles += `background-color: ${colorColumn.colors[rowIndex].customColor};`;
+        } else {
+          classes += colorColumn.colors[rowIndex].colorClass;
+          styles += 'background-color: currentColor;';
+        }
       } else {
-        classes += colorColumn.colors[rowIndex].colorClass;
-        styles += 'background-color: currentColor;';
+        console.log('Failed to get color for row', rowIndex, colIndex);
       }
     }
   }

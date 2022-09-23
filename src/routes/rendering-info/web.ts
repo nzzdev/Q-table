@@ -14,7 +14,7 @@ import type {
   DisplayOptions,
   QTableConfig,
   QTableConfigOptions,
-  QTableDataFormatted,
+  Row,
   QTableSvelteProperties,
   RenderingInfo,
   StyleHashMap,
@@ -97,7 +97,7 @@ const route: ServerRoute = {
     const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
     const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
 
-    let tableData: QTableDataFormatted[][] = [];
+    let tableData: Row[] = [];
 
     try {
       tableData = formatTableData(config.data.table, footnotes, options);
@@ -114,7 +114,7 @@ const route: ServerRoute = {
     const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
-      tableHead: tableData[0],
+      tableHead: tableData[0].cells,
       rows: tableData.slice(1),
       minibar,
       footnotes,

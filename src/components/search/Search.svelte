@@ -1,17 +1,17 @@
 <script lang="ts">
 import { getContext } from 'svelte';
-import type { QTableDataFormatted, QTableStateContext } from '@src/interfaces';
+import type { Row, QTableStateContext } from '@src/interfaces';
 
 const stateContext = getContext<QTableStateContext>('state');
 
 export let index = -1;
 export let text = '';
 
-export let filter = (row: QTableDataFormatted[], search: string): boolean => {
+export let filter = (row: Row, search: string): boolean => {
   search = search.toLowerCase();
 
-  for (let i = 0; i < row.length; i++) {
-    let columnValue = row[i].value || '';
+  for (let i = 0; i < row.cells.length; i++) {
+    let columnValue = row.cells[i].value || '';
     columnValue = columnValue.toString().toLowerCase();
 
     if (columnValue.indexOf(search) > -1) {

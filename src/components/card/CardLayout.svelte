@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { QTableSvelteProperties, QTableDataFormatted } from '@src/interfaces';
+import type { QTableSvelteProperties, Cell, Row } from '@src/interfaces';
 export let componentConfiguration: QTableSvelteProperties;
 
 const { tableHead } = componentConfiguration;
-export let rows: QTableDataFormatted[][];
+export let rows: Row[];
 
 function getHead(colIndex: number): string {
   const value = tableHead[colIndex].value;
@@ -25,7 +25,7 @@ function getFootnote(colIndex: number): string {
   return '';
 }
 
-function getCellFootnote(cell: QTableDataFormatted): string {
+function getCellFootnote(cell: Cell): string {
   if (cell.footnote) {
     const uni = cell.footnote.unicode;
     return `<span class="q-table--card-value-footnote">${uni}</span>`;
@@ -38,7 +38,7 @@ function getCellFootnote(cell: QTableDataFormatted): string {
 <div class="q-table--card-layout s-font-note">
   {#each rows as row}
     <div class="q-table--card-row">
-      {#each row as cell, colIndex}
+      {#each row.cells as cell, colIndex}
         <div class={`q-table--card-cell ${cell.classes.join(' ')} `}>
           <span class="q-table--card-cell-title">
             {getHead(colIndex)}{@html getFootnote(colIndex)}
