@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { getDataWithoutHeaderRow, getUniqueCategoriesCount } from '../../helpers/data.js';
-import type { Request } from '@hapi/hapi'
-import { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
+import type { Request } from '@hapi/hapi';
+import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
 
 export default {
   method: 'POST',
@@ -47,10 +47,10 @@ export default {
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  },
-  roles: string[],
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
+  roles: string[];
 }

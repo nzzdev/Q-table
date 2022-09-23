@@ -2,12 +2,12 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
   const item = uncastedItem as Item;
   const data = item.data;
 
-  let result: ReturnPayload = {
+  const result: ReturnPayload = {
     isChanged: false,
     item: null,
   };
 
-  let metaData: null | undefined | {} = null;
+  let metaData: null | undefined | Record<string, unknown> = null;
 
   if (data && typeof data === 'object' && !Array.isArray(data)) {
     metaData = data.metaData;
@@ -15,13 +15,13 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
 
   if (metaData === undefined || metaData === null) {
     const castedData = data as unknown[];
-    let slicedData = castedData.slice();
+    const slicedData = castedData.slice();
 
     item.data = {
       table: slicedData,
       metaData: {
-        cells: []
-      }
+        cells: [],
+      },
     };
 
     result.isChanged = true;
@@ -30,19 +30,18 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
   result.item = item;
 
   return result;
-};
-
+}
 
 interface Item {
-  data: Data | undefined | null | unknown[]
+  data: Data | undefined | null | unknown[];
 }
 
 interface Data {
-  table: unknown[],
-  metaData: {}
+  table: unknown[];
+  metaData: Record<string, unknown>;
 }
 
 interface ReturnPayload {
-  isChanged: boolean,
-  item: null | unknown,
+  isChanged: boolean;
+  item: null | unknown;
 }

@@ -1,13 +1,8 @@
 import Joi from 'joi';
 import { getNumberBuckets } from '../../helpers/colorColumn.js';
 import { getDataWithoutHeaderRow, getUniqueCategoriesCount } from '../../helpers/data.js';
-import type {
-  ColorColumnSettings,
-  DataMetaData,
-  QTableConfigOptions,
-  QTableDataRaw
-} from '../../interfaces';
-import type { Request, ServerRoute } from '@hapi/hapi'
+import type { ColorColumnSettings, DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces';
+import type { Request, ServerRoute } from '@hapi/hapi';
 
 const route: ServerRoute = {
   method: 'POST',
@@ -35,7 +30,7 @@ const route: ServerRoute = {
 
 export default route;
 
-function getMaxItemsNumerical(colorColumnSettings: ColorColumnSettings): ReturnPayload  {
+function getMaxItemsNumerical(colorColumnSettings: ColorColumnSettings): ReturnPayload {
   return {
     maxItems: getNumberBuckets(colorColumnSettings),
   };
@@ -61,13 +56,13 @@ function getMaxItemsCategorical(data: QTableDataRaw, colorColumnSettings: ColorC
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  }
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
 }
 
 interface ReturnPayload {
-  maxItems: undefined | number,
+  maxItems: undefined | number;
 }

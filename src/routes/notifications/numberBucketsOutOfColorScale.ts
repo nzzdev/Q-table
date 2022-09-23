@@ -1,7 +1,8 @@
 import Joi from 'joi';
 import * as colorColumnHelpers from '../../helpers/colorColumn.js';
-import { DataMetaData, DivergingType, DivergingColorScaleFromBucket, DivergingColorScaleFromBorder, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
-import type { Request, ServerRoute } from '@hapi/hapi'
+import { DivergingType } from '../../interfaces.js';
+import type { DataMetaData, DivergingColorScaleFromBucket, DivergingColorScaleFromBorder, QTableConfigOptions, QTableDataRaw } from '../../interfaces.js';
+import type { Request, ServerRoute } from '@hapi/hapi';
 
 const sequentialScaleMax = 7;
 const divergingScaleMax = sequentialScaleMax * 2;
@@ -24,24 +25,20 @@ const route: ServerRoute = {
       const item = payload.item;
       const colorColumnSettings = item.options.colorColumn;
       const { colorColumnType, numericalOptions } = colorColumnSettings;
-      let scale = numericalOptions.scale;
+      const scale = numericalOptions.scale;
 
       if (colorColumnType === 'numerical') {
-        let numberBuckets = colorColumnHelpers.getNumberBuckets(colorColumnSettings);
+        const numberBuckets = colorColumnHelpers.getNumberBuckets(colorColumnSettings);
 
         if (scale === 'sequential' && numberBuckets > sequentialScaleMax) {
-            return {
-              message: {
-                title: 'notifications.numberBucketsOutOfColorScale.title',
-                body: 'notifications.numberBucketsOutOfColorScale.body',
-              },
-            };
+          return {
+            message: {
+              title: 'notifications.numberBucketsOutOfColorScale.title',
+              body: 'notifications.numberBucketsOutOfColorScale.body',
+            },
+          };
         } else {
-
-          const a = scale as unknown as (DivergingColorScaleFromBucket|DivergingColorScaleFromBorder)[];
-          const divergingSpec = scale.split('-') as unknown as (DivergingColorScaleFromBucket|DivergingColorScaleFromBorder)[];
-
-
+          const divergingSpec = scale.split('-') as unknown as (DivergingColorScaleFromBucket | DivergingColorScaleFromBorder)[];
           const divergingType = divergingSpec[0] as DivergingType;
           const divergingIndex = parseInt(divergingSpec[1]);
 
@@ -82,10 +79,10 @@ export default route;
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  },
-  roles: string[],
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
+  roles: string[];
 }
