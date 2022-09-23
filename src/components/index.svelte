@@ -13,7 +13,7 @@ import type { QTableSvelteProperties, QTableStateContext, QTableDataFormatted } 
 
 export let componentConfiguration: QTableSvelteProperties;
 
-const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, usePagination } = componentConfiguration;
+const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, usePagination, width } = componentConfiguration;
 
 let { pageSize } = componentConfiguration;
 
@@ -72,9 +72,19 @@ function shouldShowMoreRowsBtn(): boolean {
 function shouldShowPagination(): boolean {
   return noInteraction === false && typeof pageSize === 'number' && usePagination === true;
 }
+
+// Setup specific class for different devices.
+// The reason we use classes instead of media queries is that media queries
+// do not get triggered by preview buttons in the editor.
+let cls = '';
+if (width) {
+  if (width <= 420) {
+    cls = 'q-table-mobile';
+  }
+}
 </script>
 
-<div {id} class="s-q-item q-table-holder">
+<div {id} class="s-q-item q-table-holder {cls}">
   {#if shouldShowTitle()}
     <h3 class="s-q-item__title">{config.title}</h3>
   {/if}

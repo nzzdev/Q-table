@@ -144,10 +144,6 @@ tr.q-table-state-visible {
   min-width: 140px;
 }
 
-.q-table-minibar-cell-mobile {
-  min-width: 50px !important;
-}
-
 .q-table-minibar-cell--value {
   background-color: rgba(200, 200, 200, 0.15);
 }
@@ -218,10 +214,10 @@ tr.q-table-state-visible {
     width: 100%;
 
     &--colorColumn {
-      position: absolute;
       font-size: 11px;
-      margin-top: -5.5px;
-      margin-left: 1px;
+      left: 100%;
+      position: absolute;
+      top: -7px;
 
       sup {
         color: currentColor;
@@ -242,6 +238,12 @@ tr.q-table-state-visible {
   &-column {
     &--single {
       padding-right: 8px !important;
+
+      > span {
+        /* Need this so the annotation footnotes can be positioned correctly. */
+        display: inline-block;
+        position: relative;
+      }
     }
 
     &--double {
@@ -462,5 +464,17 @@ tr.q-table-state-visible {
       margin-top: 16px;
       margin-bottom: 12px;
     }
+  }
+}
+
+/**
+ * Mobile view: 400px and lower.
+ * If you change this you must also change
+ * the detection check in src/index.svelte.
+ */
+
+.q-table-mobile {
+  .q-table-minibar-cell {
+    min-width: 50px !important;
   }
 }

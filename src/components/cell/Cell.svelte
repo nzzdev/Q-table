@@ -67,12 +67,12 @@ interface CellStyle {
         {:else if cell.value}
           {cell.value}
         {/if}
+        {#if cell.footnote.value}
+          <span class="q-table-footnote-annotation--colorColumn {colorColumn.colors[rowIndex].textColor}">
+            <sup>{cell.footnote.value}</sup>
+          </span>
+        {/if}
       </span>
-      {#if cell.footnote.value}
-        <span class="q-table-footnote-annotation--colorColumn {colorColumn.colors[rowIndex].textColor}">
-          <sup>{cell.footnote.value}</sup>
-        </span>
-      {/if}
     {:else}
       <span class={colorColumn.colors[rowIndex].textColor}>
         {#if colorColumn.colorColumnType === 'numerical'}
