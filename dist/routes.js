@@ -2385,7 +2385,9 @@ var schema$1 = {
 	required: required
 };
 
-const ajv = new Ajv();
+const ajv = new Ajv({
+    strict: false,
+});
 const validate = ajv.compile(schema$1);
 const route$f = {
     method: 'POST',
@@ -2395,20 +2397,23 @@ const route$f = {
             options: {
                 allowUnknown: true,
             },
-            payload: (payload) => __awaiter(void 0, void 0, void 0, function* () {
+            payload: payload => {
                 const payloadTyped = payload;
                 const item = payloadTyped.item;
                 const toolRuntimeConfig = payloadTyped.toolRuntimeConfig;
                 if (typeof payloadTyped !== 'object' || typeof item !== 'object' || typeof toolRuntimeConfig !== 'object') {
                     throw Boom.badRequest('The given payload for this route is not correct.');
                 }
-                if (yield validate(item)) {
-                    return item;
+                if (validate(item)) {
+                    // return new Promise(item);
+                    return new Promise(resolve => {
+                        resolve(item);
+                    });
                 }
                 else {
                     throw Boom.badRequest(JSON.stringify(validate.errors));
                 }
-            }),
+            },
         },
     },
     handler: function (request) {

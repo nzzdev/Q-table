@@ -22,7 +22,9 @@ import type {
   WebPayload,
 } from '@src/interfaces';
 
-const ajv = new Ajv();
+const ajv = new Ajv({
+  strict: false,
+});
 const validate = ajv.compile(schemaString);
 
 const route: ServerRoute = {
@@ -33,7 +35,7 @@ const route: ServerRoute = {
       options: {
         allowUnknown: true,
       },
-      payload: async payload => {
+      payload: payload => {
         const payloadTyped = payload as WebPayload;
         const item = payloadTyped.item;
         const toolRuntimeConfig = payloadTyped.toolRuntimeConfig;
@@ -42,8 +44,10 @@ const route: ServerRoute = {
           throw Boom.badRequest('The given payload for this route is not correct.');
         }
 
-        if (await validate(item)) {
-          return item;
+        if (validate(item)) {
+          return new Promise(resolve => {
+            resolve(item);
+          });
         } else {
           throw Boom.badRequest(JSON.stringify(validate.errors));
         }
