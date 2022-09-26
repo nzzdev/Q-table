@@ -3,8 +3,8 @@ import Joi from 'joi';
 import { getNumericColumns } from '../helpers/data.js';
 import { getMinibarNumbersWithType } from '../helpers/minibars.js';
 import { hasCustomBuckets } from '../helpers/colorColumn.js';
-import type { AvailabilityResponseObject, QTableConfig, WebPayload } from '../interfaces';
-import type { Request } from 'hapi__hapi'
+import type { AvailabilityResponseObject, WebPayload } from '../interfaces';
+import type { Request } from 'hapi__hapi';
 
 export default {
   method: 'POST',
@@ -16,7 +16,7 @@ export default {
   },
   handler: function (request: Request): AvailabilityResponseObject | Boom.Boom {
     const payload = request.payload as WebPayload;
-    const item = payload.item as QTableConfig;
+    const item = payload.item;
     const optionName = request.params.optionName as string;
 
     if (optionName === 'cardLayoutIfSmall') {
@@ -35,11 +35,7 @@ export default {
       let isAvailable = false;
 
       if (item.data.table.length !== 0) {
-        if (
-          !item.options.cardLayout &&
-          item.data.table[0].length >= 2 &&
-          getNumericColumns(item.data.table).length >= 1
-        ) {
+        if (!item.options.cardLayout && item.data.table[0].length >= 2 && getNumericColumns(item.data.table).length >= 1) {
           isAvailable = true;
         }
       }
@@ -51,23 +47,16 @@ export default {
     // properties minibar
     if (item.options.minibar !== null && item.options.minibar !== undefined) {
       if (optionName === 'barColor') {
-        let isAvailable =
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined;
+        const isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
         return {
           available: isAvailable,
         };
       }
 
       if (optionName === 'barColorPositive') {
-        let isAvailable =
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined;
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
         if (isAvailable) {
-          let type = getMinibarNumbersWithType(
-            item.data.table,
-            item.options.minibar.selectedColumn
-          ).type;
+          const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
           isAvailable = type === 'mixed' || type === 'positive';
         }
         return {
@@ -76,14 +65,9 @@ export default {
       }
 
       if (optionName === 'barColorNegative') {
-        let isAvailable =
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined;
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
         if (isAvailable) {
-          let type = getMinibarNumbersWithType(
-            item.data.table,
-            item.options.minibar.selectedColumn
-          ).type;
+          const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
           isAvailable = type === 'mixed' || type === 'negative';
         }
         return {
@@ -92,14 +76,9 @@ export default {
       }
 
       if (optionName === 'invertColors') {
-        let isAvailable =
-          item.options.minibar.selectedColumn !== null &&
-          item.options.minibar.selectedColumn !== undefined;
+        let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
         if (isAvailable) {
-          let type = getMinibarNumbersWithType(
-            item.data.table,
-            item.options.minibar.selectedColumn
-          ).type;
+          const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
           isAvailable = type === 'mixed';
         }
         return {
@@ -112,11 +91,7 @@ export default {
       let isAvailable = false;
 
       if (item.data.table.length > 2) {
-        if (
-          !item.options.cardLayout &&
-          item.data.table[0].length >= 2 &&
-          item.data.table.length >= 1
-        ) {
+        if (!item.options.cardLayout && item.data.table[0].length >= 2 && item.data.table.length >= 1) {
           isAvailable = true;
         }
       }
@@ -126,51 +101,29 @@ export default {
     }
 
     // properties colorColumn
-    if (
-      item.options.colorColumn !== null &&
-      item.options.colorColumn !== undefined
-    ) {
+    if (item.options.colorColumn !== null && item.options.colorColumn !== undefined) {
       if (optionName === 'isNumerical') {
         return {
-          available:
-            item.options.colorColumn.selectedColumn !== null &&
-            item.options.colorColumn.colorColumnType === 'numerical',
+          available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.colorColumnType === 'numerical',
         };
       }
 
       if (optionName === 'isCategorical') {
         return {
-          available:
-            item.options.colorColumn.selectedColumn !== null &&
-            item.options.colorColumn.colorColumnType === 'categorical',
+          available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.colorColumnType === 'categorical',
         };
       }
 
-      if (
-        [
-          'colorColumnType',
-          'bucketType',
-          'colorScale',
-          'colorOverwritesItem',
-          'colorScheme',
-          'customCategoriesOrder',
-        ].includes(optionName)
-      ) {
+      if (['colorColumnType', 'bucketType', 'colorScale', 'colorOverwritesItem', 'colorScheme', 'customCategoriesOrder'].includes(optionName)) {
         return {
-          available:
-            item.options.colorColumn.selectedColumn !== null &&
-            item.options.colorColumn.selectedColumn !== undefined,
+          available: item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined,
         };
       }
 
       if (optionName === 'customBuckets') {
-        let isAvailable =
-          item.options.colorColumn.selectedColumn !== null &&
-          item.options.colorColumn.selectedColumn !== undefined;
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = hasCustomBuckets(
-            item.options.colorColumn.numericalOptions.bucketType
-          );
+          isAvailable = hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
         }
         return {
           available: isAvailable,
@@ -178,13 +131,9 @@ export default {
       }
 
       if (optionName === 'numberBuckets') {
-        let isAvailable =
-          item.options.colorColumn.selectedColumn !== null &&
-          item.options.colorColumn.selectedColumn !== undefined;
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable = !hasCustomBuckets(
-            item.options.colorColumn.numericalOptions.bucketType
-          );
+          isAvailable = !hasCustomBuckets(item.options.colorColumn.numericalOptions.bucketType);
         }
         return {
           available: isAvailable,
@@ -192,13 +141,9 @@ export default {
       }
 
       if (optionName === 'customColors') {
-        let isAvailable =
-          item.options.colorColumn.selectedColumn !== null &&
-          item.options.colorColumn.selectedColumn !== undefined;
+        let isAvailable = item.options.colorColumn.selectedColumn !== null && item.options.colorColumn.selectedColumn !== undefined;
         if (isAvailable) {
-          isAvailable =
-            item.options.colorColumn.numericalOptions.scale === 'sequential' ||
-            item.options.colorColumn.colorColumnType === 'categorical';
+          isAvailable = item.options.colorColumn.numericalOptions.scale === 'sequential' || item.options.colorColumn.colorColumnType === 'categorical';
         }
         return {
           available: isAvailable,

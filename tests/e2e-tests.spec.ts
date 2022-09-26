@@ -1,12 +1,19 @@
-import Hapi from'@hapi/hapi';
+/**
+ * @jest-environment jsdom
+ */
+import Hapi from '@hapi/hapi';
 import Joi from 'joi';
 import * as fixtures from '../resources/fixtures/data';
 import { getAvailabilityResponse, getMarkup, getScripts, getStylesheets } from './helpers';
+import type { SelectedColumnMinibarReturnPayload } from '../src/routes/dynamic-schemas/selectedColumnMinibar';
+import type { SelectedColorColumnReturnPayload } from '../src/routes/dynamic-schemas/selectedColorColumn';
+
+// We ignore because this will be built before you run the tests.
 // @ts-ignore
 import routes from '../dist/routes.js';
-import { SelectedColumnMinibarReturnPayload } from '../src/routes/dynamic-schemas/selectedColumnMinibar';
-import { SelectedColorColumnReturnPayload } from '../src/routes/dynamic-schemas/selectedColorColumn';
 
+// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
+global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
 let server: Hapi.Server;
 
 // Start the server before the tests.
@@ -57,8 +64,10 @@ describe('rendering-info/web', () => {
     const stylesheets = getStylesheets(response.result);
     const scripts = getScripts(response.result);
 
-    const foundMarkup = markup.includes('<div class="s-q-item q-table" id="q_table_someid_');
-    expect(foundMarkup).toBe(true);
+    const foundMarkupId = markup.includes('id="q_table_someid_');
+    const foundMarkupClass = markup.includes('class="q-table-container"');
+    expect(foundMarkupId).toBe(true);
+    expect(foundMarkupClass).toBe(true);
 
     const foundStylesheet = stylesheets[0].name.startsWith('q-table.');
     expect(foundStylesheet).toBe(true);
@@ -225,12 +234,7 @@ describe('dynamic schema endpoint', () => {
     const result = response.result as SelectedColumnMinibarReturnPayload;
 
     expect(result.enum).toEqual([null, 1, 2, 3]);
-    expect(result['Q:options'].enum_titles).toEqual([
-      'keine',
-      '2016',
-      '2017',
-      '+/- %',
-    ]);
+    expect(result['Q:options'].enum_titles).toEqual(['keine', '2016', '2017', '+/- %']);
   });
 
   it('returns enums of colorColumn selectedColumn', async () => {
@@ -246,13 +250,7 @@ describe('dynamic schema endpoint', () => {
     const result = response.result as SelectedColorColumnReturnPayload;
 
     expect(result.enum).toEqual([null, 0, 1, 2, 3]);
-    expect(result['Q:options'].enum_titles).toEqual([
-      'keine',
-      'String',
-      'Number',
-      'Number',
-      'String',
-    ]);
+    expect(result['Q:options'].enum_titles).toEqual(['keine', 'String', 'Number', 'Number', 'String']);
   });
 });
 

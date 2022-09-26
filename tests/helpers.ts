@@ -6,12 +6,12 @@ export function getMarkup(result: object | undefined): string {
   return casted.markup;
 }
 
-export function getScripts(result: object | undefined): {content: string}[] {
+export function getScripts(result: object | undefined): { content: string }[] {
   const casted = result as RenderingInfo;
   return casted.scripts;
 }
 
-export function getStylesheets(result: object | undefined): {name: string}[] {
+export function getStylesheets(result: object | undefined): { name: string }[] {
   const casted = result as RenderingInfo;
   return casted.stylesheets;
 }
@@ -21,9 +21,8 @@ export function getAvailabilityResponse(result: object | undefined): boolean {
   return casted.available;
 }
 
-
 export function element(markup: string, selector: string): Promise<HTMLElement> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const dom = new JSDOM(markup);
 
     // We cast it because if it does not exist the test will simply crash.
@@ -34,7 +33,7 @@ export function element(markup: string, selector: string): Promise<HTMLElement> 
 }
 
 export function elements(markup: string, selector: string): Promise<NodeListOf<HTMLElement>> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const dom = new JSDOM(markup);
 
     // We cast it because if it does not exist the test will simply crash.
@@ -45,8 +44,12 @@ export function elements(markup: string, selector: string): Promise<NodeListOf<H
 }
 
 export function elementCount(markup: string, selector: string): Promise<number> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const dom = new JSDOM(markup);
     resolve(dom.window.document.querySelectorAll(selector).length);
   });
+}
+
+export function createDOM(markup: string): JSDOM {
+  return new JSDOM(markup, { runScripts: 'dangerously' });
 }

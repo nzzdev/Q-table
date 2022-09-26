@@ -1,109 +1,95 @@
-<script>
-  export let item;
-  export let tableData;
-  export let cell;
-  export let minibar;
-  export let colIndex;
-  export let rowIndex;
-  export let initWithCardLayout;
+<script lang="ts">
+import type { Minibar } from 'src/helpers/minibars';
+import type { QTableConfig, Cell, Row } from 'src/interfaces';
 
-  // this has to be done because the tableData will be sliced before iterating
-  rowIndex += 1;
+export let item: QTableConfig;
+export let tableData: Row[];
+export let cell: Cell;
+export let minibar: Minibar;
+export let colIndex: number;
+export let rowIndex: number;
 
-  function getDataLabelAttribute() {
-    let dataLabel = "";
-    if (item.options.hideTableHeader !== true) {
-      dataLabel = tableData[0][colIndex].value;
-      if (
-        (item.options.cardLayout || item.options.cardLayoutIfSmall) &&
-        tableData[0][colIndex].footnote &&
-        rowIndex === 0
-      ) {
-        dataLabel += tableData[0][colIndex].footnote.unicode;
-      }
+const options = item.options;
+const { cardLayout, cardLayoutIfSmall } = options;
+
+// this has to be done because the tableData will be sliced before iterating
+rowIndex += 1;
+
+function getDataLabelAttribute(): string {
+  let dataLabel = '';
+
+  if (item.options.hideTableHeader !== true) {
+    const cell = tableData[0].cells[colIndex];
+    dataLabel = cell.value || '';
+    const footnote = cell.footnote;
+
+    if ((cardLayout || cardLayoutIfSmall) && footnote && rowIndex === 0) {
+      dataLabel += footnote.unicode;
     }
-    return dataLabel;
   }
 
-  function getMinibarColor() {
-    return minibar.values[rowIndex].type === "positive"
-      ? minibar.barColor.positive.colorCode
-      : minibar.barColor.negative.colorCode;
+  return dataLabel;
+}
+
+function getMinibarColor(): string {
+  return minibar.values[rowIndex].type === 'positive' ? minibar.barColor.positive.colorCode : minibar.barColor.negative.colorCode;
+}
+
+function getMinibarClasses(): string {
+  let classes = '';
+
+  if (options.minibar.selectedColumn === colIndex) {
+    classes = 'q-table-minibar--mixed';
+  } else {
+    classes = `q-table__cell--${cell.type}`;
   }
 
-  function getMinibarClasses() {
-    let classes = "";
-    if (
-      item.options.minibar.selectedColumn === colIndex &&
-      !initWithCardLayout
-    ) {
-      classes = "q-table-minibar--mixed";
-    } else {
-      classes = `q-table__cell--${cell.type}`;
-    }
-    return classes;
+  return classes;
+}
+
+function getFootnoteClasses(): string {
+  if (cell.footnote && minibar.values[rowIndex].type === 'positive') {
+    return cell.footnote.class || '';
   }
 
-  function getFootnoteClasses() {
-    if (cell.footnote) {
-      return minibar.values[rowIndex].type === "positive"
-        ? cell.footnote.class
-        : "";
-    }
-    return "";
-  }
+  return '';
+}
 
-  function getMinibarClassName() {
-    return minibar.values[rowIndex].type === "positive"
-      ? minibar.barColor.positive.className
-      : minibar.barColor.negative.className;
-  }
+function getMinibarClassName(): string {
+  return minibar.values[rowIndex].type === 'positive' ? minibar.barColor.positive.className : minibar.barColor.negative.className;
+}
 </script>
 
-<td
-  data-label={getDataLabelAttribute()}
-  data-minibar={minibar.type}
-  class="q-table__cell {cell.classes.join(' ')} {getMinibarClasses()}">
-  {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
+<td data-label={getDataLabelAttribute()} data-minibar={minibar.type} class="q-table__cell {cell.classes.join(' ')} {getMinibarClasses()}">
+  {#if item.options.minibar.selectedColumn === colIndex}
     <div
       data-minibar={minibar.values[rowIndex].type}
       class="q-table-minibar-alignment--{minibar.values[rowIndex].type} q-table__cell q-table__cell--{cell.type} {getFootnoteClasses()}">
       {#if cell.footnote}
-        <span
-          data-annotation={cell.footnote.value}
-          class="q-table-footnote-annotation">
+        <span data-annotation={cell.footnote.value} class="q-table-footnote-annotation">
           {#if cell.value}
             {cell.value}
           {/if}
         </span>
-      {:else}  
-        {#if cell.value}
-          {cell.value}
-        {/if}
+      {:else if cell.value}
+        {cell.value}
       {/if}
     </div>
   {:else if cell.footnote}
-    <span
-      data-annotation={cell.footnote.value}
-      class="q-table-footnote-annotation">
+    <span data-annotation={cell.footnote.value} class="q-table-footnote-annotation">
       {#if cell.value}
         {cell.value}
       {/if}
     </span>
-  {:else}
-    {#if cell.value}
-      {cell.value}
-    {/if}
+  {:else if cell.value}
+    {cell.value}
   {/if}
-  {#if item.options.minibar.selectedColumn === colIndex && !initWithCardLayout}
-    {#if minibar.values[rowIndex].type !== "empty"}
+  {#if item.options.minibar.selectedColumn === colIndex}
+    {#if minibar.values[rowIndex].type !== 'empty'}
       <div
         data-minibar={minibar.values[rowIndex].type}
-        class="q-table-minibar-bar--{minibar.values[rowIndex]
-          .type} q-table-minibar--{minibar.values[rowIndex]
-          .type} {getMinibarClassName()}"
-        style="width: {minibar.values[rowIndex]
-          .value}%; background-color: {getMinibarColor()}" />
+        class="q-table-minibar-bar--{minibar.values[rowIndex].type} q-table-minibar--{minibar.values[rowIndex].type} {getMinibarClassName()}"
+        style="width: {minibar.values[rowIndex].value}%; background-color: {getMinibarColor()}" />
     {/if}
   {/if}
 </td>

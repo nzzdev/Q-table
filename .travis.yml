@@ -4,16 +4,20 @@ services:
   - docker
 language: node_js
 node_js:
-  - "16"
+  - '16'
 cache:
   directories:
     - node_modules
 install:
+  - npm set-script prepare ""
   - npm install
 before_script:
   - DOCKER_IMAGE_NAME="q-table"
   - DOCKER_TAG=${TRAVIS_BRANCH//[^a-zA-Z0-9\_\-\.]/_}
 script:
+  - npm run lint
+  - npm run ts-check
+  - npm run svelte-check
   - npm run build
   - npm run jest
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker build -t $DOCKER_IMAGE_NAME:$DOCKER_TAG .; fi'

@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import {getNumericColumns } from '../../helpers/data.js';
+import { getNumericColumns } from '../../helpers/data.js';
 import type { DataMetaData, QTableConfigOptions, QTableDataRaw } from '../../interfaces';
 import type { Request, ServerRoute } from '@hapi/hapi';
 
@@ -34,7 +34,7 @@ function getMinibarDropdownSettings(data: QTableDataRaw): DropdownSettings {
   const dropdownSettings: DropdownSettings = {
     ids: [null],
     titles: ['keine'],
-  }
+  };
 
   // If data is available we all add all numeric columns to the dropdown.
   if (data.length > 0) {
@@ -59,21 +59,21 @@ export default route;
 interface Payload {
   item: {
     data: {
-      table: QTableDataRaw,
-      metaData: DataMetaData,
-    },
-    options: QTableConfigOptions,
-  }
+      table: QTableDataRaw;
+      metaData: DataMetaData;
+    };
+    options: QTableConfigOptions;
+  };
 }
 
 interface DropdownSettings {
-  ids: (number | null)[],
-  titles: string[],
+  ids: (number | null)[];
+  titles: string[];
 }
 
 export interface SelectedColumnMinibarReturnPayload {
-  enum: (number | null)[],
+  enum: (number | null)[];
   'Q:options': {
-    enum_titles: string[]
-  },
+    enum_titles: string[];
+  };
 }

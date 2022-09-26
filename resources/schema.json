@@ -128,6 +128,16 @@
       "title": "Optionen",
       "type": "object",
       "properties": {
+        "pageSize": {
+          "title": "Zeilen ausblenden nach",
+          "type": "number",
+          "default": 10
+        },
+        "usePagination": {
+          "title": "Paginierung",
+          "type": "boolean",
+          "default": false
+        },
         "hideTableHeader": {
           "title": "Spaltenüberschriften ausblenden",
           "type": "boolean",

@@ -14,15 +14,18 @@ const route: ServerRoute = {
     tags: ['api'],
     validate: {
       params: {
-        lng: Joi.string().required()
-      }
-    }
+        lng: Joi.string().required(),
+      },
+    },
   },
   handler: (request: Request, h: ResponseToolkit) => {
-    return h
-      .file(localesDir + request.params.lng + '/translation.json')
-      .type('application/json');
-  }
+    const params = request.params as Params;
+    return h.file(localesDir + params.lng + '/translation.json').type('application/json');
+  },
 };
 
 export default route;
+
+interface Params {
+  lng: string;
+}

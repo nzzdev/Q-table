@@ -1,43 +1,31 @@
-// These lines make "require" available.
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
-import type { Request, ServerRoute } from '@hapi/hapi';
-import type { AvailabilityResponseObject, QTableConfig, RenderingInfo, WebPayload, WebContextObject, QTableDataFormatted  } from '../../interfaces';
-
-// Require tools.
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
-import UglifyJS from 'uglify-js';
+import getExactPixelWidth from '@helpers/toolRuntimeConfig.js';
+import { getColorColumn } from '@helpers/colorColumn.js';
+import { getDataWithoutHeaderRow, formatTableData } from '@helpers/data.js';
+import { getFootnotes } from '@helpers/footnotes.js';
+import { getMinibar } from '@helpers/minibars.js';
+import { readFileSync } from 'fs';
+import schemaString from '@rs/schema.json';
+import type { Request, ServerRoute } from '@hapi/hapi';
+import type { ColorColumn } from '@helpers/colorColumn.js';
+import type {
+  AvailabilityResponseObject,
+  DisplayOptions,
+  QTableConfig,
+  QTableConfigOptions,
+  Row,
+  QTableSvelteProperties,
+  RenderingInfo,
+  StyleHashMap,
+  ToolRuntimeConfig,
+  WebPayload,
+} from '@src/interfaces';
 
-// Directories.
-const stylesDir = './styles/';
-
-import tableTemplate from '../../components/Table.svelte';
-
-// Fill only exists in dist folder.
-const styleHashMap = require(`${stylesDir}/hashMap.json`);
-
-import getExactPixelWidth from '../../helpers/toolRuntimeConfig.js';
-
-import { getDataWithoutHeaderRow, formatTableData } from '../../helpers/data.js';
-import { getMinibar } from '../../helpers/minibars.js';
-import { ColorColumn, getColorColumn } from '../../helpers/colorColumn.js';
-import * as renderingInfoScripts from '../../helpers/renderingInfoScript.js';
-import { getFootnotes } from '../../helpers/footnotes.js';
-
-import schemaString from '../../../resources/schema.json';
-
-const ajv = new Ajv();
+const ajv = new Ajv({
+  strict: false,
+});
 const validate = ajv.compile(schemaString);
-
-function validateAgainstSchema(item: QTableConfig) {
-  if (validate(item)) {
-    return item;
-  } else {
-    throw Boom.badRequest(JSON.stringify(validate.errors));
-  }
-}
 
 const route: ServerRoute = {
   method: 'POST',
@@ -47,199 +35,134 @@ const route: ServerRoute = {
       options: {
         allowUnknown: true,
       },
-      payload: async (payload: WebPayload) => {
-        if (
-          typeof payload !== 'object' ||
-          typeof payload.item !== 'object' ||
-          typeof payload.toolRuntimeConfig !== 'object'
-        ) {
+      payload: payload => {
+        const payloadTyped = payload as WebPayload;
+        const item = payloadTyped.item;
+        const toolRuntimeConfig = payloadTyped.toolRuntimeConfig;
+
+        if (typeof payloadTyped !== 'object' || typeof item !== 'object' || typeof toolRuntimeConfig !== 'object') {
           throw Boom.badRequest('The given payload for this route is not correct.');
         }
 
-        await validateAgainstSchema(payload.item);
+        if (validate(item)) {
+          return new Promise(resolve => {
+            resolve(item);
+          });
+        } else {
+          throw Boom.badRequest(JSON.stringify(validate.errors));
+        }
       },
     },
   },
   handler: async function (request: Request) {
-    const renderingInfo: RenderingInfo = {
-      polyfills: ['Promise'],
-      stylesheets: [{
-        name: styleHashMap['q-table'],
-      }],
-      scripts: [],
-      markup: '',
-    };
+    const id = createId(request);
+    let qtableCompiledScript = '';
+    let styleHashMap: StyleHashMap | null = null;
 
-    const payload = request.payload as WebPayload;
+    try {
+      qtableCompiledScript = readFileSync('dist/Q-Table.js', {
+        encoding: 'utf-8',
+      });
+    } catch (e) {
+      console.log('Failed reading compiled Q-Table code - ', e);
+    }
+
+    try {
+      const rawString = readFileSync('dist/styles/hashMap.json', {
+        encoding: 'utf-8',
+      });
+
+      styleHashMap = JSON.parse(rawString) as StyleHashMap;
+    } catch (e) {
+      console.log('Failed reading compiled style hashmap - ', e);
+    }
+
+    const payload = request.orig.payload as WebPayload;
 
     // Extract table configurations.
     const config = payload.item;
-    const toolRuntimeConfig = payload.toolRuntimeConfig;
+
+    const toolRuntimeConfig = payload.toolRuntimeConfig || {};
+    const displayOptions = toolRuntimeConfig.displayOptions || ({} as DisplayOptions);
     const options = config.options;
 
-    let width = getExactPixelWidth(toolRuntimeConfig);
+    let colorColumn: ColorColumn | null = null;
+    const width = getExactPixelWidth(toolRuntimeConfig);
 
     const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-
     const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+    const dataLength = dataWithoutHeaderRow.length;
     const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
 
     const minibarsAvailable = await areMinibarsAvailable(request, config);
-    const colorColumnAvailable = await isColorColumnAvailable(request, config);
+    const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
 
-    let tableData: QTableDataFormatted[][] = [];
+    const colorColumnAvailable = await isColorColumnAvailable(request, config);
+    const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
+    const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
+
+    let tableData: Row[] = [];
 
     try {
       tableData = formatTableData(config.data.table, footnotes, options);
     } catch (e) {
-      console.error('Execption during formatting table data', e);
+      console.error('Execption during formatting table data - ', e);
     }
-
-    const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
-    let colorColumn: ColorColumn | null = null;
 
     try {
       colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
     } catch (e) {
-      console.error('Execption during creating colorColumn', e);
+      console.error('Execption during creating colorColumn - ', e);
     }
 
-    const context: WebContextObject = {
+    const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
-      tableData,
+      tableHead: tableData[0].cells,
+      rows: tableData.slice(1),
       minibar,
       footnotes,
       colorColumn,
-      numberOfRows: config.data.table.length - 1, // do not count the header
-      displayOptions: payload.toolRuntimeConfig.displayOptions || {},
+      numberOfRows: dataLength, // do not count the header
+      displayOptions: displayOptions,
       noInteraction: payload.toolRuntimeConfig.noInteraction || false,
-      id: `q_table_${request.query._id}_${Math.floor(
-        Math.random() * 100000
-      )}`.replace(/-/g, ''),
+      id,
       width,
-      initWithCardLayout: false,
-      numberOfRowsToHide: undefined,
+      initWithCardLayout,
+      usePagination: options.usePagination || false,
+      pageSize,
+      hideTableHeader: options.hideTableHeader,
     };
 
-    // if we have a width and cardLayoutIfSmall is true, we will initWithCardLayout
-    if (
-      context.width &&
-      context.width < 400 &&
-      config.options.cardLayoutIfSmall
-    ) {
-      context.initWithCardLayout = true;
-    } else if (config.options.cardLayout) {
-      context.initWithCardLayout = true;
-    }
+    const renderingInfo: RenderingInfo = {
+      polyfills: ['Promise'],
+      stylesheets: [],
+      scripts: [
+        {
+          content: qtableCompiledScript,
+        },
+        {
+          content: `
+          (function () {
+            var target = document.querySelector('#${id}_container');
+            target.innerHTML = "";
+            var props = ${JSON.stringify(props)};
+            new window.q_table({
+              "target": target,
+              "props": {
+                componentConfiguration: props
+              }
+            })
+          })();`,
+        },
+      ],
+      markup: `<div id="${id}_container" class="q-table-container" />`,
+    };
 
-    // calculate the number of rows to hide
-
-    // if we init with card layout, we need to have minimum of 6 rows to hide all but 3 of them
-    // this calculation here is not correct if we didn't get the width, as it doesn't take small/wide layout into account
-    // but it's good enough to already apply display: none; in the markup to not use the complete height until the stylesheets/scripts are loaded
-    if (context.initWithCardLayout && context.numberOfRows >= 6) {
-      context.numberOfRowsToHide = context.numberOfRows - 3; // show 3 initially
-    } else if (context.numberOfRows >= 15) {
-      // if we init without cardLayout, we hide rows if we have more than 15
-      context.numberOfRowsToHide = context.numberOfRows - 10; // show 10 initially
-    }
-
-    // if we have toolRuntimeConfig.noInteraction, we do not hide rows because showing them is not possible
-    if (toolRuntimeConfig.noInteraction) {
-      context.numberOfRowsToHide = undefined;
-    }
-
-    try {
-      renderingInfo.markup = (tableTemplate as any).render(context).html
-    } catch (ex) {
-      console.log('Failed rendering html', ex);
-    }
-
-
-    // the scripts need to know if we are confident that the numberOfRowsToHide is correct
-    // it's only valid if we had a fixed width given in toolRuntimeConfig, otherwise we reset it here to be calculated by the scripts again
-    if (context.width === undefined) {
-      context.numberOfRowsToHide = undefined;
-    }
-
-    let possibleToHaveToHideRows = false;
-
-    // if we show cards, we hide if more or equal than 6
-    if (config.options.cardLayout && context.numberOfRows >= 6) {
-      possibleToHaveToHideRows = true;
-    }
-    // if we have cards for small, we hide if more or equal than 6
-    if (
-      config.options.cardLayoutIfSmall && // we have cardLayoutIfSmall
-      (context.width === undefined || context.width < 400) && // width is unknown or below 400px
-      context.numberOfRows >= 6 // more than 6 rows
-    ) {
-      possibleToHaveToHideRows = true;
-    }
-    // if we have more than 15 rows, we probably have to hide rows
-    if (context.numberOfRows >= 15) {
-      possibleToHaveToHideRows = true;
-    }
-
-    if (toolRuntimeConfig.noInteraction) {
-      possibleToHaveToHideRows = false;
-    }
-
-    // if we are going to add any script, we want the default script first
-    if (
-      (config.options.cardLayout === false &&
-        config.options.cardLayoutIfSmall === true) ||
-      possibleToHaveToHideRows ||
-      context.minibar !== null ||
-      context.colorColumn !== null
-    ) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getDefaultScript(context),
+    if (styleHashMap !== null) {
+      renderingInfo.stylesheets.push({
+        name: styleHashMap['q-table'],
       });
-    }
-
-    // if we have cardLayoutIfSmall, we need to measure the width to set the class
-    // not needed if we have cardLayout all the time
-    if (
-      config.options.cardLayout === false &&
-      config.options.cardLayoutIfSmall === true
-    ) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getCardLayoutScript(context),
-      });
-    }
-
-    if (possibleToHaveToHideRows) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getShowMoreButtonScript(context),
-      });
-    }
-
-    if (
-      context.noInteraction !== true &&
-      config.options.showTableSearch === true
-    ) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getSearchFormInputScript(context),
-      });
-    }
-
-    if (context.minibar !== null) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getMinibarsScript(context),
-      });
-    }
-
-    if (context.colorColumn !== null) {
-      renderingInfo.scripts.push({
-        content: renderingInfoScripts.getColorColumnScript(context),
-      });
-    }
-
-    // minify the scripts
-    for (let script of renderingInfo.scripts) {
-      script.content = UglifyJS.minify(script.content).code;
     }
 
     return renderingInfo;
@@ -276,6 +199,49 @@ async function isColorColumnAvailable(request: Request, config: QTableConfig): P
     console.log('Error receiving result for /option-availability/selectedColorColumn', result);
     return false;
   }
+}
+
+function createId(request: Request): string {
+  return `q_table_${request.query._id}_${Math.floor(Math.random() * 100000)}`.replace(/-/g, '');
+}
+
+function calculatePageSize(totalAmountOfRows: number, initWithCardLayout: boolean, options: QTableConfigOptions, toolRuntimeConfig: ToolRuntimeConfig): number {
+  const { pageSize } = options;
+
+  // if we have noInteraction, we do not hide rows because showing them is not possible.
+  if (toolRuntimeConfig.noInteraction === true) {
+    return totalAmountOfRows;
+  }
+
+  // Use the user provided pagesize above
+  // auto calculated ones.
+  if (typeof pageSize === 'number') {
+    return pageSize;
+  }
+
+  if (initWithCardLayout && totalAmountOfRows >= 6) {
+    return 3;
+  }
+
+  if (totalAmountOfRows >= 15) {
+    return 10;
+  }
+
+  return totalAmountOfRows;
+}
+
+function getInitWithCardLayoutFlag(width: number | undefined, options: QTableConfigOptions): boolean {
+  const { cardLayout, cardLayoutIfSmall } = options;
+
+  if (cardLayout === true) {
+    return true;
+  }
+
+  if (typeof width === 'number' && width <= 400 && cardLayoutIfSmall === true) {
+    return true;
+  }
+
+  return false;
 }
 
 export default route;

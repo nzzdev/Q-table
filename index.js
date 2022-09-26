@@ -33,6 +33,6 @@ async function gracefullyStop() {
   process.exit(0);
 }
 
-// listen on SIGINT and SIGTERM signal and gracefully stop the server
+// listen on SIGINT and SIGTERM signal and gracefully stop the server.
 process.on('SIGINT', gracefullyStop);
 process.on('SIGTERM', gracefullyStop);

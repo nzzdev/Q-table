@@ -1,7 +1,7 @@
 export function migrate(uncastedItem: unknown): ReturnPayload {
   const item = uncastedItem as Item;
 
-  let result: ReturnPayload = {
+  const result: ReturnPayload = {
     isChanged: false,
     item: null,
   };
@@ -10,19 +10,19 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
     const parsedNumber = parseInt(item.options.minibarOptions || '');
 
     if (!isNaN(parsedNumber)) {
-      let minibars: Minibar = {
+      const minibars: Minibar = {
         selectedColumn: parsedNumber + 1,
         barColor: {
           positive: {
             className: '',
-            colorCode: ''
+            colorCode: '',
           },
           negative: {
             className: '',
-            colorCode: ''
-          }
+            colorCode: '',
+          },
         },
-        invertColors: false
+        invertColors: false,
       };
 
       item.options['minibar'] = minibars;
@@ -36,25 +36,25 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
 
   result.item = item;
   return result;
-};
+}
 
 interface ReturnPayload {
-  isChanged: boolean,
-  item: null | unknown,
+  isChanged: boolean;
+  item: null | unknown;
 }
 
 interface Item {
   options: {
-    minibarOptions?: string,
-    minibar: Minibar | undefined,
-  }
+    minibarOptions?: string;
+    minibar: Minibar | undefined;
+  };
 }
 
 interface Minibar {
-  selectedColumn: number,
+  selectedColumn: number;
   barColor: {
-    positive: { className: string, colorCode: string },
-    negative: { className: string, colorCode: string },
-  },
-  invertColors: boolean,
+    positive: { className: string; colorCode: string };
+    negative: { className: string; colorCode: string };
+  };
+  invertColors: boolean;
 }
