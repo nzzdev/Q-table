@@ -2405,7 +2405,6 @@ const route$f = {
                     throw Boom.badRequest('The given payload for this route is not correct.');
                 }
                 if (validate(item)) {
-                    // return new Promise(item);
                     return new Promise(resolve => {
                         resolve(item);
                     });
