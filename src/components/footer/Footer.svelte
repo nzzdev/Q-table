@@ -44,3 +44,9 @@ export let acronym = '';
     {/if}
   </div>
 </div>
+
+<style>
+.s-q-item__footer__acronym {
+  display: none;
+}
+</style>
