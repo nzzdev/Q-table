@@ -156,7 +156,7 @@ const route: ServerRoute = {
           })();`,
         },
       ],
-      markup: `<div id="${id}_container" class="q-table-container" />`,
+      markup: `<div id="${id}_container" class="q-table-container"></div>`,
     };
 
     if (styleHashMap !== null) {

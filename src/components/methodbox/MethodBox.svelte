@@ -22,9 +22,10 @@ const formattedBuckets = methodBox.formattedBuckets;
               {#if bucket.color.customColor}
                 <div
                   class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default"
-                  style="color: {bucket.color.customColor}" />
+                  style="color: {bucket.color.customColor}">
+                </div>
               {:else}
-                <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {bucket.color.colorClass}" />
+                <div class="q-table-methods-circle-static s-legend-item-label__item__icon s-legend-item-label__item__icon--default {bucket.color.colorClass}"></div>
               {/if}
               <div class="s-legend-item-label__item__label s-font-note--tabularnums">
                 {#if bucketIndex === 0 && legend.hasSingleValueBucket}
@@ -60,7 +61,8 @@ const formattedBuckets = methodBox.formattedBuckets;
                   class="{bucket.color.colorClass !== undefined ? bucket.color.colorClass : ''}
                   q-table-methods-circle
                   q-table-methods-circle--circle-fill"
-                  style="color: {bucket.color.customColor !== undefined ? bucket.color.customColor : ''}" />
+                  style="color: {bucket.color.customColor !== undefined ? bucket.color.customColor : ''}">
+                </div>
               </td>
               {#if bucketIndex === 0 && legend.hasSingleValueBucket}
                 <td />
