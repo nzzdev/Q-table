@@ -57,7 +57,7 @@ function getBucketWidth(bucket: Bucket, minVal: number, maxVal: number): number 
           </g>
         {/if}
       </svg>
-      <div class="q-table-colorColumn-legend-borders s-color-gray-6"></div>
+      <div class="q-table-colorColumn-legend-borders s-color-gray-6" />
     </div>
 
     {#if labelLegend !== null}

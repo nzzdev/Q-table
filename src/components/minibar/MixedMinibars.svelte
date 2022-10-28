@@ -89,8 +89,7 @@ function getMinibarClassName(): string {
       <div
         data-minibar={minibar.values[rowIndex].type}
         class="q-table-minibar-bar--{minibar.values[rowIndex].type} q-table-minibar--{minibar.values[rowIndex].type} {getMinibarClassName()}"
-        style="width: {minibar.values[rowIndex].value}%; background-color: {getMinibarColor()}">
-      </div>
+        style="width: {minibar.values[rowIndex].value}%; background-color: {getMinibarColor()}" />
     {/if}
   {/if}
 </td>

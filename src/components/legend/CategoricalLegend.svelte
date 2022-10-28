@@ -13,12 +13,12 @@ const legendData = colorColumn.legend as CategoricalLegend;
     {#each legendData.categories as category}
       {#if category.color.customColor}
         <div class="s-legend-item-label__item" style="color: {category.color.customColor}">
-          <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default"></div>
+          <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default" />
           <div class="s-legend-item-label__item__label">{category.label}</div>
         </div>
       {:else}
         <div class="s-legend-item-label__item {category.color.colorClass}">
-          <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default"></div>
+          <div class="s-legend-item-label__item__icon s-legend-item-label__item__icon--default" />
           <div class="s-legend-item-label__item__label">{category.label}</div>
         </div>
       {/if}
