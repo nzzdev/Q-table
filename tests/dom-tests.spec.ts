@@ -268,7 +268,7 @@ describe('cardlayout on mobile', () => {
 
     const markup = createMarkupWithScript(response);
     const dom = createDOM(markup);
-    const includedClass = dom.window.document.body.innerHTML.includes('q-table--card-layout');
+    const includedClass = dom.window.document.body.querySelector(".q-table-container")?.innerHTML.includes('q-table--card-layout');
 
     expect(includedClass).toEqual(true);
   });
@@ -285,7 +285,7 @@ describe('cardlayout on mobile', () => {
 
     const markup = createMarkupWithScript(response);
     const dom = createDOM(markup);
-    const includedClass = dom.window.document.body.innerHTML.includes('q-table--card-layout');
+    const includedClass = dom.window.document.body.querySelector(".q-table-container")?.innerHTML.includes('q-table--card-layout');
 
     expect(includedClass).toEqual(false);
   });
@@ -302,7 +302,7 @@ describe('cardlayout on mobile', () => {
 
     const markup = createMarkupWithScript(response);
     const dom = createDOM(markup);
-    const includedClass = dom.window.document.body.innerHTML.includes('q-table--card-layout');
+    const includedClass = dom.window.document.body.querySelector(".q-table-container")?.innerHTML.includes('q-table--card-layout');
 
     expect(includedClass).toEqual(false);
   });
