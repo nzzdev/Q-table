@@ -48,6 +48,6 @@ function getMinibarClassName(): string {
 
 {#if minibar && item.options.minibar.selectedColumn === colIndex}
   <td class="q-table-minibar-cell" data-minibar={minibar.type} style={getCellStyle()}>
-    <div class="q-table-minibar-bar--{minibar.values[rowIndex].type} {getMinibarClassName()}" style={getBarStyle()} />
+    <div class="q-table-minibar-bar--{minibar.values[rowIndex].type} {getMinibarClassName()}" style={getBarStyle()}></div>
   </td>
 {/if}
