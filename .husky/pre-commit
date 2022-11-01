@@ -3,4 +3,4 @@
 
 npm run build
 
-npm run prettier-format && npm run lint:all && npm run jest
+npm run lint:all && npm run jest
