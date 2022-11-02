@@ -155,11 +155,6 @@
             }
           }
         },
-        "usePagination": {
-          "title": "Paginierung",
-          "type": "boolean",
-          "default": false
-        },
         "hideTableHeader": {
           "title": "Spaltenüberschriften ausblenden",
           "type": "boolean",

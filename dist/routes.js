@@ -1606,11 +1606,6 @@ var properties$1 = {
 					}
 				}
 			},
-			usePagination: {
-				title: "Paginierung",
-				type: "boolean",
-				"default": false
-			},
 			hideTableHeader: {
 				title: "Spaltenüberschriften ausblenden",
 				type: "boolean",
@@ -2503,7 +2498,6 @@ const route$g = {
                 id,
                 width,
                 initWithCardLayout,
-                usePagination: options.usePagination || false,
                 pageSize,
                 hideTableHeader: options.hideTableHeader,
                 frozenRowKey: options.frozenRowKey

@@ -129,7 +129,6 @@ const route: ServerRoute = {
       id,
       width,
       initWithCardLayout,
-      usePagination: options.usePagination || false,
       pageSize,
       hideTableHeader: options.hideTableHeader,
       frozenRowKey: options.frozenRowKey
