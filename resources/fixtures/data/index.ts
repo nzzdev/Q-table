@@ -26,6 +26,7 @@ import formattedNumbersMixed from '../../../resources/fixtures/data/formatted-nu
 import formattedNumbersNegative from '../../../resources/fixtures/data/formatted-numbers-negative.json';
 import fourColumn from '../../../resources/fixtures/data/four-column.json';
 import fourColumnNoHeader from '../../../resources/fixtures/data/four-column-no-header.json';
+import freezeRow from '../../../resources/fixtures/data/freezeRow.json'
 import hideFootnotesInHeader from '../../../resources/fixtures/data/hide-footnotes-in-header.json';
 import hyphenSignAsNumber from '../../../resources/fixtures/data/hyphen-sign-as-number.json';
 import legendHidden from '../../../resources/fixtures/data/legend-hidden.json';
@@ -77,6 +78,7 @@ export {
   formattedNumbersNegative,
   fourColumn,
   fourColumnNoHeader,
+  freezeRow,
   hideFootnotesInHeader,
   hyphenSignAsNumber,
   legendHidden,
