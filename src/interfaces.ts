@@ -146,6 +146,7 @@ export interface QTableSvelteProperties {
   pageSize: number;
   usePagination: boolean;
   hideTableHeader: boolean;
+  frozenRowKey?: number;
 }
 
 export interface QTableStateContext {
@@ -191,4 +192,5 @@ export interface Cell {
 export interface Row {
   key: number;
   cells: Cell[];
+  frozen?: boolean;
 }

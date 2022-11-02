@@ -13,7 +13,7 @@ import type { QTableSvelteProperties, QTableStateContext, Row } from '@src/inter
 
 export let componentConfiguration: QTableSvelteProperties;
 
-const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, usePagination, width } = componentConfiguration;
+const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, usePagination, width, frozenRowKey } = componentConfiguration;
 
 let { pageSize } = componentConfiguration;
 
@@ -23,9 +23,23 @@ let pageIndex = 0;
 let page = 0;
 let visibleRows: Row[];
 let filteredRows: Row[];
+let frozenRow: Row | undefined;
+
+if (typeof frozenRowKey === 'number' && rows?.length && rows[frozenRowKey]) {
+  frozenRow = rows.splice(frozenRowKey, 1)[0];
+  frozenRow.frozen = true;
+  // One row will be occupied by frozen row - leave less space for remaining rows
+  pageSize -= 1;
+}
 
 $: filteredRows = rows;
-$: visibleRows = filteredRows.slice(pageIndex, pageIndex + pageSize);
+$: {
+  const currentPageRows: Row[] = filteredRows.slice(pageIndex, pageIndex + pageSize);
+  if (frozenRow) {
+    currentPageRows.unshift(frozenRow);
+  }
+  visibleRows = currentPageRows;
+}
 
 setContext<QTableStateContext>('state', {
   getState: () => ({
