@@ -116,6 +116,12 @@ tr.q-table-state-visible {
   display: table-row !important;
 }
 
+tr.q-table-state-frozen {
+  background-color: #f4f4f4;
+  border-bottom: 2px solid #000 !important;
+  border-top: 2px solid #000 !important;
+}
+
 .q-table--card-layout tr.q-table-state-visible {
   display: table-row !important;
 }
