@@ -26,6 +26,7 @@ import formattedNumbersMixed from '../../../resources/fixtures/data/formatted-nu
 import formattedNumbersNegative from '../../../resources/fixtures/data/formatted-numbers-negative.json';
 import fourColumn from '../../../resources/fixtures/data/four-column.json';
 import fourColumnNoHeader from '../../../resources/fixtures/data/four-column-no-header.json';
+import freezeRow from '../../../resources/fixtures/data/freezeRow.json'
 import hideFootnotesInHeader from '../../../resources/fixtures/data/hide-footnotes-in-header.json';
 import hyphenSignAsNumber from '../../../resources/fixtures/data/hyphen-sign-as-number.json';
 import legendHidden from '../../../resources/fixtures/data/legend-hidden.json';
@@ -40,6 +41,7 @@ import minibarsPositive from '../../../resources/fixtures/data/minibars-positive
 import mixedNumbersAndTextInCell from '../../../resources/fixtures/data/mixed-numbers-and-text-in-cell.json';
 import multilineText from '../../../resources/fixtures/data/multiline-text.json';
 import oneColumn from '../../../resources/fixtures/data/one-column.json';
+import pagination from '../../../resources/fixtures/data/pagination.json';
 import showMoreButton from '../../../resources/fixtures/data/show-more-button.json';
 import specialCharacters from '../../../resources/fixtures/data/special-characters.json';
 import tableSearchHidden from '../../../resources/fixtures/data/table-search-hidden.json';
@@ -76,6 +78,7 @@ export {
   formattedNumbersNegative,
   fourColumn,
   fourColumnNoHeader,
+  freezeRow,
   hideFootnotesInHeader,
   hyphenSignAsNumber,
   legendHidden,
@@ -90,6 +93,7 @@ export {
   mixedNumbersAndTextInCell,
   multilineText,
   oneColumn,
+  pagination,
   showMoreButton,
   specialCharacters,
   tableSearchHidden,

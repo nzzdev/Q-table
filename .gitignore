@@ -2,3 +2,5 @@ node_modules
 .idea
 .DS_STORE
 .env.json
+.vscode/*
+!.vscode/launch.json

@@ -131,6 +131,7 @@ const route: ServerRoute = {
       initWithCardLayout,
       pageSize,
       hideTableHeader: options.hideTableHeader,
+      frozenRowKey: options.frozenRowKey
     };
 
     const renderingInfo: RenderingInfo = {

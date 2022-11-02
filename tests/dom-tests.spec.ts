@@ -1133,3 +1133,24 @@ describe('color column', () => {
     });
   });
 });
+
+describe('frozen row', () => {
+  it('should add a class to frozen row', async () => {
+    const response = await server.inject({
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
+      payload: {
+        item: fixtures.freezeRow,
+        toolRuntimeConfig: {},
+      },
+    });
+
+    const markup = createMarkupWithScript(response);
+    
+    elements(markup, 'tr').then(elements => {
+      expect(elements[0].classList.length).toBe(1);
+      expect(elements[1].classList.length).toBe(0);
+      expect(elements[0].classList[0]).toEqual("q-table-state-frozen");
+    })
+  });
+});

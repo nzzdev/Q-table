@@ -5,6 +5,7 @@ import customCategoriesOrder from './customCategoriesOrder.js';
 import customCategoriesOrderItem from './customCategoriesOrderItem.js';
 import selectedColumnMinibar from './selectedColumnMinibar.js';
 import selectedColorColumn from './selectedColorColumn.js';
+import selectedFrozenRow from './selectedFrozenRow.js';
 import scale from './scale.js';
 
 export default [
@@ -15,5 +16,6 @@ export default [
   customCategoriesOrderItem,
   selectedColorColumn,
   selectedColumnMinibar,
+  selectedFrozenRow,
   scale,
 ];

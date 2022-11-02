@@ -26,7 +26,7 @@ function isMinibarColumn(colIndex: number): boolean {
 
   <tbody class="s-font-note">
     {#each rows as row (row.key)}
-      <tr>
+      <tr class:q-table-state-frozen={row.frozen}>
         {#each row.cells as cell, colIndex}
           {#if isMinibarColumn(colIndex)}
             {#if minibar && minibar.type === 'positive'}

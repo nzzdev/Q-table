@@ -133,6 +133,28 @@
           "type": "number",
           "default": 10
         },
+        "frozenRowKey": {
+          "title": "Spalte einfrieren",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "Q:options": {
+            "dynamicSchema": {
+              "type": "ToolEndpoint",
+              "config": {
+                "endpoint": "dynamic-schema/selectedFrozenRow",
+                "fields": [
+                  "data"
+                ]
+              }
+            }
+          }
+        },
         "hideTableHeader": {
           "title": "Spaltenüberschriften ausblenden",
           "type": "boolean",
