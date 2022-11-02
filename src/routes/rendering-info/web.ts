@@ -132,6 +132,7 @@ const route: ServerRoute = {
       usePagination: options.usePagination || false,
       pageSize,
       hideTableHeader: options.hideTableHeader,
+      frozenRowKey: options.frozenRowKey
     };
 
     const renderingInfo: RenderingInfo = {

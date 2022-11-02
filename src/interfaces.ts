@@ -96,6 +96,7 @@ export interface QTableConfigOptions {
   // saved tables in the databases will not have this option.
   pageSize?: number;
   usePagination?: boolean;
+  frozenRowKey?: number;
 }
 
 export interface DisplayOptions {
