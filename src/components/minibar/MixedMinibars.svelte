@@ -13,7 +13,7 @@ const options = item.options;
 const { cardLayout, cardLayoutIfSmall } = options;
 
 // this has to be done because the tableData will be sliced before iterating
-rowIndex += 1;
+$: rowIndex += 1;
 
 function getDataLabelAttribute(): string {
   let dataLabel = '';
