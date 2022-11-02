@@ -937,7 +937,8 @@
           }
         },
         "countryFlagColumn": {
-          "title": "Country flags",
+          "title": "Emoji der Landesflagge",
+          "description": "TESTING 1 2 3",
           "type": "object",
           "properties": {
             "selectedColumn": {

@@ -3,14 +3,14 @@
   "data": {
     "table": [
       [
-        "String",
+        "String"
       ],
       [
-        "at",
+        "ch"
       ],
       [
-        "abcedfg",
-      ],
+        "abcd"
+      ]
     ],
     "metaData": {
       "cells": []
@@ -22,6 +22,8 @@
     "showTableSearch": false,
     "cardLayout": false,
     "cardLayoutIfSmall": false,
-    "countryFlagColumn": 0
+    "countryFlagColumn": {
+      "selectedColumn": 0
+    }
   }
 }

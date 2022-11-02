@@ -292,9 +292,12 @@ function formatTableData(data, footnotes, options) {
             let value = cell;
             const classes = [];
             // Transform value into country emoji flag if applicable.
-            if (columnIndex === ((_a = options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) && typeof value === 'string') {
+            // ignore row 0 because it is the header.
+            if (rowIndex > 0 && columnIndex === ((_a = options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) && typeof value === 'string') {
                 const valueRetyped = value.toUpperCase();
-                value = CountryFlagEmojis[valueRetyped];
+                if (CountryFlagEmojis[valueRetyped]) {
+                    value = CountryFlagEmojis[valueRetyped];
+                }
             }
             else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
                 type = 'numeric';
@@ -2396,7 +2399,8 @@ var properties$1 = {
 				}
 			},
 			countryFlagColumn: {
-				title: "Country flags",
+				title: "Emoji der Landesflagge",
+				description: "TESTING 1 2 3",
 				type: "object",
 				properties: {
 					selectedColumn: {
@@ -2442,7 +2446,7 @@ const ajv = new Ajv({
     strict: false,
 });
 const validate = ajv.compile(schema$1);
-const route$g = {
+const route$h = {
     method: 'POST',
     path: '/rendering-info/web',
     options: {
@@ -2639,7 +2643,7 @@ function getInitWithCardLayoutFlag(width, options) {
 }
 
 const __dirname$1 = dirname(fileURLToPath(import.meta.url));
-const route$f = {
+const route$g = {
     method: 'GET',
     path: '/stylesheet/{filename}.{hash}.{extension}',
     options: {
@@ -2788,7 +2792,7 @@ var optionAvailability = {
     },
 };
 
-const route$e = {
+const route$f = {
     method: 'POST',
     path: '/dynamic-schema/colorScheme',
     options: {
@@ -2817,7 +2821,7 @@ const route$e = {
     },
 };
 
-const route$d = {
+const route$e = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwrites',
     options: {
@@ -2858,7 +2862,7 @@ function getMaxItemsCategorical(data, colorColumnSettings) {
     }
 }
 
-const route$c = {
+const route$d = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwritesItem',
     options: {
@@ -2916,7 +2920,7 @@ function getDropdownSettingsCategorical(data, colorColumnSettings) {
     };
 }
 
-const route$b = {
+const route$c = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrder',
     options: {
@@ -2935,7 +2939,7 @@ const route$b = {
     },
 };
 
-const route$a = {
+const route$b = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrderItem',
     options: {
@@ -2958,9 +2962,7 @@ const route$a = {
     },
 };
 
-const route$9 = {
-<<<<<<< HEAD
-=======
+const route$a = {
     method: 'POST',
     path: '/dynamic-schema/getOptionsCountryFlagSelect',
     options: {
@@ -3001,8 +3003,7 @@ function getOptions(data) {
     return dropdownSettings;
 }
 
-const route$8 = {
->>>>>>> 1a55604 (Added option to select a column to be transformed into country flag emojis)
+const route$9 = {
     method: 'POST',
     path: '/dynamic-schema/selectedColumnMinibar',
     options: {
@@ -3167,6 +3168,7 @@ const route$6 = {
 };
 
 var dynamicSchemas = [
+    route$f,
     route$e,
     route$d,
     route$c,
@@ -15749,8 +15751,8 @@ const displayOptionsRoute = {
 var schema = [schemaRoute, displayOptionsRoute];
 
 const allRoutes = [
+    route$h,
     route$g,
-    route$f,
     optionAvailability,
     ...dynamicSchemas,
     route$5,
