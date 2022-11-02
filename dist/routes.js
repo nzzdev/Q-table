@@ -1452,7 +1452,7 @@ function getNegativeColor(type) {
 
 var $schema$1 = "http://json-schema.org/draft-07/schema#";
 var type$1 = "object";
-var title$K = "Tabelle";
+var title$M = "Tabelle";
 var properties$1 = {
 	title: {
 		title: "Titel",
@@ -1583,6 +1583,28 @@ var properties$1 = {
 				title: "Zeilen ausblenden nach",
 				type: "number",
 				"default": 10
+			},
+			frozenRowKey: {
+				title: "Spalte einfrieren",
+				oneOf: [
+					{
+						type: "number"
+					},
+					{
+						type: "null"
+					}
+				],
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/selectedFrozenRow",
+							fields: [
+								"data"
+							]
+						}
+					}
+				}
 			},
 			usePagination: {
 				title: "Paginierung",
@@ -2380,7 +2402,7 @@ var required = [
 var schema$1 = {
 	$schema: $schema$1,
 	type: type$1,
-	title: title$K,
+	title: title$M,
 	properties: properties$1,
 	required: required
 };
@@ -2389,7 +2411,7 @@ const ajv = new Ajv({
     strict: false,
 });
 const validate = ajv.compile(schema$1);
-const route$f = {
+const route$g = {
     method: 'POST',
     path: '/rendering-info/web',
     options: {
@@ -2484,6 +2506,7 @@ const route$f = {
                 usePagination: options.usePagination || false,
                 pageSize,
                 hideTableHeader: options.hideTableHeader,
+                frozenRowKey: options.frozenRowKey
             };
             const renderingInfo = {
                 polyfills: ['Promise'],
@@ -2586,7 +2609,7 @@ function getInitWithCardLayoutFlag(width, options) {
 }
 
 const __dirname$1 = dirname(fileURLToPath(import.meta.url));
-const route$e = {
+const route$f = {
     method: 'GET',
     path: '/stylesheet/{filename}.{hash}.{extension}',
     options: {
@@ -2735,7 +2758,7 @@ var optionAvailability = {
     },
 };
 
-const route$d = {
+const route$e = {
     method: 'POST',
     path: '/dynamic-schema/colorScheme',
     options: {
@@ -2764,7 +2787,7 @@ const route$d = {
     },
 };
 
-const route$c = {
+const route$d = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwrites',
     options: {
@@ -2805,7 +2828,7 @@ function getMaxItemsCategorical(data, colorColumnSettings) {
     }
 }
 
-const route$b = {
+const route$c = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwritesItem',
     options: {
@@ -2863,7 +2886,7 @@ function getDropdownSettingsCategorical(data, colorColumnSettings) {
     };
 }
 
-const route$a = {
+const route$b = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrder',
     options: {
@@ -2882,7 +2905,7 @@ const route$a = {
     },
 };
 
-const route$9 = {
+const route$a = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrderItem',
     options: {
@@ -2905,7 +2928,7 @@ const route$9 = {
     },
 };
 
-const route$8 = {
+const route$9 = {
     method: 'POST',
     path: '/dynamic-schema/selectedColumnMinibar',
     options: {
@@ -2946,7 +2969,7 @@ function getMinibarDropdownSettings(data) {
     return dropdownSettings;
 }
 
-const route$7 = {
+const route$8 = {
     method: 'POST',
     path: '/dynamic-schema/selectedColorColumn',
     options: {
@@ -2986,6 +3009,45 @@ function getDropdownSettings(data) {
     }
     return dropdownSettings;
 }
+
+// TODO Refactor common functionality with selectedColorColum.ts and selectedColumnMinibar.ts
+const route$7 = {
+    method: 'POST',
+    path: '/dynamic-schema/selectedFrozenRow',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const settings = getFrozenRowDropdownSettings(item.data.table);
+        return {
+            enum: settings.ids,
+            'Q:options': {
+                enum_titles: settings.titles,
+            },
+        };
+    },
+};
+/**
+ * Internal.
+ */
+const getFrozenRowDropdownSettings = (data) => {
+    // Default setting already added.
+    const dropdownSettings = {
+        ids: [null],
+        titles: ['keine'],
+    };
+    // Omit if data only contains a title row
+    if (data.length > 1) {
+        const [, ...rows] = data;
+        dropdownSettings.ids = dropdownSettings.ids.concat(rows.map((d, i) => i));
+        dropdownSettings.titles = dropdownSettings.titles.concat(rows.map((d, i) => (i + 2).toString()));
+    }
+    return dropdownSettings;
+};
 
 const route$6 = {
     method: 'POST',
@@ -3031,13 +3093,14 @@ const route$6 = {
 };
 
 var dynamicSchemas = [
+    route$e,
     route$d,
     route$c,
     route$b,
     route$a,
+    route$8,
     route$9,
     route$7,
-    route$8,
     route$6,
 ];
 
@@ -3179,9 +3242,9 @@ const route$3 = {
     },
 };
 
-var title$J = "FIXTURE: simple one-column short table with numeric values";
-var subtitle$v = "some subtitle here";
-var data$I = {
+var title$L = "FIXTURE: simple one-column short table with numeric values";
+var subtitle$x = "some subtitle here";
+var data$K = {
 	table: [
 		[
 			"Land",
@@ -3209,7 +3272,7 @@ var data$I = {
 		]
 	}
 };
-var options$I = {
+var options$K = {
 	cardLayout: false,
 	cardLayoutIfSmall: false,
 	minibar: {
@@ -3228,7 +3291,7 @@ var options$I = {
 	}
 };
 var notes$1 = "Anmerkungen";
-var sources$I = [
+var sources$K = [
 	{
 		link: {
 		},
@@ -3236,17 +3299,17 @@ var sources$I = [
 	}
 ];
 var twoColumn = {
-	title: title$J,
-	subtitle: subtitle$v,
-	data: data$I,
-	options: options$I,
+	title: title$L,
+	subtitle: subtitle$x,
+	data: data$K,
+	options: options$K,
 	notes: notes$1,
-	sources: sources$I
+	sources: sources$K
 };
 
-var title$I = "FIXTURE: four column numeric card layout for small";
-var subtitle$u = "Subtitle";
-var data$H = {
+var title$K = "FIXTURE: four column numeric card layout for small";
+var subtitle$w = "Subtitle";
+var data$J = {
 	table: [
 		[
 			"Kennzahlen",
@@ -3302,23 +3365,23 @@ var data$H = {
 		]
 	}
 };
-var sources$H = [
+var sources$J = [
 ];
-var options$H = {
+var options$J = {
 	cardLayout: false,
 	cardLayoutIfSmall: true
 };
 var fourColumn = {
-	title: title$I,
-	subtitle: subtitle$u,
-	data: data$H,
-	sources: sources$H,
-	options: options$H
+	title: title$K,
+	subtitle: subtitle$w,
+	data: data$J,
+	sources: sources$J,
+	options: options$J
 };
 
-var title$H = "FIXTURE: four column numeric card layout for small no header";
-var subtitle$t = "Subtitle";
-var data$G = {
+var title$J = "FIXTURE: four column numeric card layout for small no header";
+var subtitle$v = "Subtitle";
+var data$I = {
 	table: [
 		[
 			"Kennzahlen",
@@ -3374,9 +3437,9 @@ var data$G = {
 		]
 	}
 };
-var sources$G = [
+var sources$I = [
 ];
-var options$G = {
+var options$I = {
 	hideTableHeader: true,
 	cardLayout: false,
 	cardLayoutIfSmall: true,
@@ -3396,15 +3459,15 @@ var options$G = {
 	}
 };
 var fourColumnNoHeader = {
-	title: title$H,
-	subtitle: subtitle$t,
-	data: data$G,
-	sources: sources$G,
-	options: options$G
+	title: title$J,
+	subtitle: subtitle$v,
+	data: data$I,
+	sources: sources$I,
+	options: options$I
 };
 
-var title$G = "FIXTURE: dates in data";
-var data$F = {
+var title$I = "FIXTURE: dates in data";
+var data$H = {
 	table: [
 		[
 			"Datum",
@@ -3478,7 +3541,7 @@ var data$F = {
 		]
 	}
 };
-var sources$F = [
+var sources$H = [
 	{
 		link: {
 			url: "http://www.seismo.ethz.ch/de/earthquakes/switzerland/all-earthquakes/",
@@ -3487,7 +3550,7 @@ var sources$F = [
 		text: "Schweizerischer Erdbebendienst"
 	}
 ];
-var options$F = {
+var options$H = {
 	hideTableHeader: false,
 	cardLayout: false,
 	cardLayoutIfSmall: false,
@@ -3507,15 +3570,15 @@ var options$F = {
 	}
 };
 var datesInData = {
-	title: title$G,
-	data: data$F,
-	sources: sources$F,
-	options: options$F
+	title: title$I,
+	data: data$H,
+	sources: sources$H,
+	options: options$H
 };
 
-var title$F = "FIXTURE: mixed number and text in cell";
-var subtitle$s = "Opel Insignia Country Tourer 2.0 BiTurbo Diesel";
-var data$E = {
+var title$H = "FIXTURE: mixed number and text in cell";
+var subtitle$u = "Opel Insignia Country Tourer 2.0 BiTurbo Diesel";
+var data$G = {
 	table: [
 		[
 			"Kennzahl",
@@ -3543,9 +3606,9 @@ var data$E = {
 		]
 	}
 };
-var sources$E = [
+var sources$G = [
 ];
-var options$E = {
+var options$G = {
 	hideTableHeader: true,
 	cardLayout: false,
 	cardLayoutIfSmall: false,
@@ -3565,16 +3628,16 @@ var options$E = {
 	}
 };
 var mixedNumbersAndTextInCell = {
-	title: title$F,
-	subtitle: subtitle$s,
-	data: data$E,
-	sources: sources$E,
-	options: options$E
+	title: title$H,
+	subtitle: subtitle$u,
+	data: data$G,
+	sources: sources$G,
+	options: options$G
 };
 
-var title$E = "FIXTURE: hyphen sign as number";
-var subtitle$r = "Subtitle";
-var data$D = {
+var title$G = "FIXTURE: hyphen sign as number";
+var subtitle$t = "Subtitle";
+var data$F = {
 	table: [
 		[
 			"",
@@ -3612,9 +3675,9 @@ var data$D = {
 		]
 	}
 };
-var sources$D = [
+var sources$F = [
 ];
-var options$D = {
+var options$F = {
 	cardLayout: false,
 	cardLayoutIfSmall: true,
 	minibar: {
@@ -3634,16 +3697,16 @@ var options$D = {
 	showTableSearch: true
 };
 var hyphenSignAsNumber = {
-	title: title$E,
-	subtitle: subtitle$r,
-	data: data$D,
-	sources: sources$D,
-	options: options$D
+	title: title$G,
+	subtitle: subtitle$t,
+	data: data$F,
+	sources: sources$F,
+	options: options$F
 };
 
-var title$D = "FIXTURE: multiline text";
-var subtitle$q = "";
-var data$C = {
+var title$F = "FIXTURE: multiline text";
+var subtitle$s = "";
+var data$E = {
 	table: [
 		[
 			"",
@@ -3671,9 +3734,9 @@ var data$C = {
 		]
 	}
 };
-var sources$C = [
+var sources$E = [
 ];
-var options$C = {
+var options$E = {
 	hideTableHeader: false,
 	cardLayout: false,
 	cardLayoutIfSmall: true,
@@ -3693,14 +3756,628 @@ var options$C = {
 	}
 };
 var multilineText = {
-	title: title$D,
-	subtitle: subtitle$q,
-	data: data$C,
-	sources: sources$C,
-	options: options$C
+	title: title$F,
+	subtitle: subtitle$s,
+	data: data$E,
+	sources: sources$E,
+	options: options$E
 };
 
-var title$C = "FIXTURE: show more button";
+var title$E = "FIXTURE: show more button";
+var data$D = {
+	table: [
+		[
+			"State",
+			"All Deaths",
+			"Total"
+		],
+		[
+			"Lousiana",
+			"996",
+			"473"
+		],
+		[
+			"Pennslyvania",
+			"4627",
+			"2075"
+		],
+		[
+			"Alabama",
+			"756",
+			"308"
+		],
+		[
+			"Montana",
+			"119",
+			"46"
+		],
+		[
+			"Indiana",
+			"1526",
+			"547"
+		],
+		[
+			"Delaware",
+			"282",
+			"99"
+		],
+		[
+			"Nebraska",
+			"120",
+			"37"
+		],
+		[
+			"Arkansas",
+			"401",
+			"115"
+		],
+		[
+			"Florida",
+			"4728",
+			"1144"
+		],
+		[
+			"Idaho",
+			"243",
+			"55"
+		],
+		[
+			"New Jersey",
+			"2056",
+			"461"
+		],
+		[
+			"Mississippi",
+			"352",
+			"78"
+		],
+		[
+			"Wyoming",
+			"99",
+			"21"
+		],
+		[
+			"California",
+			"4654",
+			"930"
+		],
+		[
+			"Kansas",
+			"313",
+			"62"
+		],
+		[
+			"Colorado",
+			"942",
+			"172"
+		],
+		[
+			"Kentucky",
+			"1419",
+			"253"
+		],
+		[
+			"Missouri",
+			"1371",
+			"199"
+		],
+		[
+			"North Dakota",
+			"77",
+			"11"
+		],
+		[
+			"Arizona",
+			"1382",
+			"196"
+		],
+		[
+			"Minnesota",
+			"672",
+			"93"
+		],
+		[
+			"Michigan",
+			"2347",
+			"309"
+		],
+		[
+			"Texas",
+			"2831",
+			"370"
+		],
+		[
+			"Tennessee",
+			"1630",
+			"136"
+		],
+		[
+			"Iowa",
+			"314",
+			"26"
+		],
+		[
+			"Georgia",
+			"1394",
+			"103"
+		],
+		[
+			"Washington",
+			"1102",
+			"75"
+		],
+		[
+			"Hawaii",
+			"191",
+			"12"
+		],
+		[
+			"Wisconsin",
+			"1074",
+			"56"
+		],
+		[
+			"Utah",
+			"635",
+			"33"
+		],
+		[
+			"Ohio",
+			"4329",
+			"216"
+		],
+		[
+			"Oregon",
+			"506",
+			"24"
+		],
+		[
+			"Oklahoma",
+			"813",
+			"37"
+		],
+		[
+			"South Dakota",
+			"69",
+			"3"
+		],
+		[
+			"Illinois",
+			"2411",
+			"102"
+		],
+		[
+			"South Carolina",
+			"879",
+			"35"
+		],
+		[
+			"West Virginia",
+			"884",
+			"32"
+		],
+		[
+			"North Carolina",
+			"1956",
+			"68"
+		],
+		[
+			"New Mexico",
+			"500",
+			"16"
+		],
+		[
+			"Nevada",
+			"665",
+			"19"
+		],
+		[
+			"New York",
+			"3.638",
+			"97"
+		],
+		[
+			"Virginia",
+			"1405",
+			"34"
+		],
+		[
+			"Vermont",
+			"125",
+			"3"
+		],
+		[
+			"Maryland",
+			"2044",
+			"42"
+		],
+		[
+			"Alaska",
+			"128",
+			"2"
+		],
+		[
+			"Maine",
+			"353",
+			"5"
+		],
+		[
+			"Massachusetts",
+			"2227",
+			"29"
+		],
+		[
+			"New Hampshire",
+			"481",
+			"5"
+		],
+		[
+			"Washington, D.C",
+			"269",
+			"2"
+		],
+		[
+			"Connecticut",
+			"971",
+			"7"
+		],
+		[
+			"Rhode Island",
+			"326",
+			"1"
+		]
+	],
+	metaData: {
+		cells: [
+		]
+	}
+};
+var sources$D = [
+	{
+		link: {
+		},
+		text: "The Centers for Disease Control and Prevention"
+	}
+];
+var options$D = {
+	hideTableHeader: false,
+	cardLayout: false,
+	cardLayoutIfSmall: true,
+	minibar: {
+		invertColors: false,
+		barColor: {
+			positive: {
+				className: "",
+				colorCode: ""
+			},
+			negative: {
+				className: "",
+				colorCode: ""
+			}
+		},
+		selectedColumn: null
+	}
+};
+var tool$k = "table";
+var subtitle$r = "State by state breakdown";
+var showMoreButton = {
+	title: title$E,
+	data: data$D,
+	sources: sources$D,
+	options: options$D,
+	tool: tool$k,
+	subtitle: subtitle$r
+};
+
+var title$D = "FIXTURE: pagination";
+var data$C = {
+	table: [
+		[
+			"State",
+			"All Deaths",
+			"Total"
+		],
+		[
+			"Lousiana",
+			"996",
+			"473"
+		],
+		[
+			"Pennslyvania",
+			"4627",
+			"2075"
+		],
+		[
+			"Alabama",
+			"756",
+			"308"
+		],
+		[
+			"Montana",
+			"119",
+			"46"
+		],
+		[
+			"Indiana",
+			"1526",
+			"547"
+		],
+		[
+			"Delaware",
+			"282",
+			"99"
+		],
+		[
+			"Nebraska",
+			"120",
+			"37"
+		],
+		[
+			"Arkansas",
+			"401",
+			"115"
+		],
+		[
+			"Florida",
+			"4728",
+			"1144"
+		],
+		[
+			"Idaho",
+			"243",
+			"55"
+		],
+		[
+			"New Jersey",
+			"2056",
+			"461"
+		],
+		[
+			"Mississippi",
+			"352",
+			"78"
+		],
+		[
+			"Wyoming",
+			"99",
+			"21"
+		],
+		[
+			"California",
+			"4654",
+			"930"
+		],
+		[
+			"Kansas",
+			"313",
+			"62"
+		],
+		[
+			"Colorado",
+			"942",
+			"172"
+		],
+		[
+			"Kentucky",
+			"1419",
+			"253"
+		],
+		[
+			"Missouri",
+			"1371",
+			"199"
+		],
+		[
+			"North Dakota",
+			"77",
+			"11"
+		],
+		[
+			"Arizona",
+			"1382",
+			"196"
+		],
+		[
+			"Minnesota",
+			"672",
+			"93"
+		],
+		[
+			"Michigan",
+			"2347",
+			"309"
+		],
+		[
+			"Texas",
+			"2831",
+			"370"
+		],
+		[
+			"Tennessee",
+			"1630",
+			"136"
+		],
+		[
+			"Iowa",
+			"314",
+			"26"
+		],
+		[
+			"Georgia",
+			"1394",
+			"103"
+		],
+		[
+			"Washington",
+			"1102",
+			"75"
+		],
+		[
+			"Hawaii",
+			"191",
+			"12"
+		],
+		[
+			"Wisconsin",
+			"1074",
+			"56"
+		],
+		[
+			"Utah",
+			"635",
+			"33"
+		],
+		[
+			"Ohio",
+			"4329",
+			"216"
+		],
+		[
+			"Oregon",
+			"506",
+			"24"
+		],
+		[
+			"Oklahoma",
+			"813",
+			"37"
+		],
+		[
+			"South Dakota",
+			"69",
+			"3"
+		],
+		[
+			"Illinois",
+			"2411",
+			"102"
+		],
+		[
+			"South Carolina",
+			"879",
+			"35"
+		],
+		[
+			"West Virginia",
+			"884",
+			"32"
+		],
+		[
+			"North Carolina",
+			"1956",
+			"68"
+		],
+		[
+			"New Mexico",
+			"500",
+			"16"
+		],
+		[
+			"Nevada",
+			"665",
+			"19"
+		],
+		[
+			"New York",
+			"3.638",
+			"97"
+		],
+		[
+			"Virginia",
+			"1405",
+			"34"
+		],
+		[
+			"Vermont",
+			"125",
+			"3"
+		],
+		[
+			"Maryland",
+			"2044",
+			"42"
+		],
+		[
+			"Alaska",
+			"128",
+			"2"
+		],
+		[
+			"Maine",
+			"353",
+			"5"
+		],
+		[
+			"Massachusetts",
+			"2227",
+			"29"
+		],
+		[
+			"New Hampshire",
+			"481",
+			"5"
+		],
+		[
+			"Washington, D.C",
+			"269",
+			"2"
+		],
+		[
+			"Connecticut",
+			"971",
+			"7"
+		],
+		[
+			"Rhode Island",
+			"326",
+			"1"
+		]
+	],
+	metaData: {
+		cells: [
+		]
+	}
+};
+var sources$C = [
+	{
+		link: {
+		},
+		text: "The Centers for Disease Control and Prevention"
+	}
+];
+var options$C = {
+	usePagination: true,
+	pageSize: 10,
+	hideTableHeader: false,
+	cardLayout: false,
+	cardLayoutIfSmall: true,
+	minibar: {
+		invertColors: false,
+		barColor: {
+			positive: {
+				className: "",
+				colorCode: ""
+			},
+			negative: {
+				className: "",
+				colorCode: ""
+			}
+		},
+		selectedColumn: null
+	}
+};
+var tool$j = "table";
+var subtitle$q = "State by state breakdown";
+var pagination = {
+	title: title$D,
+	data: data$C,
+	sources: sources$C,
+	options: options$C,
+	tool: tool$j,
+	subtitle: subtitle$q
+};
+
+var title$C = "FIXTURE: frozenRow";
 var data$B = {
 	table: [
 		[
@@ -3977,6 +4654,9 @@ var sources$B = [
 	}
 ];
 var options$B = {
+	usePagination: true,
+	pageSize: 10,
+	frozenRowKey: 4,
 	hideTableHeader: false,
 	cardLayout: false,
 	cardLayoutIfSmall: true,
@@ -3997,7 +4677,7 @@ var options$B = {
 };
 var tool$i = "table";
 var subtitle$p = "State by state breakdown";
-var showMoreButton = {
+var frozenRow = {
 	title: title$C,
 	data: data$B,
 	sources: sources$B,
@@ -14744,6 +15424,8 @@ const fixtureData = [
     cardlayout,
     cardlayoutMobile,
     lotsOfData,
+    pagination,
+    frozenRow,
     specialCharacters,
     formattedNumbers,
     formattedNumbersMixed,
@@ -14993,8 +15675,8 @@ const displayOptionsRoute = {
 var schema = [schemaRoute, displayOptionsRoute];
 
 const allRoutes = [
+    route$g,
     route$f,
-    route$e,
     optionAvailability,
     ...dynamicSchemas,
     route$5,
