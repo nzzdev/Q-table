@@ -95,7 +95,6 @@ export interface QTableConfigOptions {
   // This is added on 6.2.0 and we don't do any migration so earlier
   // saved tables in the databases will not have this option.
   pageSize?: number;
-  usePagination?: boolean;
 }
 
 export interface DisplayOptions {
@@ -144,7 +143,6 @@ export interface QTableSvelteProperties {
   width: number | undefined;
   initWithCardLayout: boolean;
   pageSize: number;
-  usePagination: boolean;
   hideTableHeader: boolean;
 }
 

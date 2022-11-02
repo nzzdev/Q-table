@@ -5,7 +5,6 @@ import Legend from '@cps/legend/Legend.svelte';
 import MethodBox from '@cps/methodbox/MethodBox.svelte';
 import Pagination from '@cps/pagination/Pagination.svelte';
 import Search from '@cps/search/Search.svelte';
-import ToggleRowsBtn from '@cps/toggleRowsBtn/ToggleRowsBtn.svelte';
 import Table from '@cps/table/Table.svelte';
 import CardLayout from './card/CardLayout.svelte';
 import { setContext } from 'svelte';
@@ -13,11 +12,10 @@ import type { QTableSvelteProperties, QTableStateContext, Row } from '@src/inter
 
 export let componentConfiguration: QTableSvelteProperties;
 
-const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, usePagination, width } = componentConfiguration;
+const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, width } = componentConfiguration;
 
 let { pageSize } = componentConfiguration;
 
-const originalPageSize = pageSize;
 const options = config.options;
 let pageIndex = 0;
 let page = 0;
@@ -65,12 +63,8 @@ function shouldShowTitle(): boolean {
   return true;
 }
 
-function shouldShowMoreRowsBtn(): boolean {
-  return noInteraction === false && typeof pageSize === 'number' && usePagination !== true && filteredRows.length > pageSize;
-}
-
 function shouldShowPagination(): boolean {
-  return noInteraction === false && typeof pageSize === 'number' && usePagination === true;
+  return noInteraction === false && typeof pageSize === 'number' && filteredRows.length > pageSize;
 }
 
 // Setup specific class for different devices.
@@ -119,10 +113,6 @@ if (width) {
 
   {#if colorColumn && colorColumn.legend.type === 'numerical'}
     <MethodBox legend={colorColumn.legend} {noInteraction} />
-  {/if}
-
-  {#if shouldShowMoreRowsBtn()}
-    <ToggleRowsBtn totalNumberOfRows={rows.length} pageSize={originalPageSize} />
   {/if}
 
   <Footer notes={config.notes} sources={config.sources} acronym={config.acronym} />
