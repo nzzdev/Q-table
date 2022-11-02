@@ -1,0 +1,27 @@
+{
+  "title": "FIXTURE: country emoji",
+  "data": {
+    "table": [
+      [
+        "String",
+      ],
+      [
+        "at",
+      ],
+      [
+        "abcedfg",
+      ],
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "showTableSearch": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "countryFlagColumn": 0
+  }
+}

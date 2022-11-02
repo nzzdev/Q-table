@@ -17,6 +17,8 @@ function isMinibarColumn(colIndex: number): boolean {
     options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex
   );
 }
+
+
 </script>
 
 <table class="q-table">

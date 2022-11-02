@@ -935,6 +935,34 @@
               }
             }
           }
+        },
+        "countryFlagColumn": {
+          "title": "Country flags",
+          "type": "object",
+          "properties": {
+            "selectedColumn": {
+              "title": "Spalte auswählen",
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "Q:options": {
+                "dynamicSchema": {
+                  "type": "ToolEndpoint",
+                  "config": {
+                    "endpoint": "dynamic-schema/getOptionsCountryFlagSelect",
+                    "fields": [
+                      "data"
+                    ]
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

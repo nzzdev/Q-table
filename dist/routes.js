@@ -1,6 +1,7 @@
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
 import { formatLocale as formatLocale$1 } from 'd3-format';
+import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 import * as simpleStatistics from 'simple-statistics';
 import { readFileSync } from 'fs';
 import path, { dirname } from 'path';
@@ -175,6 +176,7 @@ function hasFootnoteClass(classes, newClass) {
     return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
 }
 
+// import type { CountryFlagEmojis as  } from '@nzz/et-utils-country-flag-emoji';
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 // Formatting for numbers of >= 10000.
@@ -285,10 +287,16 @@ function formatTableData(data, footnotes, options) {
     for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
         const row = data[rowIndex];
         const cells = row.map((cell, columnIndex) => {
+            var _a;
             let type = 'text';
             let value = cell;
             const classes = [];
-            if (columns[columnIndex] && columns[columnIndex].isNumeric) {
+            // Transform value into country emoji flag if applicable.
+            if (columnIndex === ((_a = options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) && typeof value === 'string') {
+                const valueRetyped = value.toUpperCase();
+                value = CountryFlagEmojis[valueRetyped];
+            }
+            else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
                 type = 'numeric';
                 classes.push('s-font-note--tabularnums');
                 // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
@@ -2386,6 +2394,34 @@ var properties$1 = {
 						}
 					}
 				}
+			},
+			countryFlagColumn: {
+				title: "Country flags",
+				type: "object",
+				properties: {
+					selectedColumn: {
+						title: "Spalte auswählen",
+						oneOf: [
+							{
+								type: "number"
+							},
+							{
+								type: "null"
+							}
+						],
+						"Q:options": {
+							dynamicSchema: {
+								type: "ToolEndpoint",
+								config: {
+									endpoint: "dynamic-schema/getOptionsCountryFlagSelect",
+									fields: [
+										"data"
+									]
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -2923,6 +2959,50 @@ const route$a = {
 };
 
 const route$9 = {
+<<<<<<< HEAD
+=======
+    method: 'POST',
+    path: '/dynamic-schema/getOptionsCountryFlagSelect',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const settings = getOptions(item.data.table);
+        return {
+            enum: settings.ids,
+            'Q:options': {
+                enum_titles: settings.titles,
+            },
+        };
+    },
+};
+/**
+ * Internal.
+ */
+function getOptions(data) {
+    // Default setting already added.
+    const dropdownSettings = {
+        ids: [null],
+        titles: ['keine'],
+    };
+    if (data.length > 0) {
+        const columnTypes = getColumnsType(data);
+        data[0].forEach((head, index) => {
+            if (!columnTypes[index].isNumeric) {
+                dropdownSettings.ids.push(index);
+                dropdownSettings.titles.push(head);
+            }
+        });
+    }
+    return dropdownSettings;
+}
+
+const route$8 = {
+>>>>>>> 1a55604 (Added option to select a column to be transformed into country flag emojis)
     method: 'POST',
     path: '/dynamic-schema/selectedColumnMinibar',
     options: {

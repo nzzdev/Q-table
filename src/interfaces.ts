@@ -95,7 +95,12 @@ export interface QTableConfigOptions {
   // This is added on 6.2.0 and we don't do any migration so earlier
   // saved tables in the databases will not have this option.
   pageSize?: number;
+
+  // Added in 7.1.0. No migration so not in db of older saves.
   frozenRowKey?: number | null;
+  countryFlagColumn?:  {
+    selectedColumn: number | null
+  };
 }
 
 export interface DisplayOptions {
