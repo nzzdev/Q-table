@@ -40,6 +40,7 @@ import minibarsPositive from '../../../resources/fixtures/data/minibars-positive
 import mixedNumbersAndTextInCell from '../../../resources/fixtures/data/mixed-numbers-and-text-in-cell.json';
 import multilineText from '../../../resources/fixtures/data/multiline-text.json';
 import oneColumn from '../../../resources/fixtures/data/one-column.json';
+import pagination from '../../../resources/fixtures/data/pagination.json';
 import showMoreButton from '../../../resources/fixtures/data/show-more-button.json';
 import specialCharacters from '../../../resources/fixtures/data/special-characters.json';
 import tableSearchHidden from '../../../resources/fixtures/data/table-search-hidden.json';
@@ -90,6 +91,7 @@ export {
   mixedNumbersAndTextInCell,
   multilineText,
   oneColumn,
+  pagination,
   showMoreButton,
   specialCharacters,
   tableSearchHidden,
