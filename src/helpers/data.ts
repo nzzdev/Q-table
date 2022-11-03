@@ -4,7 +4,7 @@ import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 
 // Types.
 import type { StructuredFootnote } from './footnotes';
-import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row } from '../interfaces';
+import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, CellType } from '../interfaces';
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 
 const fourPerEmSpace = '\u2005';
@@ -149,7 +149,7 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
     const row = data[rowIndex];
 
     const cells = row.map((cell, columnIndex) => {
-      let type = 'text';
+      let type: CellType = 'text';
       let value = cell;
 
       const classes: string[] = [];
@@ -159,7 +159,9 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
       if (rowIndex > 0 && columnIndex === options.countryFlagColumn?.selectedColumn && typeof value === 'string') {
         const valueRetyped = value.toUpperCase() as (keyof typeof CountryFlagEmojis);
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (CountryFlagEmojis[valueRetyped]) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           value = CountryFlagEmojis[valueRetyped];
         }
       } else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
@@ -187,7 +189,7 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
     tableData.push({
       key: rowIndex - 1, // we do -1 because we need to subtract the header from the indexing.
       cells,
-    });
+    } as Row);
   }
 
   if (footnotes.length > 0) {

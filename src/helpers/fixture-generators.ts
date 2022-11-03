@@ -29,7 +29,7 @@ export function createFootnoteFixture(override: Partial<StructuredFootnote> = {}
 
 export function createQTableDataFormattedFixture(override: Partial<Cell> = {}): Cell {
   return {
-    type: 'type',
+    type: 'text',
     value: 'value',
     classes: ['cls1', 'cls2'],
     footnote: {

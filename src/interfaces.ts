@@ -151,6 +151,7 @@ export interface QTableSvelteProperties {
   pageSize: number;
   hideTableHeader: boolean;
   frozenRowKey?: number | null;
+  columnsInfo: ColumnMetaData[] 
 }
 
 export interface QTableStateContext {
@@ -164,6 +165,13 @@ export interface QTableStateContext {
   setPage: (_page: number) => void;
   setPageSize: (_pageSize: number) => void;
   setFilteredRows: (_rows: Row[]) => Row[];
+}
+
+export interface ColumnMetaData {
+  type: CellType
+  sortable: boolean;
+  sortIsActive: boolean;
+  sort: 'asc' | 'dsc'
 }
 
 export interface Source {
@@ -183,7 +191,7 @@ export interface StyleHashMap {
 }
 
 export interface Cell {
-  type: string;
+  type: CellType
   value: string | null;
   classes: string[];
   footnote?: {
@@ -192,6 +200,8 @@ export interface Cell {
     class: string | null;
   };
 }
+
+export type CellType = 'text' | 'numeric' | null
 
 export interface Row {
   key: number;
