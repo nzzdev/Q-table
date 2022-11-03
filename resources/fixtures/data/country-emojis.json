@@ -1,0 +1,29 @@
+{
+  "title": "FIXTURE: country emoji",
+  "data": {
+    "table": [
+      [
+        "String"
+      ],
+      [
+        "ch"
+      ],
+      [
+        "abcd"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [],
+  "options": {
+    "hideTableHeader": false,
+    "showTableSearch": false,
+    "cardLayout": false,
+    "cardLayoutIfSmall": false,
+    "countryFlagColumn": {
+      "selectedColumn": 0
+    }
+  }
+}

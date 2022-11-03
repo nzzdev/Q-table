@@ -1,5 +1,6 @@
 import { formatLocale as d3FormatLocale } from 'd3-format';
 import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
+import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 
 // Types.
 import type { StructuredFootnote } from './footnotes';
@@ -82,7 +83,7 @@ export function isNumeric(cell: string | null): boolean {
   return true;
 }
 
-function getColumnsType(data: QTableDataRaw): ColumnType[] {
+export function getColumnsType(data: QTableDataRaw): ColumnType[] {
   const columns: ColumnType[] = [];
   const table = getDataWithoutHeaderRow(data);
 
@@ -153,7 +154,15 @@ export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootno
 
       const classes: string[] = [];
 
-      if (columns[columnIndex] && columns[columnIndex].isNumeric) {
+      // Transform value into country emoji flag if applicable.
+      // ignore row 0 because it is the header.
+      if (rowIndex > 0 && columnIndex === options.countryFlagColumn?.selectedColumn && typeof value === 'string') {
+        const valueRetyped = value.toUpperCase() as (keyof typeof CountryFlagEmojis);
+
+        if (CountryFlagEmojis[valueRetyped]) {
+          value = CountryFlagEmojis[valueRetyped];
+        }
+      } else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
         type = 'numeric';
         classes.push('s-font-note--tabularnums');
 

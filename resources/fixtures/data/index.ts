@@ -10,6 +10,7 @@ import colorColumnNumericalFootnotes from '../../../resources/fixtures/data/colo
 import colorColumnNumericalNoData from '../../../resources/fixtures/data/colorColumn-numerical-no-data.json';
 import colorColumnNumericalNoLabel from '../../../resources/fixtures/data/colorColumn-numerical-no-label.json';
 import columnSpacing from '../../../resources/fixtures/data/column-spacing.json';
+import countryEmojis from '../../../resources/fixtures/data/country-emojis.json';
 import datesInData from '../../../resources/fixtures/data/dates-in-data.json';
 import disappearingColumns from '../../../resources/fixtures/data/disappearing-columns.json';
 import displayAlotOfFootnotes from '../../../resources/fixtures/data/display-alot-of-footnotes.json';
@@ -62,6 +63,7 @@ export {
   colorColumnNumericalNoData,
   colorColumnNumericalNoLabel,
   columnSpacing,
+  countryEmojis,
   datesInData,
   disappearingColumns,
   displayAlotOfFootnotes,

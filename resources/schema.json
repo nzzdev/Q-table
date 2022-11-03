@@ -935,6 +935,35 @@
               }
             }
           }
+        },
+        "countryFlagColumn": {
+          "title": "Emoji der Landesflagge",
+          "description": "TESTING 1 2 3",
+          "type": "object",
+          "properties": {
+            "selectedColumn": {
+              "title": "Spalte auswählen",
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "Q:options": {
+                "dynamicSchema": {
+                  "type": "ToolEndpoint",
+                  "config": {
+                    "endpoint": "dynamic-schema/getOptionsCountryFlagSelect",
+                    "fields": [
+                      "data"
+                    ]
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
