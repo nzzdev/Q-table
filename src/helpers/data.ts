@@ -6,7 +6,6 @@ import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 import type { StructuredFootnote } from './footnotes';
 import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row } from '../interfaces';
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
-// import type { CountryFlagEmojis as  } from '@nzz/et-utils-country-flag-emoji';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
