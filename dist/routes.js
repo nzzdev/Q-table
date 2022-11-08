@@ -176,7 +176,6 @@ function hasFootnoteClass(classes, newClass) {
     return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
 }
 
-// import type { CountryFlagEmojis as  } from '@nzz/et-utils-country-flag-emoji';
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 // Formatting for numbers of >= 10000.
@@ -295,7 +294,9 @@ function formatTableData(data, footnotes, options) {
             // ignore row 0 because it is the header.
             if (rowIndex > 0 && columnIndex === ((_a = options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) && typeof value === 'string') {
                 const valueRetyped = value.toUpperCase();
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 if (CountryFlagEmojis[valueRetyped]) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                     value = CountryFlagEmojis[valueRetyped];
                 }
             }
@@ -2516,14 +2517,26 @@ const route$h = {
                 tableData = formatTableData(config.data.table, footnotes, options);
             }
             catch (e) {
-                console.error('Execption during formatting table data - ', e);
+                // TODO Add logging to Kibana
+                console.error('Exception during formatting table data - ', e);
             }
             try {
                 colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
             }
             catch (e) {
-                console.error('Execption during creating colorColumn - ', e);
+                // TODO Add logging to Kibana
+                console.error('Exception during creating colorColumn - ', e);
             }
+            let initialColumnInfo = [];
+            // need at least one more row than just the header to determine column data type
+            if (tableData.length > 1)
+                initialColumnInfo = getColumnsType(config.data.table).map((columnType) => {
+                    return {
+                        type: columnType.isNumeric ? 'numeric' : 'text',
+                        sortable: true,
+                        sortDirection: 'asc',
+                    };
+                });
             const props = {
                 item: config,
                 config,
@@ -2532,6 +2545,7 @@ const route$h = {
                 minibar,
                 footnotes,
                 colorColumn,
+                initialColumnInfo,
                 numberOfRows: dataLength,
                 displayOptions: displayOptions,
                 noInteraction: payload.toolRuntimeConfig.noInteraction || false,
