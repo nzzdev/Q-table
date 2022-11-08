@@ -6,13 +6,17 @@ import MethodBox from '@cps/methodbox/MethodBox.svelte';
 import Pagination from '@cps/pagination/Pagination.svelte';
 import Search from '@cps/search/Search.svelte';
 import Table from '@cps/table/Table.svelte';
-import CardLayout from './card/CardLayout.svelte';
+import { sortTable } from '@src/helpers/sortTable';
+import type { QTableStateContext, QTableSvelteProperties, Row } from '@src/interfaces';
+import { columnInfo } from '@src/stores/columnInfo';
+import { sortingColumnIndex } from '@src/stores/sortingColumnIndex';
 import { setContext } from 'svelte';
-import type { QTableSvelteProperties, QTableStateContext, Row } from '@src/interfaces';
+import { derived } from 'svelte/store';
+import CardLayout from './card/CardLayout.svelte';
 
 export let componentConfiguration: QTableSvelteProperties;
 
-const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, width, frozenRowKey } = componentConfiguration;
+const { config, initWithCardLayout, rows, footnotes, colorColumn, displayOptions, noInteraction, id, width, frozenRowKey, initialColumnInfo } = componentConfiguration;
 
 let { pageSize } = componentConfiguration;
 
@@ -23,6 +27,10 @@ let visibleRows: Row[];
 let filteredRows: Row[];
 let frozenRow: Row | undefined;
 
+columnInfo.set(initialColumnInfo);
+// listen for changes in either columnInfo or sortColIndex
+const sortChange = derived([columnInfo, sortingColumnIndex], ([$c, $s]) => [$c, $s])
+
 if (typeof frozenRowKey === 'number' && rows?.length && rows[frozenRowKey]) {
   frozenRow = rows.splice(frozenRowKey, 1)[0];
   frozenRow.frozen = true;
@@ -31,6 +39,30 @@ if (typeof frozenRowKey === 'number' && rows?.length && rows[frozenRowKey]) {
 }
 
 $: filteredRows = rows;
+
+/**
+ * NOTE Questions improvement / refactoring:
+ * - Split the current cell value into `label` and `value`?
+ * - Do we need an option to turn sorting off again? Like back to initial status?
+ * - Do I need presorting which is set in the editor?
+ * - Do we need a default sort direction that can be set in the editor?
+*/
+
+// --- Sort columns ---
+$: {
+  if ($sortChange && typeof $sortingColumnIndex === 'number') {
+    filteredRows.sort((a, b) => sortTable(
+      a,
+      b,
+      $sortingColumnIndex,
+      $columnInfo[$sortingColumnIndex].type,
+      $columnInfo[$sortingColumnIndex].sortDirection
+    ))
+    filteredRows = filteredRows;
+  }
+}
+
+// --- Freeze row ---
 $: {
   const currentPageRows: Row[] = filteredRows.slice(pageIndex, pageIndex + pageSize);
   if (frozenRow) {
@@ -129,5 +161,9 @@ if (width) {
     <MethodBox legend={colorColumn.legend} {noInteraction} />
   {/if}
 
-  <Footer notes={config.notes} sources={config.sources} acronym={config.acronym} />
+  <Footer
+    notes={config.notes}
+    sources={config.sources}
+    acronym={config.acronym}
+  />
 </div>

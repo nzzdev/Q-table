@@ -2,7 +2,7 @@ import Ajv from 'ajv';
 import Boom from '@hapi/boom';
 import getExactPixelWidth from '@helpers/toolRuntimeConfig.js';
 import { getColorColumn } from '@helpers/colorColumn.js';
-import { getDataWithoutHeaderRow, formatTableData } from '@helpers/data.js';
+import { getDataWithoutHeaderRow, formatTableData, getColumnsType } from '@helpers/data.js';
 import { getFootnotes } from '@helpers/footnotes.js';
 import { getMinibar } from '@helpers/minibars.js';
 import { readFileSync } from 'fs';
@@ -20,6 +20,7 @@ import type {
   StyleHashMap,
   ToolRuntimeConfig,
   WebPayload,
+  ColumnMetaData,
 } from '@src/interfaces';
 
 const ajv = new Ajv({
@@ -106,14 +107,27 @@ const route: ServerRoute = {
     try {
       tableData = formatTableData(config.data.table, footnotes, options);
     } catch (e) {
-      console.error('Execption during formatting table data - ', e);
+      // TODO Add logging to Kibana
+      console.error('Exception during formatting table data - ', e);
     }
 
     try {
       colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
     } catch (e) {
-      console.error('Execption during creating colorColumn - ', e);
+      // TODO Add logging to Kibana
+      console.error('Exception during creating colorColumn - ', e);
     }
+
+    let initialColumnInfo: ColumnMetaData[] = []
+    // need at least one more row than just the header to determine column data type
+    if (tableData.length > 1)
+      initialColumnInfo = getColumnsType(config.data.table).map((columnType) => {
+        return {
+          type: columnType.isNumeric ? 'numeric' : 'text',
+          sortable: true, // TODO extract sortable rows from schema
+          sortDirection: 'asc',
+        } as ColumnMetaData
+      })
 
     const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.
@@ -123,6 +137,7 @@ const route: ServerRoute = {
       minibar,
       footnotes,
       colorColumn,
+      initialColumnInfo,
       numberOfRows: dataLength, // do not count the header
       displayOptions: displayOptions,
       noInteraction: payload.toolRuntimeConfig.noInteraction || false,

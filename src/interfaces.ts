@@ -151,7 +151,7 @@ export interface QTableSvelteProperties {
   pageSize: number;
   hideTableHeader: boolean;
   frozenRowKey?: number | null;
-  columnsInfo: ColumnMetaData[] 
+  initialColumnInfo: ColumnMetaData[] 
 }
 
 export interface QTableStateContext {
@@ -168,10 +168,9 @@ export interface QTableStateContext {
 }
 
 export interface ColumnMetaData {
-  type: CellType
+  type: CellType;
   sortable: boolean;
-  sortIsActive: boolean;
-  sort: 'asc' | 'dsc'
+  sortDirection: SortDirection;
 }
 
 export interface Source {
@@ -202,6 +201,7 @@ export interface Cell {
 }
 
 export type CellType = 'text' | 'numeric' | null
+export type SortDirection = 'asc' | 'dsc';
 
 export interface Row {
   key: number;

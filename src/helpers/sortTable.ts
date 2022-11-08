@@ -36,5 +36,5 @@ export const sortTable = (
 };
 
 const parse = (s: string): number => {
-  return parseFloat(s.replace(/\s+/g, '').replace(',', '.'));
+  return parseFloat(s.replace(/\s+/g, '').replace(',', '.').replace('–', '-'));
 };

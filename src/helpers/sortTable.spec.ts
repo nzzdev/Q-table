@@ -32,7 +32,6 @@ const createTableFixture = (): Row[] => {
         {
           type: 'numeric',
           value: numeric[i],
-          // value: '–3 500 000', // REVIEW check these editor warnings
           classes: [],
         },
       ],

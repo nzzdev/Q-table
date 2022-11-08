@@ -1,6 +1,9 @@
 <script lang="ts">
 import type { Minibar } from '@helpers/minibars';
-import type { Cell } from '@src/interfaces';
+import type { Cell, ColumnMetaData } from '@src/interfaces';
+import { columnInfo } from '@src/stores/columnInfo';
+import { sortingColumnIndex } from '@src/stores/sortingColumnIndex';
+import SortArrow from '../svg/SortArrow.svelte';
 
 export let initWithCardLayout = false;
 export let minibar: Minibar | null = null;
@@ -28,6 +31,19 @@ function getAttributes(colIndex: number): Attribute {
   return { colspan, classes };
 }
 
+const onSort = (colIndex: number): void => {
+  if (colIndex !== $sortingColumnIndex) 
+    sortingColumnIndex.set(colIndex);
+  else {
+    const currentColumn = $columnInfo[colIndex]
+    // toggle sort direction
+    currentColumn.sortDirection = currentColumn.sortDirection === 'asc' ? 'dsc' : 'asc'
+    const columnInfoTemp: ColumnMetaData[] = [...$columnInfo]
+    columnInfoTemp[colIndex] = currentColumn;
+    columnInfo.set(columnInfoTemp)
+  }
+}
+
 interface Attribute {
   colspan: number;
   classes: string;
@@ -44,6 +60,13 @@ interface Attribute {
           <span data-annotation={head.footnote.value} class="q-table-footnote-annotation">{head.value}</span>
         {:else if head.value}
           {head.value}
+        {/if}
+        {#if $columnInfo[colIndex] && $columnInfo[colIndex].sortable}
+          <span on:click={() => onSort(colIndex)}>
+            <SortArrow
+              sortAscending={$columnInfo[colIndex].sortDirection === 'asc'}
+              sortActive= {$sortingColumnIndex === colIndex} />
+          </span>
         {/if}
       </th>
     {/each}
