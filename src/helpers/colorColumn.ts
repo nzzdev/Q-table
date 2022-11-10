@@ -1,6 +1,5 @@
 import {
   getNumericalValuesByColumn,
-  getFormattedValue,
   getCategoricalValuesByColumn,
   getCustomBucketBorders,
   getMaxDigitsAfterCommaInDataByRow,
@@ -49,7 +48,6 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
   const formattingOptions: DataFormattingOptions = { maxDigitsAfterComma, roundingBucketBorders };
   const legend = getNumericalLegend(selectedColumn, data, settings, formattingOptions, width);
 
-  const formattedValues: string[] = [];
   const colors: ColumnColorSettings[] = [];
 
   if (typeof settings.selectedColumn == 'number') {
@@ -58,14 +56,10 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
     valuesByColumn.map(value => {
       const color = getColorForNumericalColoredColoumn(value, legend);
       colors.push(color);
-
-      const formattedValue = getFormattedValue(value, formattingOptions.maxDigitsAfterComma);
-      formattedValues.push(formattedValue);
     });
   }
   return {
     legend,
-    formattedValues,
     colors,
     ...settings,
   };
@@ -84,7 +78,6 @@ function createCategoricalColorColumn(selectedColumn: number, settings: ColorCol
 
   return {
     legend,
-    formattedValues: [],
     colors,
     ...settings,
   };
@@ -161,7 +154,6 @@ function getColorForCategoricalColoredColumn(value: string | null, legend: Categ
 
 export interface ColorColumn extends ColorColumnSettings {
   legend: NumericalLegend | CategoricalLegend;
-  formattedValues: string[];
   colors: ColumnColorSettings[];
 }
 

@@ -49,7 +49,7 @@ export function appendFootnoteAnnotationsToTableData(tableData: Row[], footnotes
       }
     }
 
-    // create a new property to safe the index of the footnote
+    // create a new property to save the index of the footnote
     cells[footnote.colIndex].footnote = {
       value: footnote.value,
       unicode: unicodes[footnote.value],

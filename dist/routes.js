@@ -72,7 +72,7 @@ function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
                 spacings.push(space);
             }
         }
-        // create a new property to safe the index of the footnote
+        // create a new property to save the index of the footnote
         cells[footnote.colIndex].footnote = {
             value: footnote.value,
             unicode: unicodes[footnote.value],
@@ -267,39 +267,9 @@ function formatTableData(dataWithHeader, footnotes, options) {
                 default:
                     return formatTextualData(cell);
             }
-            // let type: CellType = 'text';
-            // let value = cell;
-            // const classes: string[] = [];
-            // Transform value into country emoji flag if applicable.
-            // ignore row 0 because it is the header.
-            // if (rowIndex > 0 && columnIndex === options.countryFlagColumn?.selectedColumn && typeof value === 'string') {
-            //   const valueRetyped = value.toUpperCase() as (keyof typeof CountryFlagEmojis);
-            //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            //   if (CountryFlagEmojis[valueRetyped]) {
-            //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-            //     value = CountryFlagEmojis[valueRetyped];
-            //   }
-            // } else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-            //   type = 'numeric';
-            //   classes.push('s-font-note--tabularnums');
-            //   // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
-            //   if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
-            //     const parsedValue = parseFloat(cell);
-            //     if (columns[columnIndex].withFormating) {
-            //       value = formatWithGroupingSeparator(parsedValue);
-            //     } else {
-            //       value = formatNoGroupingSeparator(parsedValue);
-            //     }
-            //   }
-            // }
-            // return {
-            //   type: type,
-            //   value: value,
-            //   classes: classes,
-            // };
         });
         rows.push({
-            key: rowIndex,
+            key: rowIndex - 1,
             cells,
         });
     }
@@ -1310,19 +1280,15 @@ function createNumericalColorColumn(selectedColumn, settings, data, width) {
     const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
     const formattingOptions = { maxDigitsAfterComma, roundingBucketBorders };
     const legend = getNumericalLegend(selectedColumn, data, settings, formattingOptions, width);
-    const formattedValues = [];
     const colors = [];
     if (typeof settings.selectedColumn == 'number') {
         const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
         valuesByColumn.map(value => {
             const color = getColorForNumericalColoredColoumn(value, legend);
             colors.push(color);
-            const formattedValue = getFormattedValue(value, formattingOptions.maxDigitsAfterComma);
-            formattedValues.push(formattedValue);
         });
     }
     return Object.assign({ legend,
-        formattedValues,
         colors }, settings);
 }
 function createCategoricalColorColumn(selectedColumn, settings, data) {
@@ -1333,7 +1299,8 @@ function createCategoricalColorColumn(selectedColumn, settings, data) {
         const color = getColorForCategoricalColoredColumn(category, legend);
         colors.push(color);
     });
-    return Object.assign({ legend, formattedValues: [], colors }, settings);
+    return Object.assign({ legend,
+        colors }, settings);
 }
 /**
  * Internal.

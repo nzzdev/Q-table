@@ -1,13 +1,13 @@
 <script lang="ts">
 import type { ColorColumn } from '@helpers/colorColumn';
-import type { QTableConfig, Cell } from '@src/interfaces';
+import type { QTableConfig, Cell, Thead } from '@src/interfaces';
 
 export let item: QTableConfig;
 export let cell: Cell;
 export let colorColumn: ColorColumn | null;
 export let rowIndex: number;
 export let colIndex: number;
-export let tableHead: Cell[];
+export let tableHead: Thead[];
 
 let styles: CellStyle;
 
@@ -59,44 +59,25 @@ interface CellStyle {
 </script>
 
 <td data-label={getDataLabel(colIndex)} class={styles.class} style={styles.style}>
-  {#if colorColumn !== null && colorColumn.selectedColumn === colIndex}
-    {#if cell.footnote}
-      <span class={colorColumn.colors[rowIndex].textColor}>
-        {#if colorColumn.colorColumnType === 'numerical'}
-          {#if !colorColumn.formattedValues[rowIndex]}
-            --
-          {:else}
-            {colorColumn.formattedValues[rowIndex]}
-          {/if}
-        {:else if cell.value}
-          {cell.value}
-        {/if}
-        {#if cell.footnote.value}
-          <span class="q-table-footnote-annotation--colorColumn {colorColumn.colors[rowIndex].textColor}">
-            <sup>{cell.footnote.value}</sup>
+  {#if colorColumn?.selectedColumn === colIndex}
+      <span class={colorColumn.colors[rowIndex]?.textColor}>
+          {cell.label}
+
+        {#if cell.footnote?.value}
+          <span class="q-table-footnote-annotation q-table-footnote-annotation-colored-column {colorColumn.colors[rowIndex].textColor}">
+            {cell.footnote.value}
           </span>
         {/if}
       </span>
-    {:else}
-      <span class={colorColumn.colors[rowIndex].textColor}>
-        {#if colorColumn.colorColumnType === 'numerical'}
-          {#if !colorColumn.formattedValues[rowIndex]}
-            --
-          {:else}
-            {colorColumn.formattedValues[rowIndex]}
-          {/if}
-        {:else}
-          {cell.label}
-        {/if}
-      </span>
-    {/if}
-  {:else if cell.footnote}
-    <span data-annotation={cell.footnote.value} class="q-table-footnote-annotation">
-      {cell.label}
-    </span>
   {:else}
     <span>
       {cell.label}
+
+      {#if cell.footnote?.value}
+          <span class="q-table-footnote-annotation">
+            {cell.footnote.value}
+          </span>
+        {/if}
     </span>
   {/if}
 </td>

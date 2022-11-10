@@ -110,7 +110,6 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Struct
     const cells = row.map((cell, columnIndex) => {
       const type = columnTypes[columnIndex];
 
-
       switch (type) {
         case 'country-flag-emoji':
           return formatCountryFlagEmojiDatapoint(cell);
@@ -122,51 +121,13 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Struct
           default:
           return formatTextualData(cell);
       }
-
-
-      // let type: CellType = 'text';
-      // let value = cell;
-      // const classes: string[] = [];
-
-      // Transform value into country emoji flag if applicable.
-      // ignore row 0 because it is the header.
-      // if (rowIndex > 0 && columnIndex === options.countryFlagColumn?.selectedColumn && typeof value === 'string') {
-      //   const valueRetyped = value.toUpperCase() as (keyof typeof CountryFlagEmojis);
-
-      //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      //   if (CountryFlagEmojis[valueRetyped]) {
-      //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      //     value = CountryFlagEmojis[valueRetyped];
-      //   }
-      // } else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-      //   type = 'numeric';
-      //   classes.push('s-font-note--tabularnums');
-
-      //   // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
-      //   if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
-      //     const parsedValue = parseFloat(cell);
-      //     if (columns[columnIndex].withFormating) {
-      //       value = formatWithGroupingSeparator(parsedValue);
-      //     } else {
-      //       value = formatNoGroupingSeparator(parsedValue);
-      //     }
-      //   }
-      // }
-
-      // return {
-      //   type: type,
-      //   value: value,
-      //   classes: classes,
-      // };
     });
 
     rows.push({
-      key: rowIndex,
+      key: rowIndex - 1, // negate header.
       cells,
     } as Row);
   }
-
-
 
   // TODO: header is now excluded from footnotes.
   // Need to re-add.
