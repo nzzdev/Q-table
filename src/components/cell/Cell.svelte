@@ -85,20 +85,18 @@ interface CellStyle {
           {:else}
             {colorColumn.formattedValues[rowIndex]}
           {/if}
-        {:else if cell.value}
-          {cell.value}
+        {:else}
+          {cell.label}
         {/if}
       </span>
     {/if}
   {:else if cell.footnote}
     <span data-annotation={cell.footnote.value} class="q-table-footnote-annotation">
-      {#if cell.value}
-        {cell.value}
-      {/if}
+      {cell.label}
     </span>
-  {:else if cell.value}
+  {:else}
     <span>
-      {cell.value}
+      {cell.label}
     </span>
   {/if}
 </td>

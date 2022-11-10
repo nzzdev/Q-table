@@ -24,7 +24,8 @@ export interface QTableConfig {
 
 export type BucketType = 'ckmeans' | 'quantile' | 'equal' | 'custom';
 export type ColorColumnType = 'numerical' | 'categorical';
-export type QTableDataRaw = (string | null)[][];
+export type QTableDataRaw = QTableCellDataRaw[][];
+export type QTableCellDataRaw = string | null;
 
 export const enum DivergingType {
   BUCKET = 'bucket',
@@ -137,7 +138,7 @@ export interface AvailabilityResponseObject {
 export interface QTableSvelteProperties {
   item: QTableConfig; // To make renderingInfoScripts working. refactor later.
   config: QTableConfig;
-  tableHead: Cell[];
+  tableHead: Thead[];
   rows: Row[];
   minibar: Minibar | null;
   footnotes: StructuredFootnote[] | null;
@@ -151,7 +152,6 @@ export interface QTableSvelteProperties {
   pageSize: number;
   hideTableHeader: boolean;
   frozenRowKey?: number | null;
-  initialColumnInfo: ColumnMetaData[] 
 }
 
 export interface QTableStateContext {
@@ -167,9 +167,8 @@ export interface QTableStateContext {
   setFilteredRows: (_rows: Row[]) => Row[];
 }
 
-export interface ColumnMetaData {
-  type: CellType;
-  sortable: boolean;
+export interface QTableSortState {
+  colIndex: number | null;
   sortDirection: SortDirection;
 }
 
@@ -189,9 +188,41 @@ export interface StyleHashMap {
   'q-table': string;
 }
 
+
+
+export interface Column {
+  type: TableColumnType;
+  values: (string | number)[];
+  formattedValues: string[];
+}
+
+export type TableColumnType = 'text' | 'numeric' | 'country-flag-emoji';
+
+export type SortDirection = 'asc' | 'desc';
+
+export interface Row {
+  key: number;
+  cells: Cell[];
+  frozen?: boolean;
+}
+
+export interface Thead {
+  value: string;
+  type: TableColumnType;
+  sortable: boolean;
+  sortDirection: 'asc' | 'desc';
+  classes: string[],
+  footnote?: {
+    value: number;
+    unicode: string;
+    class: string | null;
+  };
+}
+
 export interface Cell {
-  type: CellType
-  value: string | null;
+  type: TableColumnType
+  value: number | string;
+  label: string; // String representation of value.
   classes: string[];
   footnote?: {
     value: number;
@@ -201,10 +232,3 @@ export interface Cell {
 }
 
 export type CellType = 'text' | 'numeric' | null
-export type SortDirection = 'asc' | 'dsc';
-
-export interface Row {
-  key: number;
-  cells: Cell[];
-  frozen?: boolean;
-}

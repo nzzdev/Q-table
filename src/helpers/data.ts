@@ -4,7 +4,7 @@ import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 
 // Types.
 import type { StructuredFootnote } from './footnotes';
-import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, CellType } from '../interfaces';
+import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, Thead } from '../interfaces';
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 
 const fourPerEmSpace = '\u2005';
@@ -31,17 +31,18 @@ const formatLocaleSmall = d3FormatLocale({
 const formatWithGroupingSeparator = formatLocale.format(',');
 const formatNoGroupingSeparator = formatLocale.format('');
 
+
 export function getNumericColumns(data: QTableDataRaw): IndexedColumnTitle[] {
   const columns = getColumnsType(data);
   const numericColumns: IndexedColumnTitle[] = [];
 
   // data[0].length is undefined when creating a new item.
   if (data[0] !== undefined) {
-    const row = data[0];
+    const header = data[0];
 
-    for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
-      if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-        const cell = row[columnIndex] as string; // TODO: check.
+    for (let columnIndex = 0; columnIndex < header.length; columnIndex++) {
+      if (columns[columnIndex] && columns[columnIndex] === 'numeric') {
+        const cell = header[columnIndex] || '';
         numericColumns.push({ title: cell, index: columnIndex });
       }
     }
@@ -83,47 +84,215 @@ export function isNumeric(cell: string | null): boolean {
   return true;
 }
 
-export function getColumnsType(data: QTableDataRaw): ColumnType[] {
-  const columns: ColumnType[] = [];
-  const table = getDataWithoutHeaderRow(data);
+export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): {header: Thead[], rows: Row[]} {
+  const header: Thead[] = [];
+  let rows: Row[] = [];
 
-  const columnAmount = table[0].length;
+  // First get the type of each column.
+  const columnTypes = getColumnsType(dataWithHeader, options);
 
-  for (let c = 0; c < columnAmount; c++) {
-    const column: (string | null)[] = [];
+  // Format the header.
+  for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
+    header.push({
+      value: dataWithHeader[0][colIndex] || '',
+      type: columnTypes[colIndex],
+      sortable: true,  // TODO extract sortable rows from schema and options here.
+      sortDirection: 'asc',
+      classes: [],
+    });
+  }
 
-    // Take all columns in one array
-    for (let r = 0; r < table.length; r++) {
-      column.push(table[r][c]);
-    }
+  // Go through each row and create the correct cell.
+  // note: start at index 1 to skip header.
+  for (let rowIndex = 1; rowIndex < dataWithHeader.length; rowIndex++) {
+    const row = dataWithHeader[rowIndex];
 
-    let withFormating = false;
-    const columnNumeric = isColumnNumeric(column);
+    const cells = row.map((cell, columnIndex) => {
+      const type = columnTypes[columnIndex];
 
-    if (columnNumeric) {
-      const numericValuesInColumn: number[] = [];
 
-      for (let i = 0; i < column.length; i++) {
-        const parsedValue = parseFloat(column[i] || '');
+      switch (type) {
+        case 'country-flag-emoji':
+          return formatCountryFlagEmojiDatapoint(cell);
 
-        if (!isNaN(parsedValue)) {
-          numericValuesInColumn.push(parsedValue);
-        }
+        case 'numeric':
+          return formaticNumericData(cell);
+
+        case 'text':
+          default:
+          return formatTextualData(cell);
       }
 
-      withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
+
+      // let type: CellType = 'text';
+      // let value = cell;
+      // const classes: string[] = [];
+
+      // Transform value into country emoji flag if applicable.
+      // ignore row 0 because it is the header.
+      // if (rowIndex > 0 && columnIndex === options.countryFlagColumn?.selectedColumn && typeof value === 'string') {
+      //   const valueRetyped = value.toUpperCase() as (keyof typeof CountryFlagEmojis);
+
+      //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      //   if (CountryFlagEmojis[valueRetyped]) {
+      //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      //     value = CountryFlagEmojis[valueRetyped];
+      //   }
+      // } else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
+      //   type = 'numeric';
+      //   classes.push('s-font-note--tabularnums');
+
+      //   // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
+      //   if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
+      //     const parsedValue = parseFloat(cell);
+      //     if (columns[columnIndex].withFormating) {
+      //       value = formatWithGroupingSeparator(parsedValue);
+      //     } else {
+      //       value = formatNoGroupingSeparator(parsedValue);
+      //     }
+      //   }
+      // }
+
+      // return {
+      //   type: type,
+      //   value: value,
+      //   classes: classes,
+      // };
+    });
+
+    rows.push({
+      key: rowIndex,
+      cells,
+    } as Row);
+  }
+
+
+
+  // TODO: header is now excluded from footnotes.
+  // Need to re-add.
+  if (footnotes.length > 0) {
+    rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
+  }
+
+  return {
+    header,
+    rows,
+  }
+}
+
+function formatCountryFlagEmojiDatapoint(rawValue: QTableCellDataRaw): Cell {
+  let label = '';
+
+  if (typeof rawValue === 'string') {
+    const valueRetyped = rawValue.toUpperCase() as (keyof typeof CountryFlagEmojis);
+
+    if (CountryFlagEmojis[valueRetyped]) {
+      label = CountryFlagEmojis[valueRetyped];
+    }
+  }
+
+  return {
+    type: 'country-flag-emoji',
+    value: rawValue || '',
+    label: label,
+    classes: [],
+  }
+}
+
+function formatTextualData(rawValue: QTableCellDataRaw): Cell {
+  return {
+    type: 'text',
+    value: rawValue || '',
+    label: rawValue || '',
+    classes: [],
+  }
+}
+
+function formaticNumericData(rawValue: QTableCellDataRaw): Cell {
+  let label = '';
+  let value = 0;
+
+  if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
+    label = rawValue;
+  } else if (rawValue !== null) {
+    const parsedValue = parseFloat(rawValue);
+
+    value = parsedValue;
+    label = formatWithGroupingSeparator(parsedValue);
+
+    // Todo discuss with team later.
+    // why are different formattings for when there are numbers over 10000
+    // in the dataset??
+    // if (columns[columnIndex].withFormating) {
+    //   value = formatWithGroupingSeparator(parsedValue);
+    // } else {
+    //   value = formatNoGroupingSeparator(parsedValue);
+    // }
+  }
+
+  return {
+    type: 'numeric',
+    value,
+    label,
+    classes: ['s-font-note--tabularnums'],
+  }
+}
+
+export function getColumnsType(dataWithHeader: QTableDataRaw, options: QTableConfigOptions | undefined = undefined): TableColumnType[] {
+  const columns: TableColumnType[] = [];
+
+  const columnAmount = dataWithHeader[0].length;
+
+  for (let c = 0; c < columnAmount; c++) {
+    const column: QTableCellDataRaw[] = [];
+
+    if (options?.countryFlagColumn?.selectedColumn === c) {
+      columns.push('country-flag-emoji');
+    } else {
+      // Take all columns in one array.
+      // note: start at index 1 to skip header.
+      for (let row = 1; row < dataWithHeader.length; row++) {
+        column.push(dataWithHeader[row][c]);
+      }
+
+      const isNumeric = isColumnNumeric(column);
+
+      if (isNumeric) {
+        columns.push('numeric');
+      } else {
+        columns.push('text');
+      }
     }
 
-    columns.push({ isNumeric: columnNumeric, withFormating });
+    // TODO: move somewhere else.
+    // let withFormating = false;
+    // const columnNumeric = isColumnNumeric(column);
+
+    // if (columnNumeric) {
+    //   const numericValuesInColumn: number[] = [];
+
+    //   for (let i = 0; i < column.length; i++) {
+    //     const parsedValue = parseFloat(column[i] || '');
+
+    //     if (!isNaN(parsedValue)) {
+    //       numericValuesInColumn.push(parsedValue);
+    //     }
+    //   }
+
+    //   withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
+    // }
+
+    // columns.push({ isNumeric: columnNumeric, withFormating });
   }
 
   return columns;
 }
 
-function isColumnNumeric(column: (string | null)[]): boolean {
-  // Loop through all cells and if one cell is not numeric
-  for (let i = 0; i < column.length; i++) {
-    const value = column[i];
+function isColumnNumeric(rawColumnData: QTableCellDataRaw[]):boolean {
+  // Loop through all cells checking if it is a number and on the way
+  // preparing the formatting.
+  for (let i = 0; i < rawColumnData.length; i++) {
+    const value = rawColumnData[i];
 
     // TODO
     // The question should we accept a string as an exception for a numeric column or force the user to
@@ -138,66 +307,11 @@ function isColumnNumeric(column: (string | null)[]): boolean {
     }
   }
 
+
   return true;
 }
 
-export function formatTableData(data: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): Row[] {
-  const columns = getColumnsType(data);
-  let tableData: Row[] = [];
 
-  for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
-    const row = data[rowIndex];
-
-    const cells = row.map((cell, columnIndex) => {
-      let type: CellType = 'text';
-      let value = cell;
-
-      const classes: string[] = [];
-
-      // Transform value into country emoji flag if applicable.
-      // ignore row 0 because it is the header.
-      if (rowIndex > 0 && columnIndex === options.countryFlagColumn?.selectedColumn && typeof value === 'string') {
-        const valueRetyped = value.toUpperCase() as (keyof typeof CountryFlagEmojis);
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (CountryFlagEmojis[valueRetyped]) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          value = CountryFlagEmojis[valueRetyped];
-        }
-      } else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-        type = 'numeric';
-        classes.push('s-font-note--tabularnums');
-
-        // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
-        if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
-          const parsedValue = parseFloat(cell);
-          if (columns[columnIndex].withFormating) {
-            value = formatWithGroupingSeparator(parsedValue);
-          } else {
-            value = formatNoGroupingSeparator(parsedValue);
-          }
-        }
-      }
-
-      return {
-        type: type,
-        value: value,
-        classes: classes,
-      };
-    });
-
-    tableData.push({
-      key: rowIndex - 1, // we do -1 because we need to subtract the header from the indexing.
-      cells,
-    } as Row);
-  }
-
-  if (footnotes.length > 0) {
-    tableData = appendFootnoteAnnotationsToTableData(tableData, footnotes, options);
-  }
-
-  return tableData;
-}
 
 export function getNumericalValuesByColumn(data: QTableDataRaw, column: number): Array<number | null> {
   return data.map(row => {
@@ -425,11 +539,6 @@ export interface MetaData {
 export interface DataFormattingOptions {
   maxDigitsAfterComma: number;
   roundingBucketBorders?: boolean;
-}
-
-interface ColumnType {
-  isNumeric: boolean;
-  withFormating: boolean;
 }
 
 interface IndexedColumnTitle {

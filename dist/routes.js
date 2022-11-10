@@ -195,16 +195,16 @@ const formatLocaleSmall = formatLocale$1({
     grouping: [10], // Set the grouping high so numbers under 10000 do not get grouped.
 });
 const formatWithGroupingSeparator = formatLocale.format(',');
-const formatNoGroupingSeparator = formatLocale.format('');
+formatLocale.format('');
 function getNumericColumns(data) {
     const columns = getColumnsType(data);
     const numericColumns = [];
     // data[0].length is undefined when creating a new item.
     if (data[0] !== undefined) {
-        const row = data[0];
-        for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
-            if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-                const cell = row[columnIndex]; // TODO: check.
+        const header = data[0];
+        for (let columnIndex = 0; columnIndex < header.length; columnIndex++) {
+            if (columns[columnIndex] && columns[columnIndex] === 'numeric') {
+                const cell = header[columnIndex] || '';
                 numericColumns.push({ title: cell, index: columnIndex });
             }
         }
@@ -237,36 +237,176 @@ function isNumeric(cell) {
     }
     return true;
 }
-function getColumnsType(data) {
+function formatTableData(dataWithHeader, footnotes, options) {
+    const header = [];
+    let rows = [];
+    // First get the type of each column.
+    const columnTypes = getColumnsType(dataWithHeader, options);
+    // Format the header.
+    for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
+        header.push({
+            value: dataWithHeader[0][colIndex] || '',
+            type: columnTypes[colIndex],
+            sortable: true,
+            sortDirection: 'asc',
+            classes: [],
+        });
+    }
+    // Go through each row and create the correct cell.
+    // note: start at index 1 to skip header.
+    for (let rowIndex = 1; rowIndex < dataWithHeader.length; rowIndex++) {
+        const row = dataWithHeader[rowIndex];
+        const cells = row.map((cell, columnIndex) => {
+            const type = columnTypes[columnIndex];
+            switch (type) {
+                case 'country-flag-emoji':
+                    return formatCountryFlagEmojiDatapoint(cell);
+                case 'numeric':
+                    return formaticNumericData(cell);
+                case 'text':
+                default:
+                    return formatTextualData(cell);
+            }
+            // let type: CellType = 'text';
+            // let value = cell;
+            // const classes: string[] = [];
+            // Transform value into country emoji flag if applicable.
+            // ignore row 0 because it is the header.
+            // if (rowIndex > 0 && columnIndex === options.countryFlagColumn?.selectedColumn && typeof value === 'string') {
+            //   const valueRetyped = value.toUpperCase() as (keyof typeof CountryFlagEmojis);
+            //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            //   if (CountryFlagEmojis[valueRetyped]) {
+            //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            //     value = CountryFlagEmojis[valueRetyped];
+            //   }
+            // } else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
+            //   type = 'numeric';
+            //   classes.push('s-font-note--tabularnums');
+            //   // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
+            //   if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
+            //     const parsedValue = parseFloat(cell);
+            //     if (columns[columnIndex].withFormating) {
+            //       value = formatWithGroupingSeparator(parsedValue);
+            //     } else {
+            //       value = formatNoGroupingSeparator(parsedValue);
+            //     }
+            //   }
+            // }
+            // return {
+            //   type: type,
+            //   value: value,
+            //   classes: classes,
+            // };
+        });
+        rows.push({
+            key: rowIndex,
+            cells,
+        });
+    }
+    // TODO: header is now excluded from footnotes.
+    // Need to re-add.
+    if (footnotes.length > 0) {
+        rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
+    }
+    return {
+        header,
+        rows,
+    };
+}
+function formatCountryFlagEmojiDatapoint(rawValue) {
+    let label = '';
+    if (typeof rawValue === 'string') {
+        const valueRetyped = rawValue.toUpperCase();
+        if (CountryFlagEmojis[valueRetyped]) {
+            label = CountryFlagEmojis[valueRetyped];
+        }
+    }
+    return {
+        type: 'country-flag-emoji',
+        value: rawValue || '',
+        label: label,
+        classes: [],
+    };
+}
+function formatTextualData(rawValue) {
+    return {
+        type: 'text',
+        value: rawValue || '',
+        label: rawValue || '',
+        classes: [],
+    };
+}
+function formaticNumericData(rawValue) {
+    let label = '';
+    let value = 0;
+    if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
+        label = rawValue;
+    }
+    else if (rawValue !== null) {
+        const parsedValue = parseFloat(rawValue);
+        value = parsedValue;
+        label = formatWithGroupingSeparator(parsedValue);
+        // Todo discuss with team later.
+        // why are different formattings for when there are numbers over 10000
+        // in the dataset??
+        // if (columns[columnIndex].withFormating) {
+        //   value = formatWithGroupingSeparator(parsedValue);
+        // } else {
+        //   value = formatNoGroupingSeparator(parsedValue);
+        // }
+    }
+    return {
+        type: 'numeric',
+        value,
+        label,
+        classes: ['s-font-note--tabularnums'],
+    };
+}
+function getColumnsType(dataWithHeader, options = undefined) {
+    var _a;
     const columns = [];
-    const table = getDataWithoutHeaderRow(data);
-    const columnAmount = table[0].length;
+    const columnAmount = dataWithHeader[0].length;
     for (let c = 0; c < columnAmount; c++) {
         const column = [];
-        // Take all columns in one array
-        for (let r = 0; r < table.length; r++) {
-            column.push(table[r][c]);
+        if (((_a = options === null || options === void 0 ? void 0 : options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) === c) {
+            columns.push('country-flag-emoji');
         }
-        let withFormating = false;
-        const columnNumeric = isColumnNumeric(column);
-        if (columnNumeric) {
-            const numericValuesInColumn = [];
-            for (let i = 0; i < column.length; i++) {
-                const parsedValue = parseFloat(column[i] || '');
-                if (!isNaN(parsedValue)) {
-                    numericValuesInColumn.push(parsedValue);
-                }
+        else {
+            // Take all columns in one array.
+            // note: start at index 1 to skip header.
+            for (let row = 1; row < dataWithHeader.length; row++) {
+                column.push(dataWithHeader[row][c]);
             }
-            withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
+            const isNumeric = isColumnNumeric(column);
+            if (isNumeric) {
+                columns.push('numeric');
+            }
+            else {
+                columns.push('text');
+            }
         }
-        columns.push({ isNumeric: columnNumeric, withFormating });
+        // TODO: move somewhere else.
+        // let withFormating = false;
+        // const columnNumeric = isColumnNumeric(column);
+        // if (columnNumeric) {
+        //   const numericValuesInColumn: number[] = [];
+        //   for (let i = 0; i < column.length; i++) {
+        //     const parsedValue = parseFloat(column[i] || '');
+        //     if (!isNaN(parsedValue)) {
+        //       numericValuesInColumn.push(parsedValue);
+        //     }
+        //   }
+        //   withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
+        // }
+        // columns.push({ isNumeric: columnNumeric, withFormating });
     }
     return columns;
 }
-function isColumnNumeric(column) {
-    // Loop through all cells and if one cell is not numeric
-    for (let i = 0; i < column.length; i++) {
-        const value = column[i];
+function isColumnNumeric(rawColumnData) {
+    // Loop through all cells checking if it is a number and on the way
+    // preparing the formatting.
+    for (let i = 0; i < rawColumnData.length; i++) {
+        const value = rawColumnData[i];
         // TODO
         // The question should we accept a string as an exception for a numeric column or force the user to
         // keep it null or empty?
@@ -279,56 +419,6 @@ function isColumnNumeric(column) {
         }
     }
     return true;
-}
-function formatTableData(data, footnotes, options) {
-    const columns = getColumnsType(data);
-    let tableData = [];
-    for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
-        const row = data[rowIndex];
-        const cells = row.map((cell, columnIndex) => {
-            var _a;
-            let type = 'text';
-            let value = cell;
-            const classes = [];
-            // Transform value into country emoji flag if applicable.
-            // ignore row 0 because it is the header.
-            if (rowIndex > 0 && columnIndex === ((_a = options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) && typeof value === 'string') {
-                const valueRetyped = value.toUpperCase();
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                if (CountryFlagEmojis[valueRetyped]) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                    value = CountryFlagEmojis[valueRetyped];
-                }
-            }
-            else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-                type = 'numeric';
-                classes.push('s-font-note--tabularnums');
-                // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
-                if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
-                    const parsedValue = parseFloat(cell);
-                    if (columns[columnIndex].withFormating) {
-                        value = formatWithGroupingSeparator(parsedValue);
-                    }
-                    else {
-                        value = formatNoGroupingSeparator(parsedValue);
-                    }
-                }
-            }
-            return {
-                type: type,
-                value: value,
-                classes: classes,
-            };
-        });
-        tableData.push({
-            key: rowIndex - 1,
-            cells,
-        });
-    }
-    if (footnotes.length > 0) {
-        tableData = appendFootnoteAnnotationsToTableData(tableData, footnotes, options);
-    }
-    return tableData;
 }
 function getNumericalValuesByColumn(data, column) {
     return data.map(row => {
@@ -2512,7 +2602,10 @@ const route$h = {
             const colorColumnAvailable = yield isColorColumnAvailable(request, config);
             const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
             const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
-            let tableData = [];
+            let tableData = {
+                rows: [],
+                header: []
+            };
             try {
                 tableData = formatTableData(config.data.table, footnotes, options);
             }
@@ -2527,25 +2620,14 @@ const route$h = {
                 // TODO Add logging to Kibana
                 console.error('Exception during creating colorColumn - ', e);
             }
-            let initialColumnInfo = [];
-            // need at least one more row than just the header to determine column data type
-            if (tableData.length > 1)
-                initialColumnInfo = getColumnsType(config.data.table).map((columnType) => {
-                    return {
-                        type: columnType.isNumeric ? 'numeric' : 'text',
-                        sortable: true,
-                        sortDirection: 'asc',
-                    };
-                });
             const props = {
                 item: config,
                 config,
-                tableHead: tableData[0].cells,
-                rows: tableData.slice(1),
+                tableHead: tableData.header,
+                rows: tableData.rows,
                 minibar,
                 footnotes,
                 colorColumn,
-                initialColumnInfo,
                 numberOfRows: dataLength,
                 displayOptions: displayOptions,
                 noInteraction: payload.toolRuntimeConfig.noInteraction || false,
@@ -3008,7 +3090,7 @@ function getOptions(data) {
     if (data.length > 0) {
         const columnTypes = getColumnsType(data);
         data[0].forEach((head, index) => {
-            if (!columnTypes[index].isNumeric) {
+            if (columnTypes[index] === 'text') {
                 dropdownSettings.ids.push(index);
                 dropdownSettings.titles.push(head);
             }

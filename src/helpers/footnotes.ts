@@ -1,4 +1,4 @@
-import type { CellType, DataMetaData, dataMetaDataCell, QTableConfigOptions, Row } from '@src/interfaces';
+import type { DataMetaData, dataMetaDataCell, QTableConfigOptions, Row, TableColumnType } from '@src/interfaces';
 
 export interface StructuredFootnote {
   value: string;
@@ -80,7 +80,7 @@ export function appendFootnoteAnnotationsToTableData(tableData: Row[], footnotes
   return tableData;
 }
 
-function getClass(options: QTableConfigOptions, footnote: FlattenedFootnote, amountOfFootnotes: number, type: CellType, lastColIndex: number): string | null {
+function getClass(options: QTableConfigOptions, footnote: FlattenedFootnote, amountOfFootnotes: number, type: TableColumnType, lastColIndex: number): string | null {
   // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
   if (
     (type === 'numeric' && (options.minibar.selectedColumn === footnote.colIndex || options.minibar.selectedColumn === footnote.colIndex + 1)) ||

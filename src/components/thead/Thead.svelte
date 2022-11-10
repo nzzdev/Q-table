@@ -1,13 +1,13 @@
 <script lang="ts">
 import type { Minibar } from '@helpers/minibars';
-import type { Cell, ColumnMetaData } from '@src/interfaces';
-import { columnInfo } from '@src/stores/columnInfo';
-import { sortingColumnIndex } from '@src/stores/sortingColumnIndex';
+import type { Thead } from '@src/interfaces';
 import SortArrow from '../svg/SortArrow.svelte';
 
 export let initWithCardLayout = false;
 export let minibar: Minibar | null = null;
-export let tableHead: Cell[] = [];
+export let tableHead: Thead[] = [];
+
+import { sortState } from '@src/stores';
 
 function getAttributes(colIndex: number): Attribute {
   let classes = '';
@@ -32,15 +32,18 @@ function getAttributes(colIndex: number): Attribute {
 }
 
 const onSort = (colIndex: number): void => {
-  if (colIndex !== $sortingColumnIndex) 
-    sortingColumnIndex.set(colIndex);
-  else {
-    const currentColumn = $columnInfo[colIndex]
-    // toggle sort direction
-    currentColumn.sortDirection = currentColumn.sortDirection === 'asc' ? 'dsc' : 'asc'
-    const columnInfoTemp: ColumnMetaData[] = [...$columnInfo]
-    columnInfoTemp[colIndex] = currentColumn;
-    columnInfo.set(columnInfoTemp)
+  console.log($sortState.colIndex, colIndex);
+
+  if ($sortState.colIndex === colIndex) { // Toggle direction on same column
+    sortState.set({
+      colIndex,
+      sortDirection: $sortState.sortDirection === 'asc' ? 'desc' : 'asc',
+    });
+  } else { // Changing column.
+    sortState.set({
+      colIndex,
+      sortDirection: 'asc',
+    });
   }
 }
 
@@ -61,12 +64,18 @@ interface Attribute {
         {:else if head.value}
           {head.value}
         {/if}
-        {#if $columnInfo[colIndex] && $columnInfo[colIndex].sortable}
-          <span on:click={() => onSort(colIndex)}>
-            <SortArrow
-              sortAscending={$columnInfo[colIndex].sortDirection === 'asc'}
-              sortActive= {$sortingColumnIndex === colIndex} />
-          </span>
+        {#if head.sortable}
+          {#if $sortState.colIndex === colIndex}
+            <span on:click={() => onSort(colIndex)}>
+              <SortArrow
+                sortAscending={$sortState.sortDirection === 'asc'}
+                sortActive= {$sortState.colIndex === colIndex} />
+            </span>
+          {:else}
+            <span on:click={() => onSort(colIndex)}>
+              <SortArrow />
+            </span>
+          {/if}
         {/if}
       </th>
     {/each}

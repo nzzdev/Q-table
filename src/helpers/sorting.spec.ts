@@ -1,5 +1,5 @@
 import type { Row } from '@src/interfaces';
-import { sortTable } from './sortTable';
+import { sortRows } from './sorting';
 
 const text = [
   'A', //  0 (index)
@@ -7,35 +7,36 @@ const text = [
   '-', //  2
   'Ab', // 3
   'B', //  4
-  null, // 5
+  '', // 5
 ];
 const numeric = [
   '10 000,5', //   0 (index)
   '10 000', //     1
   '35 547,5', //   2
   '-', //          3
-  null, //         4
+  '', //         4
   '-3 500 000', // 5
 ];
 
 const createTableFixture = (): Row[] => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   return [...Array(6).keys()].map((e, i) => {
     return {
       key: i,
       cells: [
         {
           type: 'text',
+          label: 'text',
           value: text[i],
           classes: [],
         },
         {
           type: 'numeric',
+          label: `${numeric[i]}`,
           value: numeric[i],
           classes: [],
         },
       ],
-    } as Row;
+    };
   });
 };
 
@@ -50,7 +51,7 @@ describe('sort asc', () => {
       null, // 5
     ];
     const sortedText = createTableFixture().sort((a, b) =>
-      sortTable(a, b, 0, 'text', 'asc')
+      sortRows(a, b, 0, 'text', 'asc')
     );
     sortedText.forEach((row, i) => {
       expect(row.cells[0].value).toEqual(resultText[i]);
@@ -67,7 +68,7 @@ describe('sort asc', () => {
       null, //         4
     ];
     const sortedNumeric = createTableFixture().sort((a, b) =>
-      sortTable(a, b, 1, 'numeric', 'asc')
+      sortRows(a, b, 1, 'numeric', 'asc')
     );
     sortedNumeric.forEach((row, i) => {
       expect(row.cells[1].value).toEqual(resultNumeric[i]);
@@ -85,7 +86,7 @@ describe('sort asc', () => {
         'A', //  0
       ];
       const sortedText = createTableFixture().sort((a, b) =>
-        sortTable(a, b, 0, 'text', 'dsc')
+        sortRows(a, b, 0, 'text', 'desc')
       );
       sortedText.forEach((row, i) => {
         expect(row.cells[0].value).toEqual(resultText[i]);
@@ -102,7 +103,7 @@ describe('sort asc', () => {
         '-3 500 000', // 5
       ];
       const sortedNumeric = createTableFixture().sort((a, b) =>
-        sortTable(a, b, 1, 'numeric', 'dsc')
+        sortRows(a, b, 1, 'numeric', 'desc')
       );
       sortedNumeric.forEach((row, i) => {
         expect(row.cells[1].value).toEqual(resultNumeric[i]);
