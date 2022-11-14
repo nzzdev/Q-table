@@ -97,7 +97,7 @@ function shouldShowLegend(): boolean {
 }
 
 function shouldShowSearch(): boolean {
-  return noInteraction !== true && options.showTableSearch === true && rows.length > pageSize;
+  return noInteraction !== true && options.showTableSearch === true;
 }
 
 function shouldShowTitle(): boolean {

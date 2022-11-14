@@ -9,6 +9,8 @@ import { readFileSync } from 'fs';
 import schemaString from '@rs/schema.json';
 import type { Request, ServerRoute } from '@hapi/hapi';
 import type { ColorColumn } from '@helpers/colorColumn.js';
+import type { ProcessedTableData} from '@helpers/data';
+
 import type {
   AvailabilityResponseObject,
   DisplayOptions,
@@ -93,26 +95,36 @@ const route: ServerRoute = {
     const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
     const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
     const dataLength = dataWithoutHeaderRow.length;
-    const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
+    const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
+
+    console.log('a', options.minibar);
 
     const minibarsAvailable = await areMinibarsAvailable(request, config);
-    const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
+
 
     const colorColumnAvailable = await isColorColumnAvailable(request, config);
     const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
     const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
 
-    let tableData: {header: Thead[], rows: Row[]} = {
+    let tableData: ProcessedTableData = {
       rows: [],
-      header: []
+      header: [],
+      columns: [],
     };
 
     try {
-      tableData = formatTableData(config.data.table, footnotes, options);
+      tableData = formatTableData(config.data.table, footnoteObj.footnoteCellMap, options);
     } catch (e) {
       // TODO Add logging to Kibana
       console.error('Exception during formatting table data - ', e);
+
     }
+
+
+    const minibar = getMinibar(minibarsAvailable, options.minibar, tableData.columns);
+
+    console.log('options', options);
+
 
     try {
       colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
@@ -121,13 +133,15 @@ const route: ServerRoute = {
       console.error('Exception during creating colorColumn - ', e);
     }
 
+
+
     const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
       tableHead: tableData.header,
       rows: tableData.rows,
       minibar,
-      footnotes,
+      footnotes: footnoteObj.footnotes,
       colorColumn,
       numberOfRows: dataLength, // do not count the header
       displayOptions: displayOptions,

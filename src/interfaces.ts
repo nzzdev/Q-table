@@ -1,6 +1,6 @@
 import type { LABEL_LEGEND_ID } from './enums';
 import type { ColorColumn } from './helpers/colorColumn';
-import type { StructuredFootnote } from './helpers/footnotes';
+import type { Footnote } from './helpers/footnotes';
 import type { Minibar } from './helpers/minibars';
 
 export interface WebPayload {
@@ -60,7 +60,11 @@ export interface ColorColumnSettings {
   selectedColumn: number | null;
 }
 
-export interface dataMetaDataCell {
+export interface DataMetaData {
+  cells: CellMetaData[];
+}
+
+export interface CellMetaData {
   data: {
     footnote: string;
   };
@@ -68,9 +72,6 @@ export interface dataMetaDataCell {
   colIndex: number;
 }
 
-export interface DataMetaData {
-  cells: dataMetaDataCell[];
-}
 
 export interface QTableConfigMinibarSettings {
   invertColors: boolean;
@@ -78,7 +79,7 @@ export interface QTableConfigMinibarSettings {
     positive: { className: string; colorCode: string };
     negative: { className: string; colorCode: string };
   };
-  selectedColumn: number;
+  selectedColumn: number | null;
 }
 
 export interface QTableConfigOptions {
@@ -140,8 +141,8 @@ export interface QTableSvelteProperties {
   config: QTableConfig;
   tableHead: Thead[];
   rows: Row[];
-  minibar: Minibar | null;
-  footnotes: StructuredFootnote[] | null;
+  minibar: Minibar;
+  footnotes: Footnote[] | null;
   colorColumn: ColorColumn | null;
   numberOfRows: number; // do not count the header
   displayOptions: DisplayOptions;
@@ -212,23 +213,25 @@ export interface Thead {
   sortable: boolean;
   sortDirection: 'asc' | 'desc';
   classes: string[],
-  footnote?: {
-    value: number;
-    unicode: string;
-    class: string | null;
-  };
+  footnote: string;
+  // footnote?: {
+  //   value: number;
+  //   unicode: string;
+  //   class: string | null;
+  // };
 }
 
-export interface Cell {
+export interface Cell<T = number | string> {
   type: TableColumnType
-  value: number | string;
+  value: T;
   label: string; // String representation of value.
   classes: string[];
-  footnote?: {
-    value: number;
-    unicode: string;
-    class: string | null;
-  };
+  footnote: string;
+  // footnote?: {
+  //   value: number;
+  //   unicode: string;
+  //   class: string | null;
+  // };
 }
 
 export type CellType = 'text' | 'numeric' | null

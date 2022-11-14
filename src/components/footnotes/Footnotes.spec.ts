@@ -1,9 +1,9 @@
 import Footnotes from './Footnotes.svelte';
 import { render } from '@testing-library/svelte';
 import { createFootnoteFixture } from '@src/helpers/fixture-generators';
-import type { StructuredFootnote } from '@src/helpers/footnotes';
+import type { Footnote } from '@src/helpers/footnotes';
 
-function renderFootnotes(footnotes: StructuredFootnote[]): HTMLDivElement {
+function renderFootnotes(footnotes: Footnote[]): HTMLDivElement {
   const { container } = render(Footnotes, {
     footnotes,
   });

@@ -1,11 +1,10 @@
 import { formatLocale as d3FormatLocale } from 'd3-format';
-import { appendFootnoteAnnotationsToTableData } from './footnotes.js';
 import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 
 // Types.
-import type { StructuredFootnote } from './footnotes';
-import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, Thead } from '../interfaces';
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
+import type { FootnoteCellMap } from './footnotes.js';
+import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, Thead } from '../interfaces';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
@@ -31,6 +30,147 @@ const formatLocaleSmall = d3FormatLocale({
 const formatWithGroupingSeparator = formatLocale.format(',');
 const formatNoGroupingSeparator = formatLocale.format('');
 
+
+/**
+ * This is the most important function.
+ * It takes in the raw data from the user input and transform it into
+ * a structure we can use for our components.
+ */
+export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: FootnoteCellMap, options: QTableConfigOptions): ProcessedTableData  {
+  const header: Thead[] = [];
+  const rows: Row[] = [];
+  const columns: Cell[][] = [];
+
+  // First get the type of each column.
+  const columnTypes = getColumnsType(dataWithHeader, options);
+
+  // Format the header.
+  for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
+    header.push({
+      value: dataWithHeader[0][colIndex] || '',
+      type: columnTypes[colIndex],
+      sortable: true,  // TODO extract sortable rows from schema and options here.
+      sortDirection: 'asc',
+      classes: [],
+      footnote: footnotes.get(`-1-${colIndex}`) || '',
+    });
+
+    // Create column arrays.
+    // easier so we don't have to do if checks later.
+    columns[colIndex] = [];
+  }
+
+  // Go through each row and create the correct cell.
+  // note: start at index 1 to skip header.
+  for (let rowIndex = 1; rowIndex < dataWithHeader.length; rowIndex++) {
+    const row = dataWithHeader[rowIndex];
+    const normalizedRowIndex = rowIndex - 1; // without header row.
+
+    const cells = row.map((rawCellValue, colIndex) => {
+      const type = columnTypes[colIndex];
+      let cell: Cell;
+
+      switch (type) {
+        case 'country-flag-emoji':
+          cell = formatCountryFlagEmojiDatapoint(rawCellValue);
+          break;
+
+        case 'numeric':
+          cell = formaticNumericData(rawCellValue);
+          break;
+
+        case 'text':
+        default:
+          cell = formatTextualData(rawCellValue);
+          break;
+
+      }
+
+      columns[colIndex].push(cell);
+
+      cell.footnote = footnotes.get(`${normalizedRowIndex}-${colIndex}`) || '';
+      return cell;
+    });
+
+    rows.push({
+      key: normalizedRowIndex,
+      cells,
+    });
+  }
+
+  // TODO: header is now excluded from footnotes.
+  // Need to re-add.
+  // if (footnotes.length > 0) {
+  //   rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
+  // }
+
+  return {
+    header,
+    rows,
+    columns,
+  }
+}
+
+function formatCountryFlagEmojiDatapoint(rawValue: QTableCellDataRaw): Cell {
+  let label = '';
+
+  if (typeof rawValue === 'string') {
+    const valueRetyped = rawValue.toUpperCase() as (keyof typeof CountryFlagEmojis);
+
+    if (CountryFlagEmojis[valueRetyped]) {
+      label = CountryFlagEmojis[valueRetyped];
+    }
+  }
+
+  return {
+    type: 'country-flag-emoji',
+    value: rawValue || '',
+    label: label,
+    footnote: '',
+    classes: [],
+  }
+}
+
+function formatTextualData(rawValue: QTableCellDataRaw): Cell {
+  return {
+    type: 'text',
+    value: rawValue || '',
+    label: rawValue || '',
+    classes: [],
+    footnote: '',
+  }
+}
+
+function formaticNumericData(rawValue: QTableCellDataRaw): Cell {
+  let label = '';
+  let value = 0;
+
+  if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
+    label = rawValue;
+  } else if (rawValue !== null) {
+    const parsedValue = parseFloat(rawValue);
+
+    value = parsedValue;
+    label = formatWithGroupingSeparator(parsedValue);
+
+    // Todo discuss with team later.
+    // why are different formattings for when there are numbers over 10000
+    // in the dataset??
+    // if (columns[columnIndex].withFormating) {
+    //   value = formatWithGroupingSeparator(parsedValue);
+    // } else {
+    //   value = formatNoGroupingSeparator(parsedValue);
+    // }
+  }
+
+  return {
+    type: 'numeric',
+    value,
+    label,
+    classes: ['s-font-note--tabularnums'],
+    footnote: '',
+  }
+}
 
 export function getNumericColumns(data: QTableDataRaw): IndexedColumnTitle[] {
   const columns = getColumnsType(data);
@@ -84,120 +224,11 @@ export function isNumeric(cell: string | null): boolean {
   return true;
 }
 
-export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: StructuredFootnote[], options: QTableConfigOptions): {header: Thead[], rows: Row[]} {
-  const header: Thead[] = [];
-  let rows: Row[] = [];
 
-  // First get the type of each column.
-  const columnTypes = getColumnsType(dataWithHeader, options);
 
-  // Format the header.
-  for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
-    header.push({
-      value: dataWithHeader[0][colIndex] || '',
-      type: columnTypes[colIndex],
-      sortable: true,  // TODO extract sortable rows from schema and options here.
-      sortDirection: 'asc',
-      classes: [],
-    });
-  }
 
-  // Go through each row and create the correct cell.
-  // note: start at index 1 to skip header.
-  for (let rowIndex = 1; rowIndex < dataWithHeader.length; rowIndex++) {
-    const row = dataWithHeader[rowIndex];
 
-    const cells = row.map((cell, columnIndex) => {
-      const type = columnTypes[columnIndex];
 
-      switch (type) {
-        case 'country-flag-emoji':
-          return formatCountryFlagEmojiDatapoint(cell);
-
-        case 'numeric':
-          return formaticNumericData(cell);
-
-        case 'text':
-          default:
-          return formatTextualData(cell);
-      }
-    });
-
-    rows.push({
-      key: rowIndex - 1, // negate header.
-      cells,
-    } as Row);
-  }
-
-  // TODO: header is now excluded from footnotes.
-  // Need to re-add.
-  if (footnotes.length > 0) {
-    rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
-  }
-
-  return {
-    header,
-    rows,
-  }
-}
-
-function formatCountryFlagEmojiDatapoint(rawValue: QTableCellDataRaw): Cell {
-  let label = '';
-
-  if (typeof rawValue === 'string') {
-    const valueRetyped = rawValue.toUpperCase() as (keyof typeof CountryFlagEmojis);
-
-    if (CountryFlagEmojis[valueRetyped]) {
-      label = CountryFlagEmojis[valueRetyped];
-    }
-  }
-
-  return {
-    type: 'country-flag-emoji',
-    value: rawValue || '',
-    label: label,
-    classes: [],
-  }
-}
-
-function formatTextualData(rawValue: QTableCellDataRaw): Cell {
-  return {
-    type: 'text',
-    value: rawValue || '',
-    label: rawValue || '',
-    classes: [],
-  }
-}
-
-function formaticNumericData(rawValue: QTableCellDataRaw): Cell {
-  let label = '';
-  let value = 0;
-
-  if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
-    label = rawValue;
-  } else if (rawValue !== null) {
-    const parsedValue = parseFloat(rawValue);
-
-    value = parsedValue;
-    label = formatWithGroupingSeparator(parsedValue);
-
-    // Todo discuss with team later.
-    // why are different formattings for when there are numbers over 10000
-    // in the dataset??
-    // if (columns[columnIndex].withFormating) {
-    //   value = formatWithGroupingSeparator(parsedValue);
-    // } else {
-    //   value = formatNoGroupingSeparator(parsedValue);
-    // }
-  }
-
-  return {
-    type: 'numeric',
-    value,
-    label,
-    classes: ['s-font-note--tabularnums'],
-  }
-}
 
 export function getColumnsType(dataWithHeader: QTableDataRaw, options: QTableConfigOptions | undefined = undefined): TableColumnType[] {
   const columns: TableColumnType[] = [];
@@ -249,7 +280,7 @@ export function getColumnsType(dataWithHeader: QTableDataRaw, options: QTableCon
   return columns;
 }
 
-function isColumnNumeric(rawColumnData: QTableCellDataRaw[]):boolean {
+function isColumnNumeric(rawColumnData: QTableCellDataRaw[]): boolean {
   // Loop through all cells checking if it is a number and on the way
   // preparing the formatting.
   for (let i = 0; i < rawColumnData.length; i++) {
@@ -488,6 +519,12 @@ function getRoundedAverage(values: number[], maxDigitsAfterComma: number): numbe
 /**
  * Interfaces.
  */
+export interface ProcessedTableData {
+  header: Thead[];
+  rows: Row[];
+  columns: Cell[][];
+}
+
 export interface MetaData {
   hasNullValues: boolean;
   hasZeroValues: boolean;

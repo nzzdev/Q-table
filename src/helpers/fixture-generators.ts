@@ -1,5 +1,5 @@
 import type { Cell, Source } from '@src/interfaces';
-import type { StructuredFootnote } from '@src/helpers/footnotes';
+import type { Footnote } from '@src/helpers/footnotes';
 // import { MINIBAR_TYPE, type Minibar } from './minibars';
 
 export function createSourceFixture(override: Partial<Source> = {}): Source {
@@ -13,7 +13,7 @@ export function createSourceFixture(override: Partial<Source> = {}): Source {
   };
 }
 
-export function createFootnoteFixture(override: Partial<StructuredFootnote> = {}): StructuredFootnote {
+export function createFootnoteFixture(override: Partial<Footnote> = {}): Footnote {
   return {
     value: 'ft',
     index: 1,

@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { StructuredFootnote } from '@helpers/footnotes';
-export let footnotes: StructuredFootnote[];
+import type { Footnote } from '@helpers/footnotes';
+export let footnotes: Footnote[];
 </script>
 
 {#each footnotes as footnote}

@@ -1,4 +1,4 @@
-import type { QTableConfigOptions, QTableDataRaw, QTableConfigMinibarSettings } from '../interfaces';
+import type { QTableDataRaw, QTableConfigMinibarSettings, Cell } from '../interfaces';
 
 export const enum MINIBAR_TYPE {
   POSITIVE = 'positive',
@@ -7,11 +7,25 @@ export const enum MINIBAR_TYPE {
   EMPTY = 'empty',
 }
 
-export function getMinibar(minibarsAvailable: boolean, options: QTableConfigOptions, itemDataCopy: QTableDataRaw): Minibar | null {
-  if (minibarsAvailable === true && typeof options.minibar?.selectedColumn === 'number') {
-    const minibarSettings = options.minibar;
+export function getMinibar(minibarsAvailable: boolean, minibarSettings: QTableConfigMinibarSettings, columns: Cell<number>[][]): Minibar {
+  // A minibar with a columnIndex of null will not be shown.
+  const minibar: Minibar = {
+    columnIndex: null,
+    values: [],
+    type: MINIBAR_TYPE.EMPTY,
+    barColor: minibarSettings.barColor,
+    settings: minibarSettings,
+  };
 
-    const minibar = createMinibarObject(itemDataCopy, minibarSettings);
+  // If we actually have valid settings for the minibar we will populate
+  // Minibar object with correct values.
+  if (minibarsAvailable === true && typeof minibarSettings.selectedColumn === 'number') {
+    const column = columns[minibarSettings.selectedColumn];
+    const valuesAndType = getMinibarValuesAndType(column);
+
+    minibar.columnIndex = minibarSettings.selectedColumn;
+    minibar.type = valuesAndType.minibarType;
+    minibar.values = valuesAndType.values;
 
     checkPositiveBarColor(minibar);
     checkNegativeBarColor(minibar);
@@ -19,13 +33,62 @@ export function getMinibar(minibarsAvailable: boolean, options: QTableConfigOpti
     if (minibarSettings.invertColors) {
       invertBarColors(minibar);
     }
-
-    return minibar;
   }
 
-  return null;
+  return minibar;
 }
 
+function getMinibarValuesAndType(column: Cell<number>[]): { values: number[], minibarType: MINIBAR_TYPE } {
+  let minValue = 0;
+  let maxValue = 0;
+  let minibarType = MINIBAR_TYPE.MIXED;
+
+  column.forEach(cell =>  {
+    const value = cell.value;
+
+    if (minValue === null || value < minValue) {
+      minValue = value;
+    }
+
+    if (maxValue === null || value > maxValue) {
+      maxValue = value;
+    }
+  });
+
+  if (minValue <= 0 && maxValue <= 0) {
+    minibarType = MINIBAR_TYPE.NEGATIVE;
+  } else if (minValue >= 0 && maxValue >= 0) {
+    minibarType = MINIBAR_TYPE.POSITIVE
+  }
+
+  const values = column.map(cell => {
+    return getMinibarValue(minibarType, cell.value, minValue, maxValue);
+  });
+
+  return {
+    values,
+    minibarType,
+  }
+}
+
+function getMinibarValue(type: MINIBAR_TYPE, value: number, min: number, max: number): number {
+  if (value === null) return 0;
+
+  switch (type) {
+    case MINIBAR_TYPE.POSITIVE:
+      return Math.abs((value * 100) / max);
+
+    case MINIBAR_TYPE.NEGATIVE:
+      return Math.abs((value * 100) / min);
+
+    default:
+      return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
+  }
+}
+
+/**
+ * Used in option availability.
+ */
 export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnIndex: number): MinibarNumbersWithType {
   const minibarsWithType: MinibarNumbersWithType = {
     items: [],
@@ -64,45 +127,6 @@ export function getMinibarNumbersWithType(data: QTableDataRaw, selectedColumnInd
   minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
 
   return minibarsWithType;
-}
-
-/**
- * Internal.
- */
-function createMinibarObject(data: QTableDataRaw, minibarOptions: QTableConfigMinibarSettings): Minibar {
-  const dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
-
-  const minValue = Math.min(...dataColumn.numbers);
-  const maxValue = Math.max(...dataColumn.numbers);
-
-  const values = dataColumn.items.map(item => {
-    return {
-      type: item.type,
-      value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue),
-    };
-  });
-
-  return {
-    values: values,
-    type: dataColumn.type,
-    barColor: minibarOptions.barColor,
-    settings: minibarOptions,
-  };
-}
-
-function getMinibarValue(type: MINIBAR_TYPE, value: number | null, min: number, max: number): number {
-  if (value === null) return 0;
-
-  switch (type) {
-    case MINIBAR_TYPE.POSITIVE:
-      return Math.abs((value * 100) / max);
-
-    case MINIBAR_TYPE.NEGATIVE:
-      return Math.abs((value * 100) / min);
-
-    default:
-      return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
-  }
 }
 
 function checkPositiveBarColor(minibar: Minibar): void {
@@ -159,39 +183,34 @@ function getMinibarType(numbers: number[]): MINIBAR_TYPE {
 }
 
 function getPositiveColor(type: string): string {
-  let color;
-
   if (type === 'mixed') {
-    color = 's-viz-color-diverging-2-2';
-  } else {
-    color = 's-viz-color-one-5';
+    return 's-viz-color-diverging-2-2';
   }
 
-  return color;
+  return 's-viz-color-one-5';
 }
 
 function getNegativeColor(type: string): string {
-  let color;
-
   if (type === 'mixed') {
-    color = 's-viz-color-diverging-2-1';
-  } else {
-    color = 's-viz-color-one-5';
+    return 's-viz-color-diverging-2-1';
   }
 
-  return color;
+  return 's-viz-color-one-5';
 }
 
 /**
  * Interfaces.
  */
 export interface Minibar {
+  columnIndex: number | null;
   barColor: {
     positive: { className: string; colorCode: string };
     negative: { className: string; colorCode: string };
   };
   type: MINIBAR_TYPE;
-  values: Array<{ type: string; value: number | null }>;
+  // values: Array<{ type: string; value: number | null }>;
+
+  values: number[];
   settings: QTableConfigMinibarSettings;
 }
 

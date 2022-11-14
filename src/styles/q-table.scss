@@ -1,40 +1,40 @@
-.q-table__search {
-  padding: 0 1px;
-  margin-bottom: 16px;
-}
+// .q-table__search {
+//   padding: 0 1px;
+//   margin-bottom: 16px;
+// }
 
-.q-table__cell {
-  text-align: left !important;
+// .q-table__cell {
+//   text-align: left !important;
 
-  > span {
-    display: inline-block;
-    position: relative;
+//   > span {
+//     display: inline-block;
+//     position: relative;
 
-    .q-table-footnote-annotation {
-      color: #6e6e7e;
-      font-size: 10px;
-      margin-left: 1px;
-      margin-top: -5.5px;
-      position: absolute;
-    }
+//     .q-table-footnote-annotation {
+//       color: #6e6e7e;
+//       font-size: 10px;
+//       margin-left: 1px;
+//       margin-top: -5.5px;
+//       position: absolute;
+//     }
 
-    .q-table-footnote-annotation-colored-column {
-      color: unset;
-    }
-  }
-}
+//     .q-table-footnote-annotation-colored-column {
+//       color: unset;
+//     }
+//   }
+// }
 
-.q-table__cell--numeric {
-  text-align: right !important;
+// .q-table__cell--numeric {
+//   text-align: right !important;
 
-  // extra spacing in case of footnotes. also generally looks nice
-  padding: 10px 12px !important;
-}
+//   // extra spacing in case of footnotes. also generally looks nice
+//   padding: 10px 12px !important;
+// }
 
 // only td should not break, th of --numeric columns are allowed to wrap
-td.q-table__cell--numeric {
-  white-space: nowrap;
-}
+// td.q-table__cell--numeric {
+//   white-space: nowrap;
+// }
 
 // the high specificty is needed because nzz frontends apply lots of highly specific table styles we need to overwrite
 // this will change in the future and allow us to lower the specificity here again
@@ -165,67 +165,66 @@ tr.q-table-state-frozen {
   min-width: 90px;
 }
 
-.q-table-minibar-cell {
-  background-color: rgba(200, 200, 200, 0.15);
-  min-width: 140px;
-}
+// .q-table-minibar-cell {
+//   background-color: rgba(200, 200, 200, 0.15);
+//   min-width: 140px;
+// }
 
-.q-table-minibar-cell--value {
-  background-color: rgba(200, 200, 200, 0.15);
-}
+// .q-table-minibar-cell--value {
+//   background-color: rgba(200, 200, 200, 0.15);
+// }
 
-.q-table-minibar-bar--positive {
-  background-color: currentColor;
-  position: relative;
-  height: 17px;
-  display: inline-block;
-}
+// .q-table-minibar-bar--positive {
+//   background-color: currentColor;
+//   position: relative;
+//   height: 17px;
+//   display: inline-block;
+// }
 
-.q-table-minibar-bar--positive::before {
-  content: '';
-  border-left: 0.5px solid #393855;
-  position: absolute;
-  height: 19px;
-  width: 1px;
-  top: -1px;
-}
+// .q-table-minibar-bar--positive::before {
+//   content: '';
+//   border-left: 0.5px solid #393855;
+//   position: absolute;
+//   height: 19px;
+//   width: 1px;
+//   top: -1px;
+// }
 
-.q-table-minibar-bar--negative {
-  background-color: currentColor;
-  position: relative;
-  float: right;
-  height: 17px;
-}
+// .q-table-minibar-bar--negative {
+//   background-color: currentColor;
+//   position: relative;
+//   height: 17px;
+// }
 
-.q-table-minibar-bar--negative::before {
-  content: '';
-  border-right: 0.5px solid #393855;
-  position: absolute;
-  width: 1px;
-  height: 19px;
-  top: -1px;
-  right: 0px;
-}
+// .q-table-minibar-bar--negative::before {
+//   content: '';
+//   border-right: 0.5px solid #393855;
+//   position: absolute;
+//   width: 1px;
+//   height: 19px;
+//   top: -1px;
+//   right: 0px;
+// }
 
-.q-table-minibar-alignment--positive {
-  text-align: right;
-  float: left;
-  width: 50%;
-  padding-right: 4px;
-}
+// .q-table-minibar-alignment--positive {
+//   text-align: right;
+//   float: left;
+//   width: 50%;
+//   padding-right: 4px;
+// }
 
-.q-table-minibar-alignment--negative {
-  position: relative;
-  text-align: left !important;
-  float: left;
-  left: 50%;
-  padding-left: 4px;
-}
+// .q-table-minibar-alignment--negative {
+//   position: relative;
+//   text-align: left !important;
+//   float: left;
+//   left: 50%;
+//   padding-left: 4px;
+// }
 
-.q-table-minibar-alignment--empty {
-  text-align: center !important;
-  width: 100%;
-}
+// .q-table-minibar-alignment--empty {
+//   text-align: center !important;
+//   width: 100%;
+// }
 
 // .q-table-footnote {
 //   &-index {

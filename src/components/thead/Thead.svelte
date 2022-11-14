@@ -59,11 +59,17 @@ interface Attribute {
       <th
         class="q-table__cell q-table-cell--head q-table__cell--{head.type} {head.classes.join(' ')} {getAttributes(colIndex).classes}"
         colspan={getAttributes(colIndex).colspan}>
-        {#if head.footnote}
-          <span data-annotation={head.footnote.value} class="q-table-footnote-annotation">{head.value}</span>
-        {:else if head.value}
+
+        <span>
           {head.value}
-        {/if}
+
+          {#if head.footnote !== ''}
+            <span class="q-table-footnote-annotation">
+              {head.footnote}
+            </span>
+          {/if}
+        </span>
+
         {#if head.sortable}
           {#if $sortState.colIndex === colIndex}
             <span on:click={() => onSort(colIndex)}>

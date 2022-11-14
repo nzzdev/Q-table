@@ -45,137 +45,6 @@ function getExactPixelWidth(toolRuntimeConfig) {
     return undefined;
 }
 
-function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
-    const unicodes = {
-        1: '\u00b9',
-        2: '\u00b2',
-        3: '\u00b3',
-        4: '\u2074',
-        5: '\u2075',
-        6: '\u2076',
-        7: '\u2077',
-        8: '\u2078',
-        9: '\u2079',
-    };
-    const spacings = [];
-    const flattenedFootnotes = getFlattenedFootnotes(footnotes);
-    flattenedFootnotes.forEach(footnote => {
-        const row = tableData[footnote.rowIndex];
-        const cells = row.cells;
-        const footnoteClass = getClass(options, footnote, flattenedFootnotes.length, cells[footnote.colIndex].type, cells.length - 1);
-        if (footnoteClass) {
-            const space = {
-                colIndex: footnote.colIndex,
-                class: footnoteClass,
-            };
-            if (!hasFootnoteClass(spacings, space)) {
-                spacings.push(space);
-            }
-        }
-        // create a new property to save the index of the footnote
-        cells[footnote.colIndex].footnote = {
-            value: footnote.value,
-            unicode: unicodes[footnote.value],
-            class: footnoteClass,
-        };
-    });
-    // assign spacingClass to cell
-    tableData.forEach((row, index) => {
-        // assign class when not cardlayout but cardlayoutifsmall
-        if (!options.cardLayout || options.cardLayoutIfSmall) {
-            spacings.forEach(spacing => {
-                row.cells[spacing.colIndex].classes.push(spacing.class);
-            });
-        }
-        // assign class when cardlayout or cardlayoutifsmall is active
-        if (options.cardLayout || options.cardLayoutIfSmall) {
-            if (!options.hideTableHeader && index !== 0) {
-                row.cells.forEach(cell => {
-                    flattenedFootnotes.length >= 10
-                        ? cell.classes.push('q-table-footnote-column-card-layout--double')
-                        : cell.classes.push('q-table-footnote-column-card-layout--single');
-                });
-            }
-        }
-    });
-    return tableData;
-}
-function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
-    // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
-    if ((type === 'numeric' && (options.minibar.selectedColumn === footnote.colIndex || options.minibar.selectedColumn === footnote.colIndex + 1)) ||
-        footnote.colIndex === lastColIndex ||
-        (options.colorColumn && options.colorColumn.selectedColumn === footnote.colIndex) ||
-        (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)) {
-        let spacingClass = 'q-table-footnote-column';
-        if (amountOfFootnotes >= 10) {
-            spacingClass += '--double';
-        }
-        else {
-            spacingClass += '--single';
-        }
-        return spacingClass;
-    }
-    return null;
-}
-function getFootnotes(metaData, hideTableHeader) {
-    const footnotes = metaData.cells
-        .filter(cell => {
-        if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
-            return false;
-        }
-        return true;
-    }) // remove cells with no footnotes
-        .sort((a, b) => {
-        // sorting metaData to display them chronologically
-        if (a.rowIndex !== b.rowIndex) {
-            return a.rowIndex - b.rowIndex;
-        }
-        return a.colIndex - b.colIndex;
-    });
-    return getStructuredFootnotes(footnotes);
-}
-function getStructuredFootnotes(footnotes) {
-    const structuredFootnotes = [];
-    footnotes.forEach(footnote => {
-        const existingFootnote = structuredFootnotes.find(filterFootnote => footnote.data.footnote === filterFootnote.value);
-        if (existingFootnote) {
-            existingFootnote.coords.push({
-                colIndex: footnote.colIndex,
-                rowIndex: footnote.rowIndex,
-            });
-        }
-        else {
-            structuredFootnotes.push({
-                value: footnote.data.footnote,
-                index: structuredFootnotes.length + 1,
-                coords: [
-                    {
-                        colIndex: footnote.colIndex,
-                        rowIndex: footnote.rowIndex,
-                    },
-                ],
-            });
-        }
-    });
-    return structuredFootnotes;
-}
-function getFlattenedFootnotes(footnotes) {
-    const flattenedFootnotes = [];
-    footnotes.forEach(footnote => {
-        footnote.coords.forEach(coord => {
-            flattenedFootnotes.push({
-                value: footnote.index,
-                colIndex: coord.colIndex,
-                rowIndex: coord.rowIndex,
-            });
-        });
-    });
-    return flattenedFootnotes;
-}
-function hasFootnoteClass(classes, newClass) {
-    return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
-}
-
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 // Formatting for numbers of >= 10000.
@@ -196,6 +65,123 @@ const formatLocaleSmall = formatLocale$1({
 });
 const formatWithGroupingSeparator = formatLocale.format(',');
 formatLocale.format('');
+/**
+ * This is the most important function.
+ * It takes in the raw data from the user input and transform it into
+ * a structure we can use for our components.
+ */
+function formatTableData(dataWithHeader, footnotes, options) {
+    const header = [];
+    const rows = [];
+    const columns = [];
+    // First get the type of each column.
+    const columnTypes = getColumnsType(dataWithHeader, options);
+    // Format the header.
+    for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
+        header.push({
+            value: dataWithHeader[0][colIndex] || '',
+            type: columnTypes[colIndex],
+            sortable: true,
+            sortDirection: 'asc',
+            classes: [],
+            footnote: footnotes.get(`-1-${colIndex}`) || '',
+        });
+        // Create column arrays.
+        // easier so we don't have to do if checks later.
+        columns[colIndex] = [];
+    }
+    // Go through each row and create the correct cell.
+    // note: start at index 1 to skip header.
+    for (let rowIndex = 1; rowIndex < dataWithHeader.length; rowIndex++) {
+        const row = dataWithHeader[rowIndex];
+        const normalizedRowIndex = rowIndex - 1; // without header row.
+        const cells = row.map((rawCellValue, colIndex) => {
+            const type = columnTypes[colIndex];
+            let cell;
+            switch (type) {
+                case 'country-flag-emoji':
+                    cell = formatCountryFlagEmojiDatapoint(rawCellValue);
+                    break;
+                case 'numeric':
+                    cell = formaticNumericData(rawCellValue);
+                    break;
+                case 'text':
+                default:
+                    cell = formatTextualData(rawCellValue);
+                    break;
+            }
+            columns[colIndex].push(cell);
+            cell.footnote = footnotes.get(`${normalizedRowIndex}-${colIndex}`) || '';
+            return cell;
+        });
+        rows.push({
+            key: normalizedRowIndex,
+            cells,
+        });
+    }
+    // TODO: header is now excluded from footnotes.
+    // Need to re-add.
+    // if (footnotes.length > 0) {
+    //   rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
+    // }
+    return {
+        header,
+        rows,
+        columns,
+    };
+}
+function formatCountryFlagEmojiDatapoint(rawValue) {
+    let label = '';
+    if (typeof rawValue === 'string') {
+        const valueRetyped = rawValue.toUpperCase();
+        if (CountryFlagEmojis[valueRetyped]) {
+            label = CountryFlagEmojis[valueRetyped];
+        }
+    }
+    return {
+        type: 'country-flag-emoji',
+        value: rawValue || '',
+        label: label,
+        footnote: '',
+        classes: [],
+    };
+}
+function formatTextualData(rawValue) {
+    return {
+        type: 'text',
+        value: rawValue || '',
+        label: rawValue || '',
+        classes: [],
+        footnote: '',
+    };
+}
+function formaticNumericData(rawValue) {
+    let label = '';
+    let value = 0;
+    if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
+        label = rawValue;
+    }
+    else if (rawValue !== null) {
+        const parsedValue = parseFloat(rawValue);
+        value = parsedValue;
+        label = formatWithGroupingSeparator(parsedValue);
+        // Todo discuss with team later.
+        // why are different formattings for when there are numbers over 10000
+        // in the dataset??
+        // if (columns[columnIndex].withFormating) {
+        //   value = formatWithGroupingSeparator(parsedValue);
+        // } else {
+        //   value = formatNoGroupingSeparator(parsedValue);
+        // }
+    }
+    return {
+        type: 'numeric',
+        value,
+        label,
+        classes: ['s-font-note--tabularnums'],
+        footnote: '',
+    };
+}
 function getNumericColumns(data) {
     const columns = getColumnsType(data);
     const numericColumns = [];
@@ -236,101 +222,6 @@ function isNumeric(cell) {
         return false;
     }
     return true;
-}
-function formatTableData(dataWithHeader, footnotes, options) {
-    const header = [];
-    let rows = [];
-    // First get the type of each column.
-    const columnTypes = getColumnsType(dataWithHeader, options);
-    // Format the header.
-    for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
-        header.push({
-            value: dataWithHeader[0][colIndex] || '',
-            type: columnTypes[colIndex],
-            sortable: true,
-            sortDirection: 'asc',
-            classes: [],
-        });
-    }
-    // Go through each row and create the correct cell.
-    // note: start at index 1 to skip header.
-    for (let rowIndex = 1; rowIndex < dataWithHeader.length; rowIndex++) {
-        const row = dataWithHeader[rowIndex];
-        const cells = row.map((cell, columnIndex) => {
-            const type = columnTypes[columnIndex];
-            switch (type) {
-                case 'country-flag-emoji':
-                    return formatCountryFlagEmojiDatapoint(cell);
-                case 'numeric':
-                    return formaticNumericData(cell);
-                case 'text':
-                default:
-                    return formatTextualData(cell);
-            }
-        });
-        rows.push({
-            key: rowIndex - 1,
-            cells,
-        });
-    }
-    // TODO: header is now excluded from footnotes.
-    // Need to re-add.
-    if (footnotes.length > 0) {
-        rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
-    }
-    return {
-        header,
-        rows,
-    };
-}
-function formatCountryFlagEmojiDatapoint(rawValue) {
-    let label = '';
-    if (typeof rawValue === 'string') {
-        const valueRetyped = rawValue.toUpperCase();
-        if (CountryFlagEmojis[valueRetyped]) {
-            label = CountryFlagEmojis[valueRetyped];
-        }
-    }
-    return {
-        type: 'country-flag-emoji',
-        value: rawValue || '',
-        label: label,
-        classes: [],
-    };
-}
-function formatTextualData(rawValue) {
-    return {
-        type: 'text',
-        value: rawValue || '',
-        label: rawValue || '',
-        classes: [],
-    };
-}
-function formaticNumericData(rawValue) {
-    let label = '';
-    let value = 0;
-    if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
-        label = rawValue;
-    }
-    else if (rawValue !== null) {
-        const parsedValue = parseFloat(rawValue);
-        value = parsedValue;
-        label = formatWithGroupingSeparator(parsedValue);
-        // Todo discuss with team later.
-        // why are different formattings for when there are numbers over 10000
-        // in the dataset??
-        // if (columns[columnIndex].withFormating) {
-        //   value = formatWithGroupingSeparator(parsedValue);
-        // } else {
-        //   value = formatNoGroupingSeparator(parsedValue);
-        // }
-    }
-    return {
-        type: 'numeric',
-        value,
-        label,
-        classes: ['s-font-note--tabularnums'],
-    };
 }
 function getColumnsType(dataWithHeader, options = undefined) {
     var _a;
@@ -1366,6 +1257,78 @@ function getColorForCategoricalColoredColumn(value, legend) {
     }
 }
 
+/**
+ * Processes the raw footnote metadata into a structured format.
+ * We need this format because not only do we mark footnotes with labels
+ * in the table, they will also show up in the footer.
+ *
+ * Filter: It removes all empty footnotes and also removes
+ *         header footnotes if the header is disabled.
+ *
+ * Sort: Afterwards sorts all footnotes first by row then
+ *       by column so they are chronological.
+ *
+ * Foreach: Mapping the raw meta data to a new format.
+ *          Also merge duplicate footnotes into one object.
+ */
+function getFootnotes(metaData, hideTableHeader) {
+    const footnotes = [];
+    // Map for quick access for dataformatting cells.
+    // The key is rowIndex-colindex.
+    // Value is the index of the footnote.
+    const footnoteCellMap = new Map();
+    metaData
+        .filter(cell => {
+        // Remove empty footnotes.
+        if (!cell.data.footnote || cell.data.footnote === '') {
+            return false;
+        }
+        // Remove header footnotes if the header is disabled.
+        if (hideTableHeader && cell.rowIndex === 0) {
+            return false;
+        }
+        return true;
+    })
+        .sort((a, b) => {
+        if (a.rowIndex !== b.rowIndex) {
+            return a.rowIndex - b.rowIndex;
+        }
+        return a.colIndex - b.colIndex;
+    }).forEach(cellMetaData => {
+        const currentFootnoteText = cellMetaData.data.footnote;
+        const existingFootnote = footnotes.find(filterFootnote => currentFootnoteText === filterFootnote.value);
+        // We move the index down by -1 so the header row has an index of -1;
+        // It is because we split the data between the header and the actual data
+        // and we want the actual data to start at 0.
+        const rowIndex = cellMetaData.rowIndex - 1;
+        const colIndex = cellMetaData.colIndex;
+        if (existingFootnote) { // Same footnote given. Merge into one entry.
+            footnoteCellMap.set(`${rowIndex}-${colIndex}`, `${existingFootnote.index}`);
+        }
+        else {
+            const index = footnotes.length + 1;
+            footnotes.push({
+                value: currentFootnoteText,
+                index,
+            });
+            footnoteCellMap.set(`${rowIndex}-${colIndex}`, `${index}`);
+        }
+    });
+    return {
+        footnotes,
+        footnoteCellMap,
+    };
+}
+// interface FlattenedFootnote {
+//   value: number;
+//   colIndex: number;
+//   rowIndex: number;
+// }
+// interface Spacing {
+//   colIndex: number;
+//   class: string;
+// }
+
 var MINIBAR_TYPE;
 (function (MINIBAR_TYPE) {
     MINIBAR_TYPE["POSITIVE"] = "positive";
@@ -1373,20 +1336,73 @@ var MINIBAR_TYPE;
     MINIBAR_TYPE["MIXED"] = "mixed";
     MINIBAR_TYPE["EMPTY"] = "empty";
 })(MINIBAR_TYPE || (MINIBAR_TYPE = {}));
-function getMinibar(minibarsAvailable, options, itemDataCopy) {
-    var _a;
-    if (minibarsAvailable === true && typeof ((_a = options.minibar) === null || _a === void 0 ? void 0 : _a.selectedColumn) === 'number') {
-        const minibarSettings = options.minibar;
-        const minibar = createMinibarObject(itemDataCopy, minibarSettings);
+function getMinibar(minibarsAvailable, minibarSettings, columns) {
+    // A minibar with a columnIndex of null will not be shown.
+    const minibar = {
+        columnIndex: null,
+        values: [],
+        type: MINIBAR_TYPE.EMPTY,
+        barColor: minibarSettings.barColor,
+        settings: minibarSettings,
+    };
+    // If we actually have valid settings for the minibar we will populate
+    // Minibar object with correct values.
+    if (minibarsAvailable === true && typeof minibarSettings.selectedColumn === 'number') {
+        const column = columns[minibarSettings.selectedColumn];
+        const valuesAndType = getMinibarValuesAndType(column);
+        minibar.columnIndex = minibarSettings.selectedColumn;
+        minibar.type = valuesAndType.minibarType;
+        minibar.values = valuesAndType.values;
         checkPositiveBarColor(minibar);
         checkNegativeBarColor(minibar);
         if (minibarSettings.invertColors) {
             invertBarColors(minibar);
         }
-        return minibar;
     }
-    return null;
+    return minibar;
 }
+function getMinibarValuesAndType(column) {
+    let minValue = 0;
+    let maxValue = 0;
+    let minibarType = MINIBAR_TYPE.MIXED;
+    column.forEach(cell => {
+        const value = cell.value;
+        if (minValue === null || value < minValue) {
+            minValue = value;
+        }
+        if (maxValue === null || value > maxValue) {
+            maxValue = value;
+        }
+    });
+    if (minValue <= 0 && maxValue <= 0) {
+        minibarType = MINIBAR_TYPE.NEGATIVE;
+    }
+    else if (minValue >= 0 && maxValue >= 0) {
+        minibarType = MINIBAR_TYPE.POSITIVE;
+    }
+    const values = column.map(cell => {
+        return getMinibarValue(minibarType, cell.value, minValue, maxValue);
+    });
+    return {
+        values,
+        minibarType,
+    };
+}
+function getMinibarValue(type, value, min, max) {
+    if (value === null)
+        return 0;
+    switch (type) {
+        case MINIBAR_TYPE.POSITIVE:
+            return Math.abs((value * 100) / max);
+        case MINIBAR_TYPE.NEGATIVE:
+            return Math.abs((value * 100) / min);
+        default:
+            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
+    }
+}
+/**
+ * Used in option availability.
+ */
 function getMinibarNumbersWithType(data, selectedColumnIndex) {
     const minibarsWithType = {
         items: [],
@@ -1420,38 +1436,6 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
     }
     minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
     return minibarsWithType;
-}
-/**
- * Internal.
- */
-function createMinibarObject(data, minibarOptions) {
-    const dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
-    const minValue = Math.min(...dataColumn.numbers);
-    const maxValue = Math.max(...dataColumn.numbers);
-    const values = dataColumn.items.map(item => {
-        return {
-            type: item.type,
-            value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue),
-        };
-    });
-    return {
-        values: values,
-        type: dataColumn.type,
-        barColor: minibarOptions.barColor,
-        settings: minibarOptions,
-    };
-}
-function getMinibarValue(type, value, min, max) {
-    if (value === null)
-        return 0;
-    switch (type) {
-        case MINIBAR_TYPE.POSITIVE:
-            return Math.abs((value * 100) / max);
-        case MINIBAR_TYPE.NEGATIVE:
-            return Math.abs((value * 100) / min);
-        default:
-            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
-    }
 }
 function checkPositiveBarColor(minibar) {
     const className = minibar.barColor.positive.className;
@@ -1499,24 +1483,16 @@ function getMinibarType(numbers) {
     return MINIBAR_TYPE.MIXED;
 }
 function getPositiveColor(type) {
-    let color;
     if (type === 'mixed') {
-        color = 's-viz-color-diverging-2-2';
+        return 's-viz-color-diverging-2-2';
     }
-    else {
-        color = 's-viz-color-one-5';
-    }
-    return color;
+    return 's-viz-color-one-5';
 }
 function getNegativeColor(type) {
-    let color;
     if (type === 'mixed') {
-        color = 's-viz-color-diverging-2-1';
+        return 's-viz-color-diverging-2-1';
     }
-    else {
-        color = 's-viz-color-one-5';
-    }
-    return color;
+    return 's-viz-color-one-5';
 }
 
 var $schema$1 = "http://json-schema.org/draft-07/schema#";
@@ -2563,23 +2539,26 @@ const route$h = {
             const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
             const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
             const dataLength = dataWithoutHeaderRow.length;
-            const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
+            const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
+            console.log('a', options.minibar);
             const minibarsAvailable = yield areMinibarsAvailable(request, config);
-            const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
             const colorColumnAvailable = yield isColorColumnAvailable(request, config);
             const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
             const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
             let tableData = {
                 rows: [],
-                header: []
+                header: [],
+                columns: [],
             };
             try {
-                tableData = formatTableData(config.data.table, footnotes, options);
+                tableData = formatTableData(config.data.table, footnoteObj.footnoteCellMap, options);
             }
             catch (e) {
                 // TODO Add logging to Kibana
                 console.error('Exception during formatting table data - ', e);
             }
+            const minibar = getMinibar(minibarsAvailable, options.minibar, tableData.columns);
+            console.log('options', options);
             try {
                 colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
             }
@@ -2593,7 +2572,7 @@ const route$h = {
                 tableHead: tableData.header,
                 rows: tableData.rows,
                 minibar,
-                footnotes,
+                footnotes: footnoteObj.footnotes,
                 colorColumn,
                 numberOfRows: dataLength,
                 displayOptions: displayOptions,

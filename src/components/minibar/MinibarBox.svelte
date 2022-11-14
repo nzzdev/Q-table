@@ -1,53 +1,83 @@
 <script lang="ts">
-import type { Minibar } from 'src/helpers/minibars';
-import type { QTableConfig } from 'src/interfaces';
+import { MINIBAR_TYPE, type Minibar } from 'src/helpers/minibars';
 
-export let item: QTableConfig;
+export let type: MINIBAR_TYPE = MINIBAR_TYPE.POSITIVE;
 export let minibar: Minibar;
 export let rowIndex: number;
-export let colIndex: number;
-
-// this has to be done because the tableData will be sliced before iterating
-rowIndex += 1;
 
 function getBarStyle(): string {
   let style = '';
 
-  if (minibar.values[rowIndex].type !== 'empty') {
-    style = `width: ${minibar.values[rowIndex].value}%;`;
-    if (minibar.barColor.positive.colorCode || minibar.barColor.negative.colorCode) {
-      if (minibar.barColor.positive.colorCode) {
-        style += `background-color: ${minibar.barColor.positive.colorCode};`;
-      }
-      if (minibar.barColor.negative.colorCode) {
-        style += `background-color: ${minibar.barColor.negative.colorCode};`;
-      }
+  if (type !== 'empty') {
+    style = `width: ${minibar.values[rowIndex]}%;`;
+
+    if (minibar.barColor.positive.colorCode) {
+      style += `background-color: ${minibar.barColor.positive.colorCode};`;
+    } else if (minibar.barColor.negative.colorCode) {
+      style += `background-color: ${minibar.barColor.negative.colorCode};`;
     }
   }
 
   return style;
 }
 
-function getCellStyle(): string {
-  let style = '';
-
-  // check for type and return accordingly
-  if (minibar.type === 'positive') {
-    style = 'padding-right: 12px !important;';
-  } else if (minibar.type === 'negative') {
-    style = 'padding-left: 12px; padding-right: 0px !important;';
-  }
-
-  return style;
-}
-
 function getMinibarClassName(): string {
-  return minibar.values[rowIndex].type === 'positive' ? minibar.barColor.positive.className : minibar.barColor.negative.className;
+  return type === 'positive' ? minibar.barColor.positive.className : minibar.barColor.negative.className;
 }
 </script>
 
-{#if minibar && item.options.minibar.selectedColumn === colIndex}
-  <td class="q-table-minibar-cell" data-minibar={minibar.type} style={getCellStyle()}>
-    <div class="q-table-minibar-bar--{minibar.values[rowIndex].type} {getMinibarClassName()}" style={getBarStyle()}></div>
-  </td>
-{/if}
+<div class="q-table-minibar-bar--{type} {getMinibarClassName()}" style={getBarStyle()}></div>
+
+<style lang="scss">
+:global(.q-table-minibar-bar--positive) {
+  background-color: currentColor;
+  position: relative;
+  height: 17px;
+  display: inline-block;
+}
+
+:global(.q-table-minibar-bar--positive::before) {
+  content: '';
+  border-left: 0.5px solid #393855;
+  position: absolute;
+  height: 19px;
+  width: 1px;
+  top: -1px;
+}
+
+:global(.q-table-minibar-bar--negative) {
+  background-color: currentColor;
+  position: relative;
+  height: 17px;
+}
+
+:global(.q-table-minibar-bar--negative::before) {
+  content: '';
+  border-right: 0.5px solid #393855;
+  position: absolute;
+  width: 1px;
+  height: 19px;
+  top: -1px;
+  right: 0px;
+}
+
+:global(.q-table-minibar-alignment--positive) {
+  text-align: right;
+  float: left;
+  width: 50%;
+  padding-right: 4px;
+}
+
+:global(.q-table-minibar-alignment--negative) {
+  position: relative;
+  text-align: left !important;
+  float: left;
+  left: 50%;
+  padding-left: 4px;
+}
+
+:global(.q-table-minibar-alignment--empty) {
+  text-align: center !important;
+  width: 100%;
+}
+</style>
