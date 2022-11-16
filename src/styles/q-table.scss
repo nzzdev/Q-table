@@ -1,41 +1,3 @@
-// .q-table__search {
-//   padding: 0 1px;
-//   margin-bottom: 16px;
-// }
-
-// .q-table__cell {
-//   text-align: left !important;
-
-//   > span {
-//     display: inline-block;
-//     position: relative;
-
-//     .q-table-footnote-annotation {
-//       color: #6e6e7e;
-//       font-size: 10px;
-//       margin-left: 1px;
-//       margin-top: -5.5px;
-//       position: absolute;
-//     }
-
-//     .q-table-footnote-annotation-colored-column {
-//       color: unset;
-//     }
-//   }
-// }
-
-// .q-table__cell--numeric {
-//   text-align: right !important;
-
-//   // extra spacing in case of footnotes. also generally looks nice
-//   padding: 10px 12px !important;
-// }
-
-// only td should not break, th of --numeric columns are allowed to wrap
-// td.q-table__cell--numeric {
-//   white-space: nowrap;
-// }
-
 // the high specificty is needed because nzz frontends apply lots of highly specific table styles we need to overwrite
 // this will change in the future and allow us to lower the specificity here again
 .q-table-holder {
@@ -70,6 +32,7 @@
     }
   }
 }
+
 // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
 .q-table-holder:not(.q-table--card-layout) .q-table__cell--numeric:not(#q-table-minibar-header) + .q-table__cell:not(.q-table__cell--numeric) {
   padding-left: 20px;
@@ -123,163 +86,6 @@
     }
   }
 }
-
-.q-table_show-more-button {
-  margin: 10px auto;
-}
-
-tr.q-table-state-hidden {
-  display: none;
-}
-
-tr.q-table-state-visible {
-  display: table-row !important;
-}
-
-tr.q-table-state-frozen {
-  background-color: #f4f4f4;
-  border-bottom: 2px solid #000 !important;
-  border-top: 2px solid #000 !important;
-}
-
-.q-table--card-layout tr.q-table-state-visible {
-  display: table-row !important;
-}
-
-.q-table-minibar-header {
-  text-align: center !important;
-}
-
-.q-table-minibar--negative {
-  right: 50%;
-}
-
-.q-table-minibar--mixed {
-  background-color: rgba(200, 200, 200, 0.15);
-  min-width: 180px;
-  padding-right: 12px !important;
-  padding-left: 12px !important;
-}
-
-.q-table-minibar--mixed-mobile {
-  min-width: 90px;
-}
-
-// .q-table-minibar-cell {
-//   background-color: rgba(200, 200, 200, 0.15);
-//   min-width: 140px;
-// }
-
-// .q-table-minibar-cell--value {
-//   background-color: rgba(200, 200, 200, 0.15);
-// }
-
-// .q-table-minibar-bar--positive {
-//   background-color: currentColor;
-//   position: relative;
-//   height: 17px;
-//   display: inline-block;
-// }
-
-// .q-table-minibar-bar--positive::before {
-//   content: '';
-//   border-left: 0.5px solid #393855;
-//   position: absolute;
-//   height: 19px;
-//   width: 1px;
-//   top: -1px;
-// }
-
-// .q-table-minibar-bar--negative {
-//   background-color: currentColor;
-//   position: relative;
-//   height: 17px;
-// }
-
-// .q-table-minibar-bar--negative::before {
-//   content: '';
-//   border-right: 0.5px solid #393855;
-//   position: absolute;
-//   width: 1px;
-//   height: 19px;
-//   top: -1px;
-//   right: 0px;
-// }
-
-// .q-table-minibar-alignment--positive {
-//   text-align: right;
-//   float: left;
-//   width: 50%;
-//   padding-right: 4px;
-// }
-
-// .q-table-minibar-alignment--negative {
-//   position: relative;
-//   text-align: left !important;
-//   float: left;
-//   left: 50%;
-//   padding-left: 4px;
-// }
-
-// .q-table-minibar-alignment--empty {
-//   text-align: center !important;
-//   width: 100%;
-// }
-
-// .q-table-footnote {
-//   &-index {
-//     vertical-align: super;
-//     display: inline-block;
-//     margin-right: 4px;
-//   }
-
-//   &-annotation {
-//     position: relative;
-//     display: block;
-//     width: 100%;
-
-//     &--colorColumn {
-//       font-size: 11px;
-//       left: 100%;
-//       position: absolute;
-//       top: -7px;
-
-//       sup {
-//         color: currentColor;
-//         opacity: 0.65;
-//       }
-//     }
-//   }
-
-//   &-annotation::after {
-//     content: attr(data-annotation);
-//     position: absolute;
-//     color: #6e6e7e;
-//     margin-left: 1px;
-//     margin-top: -5.5px;
-//     font-size: 9px;
-//   }
-
-//   &-column {
-//     &--single {
-//       padding-right: 8px !important;
-
-//       > span {
-//         /* Need this so the annotation footnotes can be positioned correctly. */
-//         display: inline-block;
-//         position: relative;
-//       }
-//     }
-
-//     &--double {
-//       padding-right: 16px !important;
-//     }
-//   }
-
-//   &-footer {
-//     margin-top: 4px;
-//   }
-// }
 
 .q-table-methods {
   &--no-interaction {
@@ -489,17 +295,5 @@ tr.q-table-state-frozen {
       margin-top: 16px;
       margin-bottom: 12px;
     }
-  }
-}
-
-/**
- * Mobile view: 400px and lower.
- * If you change this you must also change
- * the detection check in src/index.svelte.
- */
-
-.q-table-mobile {
-  .q-table-minibar-cell {
-    min-width: 50px !important;
   }
 }

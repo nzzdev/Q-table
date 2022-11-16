@@ -931,9 +931,12 @@ function getCategoricalLegend(data, colorColumnSettings) {
  * Internal.
  */
 function getCategoryColor(index, customColorMap) {
-    const customColor = customColorMap.get(index);
     const colorScheme = digitWords[index];
-    const colorClass = `s-viz-color-${colorScheme}-5`;
+    const customColor = customColorMap.get(index);
+    let colorClass = '';
+    if (colorScheme) {
+        colorClass = `s-viz-color-${colorScheme}-5`;
+    }
     return {
         colorClass,
         customColor: customColor !== undefined && customColor.color !== undefined ? customColor.color : '',
@@ -1397,7 +1400,7 @@ function getMinibarValue(type, value, min, max) {
         case MINIBAR_TYPE.NEGATIVE:
             return Math.abs((value * 100) / min);
         default:
-            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
+            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max)));
     }
 }
 /**
@@ -2536,20 +2539,21 @@ const route$h = {
             const options = config.options;
             let colorColumn = null;
             const width = getExactPixelWidth(toolRuntimeConfig);
-            const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-            const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+            const dataWithoutHeaderRow = getDataWithoutHeaderRow(config.data.table);
             const dataLength = dataWithoutHeaderRow.length;
-            const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
-            console.log('a', options.minibar);
-            const minibarsAvailable = yield areMinibarsAvailable(request, config);
-            const colorColumnAvailable = yield isColorColumnAvailable(request, config);
-            const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
-            const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
             let tableData = {
                 rows: [],
                 header: [],
                 columns: [],
             };
+            // Process options.
+            const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
+            const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
+            const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
+            const minibarsAvailable = yield areMinibarsAvailable(request, config);
+            const colorColumnAvailable = yield isColorColumnAvailable(request, config);
+            // Most important part.
+            // Processing raw data into a format we can use in the front-end.
             try {
                 tableData = formatTableData(config.data.table, footnoteObj.footnoteCellMap, options);
             }
@@ -2557,13 +2561,13 @@ const route$h = {
                 // TODO Add logging to Kibana
                 console.error('Exception during formatting table data - ', e);
             }
+            // Need processed in order to setup the minibar.
             const minibar = getMinibar(minibarsAvailable, options.minibar, tableData.columns);
-            console.log('options', options);
             try {
                 colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
             }
             catch (e) {
-                // TODO Add logging to Kibana
+                // TODO Add logging to Kibana.
                 console.error('Exception during creating colorColumn - ', e);
             }
             const props = {

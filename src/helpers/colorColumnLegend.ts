@@ -105,9 +105,13 @@ export function getCategoricalLegend(data: QTableDataRaw, colorColumnSettings: C
  * Internal.
  */
 function getCategoryColor(index: number, customColorMap: CustomColorMap): CategoryColor {
+  const colorScheme: string | undefined = digitWords[index];
   const customColor = customColorMap.get(index);
-  const colorScheme = digitWords[index];
-  const colorClass = `s-viz-color-${colorScheme}-5`;
+  let colorClass = '';
+
+  if (colorScheme) {
+    colorClass = `s-viz-color-${colorScheme}-5`;
+  }
 
   return {
     colorClass,

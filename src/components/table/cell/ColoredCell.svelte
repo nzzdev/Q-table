@@ -1,7 +1,9 @@
 <script lang="ts">
+import Footnote from './Footnote.svelte';
 import Td from '@cps/table/Td.svelte';
 import type { ColorColumn } from '@helpers/colorColumn';
 import type { Cell } from '@src/interfaces';
+import CellLabel from './CellLabel.svelte';
 
 export let cell: Cell;
 export let colorColumn: ColorColumn;
@@ -14,11 +16,12 @@ $: styles = getCellStyles(rowIndex);
 function getCellStyles(rowIndex: number): CellStyle {
   let classes = [];
   let styles = [];
+  const colors = colorColumn.colors[rowIndex];
 
-  if (colorColumn.colors[rowIndex]) {
-    if (colorColumn.colors[rowIndex].customColor) {
+  if (colors) {
+    if (colors.customColor !== '') {
       styles.push(`background-color: ${colorColumn.colors[rowIndex].customColor}`);
-    } else {
+    } else if (colors.colorClass !== '') {
       classes.push(colorColumn.colors[rowIndex].colorClass);
       styles.push('background-color: currentColor');
     }
@@ -36,15 +39,7 @@ interface CellStyle {
 </script>
 
 <Td type={cell.type} classes={styles.classes} styles={styles.styles}>
-  <span class={colorColumn.colors[rowIndex]?.textColor}>
-    {cell.label}
-
-    {#if cell.footnote !== ''}
-      <span class="q-table-footnote-annotation q-table-footnote-annotation-colored-column {colorColumn.colors[rowIndex].textColor}">
-        {cell.footnote}
-      </span>
-    {/if}
-  </span>
+  <CellLabel cls={colorColumn.colors[rowIndex].textColor} label={cell.label} footnote={cell.footnote} />
 </Td>
 
 <style lang="scss">

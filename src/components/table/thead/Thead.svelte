@@ -1,7 +1,8 @@
 <script lang="ts">
+import CellLabel from '../cell/CellLabel.svelte';
 import type { Minibar } from '@helpers/minibars';
 import type { Thead } from '@src/interfaces';
-import SortArrow from '../svg/SortArrow.svelte';
+import SortArrow from '@cps/svg/SortArrow.svelte';
 
 export let initWithCardLayout = false;
 export let minibar: Minibar | null = null;
@@ -15,16 +16,9 @@ function getAttributes(colIndex: number): Attribute {
 
   if (minibar !== null) {
     const selectedColumn = minibar.settings.selectedColumn;
-    const type = minibar.type;
 
     if (selectedColumn === colIndex) {
       classes = 'q-table-minibar-header';
-
-      if (type !== 'mixed' && !initWithCardLayout) {
-        colspan = 2;
-      } else if (type === 'mixed') {
-        colspan = 0;
-      }
     }
   }
 
@@ -57,18 +51,9 @@ interface Attribute {
   <thead class="s-font-note s-font-note--strong">
     {#each tableHead as head, colIndex}
       <th
-        class="q-table__cell q-table-cell--head q-table__cell--{head.type} {head.classes.join(' ')} {getAttributes(colIndex).classes}"
-        colspan={getAttributes(colIndex).colspan}>
+        class="qtable-th qtable-th-{head.type} {head.classes.join(' ')} {getAttributes(colIndex).classes}">
 
-        <span>
-          {head.value}
-
-          {#if head.footnote !== ''}
-            <span class="q-table-footnote-annotation">
-              {head.footnote}
-            </span>
-          {/if}
-        </span>
+        <CellLabel label={head.value} footnote={head.footnote} />
 
         {#if head.sortable}
           {#if $sortState.colIndex === colIndex}
@@ -87,3 +72,13 @@ interface Attribute {
     {/each}
   </thead>
 {/if}
+
+<style lang="scss">
+:global(.qtable-th) {
+  text-align: left;
+}
+
+:global(.q-table-minibar-header) {
+  text-align: center;
+}
+</style>

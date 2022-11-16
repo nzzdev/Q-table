@@ -117,8 +117,8 @@ function shouldShowPagination(): boolean {
 // do not get triggered by preview buttons in the editor.
 let cls = '';
 if (width) {
-  if (width <= 420) {
-    cls = 'q-table-mobile';
+  if (width > 420) {
+    cls = 'qtable-desktop';
   }
 }
 </script>

@@ -1,8 +1,8 @@
 <script lang="ts">
-import Cell from '@cps/cell/Cell.svelte';
-import ColoredCell from '@cps/cell/ColoredCell.svelte';
-import MinibarCell from '@cps/cell/MinibarCell.svelte';
-import Thead from '@cps/thead/Thead.svelte';
+import Cell from './cell/Cell.svelte';
+import ColoredCell from './cell/ColoredCell.svelte';
+import MinibarCell from './cell/MinibarCell.svelte';
+import Thead from './thead/Thead.svelte';
 import type { QTableSvelteProperties, Row } from '@src/interfaces';
 
 export let componentConfiguration: QTableSvelteProperties;
@@ -18,7 +18,7 @@ const { initWithCardLayout, tableHead, minibar, colorColumn, hideTableHeader } =
 
   <tbody class="s-font-note">
     {#each rows as row (row.key)}
-      <tr class:q-table-state-frozen={row.frozen}>
+      <tr class:qtable-tr-frozen={row.frozen}>
         {#each row.cells as cell, colIndex}
 
           {#if minibar?.columnIndex === colIndex}
@@ -34,3 +34,13 @@ const { initWithCardLayout, tableHead, minibar, colorColumn, hideTableHeader } =
     {/each}
   </tbody>
 </table>
+
+<style lang="scss">
+:global(.q-table) {
+  :global(.qtable-tr-frozen) {
+    background-color: #f4f4f4;
+    border-bottom: 2px solid #000 !important;
+    border-top: 2px solid #000 !important;
+  }
+}
+</style>

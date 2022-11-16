@@ -1,19 +1,13 @@
 <script lang="ts">
 import Td from '@cps/table/Td.svelte';
+import CellLabel from './CellLabel.svelte';
 import type { Cell } from '@src/interfaces';
+
 export let cell: Cell;
 </script>
 
 <Td type={cell.type}>
-  <span>
-    {cell.label}
-
-    {#if cell.footnote !== ''}
-        <span class="q-table-footnote-annotation">
-          {cell.footnote}
-        </span>
-    {/if}
-  </span>
+  <CellLabel label={cell.label} footnote={cell.footnote} />
 </Td>
 
 <style lang="scss">

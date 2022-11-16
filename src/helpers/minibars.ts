@@ -82,7 +82,7 @@ function getMinibarValue(type: MINIBAR_TYPE, value: number, min: number, max: nu
       return Math.abs((value * 100) / min);
 
     default:
-      return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
+      return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max)));
   }
 }
 
@@ -208,8 +208,6 @@ export interface Minibar {
     negative: { className: string; colorCode: string };
   };
   type: MINIBAR_TYPE;
-  // values: Array<{ type: string; value: number | null }>;
-
   values: number[];
   settings: QTableConfigMinibarSettings;
 }

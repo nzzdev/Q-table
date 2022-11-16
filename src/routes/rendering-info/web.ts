@@ -16,13 +16,12 @@ import type {
   DisplayOptions,
   QTableConfig,
   QTableConfigOptions,
-  Row,
   QTableSvelteProperties,
   RenderingInfo,
   StyleHashMap,
   ToolRuntimeConfig,
   WebPayload,
-  Thead,
+  Cell,
 } from '@src/interfaces';
 
 const ajv = new Ajv({
@@ -88,30 +87,27 @@ const route: ServerRoute = {
     const toolRuntimeConfig = payload.toolRuntimeConfig || {};
     const displayOptions = toolRuntimeConfig.displayOptions || ({} as DisplayOptions);
     const options = config.options;
-
     let colorColumn: ColorColumn | null = null;
     const width = getExactPixelWidth(toolRuntimeConfig);
-
-    const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-    const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+    const dataWithoutHeaderRow = getDataWithoutHeaderRow(config.data.table);
     const dataLength = dataWithoutHeaderRow.length;
-    const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
-
-    console.log('a', options.minibar);
-
-    const minibarsAvailable = await areMinibarsAvailable(request, config);
-
-
-    const colorColumnAvailable = await isColorColumnAvailable(request, config);
-    const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
-    const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
-
     let tableData: ProcessedTableData = {
       rows: [],
       header: [],
       columns: [],
     };
 
+
+    // Process options.
+    const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
+    const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
+    const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
+
+    const minibarsAvailable = await areMinibarsAvailable(request, config);
+    const colorColumnAvailable = await isColorColumnAvailable(request, config);
+
+    // Most important part.
+    // Processing raw data into a format we can use in the front-end.
     try {
       tableData = formatTableData(config.data.table, footnoteObj.footnoteCellMap, options);
     } catch (e) {
@@ -120,20 +116,16 @@ const route: ServerRoute = {
 
     }
 
-
-    const minibar = getMinibar(minibarsAvailable, options.minibar, tableData.columns);
-
-    console.log('options', options);
+    // Need processed in order to setup the minibar.
+    const minibar = getMinibar(minibarsAvailable, options.minibar, tableData.columns as Cell<number>[][]);
 
 
     try {
       colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
     } catch (e) {
-      // TODO Add logging to Kibana
+      // TODO Add logging to Kibana.
       console.error('Exception during creating colorColumn - ', e);
     }
-
-
 
     const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.

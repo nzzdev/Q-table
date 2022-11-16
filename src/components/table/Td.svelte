@@ -5,7 +5,7 @@
   export let classes: string[] = [];
   export let styles: string[] = [];
 
-  const tdClasses =  `q-table__cell q-table__cell--${type} ${classes.join(' ')} `;
+  const tdClasses =  `qtable-cell q-table__cell--${type} ${classes.join(' ')} `;
 </script>
 
 <td class={tdClasses} style={styles.join(';')}>
@@ -13,25 +13,8 @@
 </td>
 
 <style lang="scss">
-    :global(.q-table__cell) {
-      text-align: left !important;
-
-      > span {
-        display: inline-block;
-        position: relative;
-
-        .q-table-footnote-annotation {
-          color: #6e6e7e;
-          font-size: 10px;
-          margin-left: 1px;
-          margin-top: -5.5px;
-          position: absolute;
-        }
-
-        .q-table-footnote-annotation-colored-column {
-          color: unset;
-        }
-      }
+    :global(.qtable-cell) {
+      text-align: left;
     }
 
     :global(.q-table__cell--numeric) {
