@@ -141,7 +141,7 @@ export interface QTableSvelteProperties {
   config: QTableConfig;
   tableHead: Thead[];
   rows: Row[];
-  minibar: Minibar;
+  minibar: Minibar | null;
   footnotes: Footnote[] | null;
   colorColumn: ColorColumn | null;
   numberOfRows: number; // do not count the header

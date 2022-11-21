@@ -1322,15 +1322,6 @@ function getFootnotes(metaData, hideTableHeader) {
         footnoteCellMap,
     };
 }
-// interface FlattenedFootnote {
-//   value: number;
-//   colIndex: number;
-//   rowIndex: number;
-// }
-// interface Spacing {
-//   colIndex: number;
-//   class: string;
-// }
 
 var MINIBAR_TYPE;
 (function (MINIBAR_TYPE) {
@@ -1340,6 +1331,8 @@ var MINIBAR_TYPE;
     MINIBAR_TYPE["EMPTY"] = "empty";
 })(MINIBAR_TYPE || (MINIBAR_TYPE = {}));
 function getMinibar(minibarsAvailable, minibarSettings, columns) {
+    if (!minibarSettings)
+        return null;
     // A minibar with a columnIndex of null will not be shown.
     const minibar = {
         columnIndex: null,
@@ -3491,7 +3484,21 @@ var sources$J = [
 ];
 var options$J = {
 	cardLayout: false,
-	cardLayoutIfSmall: true
+	cardLayoutIfSmall: true,
+	minibar: {
+		invertColors: false,
+		barColor: {
+			positive: {
+				className: "",
+				colorCode: ""
+			},
+			negative: {
+				className: "",
+				colorCode: ""
+			}
+		},
+		selectedColumn: null
+	}
 };
 var fourColumn = {
 	title: title$K,
@@ -13999,7 +14006,21 @@ var sources$e = [
 ];
 var options$e = {
 	cardLayout: false,
-	cardLayoutIfSmall: true
+	cardLayoutIfSmall: true,
+	minibar: {
+		invertColors: false,
+		barColor: {
+			positive: {
+				className: "",
+				colorCode: ""
+			},
+			negative: {
+				className: "",
+				colorCode: ""
+			}
+		},
+		selectedColumn: null
+	}
 };
 var formattedNumbers = {
 	title: title$f,

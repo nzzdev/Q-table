@@ -1,4 +1,4 @@
-import type { CellMetaData, QTableConfigOptions, Row, TableColumnType } from '@src/interfaces';
+import type { CellMetaData } from '@src/interfaces';
 
 /**
  * Processes the raw footnote metadata into a structured format.
@@ -71,113 +71,6 @@ export function getFootnotes(metaData: CellMetaData[], hideTableHeader: boolean)
   }
 }
 
-// export function appendFootnoteAnnotationsToTableData(tableData: Row[], footnotes: Footnote[], options: QTableConfigOptions): Row[] {
-//   const unicodes: Record<number, string> = {
-//     1: '\u00b9',
-//     2: '\u00b2',
-//     3: '\u00b3',
-//     4: '\u2074',
-//     5: '\u2075',
-//     6: '\u2076',
-//     7: '\u2077',
-//     8: '\u2078',
-//     9: '\u2079',
-//   };
-//   const spacings: Spacing[] = [];
-//   const flattenedFootnotes = getFlattenedFootnotes(footnotes);
-
-//   flattenedFootnotes.forEach(footnote => {
-//     const row = tableData[footnote.rowIndex];
-//     const cells = row.cells;
-
-//     const footnoteClass = getClass(options, footnote, flattenedFootnotes.length, cells[footnote.colIndex].type, cells.length - 1);
-
-//     if (footnoteClass) {
-//       const space = {
-//         colIndex: footnote.colIndex,
-//         class: footnoteClass,
-//       };
-
-//       if (!hasFootnoteClass(spacings, space)) {
-//         spacings.push(space);
-//       }
-//     }
-
-//     // create a new property to save the index of the footnote
-//     cells[footnote.colIndex].footnote = {
-//       value: footnote.value,
-//       unicode: unicodes[footnote.value],
-//       class: footnoteClass,
-//     };
-//   });
-
-//   // assign spacingClass to cell
-//   tableData.forEach((row, index) => {
-//     // assign class when not cardlayout but cardlayoutifsmall
-//     if (!options.cardLayout || options.cardLayoutIfSmall) {
-//       spacings.forEach(spacing => {
-//         row.cells[spacing.colIndex].classes.push(spacing.class);
-//       });
-//     }
-
-//     // assign class when cardlayout or cardlayoutifsmall is active
-//     if (options.cardLayout || options.cardLayoutIfSmall) {
-//       if (!options.hideTableHeader && index !== 0) {
-//         row.cells.forEach(cell => {
-//           flattenedFootnotes.length >= 10
-//             ? cell.classes.push('q-table-footnote-column-card-layout--double')
-//             : cell.classes.push('q-table-footnote-column-card-layout--single');
-//         });
-//       }
-//     }
-//   });
-//   return tableData;
-// }
-
-/**
- * Helpers.
- */
-
-// function getClass(options: QTableConfigOptions, footnote: FlattenedFootnote, amountOfFootnotes: number, type: TableColumnType, lastColIndex: number): string | null {
-//   // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
-//   if (
-//     (type === 'numeric' && (options.minibar.selectedColumn === footnote.colIndex || options.minibar.selectedColumn === footnote.colIndex + 1)) ||
-//     footnote.colIndex === lastColIndex ||
-//     (options.colorColumn && options.colorColumn.selectedColumn === footnote.colIndex) ||
-//     (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)
-//   ) {
-//     let spacingClass = 'q-table-footnote-column';
-//     if (amountOfFootnotes >= 10) {
-//       spacingClass += '--double';
-//     } else {
-//       spacingClass += '--single';
-//     }
-//     return spacingClass;
-//   }
-
-//   return null;
-// }
-
-// function getFlattenedFootnotes(footnotes: Footnote[]): FlattenedFootnote[] {
-//   const flattenedFootnotes: FlattenedFootnote[] = [];
-
-//   footnotes.forEach(footnote => {
-//     footnote.coords.forEach(coord => {
-//       flattenedFootnotes.push({
-//         value: footnote.index,
-//         colIndex: coord.colIndex,
-//         rowIndex: coord.rowIndex,
-//       });
-//     });
-//   });
-
-//   return flattenedFootnotes;
-// }
-
-// function hasFootnoteClass(classes: Spacing[], newClass: Spacing): Spacing | undefined {
-//   return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
-// }
-
 /**
  * Interfaces
  */
@@ -188,14 +81,3 @@ export interface Footnote {
 }
 
 export type FootnoteCellMap = Map<string, string>;
-
-// interface FlattenedFootnote {
-//   value: number;
-//   colIndex: number;
-//   rowIndex: number;
-// }
-
-// interface Spacing {
-//   colIndex: number;
-//   class: string;
-// }

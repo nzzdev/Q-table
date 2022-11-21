@@ -8,7 +8,11 @@ export let width = 0;
 
 </script>
 
-<div class="qtable-minibar qtable-minibar-{type} {clrClass}" style:background={clrCode} style:width={`${width}%`}></div>
+<div
+  class="qtable-minibar qtable-minibar-{type}
+  {clrClass}"
+  style:background={clrCode} style:width={`${width}%`}
+></div>
 
 <style lang="scss">
   :global(.qtable-minibar) {

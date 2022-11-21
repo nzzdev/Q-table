@@ -5,7 +5,7 @@
   export let classes: string[] = [];
   export let styles: string[] = [];
 
-  const tdClasses =  `qtable-cell q-table__cell--${type} ${classes.join(' ')} `;
+  const tdClasses =  `qtable-cell qtable-cell-${type} ${classes.join(' ')} `;
 </script>
 
 <td class={tdClasses} style={styles.join(';')}>
@@ -17,7 +17,7 @@
       text-align: left;
     }
 
-    :global(.q-table__cell--numeric) {
+    :global(.qtable-cell-numeric) {
       text-align: right !important;
 
       // extra spacing in case of footnotes. also generally looks nice
@@ -26,6 +26,4 @@
       // only td should not break, th of --numeric columns are allowed to wrap
       white-space: nowrap;
     }
-
-
 </style>

@@ -7,7 +7,9 @@ export const enum MINIBAR_TYPE {
   EMPTY = 'empty',
 }
 
-export function getMinibar(minibarsAvailable: boolean, minibarSettings: QTableConfigMinibarSettings, columns: Cell<number>[][]): Minibar {
+export function getMinibar(minibarsAvailable: boolean, minibarSettings: QTableConfigMinibarSettings | undefined, columns: Cell<number>[][]): Minibar | null {
+  if (!minibarSettings) return null;
+
   // A minibar with a columnIndex of null will not be shown.
   const minibar: Minibar = {
     columnIndex: null,

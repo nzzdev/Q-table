@@ -123,7 +123,7 @@ if (width) {
 }
 </script>
 
-<div {id} class="s-q-item q-table-holder {cls}">
+<div {id} class="s-q-item qtable-holder {cls}">
   {#if shouldShowTitle()}
     <h3 class="s-q-item__title">{config.title}</h3>
   {/if}

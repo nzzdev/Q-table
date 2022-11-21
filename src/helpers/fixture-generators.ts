@@ -17,12 +17,6 @@ export function createFootnoteFixture(override: Partial<Footnote> = {}): Footnot
   return {
     value: 'ft',
     index: 1,
-    coords: [
-      {
-        colIndex: 1,
-        rowIndex: 1,
-      },
-    ],
     ...override,
   };
 }
@@ -33,11 +27,7 @@ export function createQTableDataFormattedFixture(override: Partial<Cell> = {}): 
     label: 'value',
     value: 'value',
     classes: ['cls1', 'cls2'],
-    footnote: {
-      value: 1,
-      unicode: 'unicode',
-      class: 'cls',
-    },
+    footnote: '1',
     ...override,
   };
 }

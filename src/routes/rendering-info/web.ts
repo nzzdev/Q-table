@@ -97,7 +97,6 @@ const route: ServerRoute = {
       columns: [],
     };
 
-
     // Process options.
     const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
     const initWithCardLayout = getInitWithCardLayoutFlag(width, options);

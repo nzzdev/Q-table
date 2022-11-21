@@ -51,6 +51,7 @@ const barWidth = minibar.values[rowIndex];
 <style lang="scss">
 :global(.qtable-minibar-cell) {
   align-items: center;
+  background-color: hsla(0,0%,78%,.15);
   display: flex;
   min-width: 90px;
 }
@@ -68,8 +69,9 @@ const barWidth = minibar.values[rowIndex];
   justify-content: end;
 
   :global(.qtable-minibar-holder) {
-    // This is not margin for more than 9 footnotes.
-    // But this never happens. I hope.
+    // if we have double digit footnotes this margin
+    // will not be enough.
+    // But this almost never happens.
     margin-left: 10px;
   }
 }
