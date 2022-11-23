@@ -2,7 +2,8 @@
 import Footer from '@cps/footer/Footer.svelte';
 import Footnotes from '@cps/footnotes/Footnotes.svelte';
 import Legend from '@cps/legend/Legend.svelte';
-import MethodBox from '@cps/methodbox/MethodBox.svelte';
+import Methodiek from '@src/components/methodiek/Methodiek.svelte';
+import MethodiekStatic from '@src/components/methodiek/MethodiekStatic.svelte';
 import Pagination from '@cps/pagination/Pagination.svelte';
 import Search from '@cps/search/Search.svelte';
 import Table from '@cps/table/Table.svelte';
@@ -86,16 +87,6 @@ setContext<QTableStateContext>('state', {
   setFilteredRows: _rows => (filteredRows = _rows),
 });
 
-function shouldShowLegend(): boolean {
-  return (
-    options.hideLegend !== true &&
-    colorColumn !== null &&
-    colorColumn.selectedColumn !== undefined &&
-    colorColumn.selectedColumn !== options.minibar.selectedColumn &&
-    !initWithCardLayout
-  );
-}
-
 function shouldShowSearch(): boolean {
   return noInteraction !== true && options.showTableSearch === true;
 }
@@ -141,7 +132,11 @@ if (width) {
       <Pagination {page} {pageSize} count={filteredRows.length} />
     {/if}
 
-    {#if shouldShowLegend() === true}
+    {#if options.hideLegend !== true &&
+      colorColumn !== null &&
+      typeof colorColumn.selectedColumn === 'number' &&
+      colorColumn.selectedColumn !== options.minibar.selectedColumn &&
+      !initWithCardLayout}
       <Legend {colorColumn} {noInteraction} />
     {/if}
 
@@ -157,7 +152,11 @@ if (width) {
   {/if}
 
   {#if colorColumn && colorColumn.legend.type === 'numerical'}
-    <MethodBox legend={colorColumn.legend} {noInteraction} />
+    {#if noInteraction}
+      <MethodiekStatic legend={colorColumn.legend} />
+    {:else}
+      <Methodiek legend={colorColumn.legend} />
+    {/if}
   {/if}
 
   <Footer

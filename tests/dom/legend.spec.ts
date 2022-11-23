@@ -1,36 +1,22 @@
-import Hapi from'@hapi/hapi';
-import Joi from 'joi';
-import * as fixtures from '../resources/fixtures/data';
-import { elementCount } from './helpers';
-import { getMarkup } from './helpers';
+/**
+ * @jest-environment jsdom
+ */
+ import * as fixtures from '../../resources/fixtures/data';
+ import {
+  elementCount,
+  createMarkupWithScript,
+  createServer,
+} from '../helpers';
 
-let server: Hapi.Server;
-
-// @ts-ignore
-import routes from '../dist/routes.js';
-
-// Start the server before the tests.
-beforeAll(async () => {
-  try {
-    server = Hapi.server({
-      port: process.env.PORT || 3000,
-    });
-    server.validator(Joi);
-    server.route(routes);
-  } catch (err) {
-    expect(err).not.toBeDefined();
-  }
-});
-
-afterAll(async () => {
-  await server.stop({ timeout: 2000 });
-
-  // @ts-ignore.
-  server = null;
-});
+// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
+global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
 
 describe('legend', () => {
+  const getServer = createServer();
+
   it('shows the legend', async () => {
+    const server = getServer();
+
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
@@ -40,7 +26,7 @@ describe('legend', () => {
       },
     });
 
-    const markup = getMarkup(response.result);
+    const markup = createMarkupWithScript(response);
 
     elementCount(markup, '.q-table-legend-container').then(
       value => expect(value).toEqual(1)
@@ -48,6 +34,8 @@ describe('legend', () => {
   });
 
   it('does not show legend when hidden', async () => {
+    const server = getServer();
+
     const response = await server.inject({
       url: '/rendering-info/web?_id=someid',
       method: 'POST',
@@ -57,10 +45,12 @@ describe('legend', () => {
       },
     });
 
-    const markup = getMarkup(response.result);
+    const markup = createMarkupWithScript(response);
 
     elementCount(markup, '.q-table-legend-container').then(
       value => expect(value).toEqual(0)
     );
   });
+
+  // Write tests that tests the exact legend entries are served correctly.
 });
