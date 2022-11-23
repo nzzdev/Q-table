@@ -2741,34 +2741,28 @@ var optionAvailability = {
                 };
             }
             if (optionName === 'barColorPositive') {
-                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
-                if (isAvailable) {
+                if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
-                    isAvailable = type === 'mixed' || type === 'positive';
+                    return {
+                        available: type === 'mixed' || type === 'positive',
+                    };
                 }
-                return {
-                    available: isAvailable,
-                };
             }
             if (optionName === 'barColorNegative') {
-                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
-                if (isAvailable) {
+                if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
-                    isAvailable = type === 'mixed' || type === 'negative';
+                    return {
+                        available: type === 'mixed' || type === 'negative',
+                    };
                 }
-                return {
-                    available: isAvailable,
-                };
             }
             if (optionName === 'invertColors') {
-                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
-                if (isAvailable) {
+                if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
-                    isAvailable = type === 'mixed';
+                    return {
+                        available: type === 'mixed',
+                    };
                 }
-                return {
-                    available: isAvailable,
-                };
             }
         }
         if (optionName === 'colorColumn' || optionName === 'selectedColorColumn') {

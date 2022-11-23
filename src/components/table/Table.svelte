@@ -8,12 +8,12 @@ import type { QTableSvelteProperties, Row } from '@src/interfaces';
 export let componentConfiguration: QTableSvelteProperties;
 export let rows: Row[];
 
-const { initWithCardLayout, tableHead, minibar, colorColumn, hideTableHeader } = componentConfiguration;
+const { tableHead, minibar, colorColumn, hideTableHeader } = componentConfiguration;
 </script>
 
 <table class="qtable">
   {#if hideTableHeader !== true}
-    <Thead {tableHead} {minibar} {initWithCardLayout} />
+    <Thead {tableHead} {minibar} />
   {/if}
 
   <tbody class="s-font-note">

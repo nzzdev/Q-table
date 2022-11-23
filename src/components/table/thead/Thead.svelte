@@ -1,7 +1,7 @@
 <script lang="ts">
 import CellLabel from '../cell/CellLabel.svelte';
 import SortArrow from '@cps/svg/SortArrow.svelte';
-import type { QTableSortState, Thead } from '@src/interfaces';
+import type { Thead } from '@src/interfaces';
 import type { Minibar } from '@helpers/minibars';
 
 export let minibar: Minibar | null = null;
