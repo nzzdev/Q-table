@@ -41,23 +41,23 @@ $: filteredRows = rows;
  * - Do we need a default sort direction that can be set in the editor?
 */
 
-// --- Sort columns ---
-$: {
-  if (typeof $sortState.colIndex === 'number') {
-    const colIndex = $sortState.colIndex;
+sortState.subscribe(state => {
+  if (typeof state.colIndex === 'number') {
+    const colIndex = state.colIndex;
 
     filteredRows.sort((a, b) => sortRows(
       a,
       b,
       colIndex,
       tableHead[colIndex].type,
-      $sortState.sortDirection,
+      state.sortDirection,
     ));
 
     // Re-assign to trigger reactivity.
+    // eslint-disable-next-line no-self-assign
     filteredRows = filteredRows;
   }
-}
+});
 
 // --- Freeze row ---
 $: {

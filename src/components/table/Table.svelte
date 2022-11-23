@@ -48,8 +48,8 @@ const { initWithCardLayout, tableHead, minibar, colorColumn, hideTableHeader } =
     table-layout: auto;
     empty-cells: show;
 
-    th,
-    td {
+    :global(th),
+    :global(td) {
       padding: 10px 4px;
       vertical-align: top;
       border: none !important;
@@ -58,12 +58,12 @@ const { initWithCardLayout, tableHead, minibar, colorColumn, hideTableHeader } =
       font-weight: unset;
     }
 
-    thead {
+    :global(thead) {
       background: unset;
     }
 
-    tbody tr,
-    thead {
+    :global(tbody tr),
+    :global(thead) {
       border-width: 0 0 1px 0;
       border-style: solid;
       border-color: #e9e9ee;

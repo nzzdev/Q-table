@@ -28,7 +28,7 @@ const formatLocaleSmall = d3FormatLocale({
 });
 
 const formatWithGroupingSeparator = formatLocale.format(',');
-const formatNoGroupingSeparator = formatLocale.format('');
+// const formatNoGroupingSeparator = formatLocale.format('');
 
 
 /**

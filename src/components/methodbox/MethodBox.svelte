@@ -9,6 +9,8 @@ export let legend: NumericalLegend;
 const methodBox = legend.methodBox;
 
 const formattedBuckets = methodBox.formattedBuckets;
+
+console.log('no', noInteraction);
 </script>
 
 {#if noInteraction}

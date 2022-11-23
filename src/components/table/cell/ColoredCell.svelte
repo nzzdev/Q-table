@@ -1,5 +1,4 @@
 <script lang="ts">
-import Footnote from './Footnote.svelte';
 import Td from '@cps/table/Td.svelte';
 import type { ColorColumn } from '@helpers/colorColumn';
 import type { Cell } from '@src/interfaces';

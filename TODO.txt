@@ -1,0 +1,2 @@
+- Discuss: formatNoGroupingSeparator (data.ts)
+  - why are different formattings for when there are numbers over 10000

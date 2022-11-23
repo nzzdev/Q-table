@@ -64,7 +64,7 @@ const formatLocaleSmall = formatLocale$1({
     grouping: [10], // Set the grouping high so numbers under 10000 do not get grouped.
 });
 const formatWithGroupingSeparator = formatLocale.format(',');
-formatLocale.format('');
+// const formatNoGroupingSeparator = formatLocale.format('');
 /**
  * This is the most important function.
  * It takes in the raw data from the user input and transform it into

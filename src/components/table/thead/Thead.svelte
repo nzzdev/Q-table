@@ -1,10 +1,9 @@
 <script lang="ts">
 import CellLabel from '../cell/CellLabel.svelte';
-import type { Minibar } from '@helpers/minibars';
-import type { Thead } from '@src/interfaces';
 import SortArrow from '@cps/svg/SortArrow.svelte';
+import type { QTableSortState, Thead } from '@src/interfaces';
+import type { Minibar } from '@helpers/minibars';
 
-export let initWithCardLayout = false;
 export let minibar: Minibar | null = null;
 export let tableHead: Thead[] = [];
 
@@ -26,8 +25,6 @@ function getAttributes(colIndex: number): Attribute {
 }
 
 const onSort = (colIndex: number): void => {
-  console.log($sortState.colIndex, colIndex);
-
   if ($sortState.colIndex === colIndex) { // Toggle direction on same column
     sortState.set({
       colIndex,
