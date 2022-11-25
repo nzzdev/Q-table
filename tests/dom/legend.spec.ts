@@ -1,15 +1,5 @@
-/**
- * @jest-environment jsdom
- */
- import * as fixtures from '../../resources/fixtures/data';
- import {
-  elementCount,
-  createMarkupWithScript,
-  createServer,
-} from '../helpers';
-
-// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
-global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
+import * as fixtures from '../../resources/fixtures/data';
+import { elementCount, createServer } from '../helpers';
 
 describe('legend', () => {
   const getServer = createServer();
@@ -26,9 +16,7 @@ describe('legend', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.q-table-legend-container').then(
+    elementCount(response, '.q-table-legend-container').then(
       value => expect(value).toEqual(1)
     );
   });
@@ -45,9 +33,7 @@ describe('legend', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.q-table-legend-container').then(
+    elementCount(response, '.q-table-legend-container').then(
       value => expect(value).toEqual(0)
     );
   });

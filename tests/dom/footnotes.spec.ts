@@ -1,11 +1,5 @@
-/**
- * @jest-environment jsdom
- */
- import * as fixtures from '../../resources/fixtures/data';
- import { elementCount, createMarkupWithScript, createServer, elements, element, createDOM } from '../helpers';
-
-// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
-global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
+import * as fixtures from '../../resources/fixtures/data';
+import { elementCount, createMarkupWithScript, createServer, elements, element, createDOM } from '../helpers';
 
 describe('footnotes', () => {
   const getServer = createServer();
@@ -22,12 +16,10 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const annotations = dom.window.document.querySelectorAll('.qtable-footnote');
 
     let annotationIndexes: string[] = [];
-
 
     annotations.forEach(annotation => {
       annotationIndexes.push(annotation.innerHTML);
@@ -48,8 +40,7 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;
     let arrayOfFootnotes: { index: string; text: string }[] = [];
 
@@ -94,8 +85,7 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;
 
     let arrayOfFootnotes: { index: string; text: string }[] = [];
@@ -129,8 +119,7 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;
 
     let arrayOfFootnotes: { index: string; text: string }[] = [];
@@ -168,8 +157,7 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const annotations = dom.window.document.querySelectorAll('.qtable-footnote');
 
     const rawFootnote1Attr = annotations[0].innerHTML || '';
@@ -191,8 +179,7 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const annotations = dom.window.document.querySelectorAll('.q-table-footnote-text');
 
     const footnoteIndexes = dom.window.document.querySelectorAll('.q-table-footnote-index');
@@ -339,8 +326,7 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const annotations = dom.window.document.querySelectorAll('.q-table-footnote-index');
 
     let annotationIndexes: string[] = [];
@@ -364,8 +350,6 @@ describe('footnotes', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-footnote').then(value => expect(value).toEqual(1));
+    elementCount(response, '.qtable-footnote').then(value => expect(value).toEqual(1));
   });
 });

@@ -36,8 +36,8 @@ export function createServer() {
     // console.log('WHYY', server);
     return server;
   }
-
 }
+
 export function createMarkupWithScript(response: Hapi.ServerInjectResponse): string {
   const markup = getMarkup(response.result);
   const scripts = getScripts(response.result);
@@ -73,38 +73,46 @@ export function getAvailabilityResponse(result: object | undefined): boolean {
   return casted.available;
 }
 
-
-export function element(markup: string, selector: string): Promise<HTMLElement> {
+export function element(response: Hapi.ServerInjectResponse, selector: string): Promise<HTMLElement> {
   return new Promise(resolve => {
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
 
     // We cast it because if it does not exist the test will simply crash.
     // Much easier for writing tests this way.
-    const el = dom.window.document.querySelector(selector) as HTMLElement;
+    const el = dom.window.document.querySelector(selector) as unknown as HTMLElement;
     resolve(el);
   });
 }
 
-export function elements(markup: string, selector: string): Promise<NodeListOf<HTMLElement>> {
+export function elements(response: Hapi.ServerInjectResponse, selector: string): Promise<NodeListOf<HTMLElement>> {
   return new Promise(resolve => {
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
 
     // We cast it because if it does not exist the test will simply crash.
     // Much easier for writing tests this way.
-    const els = dom.window.document.querySelectorAll(selector) as NodeListOf<HTMLElement>;
+    const els = dom.window.document.querySelectorAll(selector) as unknown as NodeListOf<HTMLElement>;
     resolve(els);
   });
 }
 
-export function elementCount(markup: string, selector: string): Promise<number> {
+export function elementCount(response: Hapi.ServerInjectResponse, selector: string): Promise<number | null> {
   return new Promise(resolve => {
-    const dom = createDOM(markup);
-    resolve(dom.window.document.querySelectorAll(selector).length);
+    try {
+      const dom = createDOM(response);
+      const elementsFound = dom.window.document.querySelectorAll(selector);
+      resolve(elementsFound.length);
+
+    } catch (e: any) {
+      console.error(e.message);
+      resolve(null);
+    }
   });
 }
 
-export function createDOM(markup: string): JSDOM {
-  return new JSDOM(markup, { runScripts: 'dangerously' });
+export function createDOM(response: Hapi.ServerInjectResponse): JSDOM {
+  const markup = createMarkupWithScript(response);
+
+  return new JSDOM(markup, { resources: 'usable', runScripts: 'dangerously' });
 }
 
 export function getSizeObjectForToolRuntimeConfig(width: number): ToolRuntimeConfigSize {

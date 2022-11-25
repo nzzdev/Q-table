@@ -1,11 +1,5 @@
-/**
- * @jest-environment jsdom
- */
 import * as fixtures from '../../resources/fixtures/data';
-import { elementCount, createMarkupWithScript, createServer } from '../helpers';
-
-// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
-global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
+import { elementCount, createServer } from '../helpers';
 
 describe('column headers', () => {
   const getServer = createServer();
@@ -22,9 +16,7 @@ describe('column headers', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-th').then(value => expect(value).toEqual(4));
+    elementCount(response, '.qtable-th').then(value => expect(value).toEqual(4));
   });
 
   it("doesn't show column headers", async () => {
@@ -39,8 +31,6 @@ describe('column headers', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-th').then(value => expect(value).toEqual(0));
+    elementCount(response, '.qtable-th').then(value => expect(value).toEqual(0));
   });
 });

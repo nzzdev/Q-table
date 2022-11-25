@@ -33,6 +33,7 @@ import hyphenSignAsNumber from '../../../resources/fixtures/data/hyphen-sign-as-
 import legendHidden from '../../../resources/fixtures/data/legend-hidden.json';
 import legendShown from '../../../resources/fixtures/data/legend-shown.json';
 import lotsOfData from '../../../resources/fixtures/data/lots-of-data.json';
+import methodiek from '../../../resources/fixtures/data/methodiek.json';
 import minibarsCustomClassName from '../../../resources/fixtures/data/minibars-custom-className.json';
 import minibarsCustomColorCode from '../../../resources/fixtures/data/minibars-custom-colorCode.json';
 import minibarsHeaderWithNumbers from '../../../resources/fixtures/data/minibars-header-with-numbers.json';
@@ -86,6 +87,7 @@ export {
   legendHidden,
   legendShown,
   lotsOfData,
+  methodiek,
   minibarsCustomClassName,
   minibarsCustomColorCode,
   minibarsHeaderWithNumbers,

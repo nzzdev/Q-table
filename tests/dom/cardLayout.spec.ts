@@ -1,18 +1,11 @@
-/**
- * @jest-environment jsdom
- */
- import * as fixtures from '../../resources/fixtures/data';
- import {
+import * as fixtures from '../../resources/fixtures/data';
+import {
   createDOM,
   elementCount,
-  createMarkupWithScript,
   createServer,
   cardLayoutSizeObjectForToolRuntimeConfig,
   getArticleWidthSizeForToolRuntimeConfig,
   getFullWidthSizeForToolRuntimeConfig } from '../helpers';
-
-// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
-global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
 
 describe('cardlayout', () => {
   const getServer = createServer();
@@ -29,9 +22,7 @@ describe('cardlayout', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-card-layout').then(value => {
+    elementCount(response, '.qtable-card-layout').then(value => {
       expect(value).toEqual(1);
     });
   });
@@ -48,9 +39,7 @@ describe('cardlayout', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-card-layout').then(value => {
+    elementCount(response, '.qtable-card-layout').then(value => {
       expect(value).toEqual(1);
     });
   });
@@ -67,9 +56,7 @@ describe('cardlayout', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-card-layout').then(value => {
+    elementCount(response, '.qtable-card-layout').then(value => {
       expect(value).toEqual(1);
     });
   });
@@ -90,8 +77,7 @@ describe('cardlayout on mobile', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const includedClass = dom.window.document.body.querySelector(".q-table-container")?.innerHTML.includes('qtable-card-layout');
 
     expect(includedClass).toEqual(true);
@@ -109,8 +95,7 @@ describe('cardlayout on mobile', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const includedClass = dom.window.document.body.querySelector(".q-table-container")?.innerHTML.includes('qtable-card-layout');
 
     expect(includedClass).toEqual(false);
@@ -128,8 +113,7 @@ describe('cardlayout on mobile', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const includedClass = dom.window.document.body.querySelector(".q-table-container")?.innerHTML.includes('qtable-card-layout');
 
     expect(includedClass).toEqual(false);

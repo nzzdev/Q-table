@@ -1,11 +1,5 @@
-/**
- * @jest-environment jsdom
- */
- import * as fixtures from '../../resources/fixtures/data';
- import { elementCount, createMarkupWithScript, createServer, elements } from '../helpers';
-
-// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
-global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
+import * as fixtures from '../../resources/fixtures/data';
+import { elementCount, createServer, elements } from '../helpers';
 
 const fourEmSpaceCharCode = 8197;
 
@@ -24,9 +18,7 @@ describe('cell values', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-cell-text').then(value => {
+    elementCount(response, '.qtable-cell-text').then(value => {
       expect(value).toEqual(28);
     });
   });
@@ -43,9 +35,7 @@ describe('cell values', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elements(markup, '.qtable-cell-numeric .qtable-cell-label').then(elements => {
+    elements(response, '.qtable-cell-numeric .qtable-cell-label').then(elements => {
       elements.forEach(element => {
         expect(element.innerHTML.charCodeAt(2)).toEqual(fourEmSpaceCharCode);
       });
@@ -64,9 +54,7 @@ describe('cell values', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elements(markup, '.qtable-cell-numeric .qtable-cell-label').then(elements => {
+    elements(response, '.qtable-cell-numeric .qtable-cell-label').then(elements => {
       expect(elements[1].innerHTML.charCodeAt(3)).toEqual(fourEmSpaceCharCode);
     });
   });
@@ -83,9 +71,7 @@ describe('cell values', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elements(markup, '.qtable-cell-numeric .qtable-cell-label').then(elements => {
+    elements(response, '.qtable-cell-numeric .qtable-cell-label').then(elements => {
       expect(elements[0].innerHTML.charCodeAt(1)).toEqual(fourEmSpaceCharCode);
     });
   });

@@ -1,12 +1,5 @@
-/**
- * @jest-environment jsdom
- */
- import * as fixtures from '../../resources/fixtures/data';
- import { elementCount, createMarkupWithScript, createServer, createDOM } from '../helpers';
-
-// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
-global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
-
+import * as fixtures from '../../resources/fixtures/data';
+import { elementCount, createMarkupWithScript, createServer, createDOM } from '../helpers';
 
 describe('minibars', () => {
   const getServer = createServer();
@@ -23,9 +16,7 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, 'td').then(value => expect(value).toEqual(28));
+    elementCount(response, 'td').then(value => expect(value).toEqual(28));
   });
 
   it('uses correct cell type', async () => {
@@ -40,9 +31,7 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-minibar-cell').then(value => {
+    elementCount(response, '.qtable-minibar-cell').then(value => {
       expect(value).toEqual(4);
     });
   });
@@ -59,9 +48,7 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-minibar-cell-negative').then(value => {
+    elementCount(response, '.qtable-minibar-cell-negative').then(value => {
       expect(value).toEqual(3);
     });
   });
@@ -78,13 +65,11 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-minibar-cell').then(value => {
+    elementCount(response, '.qtable-minibar-cell').then(value => {
       expect(value).toEqual(4);
     });
 
-    elementCount(markup, '.qtable-minibar-cell .qtable-cell-label').then(value => {
+    elementCount(response, '.qtable-minibar-cell .qtable-cell-label').then(value => {
       expect(value).toEqual(4);
     });
   });
@@ -101,8 +86,7 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const bars = dom.window.document.querySelectorAll('.qtable-minibar-negative');
 
     let widths: string[] = [];
@@ -128,9 +112,7 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-minibar-positive').then(value => {
+    elementCount(response, '.qtable-minibar-positive').then(value => {
       expect(value).toEqual(3);
     });
   });
@@ -147,13 +129,11 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-
-    elementCount(markup, '.qtable-minibar-cell').then(value => {
+    elementCount(response, '.qtable-minibar-cell').then(value => {
       expect(value).toEqual(4);
     });
 
-    elementCount(markup, '.qtable-minibar-cell .qtable-cell-label ').then(value => {
+    elementCount(response, '.qtable-minibar-cell .qtable-cell-label ').then(value => {
       expect(value).toEqual(4);
     });
   });
@@ -170,8 +150,7 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const bars = dom.window.document.querySelectorAll('.qtable-minibar-positive');
 
     let widths: string[] = [];
@@ -197,8 +176,7 @@ describe('minibars', () => {
       },
     });
 
-    const markup = createMarkupWithScript(response);
-    const dom = createDOM(markup);
+    const dom = createDOM(response);
     const positiveBars = dom.window.document.querySelectorAll('.qtable-minibar-positive');
     const negativeBars = dom.window.document.querySelectorAll('.qtable-minibar-negative');
 
