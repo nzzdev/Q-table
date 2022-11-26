@@ -208,6 +208,48 @@
             ]
           }
         },
+        "sorting": {
+          "title": "Sortierung",
+          "type": "array",
+          "Q:options": {
+            "dynamicSchema": {
+              "type": "ToolEndpoint",
+              "config": {
+                "endpoint": "dynamic-schema/sorting",
+                "fields": [
+                  "data"
+                ]
+              }
+            },
+            "layout": "compact"
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "column": {
+                "title": "Zeile",
+                "oneOf": [
+                  {
+                    "type": "number"
+                  }
+                ],
+                "Q:options": {
+                  "dynamicSchema": {
+                    "selectType": "select",
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "dynamic-schema/sortingItem",
+                      "fields": [
+                        "data",
+                        "options"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "minibar": {
           "title": "Minibars",
           "type": "object",

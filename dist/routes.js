@@ -76,13 +76,21 @@ function formatTableData(dataWithHeader, footnotes, options) {
     const columns = [];
     // First get the type of each column.
     const columnTypes = getColumnsType(dataWithHeader, options);
+    const sortingOptions = options.sorting || [];
     // Format the header.
     for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
+        const sortableOption = sortingOptions.find(d => d.column === colIndex);
+        let sortable = false;
+        let sortDirection = null;
+        if (sortableOption) {
+            sortable = true;
+            sortDirection = sortableOption.sortingDirection;
+        }
         header.push({
             value: dataWithHeader[0][colIndex] || '',
             type: columnTypes[colIndex],
-            sortable: true,
-            sortDirection: 'asc',
+            sortable,
+            sortDirection,
             classes: [],
             footnote: footnotes.get(`-1-${colIndex}`) || '',
         });
@@ -1700,6 +1708,48 @@ var properties$1 = {
 					]
 				}
 			},
+			sorting: {
+				title: "Sortierung",
+				type: "array",
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/sorting",
+							fields: [
+								"data"
+							]
+						}
+					},
+					layout: "compact"
+				},
+				items: {
+					type: "object",
+					properties: {
+						column: {
+							title: "Zeile",
+							oneOf: [
+								{
+									type: "number"
+								}
+							],
+							"Q:options": {
+								dynamicSchema: {
+									selectType: "select",
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "dynamic-schema/sortingItem",
+										fields: [
+											"data",
+											"options"
+										]
+									}
+								}
+							}
+						}
+					}
+				}
+			},
 			minibar: {
 				title: "Minibars",
 				type: "object",
@@ -2476,7 +2526,7 @@ const ajv = new Ajv({
     strict: false,
 });
 const validate = ajv.compile(schema$1);
-const route$h = {
+const route$k = {
     method: 'POST',
     path: '/rendering-info/web',
     options: {
@@ -2682,7 +2732,7 @@ function getInitWithCardLayoutFlag(width, options) {
 }
 
 const __dirname$1 = dirname(fileURLToPath(import.meta.url));
-const route$g = {
+const route$j = {
     method: 'GET',
     path: '/stylesheet/{filename}.{hash}.{extension}',
     options: {
@@ -2825,7 +2875,7 @@ var optionAvailability = {
     },
 };
 
-const route$f = {
+const route$i = {
     method: 'POST',
     path: '/dynamic-schema/colorScheme',
     options: {
@@ -2854,7 +2904,7 @@ const route$f = {
     },
 };
 
-const route$e = {
+const route$h = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwrites',
     options: {
@@ -2895,7 +2945,7 @@ function getMaxItemsCategorical(data, colorColumnSettings) {
     }
 }
 
-const route$d = {
+const route$g = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwritesItem',
     options: {
@@ -2953,7 +3003,7 @@ function getDropdownSettingsCategorical(data, colorColumnSettings) {
     };
 }
 
-const route$c = {
+const route$f = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrder',
     options: {
@@ -2972,7 +3022,7 @@ const route$c = {
     },
 };
 
-const route$b = {
+const route$e = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrderItem',
     options: {
@@ -2995,7 +3045,7 @@ const route$b = {
     },
 };
 
-const route$a = {
+const route$d = {
     method: 'POST',
     path: '/dynamic-schema/getOptionsCountryFlagSelect',
     options: {
@@ -3036,7 +3086,7 @@ function getOptions(data) {
     return dropdownSettings;
 }
 
-const route$9 = {
+const route$c = {
     method: 'POST',
     path: '/dynamic-schema/selectedColumnMinibar',
     options: {
@@ -3077,7 +3127,7 @@ function getMinibarDropdownSettings(data) {
     return dropdownSettings;
 }
 
-const route$8 = {
+const route$b = {
     method: 'POST',
     path: '/dynamic-schema/selectedColorColumn',
     options: {
@@ -3119,7 +3169,7 @@ function getDropdownSettings(data) {
 }
 
 // TODO Refactor common functionality with selectedColorColum.ts and selectedColumnMinibar.ts
-const route$7 = {
+const route$a = {
     method: 'POST',
     path: '/dynamic-schema/selectedFrozenRow',
     options: {
@@ -3157,7 +3207,7 @@ const getFrozenRowDropdownSettings = (data) => {
     return dropdownSettings;
 };
 
-const route$6 = {
+const route$9 = {
     method: 'POST',
     path: '/dynamic-schema/colorScale',
     options: {
@@ -3200,15 +3250,94 @@ const route$6 = {
     },
 };
 
+const route$8 = {
+    method: 'POST',
+    path: '/dynamic-schema/sorting',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const data = item.data.table;
+        return data[0].length;
+    },
+};
+
+const route$7 = {
+    method: 'POST',
+    path: '/dynamic-schema/sortingItem',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const data = item.data.table;
+        const ids = [];
+        const titles = [];
+        for (let i = 0; i < data[0].length; i++) {
+            const d = data[0][i];
+            ids.push(i);
+            titles.push(d);
+        }
+        return {
+            enum: ids,
+            'Q:options': {
+                enum_titles: titles,
+            },
+        };
+    },
+};
+
+const route$6 = {
+    method: 'POST',
+    path: '/dynamic-schema/sortingDirectionItem',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        // const payload = request.payload as Payload;
+        // const item = payload.item;
+        // const data = item.data.table;
+        const ids = [null];
+        const titles = [''];
+        // We only support one column to be auto sorted.
+        // But don't know how to make sure the select of the current auto sorted
+        // column does not get it's options deleted.
+        // This code affects all selects.
+        // const m = item.options.sorting?.find(s => s.sortingDirection !== null);
+        // if (!m) {
+        ids.push('asc', 'desc');
+        titles.push('Ascending', 'Decending');
+        // }
+        return {
+            enum: ids,
+            'Q:options': {
+                enum_titles: titles,
+            },
+        };
+    },
+};
+
 var dynamicSchemas = [
+    route$i,
+    route$h,
+    route$g,
     route$f,
     route$e,
     route$d,
-    route$c,
     route$b,
+    route$c,
     route$a,
-    route$8,
     route$9,
+    route$8,
     route$7,
     route$6,
 ];
@@ -15812,8 +15941,8 @@ const displayOptionsRoute = {
 var schema = [schemaRoute, displayOptionsRoute];
 
 const allRoutes = [
-    route$h,
-    route$g,
+    route$k,
+    route$j,
     optionAvailability,
     ...dynamicSchemas,
     route$5,

@@ -45,6 +45,7 @@ import multilineText from '../../../resources/fixtures/data/multiline-text.json'
 import oneColumn from '../../../resources/fixtures/data/one-column.json';
 import pagination from '../../../resources/fixtures/data/pagination.json';
 import showMoreButton from '../../../resources/fixtures/data/show-more-button.json';
+import sorting from '../../../resources/fixtures/data/sorting.json';
 import specialCharacters from '../../../resources/fixtures/data/special-characters.json';
 import tableSearchHidden from '../../../resources/fixtures/data/table-search-hidden.json';
 import tableSearchShow from '../../../resources/fixtures/data/table-search-show.json';
@@ -99,6 +100,7 @@ export {
   oneColumn,
   pagination,
   showMoreButton,
+  sorting,
   specialCharacters,
   tableSearchHidden,
   tableSearchShow,

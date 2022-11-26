@@ -44,13 +44,25 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
   // First get the type of each column.
   const columnTypes = getColumnsType(dataWithHeader, options);
 
+  const sortingOptions = options.sorting || [];
+
   // Format the header.
   for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
+    const sortableOption = sortingOptions.find(d => d.column === colIndex);
+
+    let sortable = false;
+    let sortDirection = null;
+
+    if (sortableOption) {
+      sortable = true;
+      sortDirection = sortableOption.sortingDirection;
+    }
+
     header.push({
       value: dataWithHeader[0][colIndex] || '',
       type: columnTypes[colIndex],
-      sortable: true,  // TODO extract sortable rows from schema and options here.
-      sortDirection: 'asc',
+      sortable,
+      sortDirection,
       classes: [],
       footnote: footnotes.get(`-1-${colIndex}`) || '',
     });

@@ -6,3 +6,31 @@
 - write more specific tests for methodiek
 
 - onResize screen to adjust classes mobile vs desktop ?
+
+
+
+ "sortingDirection": {
+    "title": "Autom. sortierung",
+    "oneOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "default": null,
+    "Q:options": {
+      "dynamicSchema": {
+        "selectType": "select",
+        "type": "ToolEndpoint",
+        "config": {
+          "endpoint": "dynamic-schema/sortingDirectionItem",
+          "fields": [
+            "data",
+            "options"
+          ]
+        }
+      }
+    }
+  }

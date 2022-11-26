@@ -8,6 +8,9 @@ import selectedColumnMinibar from './selectedColumnMinibar.js';
 import selectedColorColumn from './selectedColorColumn.js';
 import selectedFrozenRow from './selectedFrozenRow.js';
 import scale from './scale.js';
+import sorting from './sorting.js';
+import sortingItem from './sortingItem';
+import sortingDirectionItem from './sortingDirectionItem';
 
 export default [
   colorScheme,
@@ -20,4 +23,7 @@ export default [
   selectedColumnMinibar,
   selectedFrozenRow,
   scale,
+  sorting,
+  sortingItem,
+  sortingDirectionItem,
 ];

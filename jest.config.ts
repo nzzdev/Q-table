@@ -8,7 +8,9 @@ const config: Config.InitialOptions = {
   testEnvironment: "@happy-dom/jest-environment",
   verbose: true,
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.ts$': ['ts-jest', {
+      useESM: true
+    }],
     '^.+\\.svelte$': [
       './node_modules/svelte-jester/dist/transformer.mjs',
       {
@@ -18,11 +20,6 @@ const config: Config.InitialOptions = {
   },
   extensionsToTreatAsEsm: ['.svelte', '.ts'],
   moduleFileExtensions: ['js', 'ts', 'svelte'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
     '^@rs(.*)$': '<rootDir>/resources$1',

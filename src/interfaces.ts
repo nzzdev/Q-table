@@ -103,6 +103,14 @@ export interface QTableConfigOptions {
   countryFlagColumn?:  {
     selectedColumn: number | null
   };
+
+  // Added 7.1.0
+  sorting?: QTableConfigSortingSettings[];
+}
+
+export interface QTableConfigSortingSettings {
+  column: number;
+  sortingDirection: SortDirection;
 }
 
 export interface DisplayOptions {
@@ -189,8 +197,6 @@ export interface StyleHashMap {
   'q-table': string;
 }
 
-
-
 export interface Column {
   type: TableColumnType;
   values: (string | number)[];
@@ -198,8 +204,6 @@ export interface Column {
 }
 
 export type TableColumnType = 'text' | 'numeric' | 'country-flag-emoji';
-
-export type SortDirection = 'asc' | 'desc';
 
 export interface Row {
   key: number;
@@ -211,14 +215,9 @@ export interface Thead {
   value: string;
   type: TableColumnType;
   sortable: boolean;
-  sortDirection: 'asc' | 'desc';
+  sortDirection: SortDirection;
   classes: string[],
   footnote: string;
-  // footnote?: {
-  //   value: number;
-  //   unicode: string;
-  //   class: string | null;
-  // };
 }
 
 export interface Cell<T = number | string> {
@@ -227,11 +226,8 @@ export interface Cell<T = number | string> {
   label: string; // String representation of value.
   classes: string[];
   footnote: string;
-  // footnote?: {
-  //   value: number;
-  //   unicode: string;
-  //   class: string | null;
-  // };
 }
 
 export type CellType = 'text' | 'numeric' | null
+
+export type SortDirection = 'asc' | 'desc' | null;

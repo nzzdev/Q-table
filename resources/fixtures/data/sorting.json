@@ -1,0 +1,62 @@
+{
+  "title": "FIXTURE: table search with multiple columns",
+  "data": {
+    "table": [
+      [
+        "head1",
+        "head2"
+      ],
+      [
+        "a",
+        "1"
+      ],
+      [
+        "b",
+        "2"
+      ],
+      [
+        "c",
+        "3"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [
+    {
+      "link": {},
+      "text": "The Very Important Center For Very Important Data"
+    }
+  ],
+  "options": {
+    "hideTableHeader": false,
+    "showTableSearch": true,
+    "cardLayout": false,
+    "cardLayoutIfSmall": true,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": null
+    },
+    "sorting": [
+      {
+        "column": 0
+      },
+      {
+        "column": 1
+      }
+    ]
+  },
+  "tool": "table",
+  "subtitle": "Very important data country by country"
+}

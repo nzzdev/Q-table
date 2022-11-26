@@ -25,7 +25,7 @@ function getAttributes(colIndex: number): Attribute {
 }
 
 const onSort = (colIndex: number): void => {
-  if ($sortState.colIndex === colIndex) { // Toggle direction on same column
+  if ($sortState.colIndex === colIndex) { // Toggle direction on same column.
     sortState.set({
       colIndex,
       sortDirection: $sortState.sortDirection === 'asc' ? 'desc' : 'asc',
@@ -53,17 +53,11 @@ interface Attribute {
         <CellLabel label={head.value} footnote={head.footnote} />
 
         {#if head.sortable}
-          {#if $sortState.colIndex === colIndex}
-            <span on:click={() => onSort(colIndex)}>
-              <SortArrow
-                sortAscending={$sortState.sortDirection === 'asc'}
-                sortActive= {$sortState.colIndex === colIndex} />
-            </span>
-          {:else}
-            <span on:click={() => onSort(colIndex)}>
-              <SortArrow />
-            </span>
-          {/if}
+          <span class="qtable-sort-icon-holder" class:qtable-sort-active={$sortState.colIndex === colIndex}  on:click={() => onSort(colIndex)} >
+
+            <SortArrow
+              sortAscending={$sortState.colIndex === colIndex && $sortState.sortDirection === 'asc'} />
+          </span>
         {/if}
       </th>
     {/each}
@@ -77,5 +71,13 @@ interface Attribute {
 
 :global(.q-table-minibar-header) {
   text-align: center;
+}
+
+:global(.qtable-sort-icon-holder) {
+  opacity: .25;
+}
+
+:global(.qtable-sort-active) {
+  opacity: 1;
 }
 </style>
