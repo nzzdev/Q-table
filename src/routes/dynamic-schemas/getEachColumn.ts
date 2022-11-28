@@ -4,7 +4,7 @@ import type { Request, ServerRoute } from '@hapi/hapi';
 
 const route: ServerRoute = {
   method: 'POST',
-  path: '/dynamic-schema/sortingItem',
+  path: '/dynamic-schema/getEachColumn',
   options: {
     validate: {
       payload: Joi.object(),

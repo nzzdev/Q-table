@@ -4,7 +4,7 @@ import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 // Types.
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 import type { FootnoteCellMap } from './footnotes.js';
-import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, Thead } from '../interfaces';
+import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, FormattingType, Thead, QtableConfigFormattingSetting } from '../interfaces';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
@@ -42,9 +42,16 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
   const columns: Cell[][] = [];
 
   // First get the type of each column.
-  const columnTypes = getColumnsType(dataWithHeader, options);
+  const columnTypes = getColumnsType(dataWithHeader);
 
+  const formatting = options.formatting || [];
   const sortingOptions = options.sorting || [];
+
+  const formattingMap: Record<number, QtableConfigFormattingSetting | undefined> = {};
+
+  formatting.forEach(f => {
+    formattingMap[f.column] = f;
+  });
 
   // Format the header.
   for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
@@ -79,23 +86,24 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
     const normalizedRowIndex = rowIndex - 1; // without header row.
 
     const cells = row.map((rawCellValue, colIndex) => {
+      const formatting = formattingMap[colIndex]?.formattingType;
+
       const type = columnTypes[colIndex];
       let cell: Cell;
 
-      switch (type) {
-        case 'country-flag-emoji':
-          cell = formatCountryFlagEmojiDatapoint(rawCellValue);
-          break;
+      if (formatting) {
+        cell = formatCell(rawCellValue, formatting);
+      } else {
+        switch (type) {
+          case 'numeric':
+            cell = formaticNumericData(rawCellValue);
+            break;
 
-        case 'numeric':
-          cell = formaticNumericData(rawCellValue);
-          break;
-
-        case 'text':
-        default:
-          cell = formatTextualData(rawCellValue);
-          break;
-
+          case 'text':
+          default:
+            cell = formatTextualData(rawCellValue);
+            break;
+        }
       }
 
       columns[colIndex].push(cell);
@@ -110,18 +118,79 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
     });
   }
 
-  // TODO: header is now excluded from footnotes.
-  // Need to re-add.
-  // if (footnotes.length > 0) {
-  //   rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
-  // }
-
   return {
     header,
     rows,
     columns,
   }
 }
+
+function formatCell(rawValue: QTableCellDataRaw, type: FormattingType): Cell {
+  let label = '';
+
+  if (type === 'country_flags') {
+    return formatCountryFlagEmojiDatapoint(rawValue);
+  }
+
+  const parsedRawValue = parseFloat(rawValue || '');
+
+  let prefix = '';
+
+  switch (type) {
+    case '0':
+      label = parsedRawValue.toString();
+      break;
+
+    case '0.00':
+      label = formatLocale.format('.2f')(parsedRawValue);
+      break;
+
+    case '0.000':
+      label = formatLocale.format('.3f')(parsedRawValue);
+      break;
+
+    case '0%':
+      label = formatLocale.format('.0f')(parsedRawValue) + '%';
+      break;
+
+    case '0.0%':
+      label = formatLocale.format('.1f')(parsedRawValue) + '%';
+      break;
+
+    case '0.00%':
+      label = formatLocale.format('.2f')(parsedRawValue) + '%';
+      break;
+
+    case '0.000%':
+      label = formatLocale.format('.3f')(parsedRawValue) + '%';
+      break;
+
+    case 'arrow_sign_relative_int':
+      if (parsedRawValue > 0) {
+        prefix = '➚ +';
+      } else if (parsedRawValue < 0) {
+        prefix = '➘ ';
+      } else {
+        prefix = '➙ ';
+      }
+
+      label = `${prefix}${parsedRawValue}%`;
+      break;
+
+    default:
+      label = parsedRawValue.toString();
+      break;
+  }
+
+  return {
+    type: 'numeric',
+    value: rawValue || '',
+    label,
+    footnote: '',
+    classes: [],
+  }
+}
+
 
 function formatCountryFlagEmojiDatapoint(rawValue: QTableCellDataRaw): Cell {
   let label = '';
@@ -237,12 +306,7 @@ export function isNumeric(cell: string | null): boolean {
 }
 
 
-
-
-
-
-
-export function getColumnsType(dataWithHeader: QTableDataRaw, options: QTableConfigOptions | undefined = undefined): TableColumnType[] {
+export function getColumnsType(dataWithHeader: QTableDataRaw): TableColumnType[] {
   const columns: TableColumnType[] = [];
 
   const columnAmount = dataWithHeader[0].length;
@@ -250,22 +314,18 @@ export function getColumnsType(dataWithHeader: QTableDataRaw, options: QTableCon
   for (let c = 0; c < columnAmount; c++) {
     const column: QTableCellDataRaw[] = [];
 
-    if (options?.countryFlagColumn?.selectedColumn === c) {
-      columns.push('country-flag-emoji');
+    // Take all columns in one array.
+    // note: start at index 1 to skip header.
+    for (let row = 1; row < dataWithHeader.length; row++) {
+      column.push(dataWithHeader[row][c]);
+    }
+
+    const isNumeric = isColumnNumeric(column);
+
+    if (isNumeric) {
+      columns.push('numeric');
     } else {
-      // Take all columns in one array.
-      // note: start at index 1 to skip header.
-      for (let row = 1; row < dataWithHeader.length; row++) {
-        column.push(dataWithHeader[row][c]);
-      }
-
-      const isNumeric = isColumnNumeric(column);
-
-      if (isNumeric) {
-        columns.push('numeric');
-      } else {
-        columns.push('text');
-      }
+      columns.push('text');
     }
 
     // TODO: move somewhere else.

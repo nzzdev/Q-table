@@ -2,12 +2,8 @@
 - Discuss: formatNoGroupingSeparator (data.ts)
   - why are different formattings for when there are numbers over 10000
 
-- Write more specific tests for legend
-- write more specific tests for methodiek
 
 - onResize screen to adjust classes mobile vs desktop ?
-
-
 
  "sortingDirection": {
     "title": "Autom. sortierung",

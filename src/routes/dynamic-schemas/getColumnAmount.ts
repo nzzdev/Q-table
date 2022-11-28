@@ -4,18 +4,20 @@ import type { Request, ServerRoute } from '@hapi/hapi';
 
 const route: ServerRoute = {
   method: 'POST',
-  path: '/dynamic-schema/sorting',
+  path: '/dynamic-schema/getColumnAmount',
   options: {
     validate: {
       payload: Joi.object(),
     },
   },
-  handler: function (request: Request): number {
+  handler: function (request: Request): ReturnPayload {
     const payload = request.payload as Payload;
     const item = payload.item;
     const data = item.data.table;
 
-    return data[0].length;
+    return {
+      maxItems: data[0].length
+    }
   },
 };
 
@@ -31,4 +33,8 @@ interface Payload {
       metaData: DataMetaData;
     };
   };
+}
+
+interface ReturnPayload {
+  maxItems: undefined | number;
 }

@@ -16,6 +16,8 @@ export let footnote = '';
 
 <style lang="scss">
 :global(.qtable-cell-label) {
+  // Need it for positioning footnotes correctly.
+  display: inline-block;
   position: relative;
 }
 </style>

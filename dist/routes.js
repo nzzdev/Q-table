@@ -75,8 +75,13 @@ function formatTableData(dataWithHeader, footnotes, options) {
     const rows = [];
     const columns = [];
     // First get the type of each column.
-    const columnTypes = getColumnsType(dataWithHeader, options);
+    const columnTypes = getColumnsType(dataWithHeader);
+    const formatting = options.formatting || [];
     const sortingOptions = options.sorting || [];
+    const formattingMap = {};
+    formatting.forEach(f => {
+        formattingMap[f.column] = f;
+    });
     // Format the header.
     for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
         const sortableOption = sortingOptions.find(d => d.column === colIndex);
@@ -104,19 +109,23 @@ function formatTableData(dataWithHeader, footnotes, options) {
         const row = dataWithHeader[rowIndex];
         const normalizedRowIndex = rowIndex - 1; // without header row.
         const cells = row.map((rawCellValue, colIndex) => {
+            var _a;
+            const formatting = (_a = formattingMap[colIndex]) === null || _a === void 0 ? void 0 : _a.formattingType;
             const type = columnTypes[colIndex];
             let cell;
-            switch (type) {
-                case 'country-flag-emoji':
-                    cell = formatCountryFlagEmojiDatapoint(rawCellValue);
-                    break;
-                case 'numeric':
-                    cell = formaticNumericData(rawCellValue);
-                    break;
-                case 'text':
-                default:
-                    cell = formatTextualData(rawCellValue);
-                    break;
+            if (formatting) {
+                cell = formatCell(rawCellValue, formatting);
+            }
+            else {
+                switch (type) {
+                    case 'numeric':
+                        cell = formaticNumericData(rawCellValue);
+                        break;
+                    case 'text':
+                    default:
+                        cell = formatTextualData(rawCellValue);
+                        break;
+                }
             }
             columns[colIndex].push(cell);
             cell.footnote = footnotes.get(`${normalizedRowIndex}-${colIndex}`) || '';
@@ -127,15 +136,63 @@ function formatTableData(dataWithHeader, footnotes, options) {
             cells,
         });
     }
-    // TODO: header is now excluded from footnotes.
-    // Need to re-add.
-    // if (footnotes.length > 0) {
-    //   rows = appendFootnoteAnnotationsToTableData(rows, footnotes, options);
-    // }
     return {
         header,
         rows,
         columns,
+    };
+}
+function formatCell(rawValue, type) {
+    let label = '';
+    if (type === 'country_flags') {
+        return formatCountryFlagEmojiDatapoint(rawValue);
+    }
+    const parsedRawValue = parseFloat(rawValue || '');
+    let prefix = '';
+    switch (type) {
+        case '0':
+            label = parsedRawValue.toString();
+            break;
+        case '0.00':
+            label = formatLocale.format('.2f')(parsedRawValue);
+            break;
+        case '0.000':
+            label = formatLocale.format('.3f')(parsedRawValue);
+            break;
+        case '0%':
+            label = formatLocale.format('.0f')(parsedRawValue) + '%';
+            break;
+        case '0.0%':
+            label = formatLocale.format('.1f')(parsedRawValue) + '%';
+            break;
+        case '0.00%':
+            label = formatLocale.format('.2f')(parsedRawValue) + '%';
+            break;
+        case '0.000%':
+            label = formatLocale.format('.3f')(parsedRawValue) + '%';
+            break;
+        case 'arrow_sign_relative_int':
+            if (parsedRawValue > 0) {
+                prefix = '➚ +';
+            }
+            else if (parsedRawValue < 0) {
+                prefix = '➘ ';
+            }
+            else {
+                prefix = '➙ ';
+            }
+            label = `${prefix}${parsedRawValue}%`;
+            break;
+        default:
+            label = parsedRawValue.toString();
+            break;
+    }
+    return {
+        type: 'numeric',
+        value: rawValue || '',
+        label,
+        footnote: '',
+        classes: [],
     };
 }
 function formatCountryFlagEmojiDatapoint(rawValue) {
@@ -231,28 +288,22 @@ function isNumeric(cell) {
     }
     return true;
 }
-function getColumnsType(dataWithHeader, options = undefined) {
-    var _a;
+function getColumnsType(dataWithHeader) {
     const columns = [];
     const columnAmount = dataWithHeader[0].length;
     for (let c = 0; c < columnAmount; c++) {
         const column = [];
-        if (((_a = options === null || options === void 0 ? void 0 : options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) === c) {
-            columns.push('country-flag-emoji');
+        // Take all columns in one array.
+        // note: start at index 1 to skip header.
+        for (let row = 1; row < dataWithHeader.length; row++) {
+            column.push(dataWithHeader[row][c]);
+        }
+        const isNumeric = isColumnNumeric(column);
+        if (isNumeric) {
+            columns.push('numeric');
         }
         else {
-            // Take all columns in one array.
-            // note: start at index 1 to skip header.
-            for (let row = 1; row < dataWithHeader.length; row++) {
-                column.push(dataWithHeader[row][c]);
-            }
-            const isNumeric = isColumnNumeric(column);
-            if (isNumeric) {
-                columns.push('numeric');
-            }
-            else {
-                columns.push('text');
-            }
+            columns.push('text');
         }
         // TODO: move somewhere else.
         // let withFormating = false;
@@ -1708,14 +1759,14 @@ var properties$1 = {
 					]
 				}
 			},
-			sorting: {
-				title: "Sortierung",
+			formatting: {
+				title: "Formattierung",
 				type: "array",
 				"Q:options": {
 					dynamicSchema: {
 						type: "ToolEndpoint",
 						config: {
-							endpoint: "dynamic-schema/sorting",
+							endpoint: "dynamic-schema/getColumnAmount",
 							fields: [
 								"data"
 							]
@@ -1738,7 +1789,80 @@ var properties$1 = {
 									selectType: "select",
 									type: "ToolEndpoint",
 									config: {
-										endpoint: "dynamic-schema/sortingItem",
+										endpoint: "dynamic-schema/getEachColumn",
+										fields: [
+											"data",
+											"options"
+										]
+									}
+								}
+							}
+						},
+						formattingType: {
+							title: "Formattierung",
+							type: "string",
+							"default": "light",
+							"enum": [
+								"country_flags",
+								"0",
+								"0.00",
+								"0.000",
+								"0%",
+								"0.0%",
+								"0.00%",
+								"0.000%",
+								"arrow_sign_relative_int"
+							],
+							"Q:options": {
+								selectType: "select",
+								enum_titles: [
+									"country_flags",
+									"0",
+									"0.00",
+									"0.000",
+									"0%",
+									"0.0%",
+									"0.00%",
+									"0.000%",
+									"(➚➙➘) (+/-)0%"
+								]
+							}
+						}
+					}
+				}
+			},
+			sorting: {
+				title: "Sortierung",
+				type: "array",
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/getColumnAmount",
+							fields: [
+								"data"
+							]
+						}
+					},
+					layout: "compact",
+					sortable: false
+				},
+				items: {
+					type: "object",
+					properties: {
+						column: {
+							title: "Zeile",
+							oneOf: [
+								{
+									type: "number"
+								}
+							],
+							"Q:options": {
+								dynamicSchema: {
+									selectType: "select",
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "dynamic-schema/getEachColumn",
 										fields: [
 											"data",
 											"options"
@@ -2477,35 +2601,6 @@ var properties$1 = {
 						}
 					}
 				}
-			},
-			countryFlagColumn: {
-				title: "Emoji der Landesflagge",
-				description: "TESTING 1 2 3",
-				type: "object",
-				properties: {
-					selectedColumn: {
-						title: "Spalte auswählen",
-						oneOf: [
-							{
-								type: "number"
-							},
-							{
-								type: "null"
-							}
-						],
-						"Q:options": {
-							dynamicSchema: {
-								type: "ToolEndpoint",
-								config: {
-									endpoint: "dynamic-schema/getOptionsCountryFlagSelect",
-									fields: [
-										"data"
-									]
-								}
-							}
-						}
-					}
-				}
 			}
 		}
 	}
@@ -3047,6 +3142,52 @@ const route$e = {
 
 const route$d = {
     method: 'POST',
+    path: '/dynamic-schema/getColumnAmount',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const data = item.data.table;
+        return {
+            maxItems: data[0].length
+        };
+    },
+};
+
+const route$c = {
+    method: 'POST',
+    path: '/dynamic-schema/getEachColumn',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const data = item.data.table;
+        const ids = [];
+        const titles = [];
+        for (let i = 0; i < data[0].length; i++) {
+            const d = data[0][i];
+            ids.push(i);
+            titles.push(d);
+        }
+        return {
+            enum: ids,
+            'Q:options': {
+                enum_titles: titles,
+            },
+        };
+    },
+};
+
+const route$b = {
+    method: 'POST',
     path: '/dynamic-schema/getOptionsCountryFlagSelect',
     options: {
         validate: {
@@ -3086,7 +3227,7 @@ function getOptions(data) {
     return dropdownSettings;
 }
 
-const route$c = {
+const route$a = {
     method: 'POST',
     path: '/dynamic-schema/selectedColumnMinibar',
     options: {
@@ -3127,7 +3268,7 @@ function getMinibarDropdownSettings(data) {
     return dropdownSettings;
 }
 
-const route$b = {
+const route$9 = {
     method: 'POST',
     path: '/dynamic-schema/selectedColorColumn',
     options: {
@@ -3169,7 +3310,7 @@ function getDropdownSettings(data) {
 }
 
 // TODO Refactor common functionality with selectedColorColum.ts and selectedColumnMinibar.ts
-const route$a = {
+const route$8 = {
     method: 'POST',
     path: '/dynamic-schema/selectedFrozenRow',
     options: {
@@ -3207,7 +3348,7 @@ const getFrozenRowDropdownSettings = (data) => {
     return dropdownSettings;
 };
 
-const route$9 = {
+const route$7 = {
     method: 'POST',
     path: '/dynamic-schema/colorScale',
     options: {
@@ -3245,50 +3386,6 @@ const route$9 = {
             enum: enumValues,
             'Q:options': {
                 enum_titles: enumTitles,
-            },
-        };
-    },
-};
-
-const route$8 = {
-    method: 'POST',
-    path: '/dynamic-schema/sorting',
-    options: {
-        validate: {
-            payload: Joi.object(),
-        },
-    },
-    handler: function (request) {
-        const payload = request.payload;
-        const item = payload.item;
-        const data = item.data.table;
-        return data[0].length;
-    },
-};
-
-const route$7 = {
-    method: 'POST',
-    path: '/dynamic-schema/sortingItem',
-    options: {
-        validate: {
-            payload: Joi.object(),
-        },
-    },
-    handler: function (request) {
-        const payload = request.payload;
-        const item = payload.item;
-        const data = item.data.table;
-        const ids = [];
-        const titles = [];
-        for (let i = 0; i < data[0].length; i++) {
-            const d = data[0][i];
-            ids.push(i);
-            titles.push(d);
-        }
-        return {
-            enum: ids,
-            'Q:options': {
-                enum_titles: titles,
             },
         };
     },
@@ -3333,10 +3430,10 @@ var dynamicSchemas = [
     route$f,
     route$e,
     route$d,
-    route$b,
     route$c,
-    route$a,
+    route$b,
     route$9,
+    route$a,
     route$8,
     route$7,
     route$6,

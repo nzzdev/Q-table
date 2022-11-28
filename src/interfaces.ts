@@ -100,18 +100,36 @@ export interface QTableConfigOptions {
 
   // Added in 7.1.0. No migration so not in db of older saves.
   frozenRowKey?: number | null;
-  countryFlagColumn?:  {
-    selectedColumn: number | null
-  };
 
   // Added 7.1.0
   sorting?: QTableConfigSortingSettings[];
+
+  // Added 7.1.0
+  formatting?: QtableConfigFormattingSetting[];
 }
 
 export interface QTableConfigSortingSettings {
   column: number;
   sortingDirection: SortDirection;
 }
+
+export interface QtableConfigFormattingSetting {
+  column: number;
+  formattingType: FormattingType;
+}
+
+// Check schema.json.
+// Keep in sync.
+export type FormattingType =
+  'country_flags' |
+  '0' |
+  '0.00' |
+  '0.000' |
+  '0%' |
+  '0.0%' |
+  '0.00%' |
+  '0.000%' |
+  'arrow_sign_relative_int';
 
 export interface DisplayOptions {
   hideTitle?: boolean;

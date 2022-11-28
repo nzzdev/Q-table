@@ -84,6 +84,8 @@ const route: ServerRoute = {
     // Extract table configurations.
     const config = payload.item;
 
+
+
     const toolRuntimeConfig = payload.toolRuntimeConfig || {};
     const displayOptions = toolRuntimeConfig.displayOptions || ({} as DisplayOptions);
     const options = config.options;
@@ -91,6 +93,7 @@ const route: ServerRoute = {
     const width = getExactPixelWidth(toolRuntimeConfig);
     const dataWithoutHeaderRow = getDataWithoutHeaderRow(config.data.table);
     const dataLength = dataWithoutHeaderRow.length;
+
     let tableData: ProcessedTableData = {
       rows: [],
       header: [],
