@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import Hapi from '@hapi/hapi';
 import Joi from 'joi';
 import * as fixtures from '../resources/fixtures/data';
@@ -12,8 +9,6 @@ import type { SelectedColorColumnReturnPayload } from '../src/routes/dynamic-sch
 // @ts-ignore
 import routes from '../dist/routes.js';
 
-// https://github.com/prisma/prisma/issues/8558#issuecomment-1102176746
-global.setImmediate = global.setImmediate || ((fn: () => unknown, ...args: []) => global.setTimeout(fn, 0, ...args));
 let server: Hapi.Server;
 
 // Start the server before the tests.

@@ -45,138 +45,6 @@ function getExactPixelWidth(toolRuntimeConfig) {
     return undefined;
 }
 
-function appendFootnoteAnnotationsToTableData(tableData, footnotes, options) {
-    const unicodes = {
-        1: '\u00b9',
-        2: '\u00b2',
-        3: '\u00b3',
-        4: '\u2074',
-        5: '\u2075',
-        6: '\u2076',
-        7: '\u2077',
-        8: '\u2078',
-        9: '\u2079',
-    };
-    const spacings = [];
-    const flattenedFootnotes = getFlattenedFootnotes(footnotes);
-    flattenedFootnotes.forEach(footnote => {
-        const row = tableData[footnote.rowIndex];
-        const cells = row.cells;
-        const footnoteClass = getClass(options, footnote, flattenedFootnotes.length, cells[footnote.colIndex].type, cells.length - 1);
-        if (footnoteClass) {
-            const space = {
-                colIndex: footnote.colIndex,
-                class: footnoteClass,
-            };
-            if (!hasFootnoteClass(spacings, space)) {
-                spacings.push(space);
-            }
-        }
-        // create a new property to safe the index of the footnote
-        cells[footnote.colIndex].footnote = {
-            value: footnote.value,
-            unicode: unicodes[footnote.value],
-            class: footnoteClass,
-        };
-    });
-    // assign spacingClass to cell
-    tableData.forEach((row, index) => {
-        // assign class when not cardlayout but cardlayoutifsmall
-        if (!options.cardLayout || options.cardLayoutIfSmall) {
-            spacings.forEach(spacing => {
-                row.cells[spacing.colIndex].classes.push(spacing.class);
-            });
-        }
-        // assign class when cardlayout or cardlayoutifsmall is active
-        if (options.cardLayout || options.cardLayoutIfSmall) {
-            if (!options.hideTableHeader && index !== 0) {
-                row.cells.forEach(cell => {
-                    flattenedFootnotes.length >= 10
-                        ? cell.classes.push('q-table-footnote-column-card-layout--double')
-                        : cell.classes.push('q-table-footnote-column-card-layout--single');
-                });
-            }
-        }
-    });
-    return tableData;
-}
-function getClass(options, footnote, amountOfFootnotes, type, lastColIndex) {
-    // if the column of the footnote is a number, minibar or a minibar follows, add some spacing depending on how many footnotes are displayed. Or footnote is displayed in the last column or is colorColumn
-    if ((type === 'numeric' && (options.minibar.selectedColumn === footnote.colIndex || options.minibar.selectedColumn === footnote.colIndex + 1)) ||
-        footnote.colIndex === lastColIndex ||
-        (options.colorColumn && options.colorColumn.selectedColumn === footnote.colIndex) ||
-        (options.colorColumn && options.colorColumn.selectedColumn == footnote.colIndex + 1)) {
-        let spacingClass = 'q-table-footnote-column';
-        if (amountOfFootnotes >= 10) {
-            spacingClass += '--double';
-        }
-        else {
-            spacingClass += '--single';
-        }
-        return spacingClass;
-    }
-    return null;
-}
-function getFootnotes(metaData, hideTableHeader) {
-    const footnotes = metaData.cells
-        .filter(cell => {
-        if (!cell.data.footnote || (hideTableHeader && cell.rowIndex === 0)) {
-            return false;
-        }
-        return true;
-    }) // remove cells with no footnotes
-        .sort((a, b) => {
-        // sorting metaData to display them chronologically
-        if (a.rowIndex !== b.rowIndex) {
-            return a.rowIndex - b.rowIndex;
-        }
-        return a.colIndex - b.colIndex;
-    });
-    return getStructuredFootnotes(footnotes);
-}
-function getStructuredFootnotes(footnotes) {
-    const structuredFootnotes = [];
-    footnotes.forEach(footnote => {
-        const existingFootnote = structuredFootnotes.find(filterFootnote => footnote.data.footnote === filterFootnote.value);
-        if (existingFootnote) {
-            existingFootnote.coords.push({
-                colIndex: footnote.colIndex,
-                rowIndex: footnote.rowIndex,
-            });
-        }
-        else {
-            structuredFootnotes.push({
-                value: footnote.data.footnote,
-                index: structuredFootnotes.length + 1,
-                coords: [
-                    {
-                        colIndex: footnote.colIndex,
-                        rowIndex: footnote.rowIndex,
-                    },
-                ],
-            });
-        }
-    });
-    return structuredFootnotes;
-}
-function getFlattenedFootnotes(footnotes) {
-    const flattenedFootnotes = [];
-    footnotes.forEach(footnote => {
-        footnote.coords.forEach(coord => {
-            flattenedFootnotes.push({
-                value: footnote.index,
-                colIndex: coord.colIndex,
-                rowIndex: coord.rowIndex,
-            });
-        });
-    });
-    return flattenedFootnotes;
-}
-function hasFootnoteClass(classes, newClass) {
-    return classes.find(element => element.colIndex === newClass.colIndex && element.class === newClass.class);
-}
-
-// import type { CountryFlagEmojis as  } from '@nzz/et-utils-country-flag-emoji';
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 // Formatting for numbers of >= 10000.
@@ -196,16 +64,198 @@ const formatLocaleSmall = formatLocale$1({
     grouping: [10], // Set the grouping high so numbers under 10000 do not get grouped.
 });
 const formatWithGroupingSeparator = formatLocale.format(',');
-const formatNoGroupingSeparator = formatLocale.format('');
+// const formatNoGroupingSeparator = formatLocale.format('');
+/**
+ * This is the most important function.
+ * It takes in the raw data from the user input and transform it into
+ * a structure we can use for our components.
+ */
+function formatTableData(dataWithHeader, footnotes, options) {
+    const header = [];
+    const rows = [];
+    const columns = [];
+    // First get the type of each column.
+    const columnTypes = getColumnsType(dataWithHeader);
+    const formatting = options.formatting || [];
+    const sortingOptions = options.sorting || [];
+    const formattingMap = {};
+    formatting.forEach(f => {
+        formattingMap[f.column] = f;
+    });
+    // Format the header.
+    for (let colIndex = 0; colIndex < dataWithHeader[0].length; colIndex++) {
+        const sortableOption = sortingOptions.find(d => d.column === colIndex);
+        let sortable = false;
+        let sortDirection = null;
+        if (sortableOption) {
+            sortable = true;
+            sortDirection = sortableOption.sortingDirection;
+        }
+        header.push({
+            value: dataWithHeader[0][colIndex] || '',
+            type: columnTypes[colIndex],
+            sortable,
+            sortDirection,
+            classes: [],
+            footnote: footnotes.get(`-1-${colIndex}`) || '',
+        });
+        // Create column arrays.
+        // easier so we don't have to do if checks later.
+        columns[colIndex] = [];
+    }
+    // Go through each row and create the correct cell.
+    // note: start at index 1 to skip header.
+    for (let rowIndex = 1; rowIndex < dataWithHeader.length; rowIndex++) {
+        const row = dataWithHeader[rowIndex];
+        const normalizedRowIndex = rowIndex - 1; // without header row.
+        const cells = row.map((rawCellValue, colIndex) => {
+            var _a;
+            const formatting = (_a = formattingMap[colIndex]) === null || _a === void 0 ? void 0 : _a.formattingType;
+            const type = columnTypes[colIndex];
+            let cell;
+            if (formatting) {
+                cell = formatCell(rawCellValue, formatting);
+            }
+            else {
+                switch (type) {
+                    case 'numeric':
+                        cell = formaticNumericData(rawCellValue);
+                        break;
+                    case 'text':
+                    default:
+                        cell = formatTextualData(rawCellValue);
+                        break;
+                }
+            }
+            columns[colIndex].push(cell);
+            cell.footnote = footnotes.get(`${normalizedRowIndex}-${colIndex}`) || '';
+            return cell;
+        });
+        rows.push({
+            key: normalizedRowIndex,
+            cells,
+        });
+    }
+    return {
+        header,
+        rows,
+        columns,
+    };
+}
+function formatCell(rawValue, type) {
+    let label = '';
+    if (type === 'country_flags') {
+        return formatCountryFlagEmojiDatapoint(rawValue);
+    }
+    const parsedRawValue = parseFloat(rawValue || '');
+    let prefix = '';
+    switch (type) {
+        case '0':
+            label = parsedRawValue.toString();
+            break;
+        case '0.00':
+            label = formatLocale.format('.2f')(parsedRawValue);
+            break;
+        case '0.000':
+            label = formatLocale.format('.3f')(parsedRawValue);
+            break;
+        case '0%':
+            label = formatLocale.format('.0f')(parsedRawValue) + '%';
+            break;
+        case '0.0%':
+            label = formatLocale.format('.1f')(parsedRawValue) + '%';
+            break;
+        case '0.00%':
+            label = formatLocale.format('.2f')(parsedRawValue) + '%';
+            break;
+        case '0.000%':
+            label = formatLocale.format('.3f')(parsedRawValue) + '%';
+            break;
+        case 'arrow_sign_relative_int':
+            if (parsedRawValue > 0) {
+                prefix = '➚ +';
+            }
+            else if (parsedRawValue < 0) {
+                prefix = '➘ ';
+            }
+            else {
+                prefix = '➙ ';
+            }
+            label = `${prefix}${parsedRawValue}%`;
+            break;
+        default:
+            label = parsedRawValue.toString();
+            break;
+    }
+    return {
+        type: 'numeric',
+        value: rawValue || '',
+        label,
+        footnote: '',
+        classes: ['s-font-note--tabularnums'],
+    };
+}
+function formatCountryFlagEmojiDatapoint(rawValue) {
+    let label = '';
+    if (typeof rawValue === 'string') {
+        const valueRetyped = rawValue.toUpperCase();
+        if (CountryFlagEmojis[valueRetyped]) {
+            label = CountryFlagEmojis[valueRetyped];
+        }
+    }
+    return {
+        type: 'country-flag-emoji',
+        value: rawValue || '',
+        label: label,
+        footnote: '',
+        classes: [],
+    };
+}
+function formatTextualData(rawValue) {
+    return {
+        type: 'text',
+        value: rawValue || '',
+        label: rawValue || '',
+        classes: [],
+        footnote: '',
+    };
+}
+function formaticNumericData(rawValue) {
+    let label = '';
+    let value = 0;
+    if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
+        label = rawValue;
+    }
+    else if (rawValue !== null) {
+        const parsedValue = parseFloat(rawValue);
+        value = parsedValue;
+        label = formatWithGroupingSeparator(parsedValue);
+        // Todo discuss with team later.
+        // why are different formattings for when there are numbers over 10000
+        // in the dataset??
+        // if (columns[columnIndex].withFormating) {
+        //   value = formatWithGroupingSeparator(parsedValue);
+        // } else {
+        //   value = formatNoGroupingSeparator(parsedValue);
+        // }
+    }
+    return {
+        type: 'numeric',
+        value,
+        label,
+        classes: ['s-font-note--tabularnums'],
+        footnote: '',
+    };
+}
 function getNumericColumns(data) {
     const columns = getColumnsType(data);
     const numericColumns = [];
     // data[0].length is undefined when creating a new item.
     if (data[0] !== undefined) {
-        const row = data[0];
-        for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
-            if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-                const cell = row[columnIndex]; // TODO: check.
+        const header = data[0];
+        for (let columnIndex = 0; columnIndex < header.length; columnIndex++) {
+            if (columns[columnIndex] && columns[columnIndex] === 'numeric') {
+                const cell = header[columnIndex] || '';
                 numericColumns.push({ title: cell, index: columnIndex });
             }
         }
@@ -238,36 +288,45 @@ function isNumeric(cell) {
     }
     return true;
 }
-function getColumnsType(data) {
+function getColumnsType(dataWithHeader) {
     const columns = [];
-    const table = getDataWithoutHeaderRow(data);
-    const columnAmount = table[0].length;
+    const columnAmount = dataWithHeader[0].length;
     for (let c = 0; c < columnAmount; c++) {
         const column = [];
-        // Take all columns in one array
-        for (let r = 0; r < table.length; r++) {
-            column.push(table[r][c]);
+        // Take all columns in one array.
+        // note: start at index 1 to skip header.
+        for (let row = 1; row < dataWithHeader.length; row++) {
+            column.push(dataWithHeader[row][c]);
         }
-        let withFormating = false;
-        const columnNumeric = isColumnNumeric(column);
-        if (columnNumeric) {
-            const numericValuesInColumn = [];
-            for (let i = 0; i < column.length; i++) {
-                const parsedValue = parseFloat(column[i] || '');
-                if (!isNaN(parsedValue)) {
-                    numericValuesInColumn.push(parsedValue);
-                }
-            }
-            withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
+        const isNumeric = isColumnNumeric(column);
+        if (isNumeric) {
+            columns.push('numeric');
         }
-        columns.push({ isNumeric: columnNumeric, withFormating });
+        else {
+            columns.push('text');
+        }
+        // TODO: move somewhere else.
+        // let withFormating = false;
+        // const columnNumeric = isColumnNumeric(column);
+        // if (columnNumeric) {
+        //   const numericValuesInColumn: number[] = [];
+        //   for (let i = 0; i < column.length; i++) {
+        //     const parsedValue = parseFloat(column[i] || '');
+        //     if (!isNaN(parsedValue)) {
+        //       numericValuesInColumn.push(parsedValue);
+        //     }
+        //   }
+        //   withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
+        // }
+        // columns.push({ isNumeric: columnNumeric, withFormating });
     }
     return columns;
 }
-function isColumnNumeric(column) {
-    // Loop through all cells and if one cell is not numeric
-    for (let i = 0; i < column.length; i++) {
-        const value = column[i];
+function isColumnNumeric(rawColumnData) {
+    // Loop through all cells checking if it is a number and on the way
+    // preparing the formatting.
+    for (let i = 0; i < rawColumnData.length; i++) {
+        const value = rawColumnData[i];
         // TODO
         // The question should we accept a string as an exception for a numeric column or force the user to
         // keep it null or empty?
@@ -280,54 +339,6 @@ function isColumnNumeric(column) {
         }
     }
     return true;
-}
-function formatTableData(data, footnotes, options) {
-    const columns = getColumnsType(data);
-    let tableData = [];
-    for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
-        const row = data[rowIndex];
-        const cells = row.map((cell, columnIndex) => {
-            var _a;
-            let type = 'text';
-            let value = cell;
-            const classes = [];
-            // Transform value into country emoji flag if applicable.
-            // ignore row 0 because it is the header.
-            if (rowIndex > 0 && columnIndex === ((_a = options.countryFlagColumn) === null || _a === void 0 ? void 0 : _a.selectedColumn) && typeof value === 'string') {
-                const valueRetyped = value.toUpperCase();
-                if (CountryFlagEmojis[valueRetyped]) {
-                    value = CountryFlagEmojis[valueRetyped];
-                }
-            }
-            else if (columns[columnIndex] && columns[columnIndex].isNumeric) {
-                type = 'numeric';
-                classes.push('s-font-note--tabularnums');
-                // Do not format the header row, empty cells, a hyphen(-) or a en dash (–).
-                if (rowIndex > 0 && cell !== null && cell !== '' && cell != '-' && cell != enDash) {
-                    const parsedValue = parseFloat(cell);
-                    if (columns[columnIndex].withFormating) {
-                        value = formatWithGroupingSeparator(parsedValue);
-                    }
-                    else {
-                        value = formatNoGroupingSeparator(parsedValue);
-                    }
-                }
-            }
-            return {
-                type: type,
-                value: value,
-                classes: classes,
-            };
-        });
-        tableData.push({
-            key: rowIndex - 1,
-            cells,
-        });
-    }
-    if (footnotes.length > 0) {
-        tableData = appendFootnoteAnnotationsToTableData(tableData, footnotes, options);
-    }
-    return tableData;
 }
 function getNumericalValuesByColumn(data, column) {
     return data.map(row => {
@@ -979,9 +990,12 @@ function getCategoricalLegend(data, colorColumnSettings) {
  * Internal.
  */
 function getCategoryColor(index, customColorMap) {
-    const customColor = customColorMap.get(index);
     const colorScheme = digitWords[index];
-    const colorClass = `s-viz-color-${colorScheme}-5`;
+    const customColor = customColorMap.get(index);
+    let colorClass = '';
+    if (colorScheme) {
+        colorClass = `s-viz-color-${colorScheme}-5`;
+    }
     return {
         colorClass,
         customColor: customColor !== undefined && customColor.color !== undefined ? customColor.color : '',
@@ -1219,19 +1233,15 @@ function createNumericalColorColumn(selectedColumn, settings, data, width) {
     const roundingBucketBorders = settings.numericalOptions.bucketType !== 'custom';
     const formattingOptions = { maxDigitsAfterComma, roundingBucketBorders };
     const legend = getNumericalLegend(selectedColumn, data, settings, formattingOptions, width);
-    const formattedValues = [];
     const colors = [];
     if (typeof settings.selectedColumn == 'number') {
         const valuesByColumn = getNumericalValuesByColumn(data, settings.selectedColumn);
         valuesByColumn.map(value => {
             const color = getColorForNumericalColoredColoumn(value, legend);
             colors.push(color);
-            const formattedValue = getFormattedValue(value, formattingOptions.maxDigitsAfterComma);
-            formattedValues.push(formattedValue);
         });
     }
     return Object.assign({ legend,
-        formattedValues,
         colors }, settings);
 }
 function createCategoricalColorColumn(selectedColumn, settings, data) {
@@ -1242,7 +1252,8 @@ function createCategoricalColorColumn(selectedColumn, settings, data) {
         const color = getColorForCategoricalColoredColumn(category, legend);
         colors.push(color);
     });
-    return Object.assign({ legend, formattedValues: [], colors }, settings);
+    return Object.assign({ legend,
+        colors }, settings);
 }
 /**
  * Internal.
@@ -1308,6 +1319,69 @@ function getColorForCategoricalColoredColumn(value, legend) {
     }
 }
 
+/**
+ * Processes the raw footnote metadata into a structured format.
+ * We need this format because not only do we mark footnotes with labels
+ * in the table, they will also show up in the footer.
+ *
+ * Filter: It removes all empty footnotes and also removes
+ *         header footnotes if the header is disabled.
+ *
+ * Sort: Afterwards sorts all footnotes first by row then
+ *       by column so they are chronological.
+ *
+ * Foreach: Mapping the raw meta data to a new format.
+ *          Also merge duplicate footnotes into one object.
+ */
+function getFootnotes(metaData, hideTableHeader) {
+    const footnotes = [];
+    // Map for quick access for dataformatting cells.
+    // The key is rowIndex-colindex.
+    // Value is the index of the footnote.
+    const footnoteCellMap = new Map();
+    metaData
+        .filter(cell => {
+        // Remove empty footnotes.
+        if (!cell.data.footnote || cell.data.footnote === '') {
+            return false;
+        }
+        // Remove header footnotes if the header is disabled.
+        if (hideTableHeader && cell.rowIndex === 0) {
+            return false;
+        }
+        return true;
+    })
+        .sort((a, b) => {
+        if (a.rowIndex !== b.rowIndex) {
+            return a.rowIndex - b.rowIndex;
+        }
+        return a.colIndex - b.colIndex;
+    }).forEach(cellMetaData => {
+        const currentFootnoteText = cellMetaData.data.footnote;
+        const existingFootnote = footnotes.find(filterFootnote => currentFootnoteText === filterFootnote.value);
+        // We move the index down by -1 so the header row has an index of -1;
+        // It is because we split the data between the header and the actual data
+        // and we want the actual data to start at 0.
+        const rowIndex = cellMetaData.rowIndex - 1;
+        const colIndex = cellMetaData.colIndex;
+        if (existingFootnote) { // Same footnote given. Merge into one entry.
+            footnoteCellMap.set(`${rowIndex}-${colIndex}`, `${existingFootnote.index}`);
+        }
+        else {
+            const index = footnotes.length + 1;
+            footnotes.push({
+                value: currentFootnoteText,
+                index,
+            });
+            footnoteCellMap.set(`${rowIndex}-${colIndex}`, `${index}`);
+        }
+    });
+    return {
+        footnotes,
+        footnoteCellMap,
+    };
+}
+
 var MINIBAR_TYPE;
 (function (MINIBAR_TYPE) {
     MINIBAR_TYPE["POSITIVE"] = "positive";
@@ -1315,20 +1389,75 @@ var MINIBAR_TYPE;
     MINIBAR_TYPE["MIXED"] = "mixed";
     MINIBAR_TYPE["EMPTY"] = "empty";
 })(MINIBAR_TYPE || (MINIBAR_TYPE = {}));
-function getMinibar(minibarsAvailable, options, itemDataCopy) {
-    var _a;
-    if (minibarsAvailable === true && typeof ((_a = options.minibar) === null || _a === void 0 ? void 0 : _a.selectedColumn) === 'number') {
-        const minibarSettings = options.minibar;
-        const minibar = createMinibarObject(itemDataCopy, minibarSettings);
+function getMinibar(minibarsAvailable, minibarSettings, columns) {
+    if (!minibarSettings)
+        return null;
+    // A minibar with a columnIndex of null will not be shown.
+    const minibar = {
+        columnIndex: null,
+        values: [],
+        type: MINIBAR_TYPE.EMPTY,
+        barColor: minibarSettings.barColor,
+        settings: minibarSettings,
+    };
+    // If we actually have valid settings for the minibar we will populate
+    // Minibar object with correct values.
+    if (minibarsAvailable === true && typeof minibarSettings.selectedColumn === 'number') {
+        const column = columns[minibarSettings.selectedColumn];
+        const valuesAndType = getMinibarValuesAndType(column);
+        minibar.columnIndex = minibarSettings.selectedColumn;
+        minibar.type = valuesAndType.minibarType;
+        minibar.values = valuesAndType.values;
         checkPositiveBarColor(minibar);
         checkNegativeBarColor(minibar);
         if (minibarSettings.invertColors) {
             invertBarColors(minibar);
         }
-        return minibar;
     }
-    return null;
+    return minibar;
 }
+function getMinibarValuesAndType(column) {
+    let minValue = 0;
+    let maxValue = 0;
+    let minibarType = MINIBAR_TYPE.MIXED;
+    column.forEach(cell => {
+        const value = cell.value;
+        if (minValue === null || value < minValue) {
+            minValue = value;
+        }
+        if (maxValue === null || value > maxValue) {
+            maxValue = value;
+        }
+    });
+    if (minValue <= 0 && maxValue <= 0) {
+        minibarType = MINIBAR_TYPE.NEGATIVE;
+    }
+    else if (minValue >= 0 && maxValue >= 0) {
+        minibarType = MINIBAR_TYPE.POSITIVE;
+    }
+    const values = column.map(cell => {
+        return getMinibarValue(minibarType, cell.value, minValue, maxValue);
+    });
+    return {
+        values,
+        minibarType,
+    };
+}
+function getMinibarValue(type, value, min, max) {
+    if (value === null)
+        return 0;
+    switch (type) {
+        case MINIBAR_TYPE.POSITIVE:
+            return Math.abs((value * 100) / max);
+        case MINIBAR_TYPE.NEGATIVE:
+            return Math.abs((value * 100) / min);
+        default:
+            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max)));
+    }
+}
+/**
+ * Used in option availability.
+ */
 function getMinibarNumbersWithType(data, selectedColumnIndex) {
     const minibarsWithType = {
         items: [],
@@ -1362,38 +1491,6 @@ function getMinibarNumbersWithType(data, selectedColumnIndex) {
     }
     minibarsWithType.type = getMinibarType(minibarsWithType.numbers);
     return minibarsWithType;
-}
-/**
- * Internal.
- */
-function createMinibarObject(data, minibarOptions) {
-    const dataColumn = getMinibarNumbersWithType(data, minibarOptions.selectedColumn);
-    const minValue = Math.min(...dataColumn.numbers);
-    const maxValue = Math.max(...dataColumn.numbers);
-    const values = dataColumn.items.map(item => {
-        return {
-            type: item.type,
-            value: getMinibarValue(dataColumn.type, item.value, minValue, maxValue),
-        };
-    });
-    return {
-        values: values,
-        type: dataColumn.type,
-        barColor: minibarOptions.barColor,
-        settings: minibarOptions,
-    };
-}
-function getMinibarValue(type, value, min, max) {
-    if (value === null)
-        return 0;
-    switch (type) {
-        case MINIBAR_TYPE.POSITIVE:
-            return Math.abs((value * 100) / max);
-        case MINIBAR_TYPE.NEGATIVE:
-            return Math.abs((value * 100) / min);
-        default:
-            return Math.abs((value * 100) / Math.max(Math.abs(min), Math.abs(max))) / 2;
-    }
 }
 function checkPositiveBarColor(minibar) {
     const className = minibar.barColor.positive.className;
@@ -1441,24 +1538,16 @@ function getMinibarType(numbers) {
     return MINIBAR_TYPE.MIXED;
 }
 function getPositiveColor(type) {
-    let color;
     if (type === 'mixed') {
-        color = 's-viz-color-diverging-2-2';
+        return 's-viz-color-diverging-2-2';
     }
-    else {
-        color = 's-viz-color-one-5';
-    }
-    return color;
+    return 's-viz-color-one-5';
 }
 function getNegativeColor(type) {
-    let color;
     if (type === 'mixed') {
-        color = 's-viz-color-diverging-2-1';
+        return 's-viz-color-diverging-2-1';
     }
-    else {
-        color = 's-viz-color-one-5';
-    }
-    return color;
+    return 's-viz-color-one-5';
 }
 
 var $schema$1 = "http://json-schema.org/draft-07/schema#";
@@ -1668,6 +1757,121 @@ var properties$1 = {
 							}
 						}
 					]
+				}
+			},
+			formatting: {
+				title: "Formattierung",
+				type: "array",
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/getColumnAmount",
+							fields: [
+								"data"
+							]
+						}
+					},
+					layout: "compact"
+				},
+				items: {
+					type: "object",
+					properties: {
+						column: {
+							title: "Zeile",
+							oneOf: [
+								{
+									type: "number"
+								}
+							],
+							"Q:options": {
+								dynamicSchema: {
+									selectType: "select",
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "dynamic-schema/getEachColumn",
+										fields: [
+											"data",
+											"options"
+										]
+									}
+								}
+							}
+						},
+						formattingType: {
+							title: "Formattierung",
+							type: "string",
+							"default": "light",
+							"enum": [
+								"country_flags",
+								"0",
+								"0.00",
+								"0.000",
+								"0%",
+								"0.0%",
+								"0.00%",
+								"0.000%",
+								"arrow_sign_relative_int"
+							],
+							"Q:options": {
+								selectType: "select",
+								enum_titles: [
+									"country_flags",
+									"0",
+									"0.00",
+									"0.000",
+									"0%",
+									"0.0%",
+									"0.00%",
+									"0.000%",
+									"(➚➙➘) (+/-)0%"
+								]
+							}
+						}
+					}
+				}
+			},
+			sorting: {
+				title: "Sortierung",
+				type: "array",
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/getColumnAmount",
+							fields: [
+								"data"
+							]
+						}
+					},
+					layout: "compact",
+					sortable: false
+				},
+				items: {
+					type: "object",
+					properties: {
+						column: {
+							title: "Zeile",
+							oneOf: [
+								{
+									type: "number"
+								}
+							],
+							"Q:options": {
+								dynamicSchema: {
+									selectType: "select",
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "dynamic-schema/getEachColumn",
+										fields: [
+											"data",
+											"options"
+										]
+									}
+								}
+							}
+						}
+					}
 				}
 			},
 			minibar: {
@@ -2397,35 +2601,6 @@ var properties$1 = {
 						}
 					}
 				}
-			},
-			countryFlagColumn: {
-				title: "Emoji der Landesflagge",
-				description: "TESTING 1 2 3",
-				type: "object",
-				properties: {
-					selectedColumn: {
-						title: "Spalte auswählen",
-						oneOf: [
-							{
-								type: "number"
-							},
-							{
-								type: "null"
-							}
-						],
-						"Q:options": {
-							dynamicSchema: {
-								type: "ToolEndpoint",
-								config: {
-									endpoint: "dynamic-schema/getOptionsCountryFlagSelect",
-									fields: [
-										"data"
-									]
-								}
-							}
-						}
-					}
-				}
 			}
 		}
 	}
@@ -2446,7 +2621,7 @@ const ajv = new Ajv({
     strict: false,
 });
 const validate = ajv.compile(schema$1);
-const route$h = {
+const route$k = {
     method: 'POST',
     path: '/rendering-info/web',
     options: {
@@ -2502,35 +2677,44 @@ const route$h = {
             const options = config.options;
             let colorColumn = null;
             const width = getExactPixelWidth(toolRuntimeConfig);
-            const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-            const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+            const dataWithoutHeaderRow = getDataWithoutHeaderRow(config.data.table);
             const dataLength = dataWithoutHeaderRow.length;
-            const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
-            const minibarsAvailable = yield areMinibarsAvailable(request, config);
-            const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
-            const colorColumnAvailable = yield isColorColumnAvailable(request, config);
+            let tableData = {
+                rows: [],
+                header: [],
+                columns: [],
+            };
+            // Process options.
+            const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
             const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
             const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
-            let tableData = [];
+            const minibarsAvailable = yield areMinibarsAvailable(request, config);
+            const colorColumnAvailable = yield isColorColumnAvailable(request, config);
+            // Most important part.
+            // Processing raw data into a format we can use in the front-end.
             try {
-                tableData = formatTableData(config.data.table, footnotes, options);
+                tableData = formatTableData(config.data.table, footnoteObj.footnoteCellMap, options);
             }
             catch (e) {
-                console.error('Execption during formatting table data - ', e);
+                // TODO Add logging to Kibana
+                console.error('Exception during formatting table data - ', e);
             }
+            // Need processed in order to setup the minibar.
+            const minibar = getMinibar(minibarsAvailable, options.minibar, tableData.columns);
             try {
                 colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
             }
             catch (e) {
-                console.error('Execption during creating colorColumn - ', e);
+                // TODO Add logging to Kibana.
+                console.error('Exception during creating colorColumn - ', e);
             }
             const props = {
                 item: config,
                 config,
-                tableHead: tableData[0].cells,
-                rows: tableData.slice(1),
+                tableHead: tableData.header,
+                rows: tableData.rows,
                 minibar,
-                footnotes,
+                footnotes: footnoteObj.footnotes,
                 colorColumn,
                 numberOfRows: dataLength,
                 displayOptions: displayOptions,
@@ -2643,7 +2827,7 @@ function getInitWithCardLayoutFlag(width, options) {
 }
 
 const __dirname$1 = dirname(fileURLToPath(import.meta.url));
-const route$g = {
+const route$j = {
     method: 'GET',
     path: '/stylesheet/{filename}.{hash}.{extension}',
     options: {
@@ -2702,34 +2886,28 @@ var optionAvailability = {
                 };
             }
             if (optionName === 'barColorPositive') {
-                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
-                if (isAvailable) {
+                if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
-                    isAvailable = type === 'mixed' || type === 'positive';
+                    return {
+                        available: type === 'mixed' || type === 'positive',
+                    };
                 }
-                return {
-                    available: isAvailable,
-                };
             }
             if (optionName === 'barColorNegative') {
-                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
-                if (isAvailable) {
+                if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
-                    isAvailable = type === 'mixed' || type === 'negative';
+                    return {
+                        available: type === 'mixed' || type === 'negative',
+                    };
                 }
-                return {
-                    available: isAvailable,
-                };
             }
             if (optionName === 'invertColors') {
-                let isAvailable = item.options.minibar.selectedColumn !== null && item.options.minibar.selectedColumn !== undefined;
-                if (isAvailable) {
+                if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
-                    isAvailable = type === 'mixed';
+                    return {
+                        available: type === 'mixed',
+                    };
                 }
-                return {
-                    available: isAvailable,
-                };
             }
         }
         if (optionName === 'colorColumn' || optionName === 'selectedColorColumn') {
@@ -2792,7 +2970,7 @@ var optionAvailability = {
     },
 };
 
-const route$f = {
+const route$i = {
     method: 'POST',
     path: '/dynamic-schema/colorScheme',
     options: {
@@ -2821,7 +2999,7 @@ const route$f = {
     },
 };
 
-const route$e = {
+const route$h = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwrites',
     options: {
@@ -2862,7 +3040,7 @@ function getMaxItemsCategorical(data, colorColumnSettings) {
     }
 }
 
-const route$d = {
+const route$g = {
     method: 'POST',
     path: '/dynamic-schema/colorOverwritesItem',
     options: {
@@ -2920,7 +3098,7 @@ function getDropdownSettingsCategorical(data, colorColumnSettings) {
     };
 }
 
-const route$c = {
+const route$f = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrder',
     options: {
@@ -2939,7 +3117,7 @@ const route$c = {
     },
 };
 
-const route$b = {
+const route$e = {
     method: 'POST',
     path: '/dynamic-schema/customCategoriesOrderItem',
     options: {
@@ -2962,7 +3140,53 @@ const route$b = {
     },
 };
 
-const route$a = {
+const route$d = {
+    method: 'POST',
+    path: '/dynamic-schema/getColumnAmount',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const data = item.data.table;
+        return {
+            maxItems: data[0].length
+        };
+    },
+};
+
+const route$c = {
+    method: 'POST',
+    path: '/dynamic-schema/getEachColumn',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        const payload = request.payload;
+        const item = payload.item;
+        const data = item.data.table;
+        const ids = [];
+        const titles = [];
+        for (let i = 0; i < data[0].length; i++) {
+            const d = data[0][i];
+            ids.push(i);
+            titles.push(d);
+        }
+        return {
+            enum: ids,
+            'Q:options': {
+                enum_titles: titles,
+            },
+        };
+    },
+};
+
+const route$b = {
     method: 'POST',
     path: '/dynamic-schema/getOptionsCountryFlagSelect',
     options: {
@@ -2994,7 +3218,7 @@ function getOptions(data) {
     if (data.length > 0) {
         const columnTypes = getColumnsType(data);
         data[0].forEach((head, index) => {
-            if (!columnTypes[index].isNumeric) {
+            if (columnTypes[index] === 'text') {
                 dropdownSettings.ids.push(index);
                 dropdownSettings.titles.push(head);
             }
@@ -3003,7 +3227,7 @@ function getOptions(data) {
     return dropdownSettings;
 }
 
-const route$9 = {
+const route$a = {
     method: 'POST',
     path: '/dynamic-schema/selectedColumnMinibar',
     options: {
@@ -3044,7 +3268,7 @@ function getMinibarDropdownSettings(data) {
     return dropdownSettings;
 }
 
-const route$8 = {
+const route$9 = {
     method: 'POST',
     path: '/dynamic-schema/selectedColorColumn',
     options: {
@@ -3086,7 +3310,7 @@ function getDropdownSettings(data) {
 }
 
 // TODO Refactor common functionality with selectedColorColum.ts and selectedColumnMinibar.ts
-const route$7 = {
+const route$8 = {
     method: 'POST',
     path: '/dynamic-schema/selectedFrozenRow',
     options: {
@@ -3124,7 +3348,7 @@ const getFrozenRowDropdownSettings = (data) => {
     return dropdownSettings;
 };
 
-const route$6 = {
+const route$7 = {
     method: 'POST',
     path: '/dynamic-schema/colorScale',
     options: {
@@ -3167,15 +3391,50 @@ const route$6 = {
     },
 };
 
+const route$6 = {
+    method: 'POST',
+    path: '/dynamic-schema/sortingDirectionItem',
+    options: {
+        validate: {
+            payload: Joi.object(),
+        },
+    },
+    handler: function (request) {
+        // const payload = request.payload as Payload;
+        // const item = payload.item;
+        // const data = item.data.table;
+        const ids = [null];
+        const titles = [''];
+        // We only support one column to be auto sorted.
+        // But don't know how to make sure the select of the current auto sorted
+        // column does not get it's options deleted.
+        // This code affects all selects.
+        // const m = item.options.sorting?.find(s => s.sortingDirection !== null);
+        // if (!m) {
+        ids.push('asc', 'desc');
+        titles.push('Ascending', 'Decending');
+        // }
+        return {
+            enum: ids,
+            'Q:options': {
+                enum_titles: titles,
+            },
+        };
+    },
+};
+
 var dynamicSchemas = [
+    route$i,
+    route$h,
+    route$g,
     route$f,
     route$e,
     route$d,
     route$c,
     route$b,
+    route$9,
     route$a,
     route$8,
-    route$9,
     route$7,
     route$6,
 ];
@@ -3445,7 +3704,21 @@ var sources$J = [
 ];
 var options$J = {
 	cardLayout: false,
-	cardLayoutIfSmall: true
+	cardLayoutIfSmall: true,
+	minibar: {
+		invertColors: false,
+		barColor: {
+			positive: {
+				className: "",
+				colorCode: ""
+			},
+			negative: {
+				className: "",
+				colorCode: ""
+			}
+		},
+		selectedColumn: null
+	}
 };
 var fourColumn = {
 	title: title$K,
@@ -13953,7 +14226,21 @@ var sources$e = [
 ];
 var options$e = {
 	cardLayout: false,
-	cardLayoutIfSmall: true
+	cardLayoutIfSmall: true,
+	minibar: {
+		invertColors: false,
+		barColor: {
+			positive: {
+				className: "",
+				colorCode: ""
+			},
+			negative: {
+				className: "",
+				colorCode: ""
+			}
+		},
+		selectedColumn: null
+	}
 };
 var formattedNumbers = {
 	title: title$f,
@@ -15751,8 +16038,8 @@ const displayOptionsRoute = {
 var schema = [schemaRoute, displayOptionsRoute];
 
 const allRoutes = [
-    route$h,
-    route$g,
+    route$k,
+    route$j,
     optionAvailability,
     ...dynamicSchemas,
     route$5,

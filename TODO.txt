@@ -1,0 +1,32 @@
+- discuss why was there tracking of method box open event? and on the link
+- Discuss: formatNoGroupingSeparator (data.ts)
+  - why are different formattings for when there are numbers over 10000
+
+
+- onResize screen to adjust classes mobile vs desktop ?
+
+ "sortingDirection": {
+    "title": "Autom. sortierung",
+    "oneOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "default": null,
+    "Q:options": {
+      "dynamicSchema": {
+        "selectType": "select",
+        "type": "ToolEndpoint",
+        "config": {
+          "endpoint": "dynamic-schema/sortingDirectionItem",
+          "fields": [
+            "data",
+            "options"
+          ]
+        }
+      }
+    }
+  }

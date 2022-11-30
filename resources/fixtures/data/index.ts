@@ -22,6 +22,7 @@ import displayMergedFootnotesMultiple from '../../../resources/fixtures/data/dis
 import footnotesMixedMinibars from '../../../resources/fixtures/data/footnotes-mixed-minibars.json';
 import footnotesNegativeMinibars from '../../../resources/fixtures/data/footnotes-negative-minibars.json';
 import footnotesPositiveMinibars from '../../../resources/fixtures/data/footnotes-positive-minibars.json';
+import formatting from '../../../resources/fixtures/data/formatting.json';
 import formattedNumbers from '../../../resources/fixtures/data/formatted-numbers.json';
 import formattedNumbersMixed from '../../../resources/fixtures/data/formatted-numbers-mixed.json';
 import formattedNumbersNegative from '../../../resources/fixtures/data/formatted-numbers-negative.json';
@@ -33,6 +34,7 @@ import hyphenSignAsNumber from '../../../resources/fixtures/data/hyphen-sign-as-
 import legendHidden from '../../../resources/fixtures/data/legend-hidden.json';
 import legendShown from '../../../resources/fixtures/data/legend-shown.json';
 import lotsOfData from '../../../resources/fixtures/data/lots-of-data.json';
+import methodiek from '../../../resources/fixtures/data/methodiek.json';
 import minibarsCustomClassName from '../../../resources/fixtures/data/minibars-custom-className.json';
 import minibarsCustomColorCode from '../../../resources/fixtures/data/minibars-custom-colorCode.json';
 import minibarsHeaderWithNumbers from '../../../resources/fixtures/data/minibars-header-with-numbers.json';
@@ -44,6 +46,7 @@ import multilineText from '../../../resources/fixtures/data/multiline-text.json'
 import oneColumn from '../../../resources/fixtures/data/one-column.json';
 import pagination from '../../../resources/fixtures/data/pagination.json';
 import showMoreButton from '../../../resources/fixtures/data/show-more-button.json';
+import sorting from '../../../resources/fixtures/data/sorting.json';
 import specialCharacters from '../../../resources/fixtures/data/special-characters.json';
 import tableSearchHidden from '../../../resources/fixtures/data/table-search-hidden.json';
 import tableSearchShow from '../../../resources/fixtures/data/table-search-show.json';
@@ -75,6 +78,7 @@ export {
   footnotesMixedMinibars,
   footnotesNegativeMinibars,
   footnotesPositiveMinibars,
+  formatting,
   formattedNumbers,
   formattedNumbersMixed,
   formattedNumbersNegative,
@@ -86,6 +90,7 @@ export {
   legendHidden,
   legendShown,
   lotsOfData,
+  methodiek,
   minibarsCustomClassName,
   minibarsCustomColorCode,
   minibarsHeaderWithNumbers,
@@ -97,6 +102,7 @@ export {
   oneColumn,
   pagination,
   showMoreButton,
+  sorting,
   specialCharacters,
   tableSearchHidden,
   tableSearchShow,

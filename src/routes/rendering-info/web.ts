@@ -9,17 +9,19 @@ import { readFileSync } from 'fs';
 import schemaString from '@rs/schema.json';
 import type { Request, ServerRoute } from '@hapi/hapi';
 import type { ColorColumn } from '@helpers/colorColumn.js';
+import type { ProcessedTableData} from '@helpers/data';
+
 import type {
   AvailabilityResponseObject,
   DisplayOptions,
   QTableConfig,
   QTableConfigOptions,
-  Row,
   QTableSvelteProperties,
   RenderingInfo,
   StyleHashMap,
   ToolRuntimeConfig,
   WebPayload,
+  Cell,
 } from '@src/interfaces';
 
 const ajv = new Ajv({
@@ -82,46 +84,58 @@ const route: ServerRoute = {
     // Extract table configurations.
     const config = payload.item;
 
+
+
     const toolRuntimeConfig = payload.toolRuntimeConfig || {};
     const displayOptions = toolRuntimeConfig.displayOptions || ({} as DisplayOptions);
     const options = config.options;
-
     let colorColumn: ColorColumn | null = null;
     const width = getExactPixelWidth(toolRuntimeConfig);
-
-    const itemDataCopy = config.data.table.slice(0); // get unformated copy of data for minibars
-    const dataWithoutHeaderRow = getDataWithoutHeaderRow(itemDataCopy);
+    const dataWithoutHeaderRow = getDataWithoutHeaderRow(config.data.table);
     const dataLength = dataWithoutHeaderRow.length;
-    const footnotes = getFootnotes(config.data.metaData, options.hideTableHeader);
 
-    const minibarsAvailable = await areMinibarsAvailable(request, config);
-    const minibar = getMinibar(minibarsAvailable, options, itemDataCopy);
+    let tableData: ProcessedTableData = {
+      rows: [],
+      header: [],
+      columns: [],
+    };
 
-    const colorColumnAvailable = await isColorColumnAvailable(request, config);
+    // Process options.
+    const footnoteObj = getFootnotes(config.data.metaData.cells, options.hideTableHeader);
     const initWithCardLayout = getInitWithCardLayoutFlag(width, options);
     const pageSize = calculatePageSize(dataLength, initWithCardLayout, options, toolRuntimeConfig);
 
-    let tableData: Row[] = [];
+    const minibarsAvailable = await areMinibarsAvailable(request, config);
+    const colorColumnAvailable = await isColorColumnAvailable(request, config);
 
+    // Most important part.
+    // Processing raw data into a format we can use in the front-end.
     try {
-      tableData = formatTableData(config.data.table, footnotes, options);
+      tableData = formatTableData(config.data.table, footnoteObj.footnoteCellMap, options);
     } catch (e) {
-      console.error('Execption during formatting table data - ', e);
+      // TODO Add logging to Kibana
+      console.error('Exception during formatting table data - ', e);
+
     }
+
+    // Need processed in order to setup the minibar.
+    const minibar = getMinibar(minibarsAvailable, options.minibar, tableData.columns as Cell<number>[][]);
+
 
     try {
       colorColumn = getColorColumn(colorColumnAvailable, options.colorColumn, dataWithoutHeaderRow, width || 0);
     } catch (e) {
-      console.error('Execption during creating colorColumn - ', e);
+      // TODO Add logging to Kibana.
+      console.error('Exception during creating colorColumn - ', e);
     }
 
     const props: QTableSvelteProperties = {
       item: config, // To make renderingInfoScripts working. refactor later.
       config,
-      tableHead: tableData[0].cells,
-      rows: tableData.slice(1),
+      tableHead: tableData.header,
+      rows: tableData.rows,
       minibar,
-      footnotes,
+      footnotes: footnoteObj.footnotes,
       colorColumn,
       numberOfRows: dataLength, // do not count the header
       displayOptions: displayOptions,

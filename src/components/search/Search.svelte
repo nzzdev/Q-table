@@ -59,3 +59,11 @@ function onSearch(): void {
     on:keyup={onSearch}
     bind:value={text} />
 </div>
+
+<!-- <style lang="scss">
+:global() {
+  .q-table__search {
+    margin-bottom: 16px;
+  }
+}
+</style> -->

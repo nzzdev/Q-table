@@ -30,6 +30,14 @@ const frontendConfig = {
       preprocess: sveltePreprocess(),
       emitCss: false,
       compilerOptions: {},
+      onwarn: (warning, handler) => {
+        // Silence accessibility warnings.
+        if (warning.code.startsWith('a11y-')) {
+          return;
+        }
+
+        handler(warning);
+      },
     }),
     nodeResolve({ browser: true }),
     terser(),
