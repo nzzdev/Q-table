@@ -11,7 +11,7 @@ export let minibar: Minibar;
 export let cell: Cell;
 export let rowIndex: number;
 
-const classes = ['qtable-minibar-cell'];
+const classes = ['qtable-minibar-cell'].concat(cell.classes);
 let barType = MINIBAR_TYPE.EMPTY;
 
 // Check what bartype we have.

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { TableColumnType } from '@src/interfaces';
+import type { TableColumnType } from '@src/interfaces';
 
-  export let type: TableColumnType = 'text';
-  export let classes: string[] = [];
-  export let styles: string[] = [];
+export let type: TableColumnType = 'text';
+export let classes: string[] = [];
+export let styles: string[] = [];
 
-  const tdClasses =  `qtable-cell qtable-cell-${type} ${classes.join(' ')} `;
+const tdClasses =  `qtable-cell qtable-cell-${type} ${classes.join(' ')} `;
 </script>
 
 <td class={tdClasses} style={styles.join(';')}>

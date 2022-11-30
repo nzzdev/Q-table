@@ -187,7 +187,7 @@ function formatCell(rawValue: QTableCellDataRaw, type: FormattingType): Cell {
     value: rawValue || '',
     label,
     footnote: '',
-    classes: [],
+    classes: ['s-font-note--tabularnums'],
   }
 }
 

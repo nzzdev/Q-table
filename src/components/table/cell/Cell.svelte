@@ -6,7 +6,7 @@ import type { Cell } from '@src/interfaces';
 export let cell: Cell;
 </script>
 
-<Td type={cell.type}>
+<Td type={cell.type} classes={cell.classes}>
   <CellLabel label={cell.label} footnote={cell.footnote} />
 </Td>
 

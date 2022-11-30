@@ -192,7 +192,7 @@ function formatCell(rawValue, type) {
         value: rawValue || '',
         label,
         footnote: '',
-        classes: [],
+        classes: ['s-font-note--tabularnums'],
     };
 }
 function formatCountryFlagEmojiDatapoint(rawValue) {
