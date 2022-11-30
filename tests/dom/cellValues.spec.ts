@@ -23,6 +23,23 @@ describe('cell values', () => {
     });
   });
 
+  it('uses tabular nums', async () => {
+    const server = getServer();
+
+    const response = await server.inject({
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
+      payload: {
+        item: fixtures.formattedNumbers,
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response, '.qtable-cell-numeric.s-font-note--tabularnums').then(count => {
+        expect(count).toEqual(10);
+    });
+  });
+
   it('should display > 10000 show formatted', async () => {
     const server = getServer();
 

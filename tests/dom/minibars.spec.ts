@@ -19,6 +19,23 @@ describe('minibars', () => {
     elementCount(response, 'td').then(value => expect(value).toEqual(28));
   });
 
+  it('uses tabular nums', async () => {
+    const server = getServer();
+
+    const response = await server.inject({
+      url: '/rendering-info/web?_id=someid',
+      method: 'POST',
+      payload: {
+        item: fixtures.minibarsNegative,
+        toolRuntimeConfig: {},
+      },
+    });
+
+    elementCount(response, '.qtable-minibar-cell.s-font-note--tabularnums').then(value => {
+      expect(value).toEqual(4);
+    });
+  });
+
   it('uses correct cell type', async () => {
     const server = getServer();
 
