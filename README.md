@@ -8,7 +8,6 @@ Test it in the [demo](https://editor.q.tools).
 ## Table of contents
 
 - [Installation](#installation)
-- [Configuration](#configuration)
 - [Development](#development)
 - [Testing](#testing)
 - [Deployment](#deployment)
@@ -25,11 +24,6 @@ npm install
 npm run build
 ```
 
-[to the top](#table-of-contents)
-
-## Configuration
-
-No configuration is needed for this tool.
 
 [to the top](#table-of-contents)
 
@@ -41,10 +35,10 @@ Start the Q dev server:
 npx @nzz/q-cli server
 ```
 
-Run the Q tool:
+Run the Q tool (DEV Mode):
 
 ```
-node index.js
+npm run start
 ```
 
 [to the top](#table-of-contents)
@@ -89,40 +83,7 @@ The tool structure follows the general structure of each Q tool. Further informa
 
 [to the top](#table-of-contents)
 
-### Implementing a new feature
-
-When implementing a new feature, a new file needs to be created under `heplers` containing the name of the feature. The file needs to export a function which will process the data and return in every case an `object`, when the function won't be used, the `object` needs to be empty. The `context` object will then contain the processed data.
-
-[to the top](#table-of-contents)
-
 ### Features
-
-#### Spacing
-
-- Q-Table uses [CSS Table-Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/table-layout) to adjust columns, rows and cells
-- An algorythm discribes how large the width of each column and cell should be and to use the whole desktop width
-- We want to give the responsability fully to the browser and don't want to calculate the layout by our own
-- We want define rules based on the type of the column (Number, Text, Minibar) while numbers are right and text is left aligned
-
-##### Rules for spacing
-
-There's a CSS rule which contains that if the table doesn't use Card-Layout, the cell is not `q-talble-minibar-header` and the following cell is not `q-table__cell--numeric` then the `padding-left` will be `20px`.
-Further spacing rules will be explained in the other features.
-
-[to the top](#table-of-contents)
-
-#### Collapsable table
-
-<img src="/doc/show-more-button.png" align="right" width=300 height=306>
-This is a feature to shorten large tables in the article and make them collapsable.
-
-###### Implementation details
-
-- When rendering the rows, the renderingInfoScript `getShowMoreButtonScript()` will check how many rows the table contains
-- [This](https://github.com/nzzdev/Q-table/blob/e4fbf189ce8c1191cdfad2fac60ee9677cc8eda7/routes/rendering-info/web.js#L122-L127) is the matrix used to display/hide the rows
-- If there are rows hidden, a new element will be created with the class `q-table_show-more-button` assigned
-- Clicking on the button will either call the function `showRowsFunction()` or `hideRowsFunction()`
-- When calling the `hideRowsFunction`, the table will be collapsed again and with the function `scrollIntoView()` scrolled back to the top of the table
 
 [to the top](#table-of-contents)
 
@@ -175,12 +136,6 @@ Footnotes are a feature to display annotations in the table and the sources in t
 
 ###### Implementation details frontend
 
-- The `value` of the cell will be displayed inside a `span`-element with the class `q-table-footnote-annotation`
-- The `span`-element has the dataset `data-annotation` and the value `cell.footnote.value` applied to it
-- With the `::after` pseudo element, the dataset `data-annotation` will then be applied after the value
-- For the sources of the annotations the `footnotes` array applied to the `context` will be looped and displayed in the footer
-- If the option `colorColumn` is selected, the footnote will be dispalyed in a seperate element and the color of the footnote will be set to `opacity: 0.65`
-
 [to the top](#table-of-contents)
 ### Options
 
@@ -199,19 +154,6 @@ This options allows to hide the header of each column. By default it's `false`
 <img src="/doc/table-search.png" align="right" width=300 height=400>
 
 This option allows to show or hide the table search feature. The option is only available, when there are more than 16 rows in the table. Default value is `false`.
-
-###### Implementation details
-- By default the table is collapsed and the `q-table_show-more-button` is visible at the bottom of the table ([see Collapsable table](#collapsable-table)).
-- When the user starts typing, all rows will be made visible and the `q-table_show-more-button` disappears.
-- The actual search function triggers, as soon as the user types the second character.
-- The filter searches through text-based columns only.
-- When the user deletes his input, the table collapses and the `q-table_show-more-button` will be visible again.
-
-[to the top](#table-of-contents)
-
-###### Implementation details
-
-- If the option is used, the input element for the table search won't be rendered.
 
 [to the top](#table-of-contents)
 

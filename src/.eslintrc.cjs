@@ -12,7 +12,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
 
     // eslint-plugin-svelte rules.
-    'plugin:@ota-meshi/svelte/recommended',
+    'plugin:svelte/recommended',
   ],
   parserOptions: {
     ecmaVersion: 2020,
@@ -35,7 +35,7 @@ module.exports = {
     },
   ],
   settings: {},
-  plugins: ['@ota-meshi/svelte', '@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'eslint-plugin-svelte'],
   ignorePatterns: ['*.cjs', 'node_modules'],
   rules: {
     quotes: [2, 'single'],
@@ -48,6 +48,8 @@ module.exports = {
         allowExpressions: true,
       },
     ],
-    '@ota-meshi/svelte/no-at-html-tags': 'off',
+    'svelte/no-at-html-tags': 'off',
+    'svelte/valid-compile': 'off',
+    'svelte/a11y-click-events-have-key-events': 'off',
   },
 };

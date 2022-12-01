@@ -1,0 +1,80 @@
+{
+  "title": "FIXTURE: four column numeric card layout for small",
+  "subtitle": "Subtitle",
+  "data": {
+    "table": [
+      [
+        "a",
+        "2016"
+      ],
+      [
+        "b",
+        "12000"
+      ],
+      [
+        "c",
+        "79123"
+      ],
+      [
+        "d",
+        "12332"
+      ],
+      [
+        "e",
+        "12331"
+      ],
+      [
+        "f",
+        "12331"
+      ]
+    ],
+    "metaData": {
+      "cells": []
+    }
+  },
+  "sources": [],
+  "options": {
+    "cardLayout": false,
+    "cardLayoutIfSmall": true,
+    "minibar": {
+      "invertColors": false,
+      "barColor": {
+        "positive": {
+          "className": "",
+          "colorCode": ""
+        },
+        "negative": {
+          "className": "",
+          "colorCode": ""
+        }
+      },
+      "selectedColumn": null,
+      "formatting": [
+        {
+          "column": 0,
+          "formattingType": "0"
+        },
+        {
+          "column": 1,
+          "formattingType": "0"
+        },
+        {
+          "column": 2,
+          "formattingType": "2"
+        },
+        {
+          "column": 3,
+          "formattingType": "0"
+        },
+        {
+          "column": 4,
+          "formattingType": "0"
+        },
+        {
+          "column": 5,
+          "formattingType": "0"
+        }
+      ]
+    }
+  }
+}

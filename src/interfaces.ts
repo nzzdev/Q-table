@@ -1,6 +1,6 @@
 import type { LABEL_LEGEND_ID } from './enums';
 import type { ColorColumn } from './helpers/colorColumn';
-import type { StructuredFootnote } from './helpers/footnotes';
+import type { Footnote } from './helpers/footnotes';
 import type { Minibar } from './helpers/minibars';
 
 export interface WebPayload {
@@ -24,7 +24,8 @@ export interface QTableConfig {
 
 export type BucketType = 'ckmeans' | 'quantile' | 'equal' | 'custom';
 export type ColorColumnType = 'numerical' | 'categorical';
-export type QTableDataRaw = (string | null)[][];
+export type QTableDataRaw = QTableCellDataRaw[][];
+export type QTableCellDataRaw = string | null;
 
 export const enum DivergingType {
   BUCKET = 'bucket',
@@ -59,7 +60,11 @@ export interface ColorColumnSettings {
   selectedColumn: number | null;
 }
 
-export interface dataMetaDataCell {
+export interface DataMetaData {
+  cells: CellMetaData[];
+}
+
+export interface CellMetaData {
   data: {
     footnote: string;
   };
@@ -67,9 +72,6 @@ export interface dataMetaDataCell {
   colIndex: number;
 }
 
-export interface DataMetaData {
-  cells: dataMetaDataCell[];
-}
 
 export interface QTableConfigMinibarSettings {
   invertColors: boolean;
@@ -77,7 +79,7 @@ export interface QTableConfigMinibarSettings {
     positive: { className: string; colorCode: string };
     negative: { className: string; colorCode: string };
   };
-  selectedColumn: number;
+  selectedColumn: number | null;
 }
 
 export interface QTableConfigOptions {
@@ -95,8 +97,39 @@ export interface QTableConfigOptions {
   // This is added on 6.2.0 and we don't do any migration so earlier
   // saved tables in the databases will not have this option.
   pageSize?: number;
-  usePagination?: boolean;
+
+  // Added in 7.1.0. No migration so not in db of older saves.
+  frozenRowKey?: number | null;
+
+  // Added 7.1.0
+  sorting?: QTableConfigSortingSettings[];
+
+  // Added 7.1.0
+  formatting?: QtableConfigFormattingSetting[];
 }
+
+export interface QTableConfigSortingSettings {
+  column: number;
+  sortingDirection: SortDirection;
+}
+
+export interface QtableConfigFormattingSetting {
+  column: number;
+  formattingType: FormattingType;
+}
+
+// Check schema.json.
+// Keep in sync.
+export type FormattingType =
+  'country_flags' |
+  '0' |
+  '0.00' |
+  '0.000' |
+  '0%' |
+  '0.0%' |
+  '0.00%' |
+  '0.000%' |
+  'arrow_sign_relative_int';
 
 export interface DisplayOptions {
   hideTitle?: boolean;
@@ -132,10 +165,10 @@ export interface AvailabilityResponseObject {
 export interface QTableSvelteProperties {
   item: QTableConfig; // To make renderingInfoScripts working. refactor later.
   config: QTableConfig;
-  tableHead: Cell[];
+  tableHead: Thead[];
   rows: Row[];
   minibar: Minibar | null;
-  footnotes: StructuredFootnote[] | null;
+  footnotes: Footnote[] | null;
   colorColumn: ColorColumn | null;
   numberOfRows: number; // do not count the header
   displayOptions: DisplayOptions;
@@ -144,8 +177,8 @@ export interface QTableSvelteProperties {
   width: number | undefined;
   initWithCardLayout: boolean;
   pageSize: number;
-  usePagination: boolean;
   hideTableHeader: boolean;
+  frozenRowKey?: number | null;
 }
 
 export interface QTableStateContext {
@@ -159,6 +192,11 @@ export interface QTableStateContext {
   setPage: (_page: number) => void;
   setPageSize: (_pageSize: number) => void;
   setFilteredRows: (_rows: Row[]) => Row[];
+}
+
+export interface QTableSortState {
+  colIndex: number | null;
+  sortDirection: SortDirection;
 }
 
 export interface Source {
@@ -177,18 +215,37 @@ export interface StyleHashMap {
   'q-table': string;
 }
 
-export interface Cell {
-  type: string;
-  value: string | null;
-  classes: string[];
-  footnote?: {
-    value: number;
-    unicode: string;
-    class: string | null;
-  };
+export interface Column {
+  type: TableColumnType;
+  values: (string | number)[];
+  formattedValues: string[];
 }
+
+export type TableColumnType = 'text' | 'numeric' | 'country-flag-emoji';
 
 export interface Row {
   key: number;
   cells: Cell[];
+  frozen?: boolean;
 }
+
+export interface Thead {
+  value: string;
+  type: TableColumnType;
+  sortable: boolean;
+  sortDirection: SortDirection;
+  classes: string[],
+  footnote: string;
+}
+
+export interface Cell<T = number | string> {
+  type: TableColumnType
+  value: T;
+  label: string; // String representation of value.
+  classes: string[];
+  footnote: string;
+}
+
+export type CellType = 'text' | 'numeric' | null
+
+export type SortDirection = 'asc' | 'desc' | null;

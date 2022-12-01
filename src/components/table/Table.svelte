@@ -1,50 +1,86 @@
 <script lang="ts">
-import Cell from '@cps/cell/Cell.svelte';
-import MinibarBox from '@cps/minibar/MinibarBox.svelte';
-import MinibarValue from '@cps/minibar/MinibarValue.svelte';
-import MixedMinibars from '@cps/minibar/MixedMinibars.svelte';
-import Thead from '@cps/thead/Thead.svelte';
+import Cell from './cell/Cell.svelte';
+import ColoredCell from './cell/ColoredCell.svelte';
+import MinibarCell from './cell/MinibarCell.svelte';
+import Thead from './thead/Thead.svelte';
 import type { QTableSvelteProperties, Row } from '@src/interfaces';
 
 export let componentConfiguration: QTableSvelteProperties;
 export let rows: Row[];
 
-const { config, item, initWithCardLayout, tableHead, minibar, colorColumn, hideTableHeader } = componentConfiguration;
-const options = config.options;
-
-function isMinibarColumn(colIndex: number): boolean {
-  return (
-    options.minibar && options.minibar.selectedColumn !== null && options.minibar.selectedColumn !== undefined && options.minibar.selectedColumn === colIndex
-  );
-}
+const { tableHead, minibar, colorColumn, hideTableHeader } = componentConfiguration;
 </script>
 
-<table class="q-table">
+<table class="qtable">
   {#if hideTableHeader !== true}
-    <Thead {tableHead} {minibar} {initWithCardLayout} />
+    <Thead {tableHead} {minibar} />
   {/if}
 
   <tbody class="s-font-note">
     {#each rows as row (row.key)}
-      <tr>
+      <tr class:qtable-tr-frozen={row.frozen}>
         {#each row.cells as cell, colIndex}
-          {#if isMinibarColumn(colIndex)}
-            {#if minibar && minibar.type === 'positive'}
-              <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} rowIndex={row.key} />
-              <MinibarBox {item} {minibar} {colIndex} rowIndex={row.key} />
-            {:else if minibar && minibar.type === 'negative'}
-              <MinibarBox {item} {minibar} {colIndex} rowIndex={row.key} />
-              <MinibarValue {item} tableData={rows} {minibar} {cell} {colIndex} rowIndex={row.key} />
-            {:else if minibar && minibar.type === 'mixed'}
-              <MixedMinibars {item} tableData={rows} {minibar} {cell} rowIndex={row.key} {colIndex} />
-            {:else}
-              <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} rowIndex={row.key} />
-            {/if}
+
+          {#if minibar?.columnIndex === colIndex}
+            <MinibarCell {cell} {minibar} rowIndex={row.key} />
+          {:else if colorColumn?.selectedColumn === colIndex}
+            <ColoredCell {cell} {colorColumn} rowIndex={row.key} />
           {:else}
-            <Cell {item} {cell} {tableHead} {colorColumn} {colIndex} rowIndex={row.key} />
+            <Cell {cell} />
           {/if}
+
         {/each}
       </tr>
     {/each}
   </tbody>
 </table>
+
+<style lang="scss">
+// the high specificty is needed because nzz frontends apply
+// highly specific table styles that we need to overwrite.
+:global(.qtable-holder) {
+  :global(.qtable) {
+    border-collapse: collapse;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: auto;
+    empty-cells: show;
+
+    :global(th),
+    :global(td) {
+      padding: 10px 4px;
+      vertical-align: top;
+      border: none !important;
+      font-size: unset;
+      line-height: unset;
+      font-weight: unset;
+    }
+
+    :global(thead) {
+      background: unset;
+    }
+
+    :global(tbody tr),
+    :global(thead) {
+      border-width: 0 0 1px 0;
+      border-style: solid;
+      border-color: #e9e9ee;
+    }
+
+    :global(.qtable-tr-frozen) {
+      background-color: #f4f4f4;
+      border-bottom: 2px solid #000 !important;
+      border-top: 2px solid #000 !important;
+    }
+
+    // TODO: Discuss later.
+    // when the text-column follows a numeric-column, the text-column should have a padding for spacing reasons
+
+  // .q-table-holder:not(.q-table--card-layout) .q-table__cell--numeric:not(#q-table-minibar-header) + .q-table__cell:not(.q-table__cell--numeric) {
+  //   padding-left: 20px;
+  // }
+  }
+}
+</style>

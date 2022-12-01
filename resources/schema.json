@@ -133,10 +133,27 @@
           "type": "number",
           "default": 10
         },
-        "usePagination": {
-          "title": "Paginierung",
-          "type": "boolean",
-          "default": false
+        "frozenRowKey": {
+          "title": "Spalte einfrieren",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "Q:options": {
+            "dynamicSchema": {
+              "type": "ToolEndpoint",
+              "config": {
+                "endpoint": "dynamic-schema/selectedFrozenRow",
+                "fields": [
+                  "data"
+                ]
+              }
+            }
+          }
         },
         "hideTableHeader": {
           "title": "Spaltenüberschriften ausblenden",
@@ -189,6 +206,121 @@
                 }
               }
             ]
+          }
+        },
+        "formatting": {
+          "title": "Formattierung",
+          "type": "array",
+          "Q:options": {
+            "dynamicSchema": {
+              "type": "ToolEndpoint",
+              "config": {
+                "endpoint": "dynamic-schema/getColumnAmount",
+                "fields": [
+                  "data"
+                ]
+              }
+            },
+            "layout": "compact"
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "column": {
+                "title": "Zeile",
+                "oneOf": [
+                  {
+                    "type": "number"
+                  }
+                ],
+                "Q:options": {
+                  "dynamicSchema": {
+                    "selectType": "select",
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "dynamic-schema/getEachColumn",
+                      "fields": [
+                        "data",
+                        "options"
+                      ]
+                    }
+                  }
+                }
+              },
+              "formattingType": {
+                "title": "Formattierung",
+                "type": "string",
+                "default": "light",
+                "enum": [
+                  "country_flags",
+                  "0",
+                  "0.00",
+                  "0.000",
+                  "0%",
+                  "0.0%",
+                  "0.00%",
+                  "0.000%",
+                  "arrow_sign_relative_int"
+                ],
+                "Q:options": {
+                  "selectType": "select",
+                  "enum_titles": [
+                    "country_flags",
+                    "0",
+                    "0.00",
+                    "0.000",
+                    "0%",
+                    "0.0%",
+                    "0.00%",
+                    "0.000%",
+                    "(➚➙➘) (+/-)0%"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "sorting": {
+          "title": "Sortierung",
+          "type": "array",
+          "Q:options": {
+            "dynamicSchema": {
+              "type": "ToolEndpoint",
+              "config": {
+                "endpoint": "dynamic-schema/getColumnAmount",
+                "fields": [
+                  "data"
+                ]
+              }
+            },
+            "layout": "compact",
+            "sortable": false
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "column": {
+                "title": "Zeile",
+                "oneOf": [
+                  {
+                    "type": "number"
+                  }
+                ],
+                "Q:options": {
+                  "dynamicSchema": {
+                    "selectType": "select",
+                    "type": "ToolEndpoint",
+                    "config": {
+                      "endpoint": "dynamic-schema/getEachColumn",
+                      "fields": [
+                        "data",
+                        "options"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "minibar": {

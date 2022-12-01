@@ -1,14 +1,16 @@
-// Testing with Svelte + TS + ESM + Jest requires quite the setup.
-// https://github.com/svelteness/svelte-jester/issues/72#issuecomment-1021356664
-
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
   preset: 'ts-jest/presets/default-esm',
-  testEnvironment: 'jsdom',
+
+  // We are using happydom to fix so many issues regarding
+  // events and missing dom apis.
+  testEnvironment: "@happy-dom/jest-environment",
   verbose: true,
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.ts$': ['ts-jest', {
+      useESM: true
+    }],
     '^.+\\.svelte$': [
       './node_modules/svelte-jester/dist/transformer.mjs',
       {
@@ -18,11 +20,6 @@ const config: Config.InitialOptions = {
   },
   extensionsToTreatAsEsm: ['.svelte', '.ts'],
   moduleFileExtensions: ['js', 'ts', 'svelte'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
     '^@rs(.*)$': '<rootDir>/resources$1',
@@ -31,6 +28,7 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ['node_modules'],
   transformIgnorePatterns: ['node_modules'],
   bail: false,
+  setupFiles: ['./setupJest.js'],
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
 };
 

@@ -8,6 +8,8 @@ import mixedNumbersAndTextInCell from '../../../resources/fixtures/data/mixed-nu
 import hyphenSignAsNumber from '../../../resources/fixtures/data/hyphen-sign-as-number.json';
 import multilineText from '../../../resources/fixtures/data/multiline-text.json';
 import showMoreButton from '../../../resources/fixtures/data/show-more-button.json';
+import pagination from '../../../resources/fixtures/data/pagination.json';
+import frozenRow from '../../../resources/fixtures/data/freezeRow.json';
 import disappearingColumns from '../../../resources/fixtures/data/disappearing-columns.json';
 import columnSpacing from '../../../resources/fixtures/data/column-spacing.json';
 import minibarsMixed from '../../../resources/fixtures/data/minibars-mixed.json';
@@ -76,6 +78,8 @@ const fixtureData = [
   cardlayout,
   cardlayoutMobile,
   lotsOfData,
+  pagination,
+  frozenRow,
   specialCharacters,
   formattedNumbers,
   formattedNumbersMixed,

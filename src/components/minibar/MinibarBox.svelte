@@ -1,53 +1,47 @@
 <script lang="ts">
-import type { Minibar } from 'src/helpers/minibars';
-import type { QTableConfig } from 'src/interfaces';
+import { MINIBAR_TYPE } from 'src/helpers/minibars';
 
-export let item: QTableConfig;
-export let minibar: Minibar;
-export let rowIndex: number;
-export let colIndex: number;
+export let type: MINIBAR_TYPE = MINIBAR_TYPE.POSITIVE;
+export let clrCode = '';
+export let clrClass = '';
+export let width = 0;
 
-// this has to be done because the tableData will be sliced before iterating
-rowIndex += 1;
-
-function getBarStyle(): string {
-  let style = '';
-
-  if (minibar.values[rowIndex].type !== 'empty') {
-    style = `width: ${minibar.values[rowIndex].value}%;`;
-    if (minibar.barColor.positive.colorCode || minibar.barColor.negative.colorCode) {
-      if (minibar.barColor.positive.colorCode) {
-        style += `background-color: ${minibar.barColor.positive.colorCode};`;
-      }
-      if (minibar.barColor.negative.colorCode) {
-        style += `background-color: ${minibar.barColor.negative.colorCode};`;
-      }
-    }
-  }
-
-  return style;
-}
-
-function getCellStyle(): string {
-  let style = '';
-
-  // check for type and return accordingly
-  if (minibar.type === 'positive') {
-    style = 'padding-right: 12px !important;';
-  } else if (minibar.type === 'negative') {
-    style = 'padding-left: 12px; padding-right: 0px !important;';
-  }
-
-  return style;
-}
-
-function getMinibarClassName(): string {
-  return minibar.values[rowIndex].type === 'positive' ? minibar.barColor.positive.className : minibar.barColor.negative.className;
-}
 </script>
 
-{#if minibar && item.options.minibar.selectedColumn === colIndex}
-  <td class="q-table-minibar-cell" data-minibar={minibar.type} style={getCellStyle()}>
-    <div class="q-table-minibar-bar--{minibar.values[rowIndex].type} {getMinibarClassName()}" style={getBarStyle()}></div>
-  </td>
-{/if}
+<div
+  class="qtable-minibar qtable-minibar-{type}
+  {clrClass}"
+  style:background={clrCode} style:width={`${width}%`}
+></div>
+
+<style lang="scss">
+  :global(.qtable-minibar) {
+    background-color: currentColor;
+    display: inline-block;
+    height: 17px;
+    left: 0;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
+
+  :global(.qtable-minibar::before) {
+    content: '';
+    border-left: 0.5px solid #393855;
+    height: 19px;
+    left: 0;
+    position: absolute;
+    top: -1px;
+    width: 1px;
+  }
+
+  :global(.qtable-minibar-negative) {
+    left: unset;
+    right: 0;
+  }
+
+  :global(.qtable-minibar-negative::before) {
+    left: unset;
+    right: 0;
+  }
+</style>
