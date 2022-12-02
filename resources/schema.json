@@ -1027,6 +1027,9 @@
                         "title": "Kategorie",
                         "oneOf": [
                           {
+                            "type": "null"
+                          },
+                          {
                             "type": "string"
                           }
                         ],
