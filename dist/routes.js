@@ -2578,6 +2578,9 @@ var properties$1 = {
 											title: "Kategorie",
 											oneOf: [
 												{
+													type: "null"
+												},
+												{
 													type: "string"
 												}
 											],
