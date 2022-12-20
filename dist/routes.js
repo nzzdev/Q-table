@@ -189,7 +189,7 @@ function formatCell(rawValue, type) {
     }
     return {
         type: 'numeric',
-        value: rawValue || '',
+        value: parsedRawValue,
         label,
         footnote: '',
         classes: ['s-font-note--tabularnums'],

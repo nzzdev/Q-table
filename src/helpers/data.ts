@@ -184,7 +184,7 @@ function formatCell(rawValue: QTableCellDataRaw, type: FormattingType): Cell {
 
   return {
     type: 'numeric',
-    value: rawValue || '',
+    value: parsedRawValue,
     label,
     footnote: '',
     classes: ['s-font-note--tabularnums'],
