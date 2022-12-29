@@ -221,7 +221,12 @@ export interface Column {
   formattedValues: string[];
 }
 
+
 export type TableColumnType = 'text' | 'numeric' | 'country-flag-emoji';
+export type TableColumnDetails = {
+  type: 'text' | 'numeric' | 'country-flag-emoji';
+  useGroupingSeparatorForNumbers: boolean;
+};
 
 export interface Row {
   key: number;

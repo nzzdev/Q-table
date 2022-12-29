@@ -134,7 +134,7 @@
           "default": 10
         },
         "frozenRowKey": {
-          "title": "Spalte einfrieren",
+          "title": "Zeile einfrieren",
           "oneOf": [
             {
               "type": "number"
@@ -209,7 +209,7 @@
           }
         },
         "formatting": {
-          "title": "Formattierung",
+          "title": "Formatierung",
           "type": "array",
           "Q:options": {
             "dynamicSchema": {
@@ -248,7 +248,7 @@
                 }
               },
               "formattingType": {
-                "title": "Formattierung",
+                "title": "Formatierung",
                 "type": "string",
                 "default": "light",
                 "enum": [

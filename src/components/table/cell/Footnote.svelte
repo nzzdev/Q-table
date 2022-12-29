@@ -27,8 +27,8 @@ export let cls = '';
 <style lang="scss">
 :global(.qtable-footnote) {
   font-size: 10px;
-  left: 98%;
-  position: absolute;
+  left: 0;
+  position: relative;
   top: -10px;
 }
 </style>
