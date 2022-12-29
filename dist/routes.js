@@ -49,22 +49,22 @@ const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 // Formatting for numbers of >= 10000.
 const formatLocale = formatLocale$1({
-    decimal: ',',
-    thousands: fourPerEmSpace,
-    minus: enDash,
-    grouping: [3],
     currency: ['€', ''],
+    decimal: ',',
+    grouping: [3],
+    minus: enDash,
+    thousands: fourPerEmSpace,
 });
 // Formatting for numbers of <= 10000.
 const formatLocaleSmall = formatLocale$1({
-    decimal: ',',
-    minus: enDash,
     currency: ['€', ''],
+    decimal: ',',
+    grouping: [10],
+    minus: enDash,
     thousands: fourPerEmSpace,
-    grouping: [10], // Set the grouping high so numbers under 10000 do not get grouped.
 });
 const formatWithGroupingSeparator = formatLocale.format(',');
-// const formatNoGroupingSeparator = formatLocale.format('');
+const formatNoGroupingSeparator = formatLocaleSmall.format('');
 /**
  * This is the most important function.
  * It takes in the raw data from the user input and transform it into
@@ -75,7 +75,7 @@ function formatTableData(dataWithHeader, footnotes, options) {
     const rows = [];
     const columns = [];
     // First get the type of each column.
-    const columnTypes = getColumnsType(dataWithHeader);
+    const columnMetadata = getColumnsType(dataWithHeader);
     const formatting = options.formatting || [];
     const sortingOptions = options.sorting || [];
     const formattingMap = {};
@@ -93,7 +93,7 @@ function formatTableData(dataWithHeader, footnotes, options) {
         }
         header.push({
             value: dataWithHeader[0][colIndex] || '',
-            type: columnTypes[colIndex],
+            type: columnMetadata[colIndex].type,
             sortable,
             sortDirection,
             classes: [],
@@ -111,15 +111,16 @@ function formatTableData(dataWithHeader, footnotes, options) {
         const cells = row.map((rawCellValue, colIndex) => {
             var _a;
             const formatting = (_a = formattingMap[colIndex]) === null || _a === void 0 ? void 0 : _a.formattingType;
-            const type = columnTypes[colIndex];
+            const type = columnMetadata[colIndex].type;
+            const useGroupingSeparator = columnMetadata[colIndex].useGroupingSeparatorForNumbers;
             let cell;
             if (formatting) {
-                cell = formatCell(rawCellValue, formatting);
+                cell = formatCell(rawCellValue, formatting, useGroupingSeparator);
             }
             else {
                 switch (type) {
                     case 'numeric':
-                        cell = formaticNumericData(rawCellValue);
+                        cell = formaticNumericData(rawCellValue, useGroupingSeparator);
                         break;
                     case 'text':
                     default:
@@ -142,34 +143,38 @@ function formatTableData(dataWithHeader, footnotes, options) {
         columns,
     };
 }
-function formatCell(rawValue, type) {
+function formatCell(rawValue, type, useGroupingSeparator = false) {
     let label = '';
     if (type === 'country_flags') {
         return formatCountryFlagEmojiDatapoint(rawValue);
     }
     const parsedRawValue = parseFloat(rawValue || '');
     let prefix = '';
+    let separator = '';
+    if (useGroupingSeparator) {
+        separator = ',';
+    }
     switch (type) {
         case '0':
-            label = parsedRawValue.toString();
+            label = formatLocale.format(`${separator}.0f`)(parsedRawValue);
             break;
         case '0.00':
-            label = formatLocale.format('.2f')(parsedRawValue);
+            label = formatLocale.format(`${separator}.2f`)(parsedRawValue);
             break;
         case '0.000':
-            label = formatLocale.format('.3f')(parsedRawValue);
+            label = formatLocale.format(`${separator}.3f`)(parsedRawValue);
             break;
         case '0%':
-            label = formatLocale.format('.0f')(parsedRawValue) + '%';
+            label = formatLocale.format(`${separator}.0f`)(parsedRawValue) + '%';
             break;
         case '0.0%':
-            label = formatLocale.format('.1f')(parsedRawValue) + '%';
+            label = formatLocale.format(`${separator}.1f`)(parsedRawValue) + '%';
             break;
         case '0.00%':
-            label = formatLocale.format('.2f')(parsedRawValue) + '%';
+            label = formatLocale.format(`${separator}.2f`)(parsedRawValue) + '%';
             break;
         case '0.000%':
-            label = formatLocale.format('.3f')(parsedRawValue) + '%';
+            label = formatLocale.format(`${separator}.3f`)(parsedRawValue) + '%';
             break;
         case 'arrow_sign_relative_int':
             if (parsedRawValue > 0) {
@@ -220,7 +225,7 @@ function formatTextualData(rawValue) {
         footnote: '',
     };
 }
-function formaticNumericData(rawValue) {
+function formaticNumericData(rawValue, useGroupingSeparator = false) {
     let label = '';
     let value = 0;
     if (rawValue === '' || rawValue === '-' || rawValue === enDash) {
@@ -229,15 +234,12 @@ function formaticNumericData(rawValue) {
     else if (rawValue !== null) {
         const parsedValue = parseFloat(rawValue);
         value = parsedValue;
-        label = formatWithGroupingSeparator(parsedValue);
-        // Todo discuss with team later.
-        // why are different formattings for when there are numbers over 10000
-        // in the dataset??
-        // if (columns[columnIndex].withFormating) {
-        //   value = formatWithGroupingSeparator(parsedValue);
-        // } else {
-        //   value = formatNoGroupingSeparator(parsedValue);
-        // }
+        if (useGroupingSeparator) {
+            label = formatWithGroupingSeparator(parsedValue);
+        }
+        else {
+            label = formatNoGroupingSeparator(parsedValue);
+        }
     }
     return {
         type: 'numeric',
@@ -254,7 +256,7 @@ function getNumericColumns(data) {
     if (data[0] !== undefined) {
         const header = data[0];
         for (let columnIndex = 0; columnIndex < header.length; columnIndex++) {
-            if (columns[columnIndex] && columns[columnIndex] === 'numeric') {
+            if (columns[columnIndex] && columns[columnIndex].type === 'numeric') {
                 const cell = header[columnIndex] || '';
                 numericColumns.push({ title: cell, index: columnIndex });
             }
@@ -300,37 +302,24 @@ function getColumnsType(dataWithHeader) {
         }
         const isNumeric = isColumnNumeric(column);
         if (isNumeric) {
-            columns.push('numeric');
+            columns.push({
+                type: 'numeric',
+                useGroupingSeparatorForNumbers: isColumnFormattingWithNumberSeparator(column),
+            });
         }
         else {
-            columns.push('text');
+            columns.push({
+                type: 'text',
+                useGroupingSeparatorForNumbers: false,
+            });
         }
-        // TODO: move somewhere else.
-        // let withFormating = false;
-        // const columnNumeric = isColumnNumeric(column);
-        // if (columnNumeric) {
-        //   const numericValuesInColumn: number[] = [];
-        //   for (let i = 0; i < column.length; i++) {
-        //     const parsedValue = parseFloat(column[i] || '');
-        //     if (!isNaN(parsedValue)) {
-        //       numericValuesInColumn.push(parsedValue);
-        //     }
-        //   }
-        //   withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
-        // }
-        // columns.push({ isNumeric: columnNumeric, withFormating });
     }
     return columns;
 }
 function isColumnNumeric(rawColumnData) {
-    // Loop through all cells checking if it is a number and on the way
-    // preparing the formatting.
     for (let i = 0; i < rawColumnData.length; i++) {
         const value = rawColumnData[i];
-        // TODO
-        // The question should we accept a string as an exception for a numeric column or force the user to
-        // keep it null or empty?
-        if (value === null || value === '-') {
+        if (value === null || value === '-' || value === '') {
             continue;
         }
         // If we detect any non numeric value then this column is not numeric anymore.
@@ -339,6 +328,16 @@ function isColumnNumeric(rawColumnData) {
         }
     }
     return true;
+}
+function isColumnFormattingWithNumberSeparator(rawColumnData) {
+    const numericValuesInColumn = [];
+    for (let i = 0; i < rawColumnData.length; i++) {
+        const parsedValue = parseFloat(rawColumnData[i] || '');
+        if (!isNaN(parsedValue)) {
+            numericValuesInColumn.push(parsedValue);
+        }
+    }
+    return Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
 }
 function getNumericalValuesByColumn(data, column) {
     return data.map(row => {
@@ -1685,7 +1684,7 @@ var properties$1 = {
 				"default": 10
 			},
 			frozenRowKey: {
-				title: "Spalte einfrieren",
+				title: "Zeile einfrieren",
 				oneOf: [
 					{
 						type: "number"
@@ -1760,7 +1759,7 @@ var properties$1 = {
 				}
 			},
 			formatting: {
-				title: "Formattierung",
+				title: "Formatierung",
 				type: "array",
 				"Q:options": {
 					dynamicSchema: {
@@ -1799,7 +1798,7 @@ var properties$1 = {
 							}
 						},
 						formattingType: {
-							title: "Formattierung",
+							title: "Formatierung",
 							type: "string",
 							"default": "light",
 							"enum": [
@@ -3221,7 +3220,7 @@ function getOptions(data) {
     if (data.length > 0) {
         const columnTypes = getColumnsType(data);
         data[0].forEach((head, index) => {
-            if (columnTypes[index] === 'text') {
+            if (columnTypes[index].type === 'text') {
                 dropdownSettings.ids.push(index);
                 dropdownSettings.titles.push(head);
             }

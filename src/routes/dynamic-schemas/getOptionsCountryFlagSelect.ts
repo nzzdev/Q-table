@@ -41,7 +41,7 @@ function getOptions(data: QTableDataRaw): DropdownSettings {
 
     data[0].forEach((head, index) => {
 
-      if (columnTypes[index] === 'text') {
+      if (columnTypes[index].type === 'text') {
         dropdownSettings.ids.push(index);
         dropdownSettings.titles.push(head);
       }

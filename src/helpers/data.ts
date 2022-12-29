@@ -4,32 +4,31 @@ import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 // Types.
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 import type { FootnoteCellMap } from './footnotes.js';
-import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, FormattingType, Thead, QtableConfigFormattingSetting } from '../interfaces';
+import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, FormattingType, Thead, QtableConfigFormattingSetting, TableColumnDetails } from '../interfaces';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';
 
 // Formatting for numbers of >= 10000.
 const formatLocale = d3FormatLocale({
-  decimal: ',',
-  thousands: fourPerEmSpace,
-  minus: enDash,
-  grouping: [3],
   currency: ['€', ''],
+  decimal: ',',
+  grouping: [3],
+  minus: enDash,
+  thousands: fourPerEmSpace,
 });
 
 // Formatting for numbers of <= 10000.
 const formatLocaleSmall = d3FormatLocale({
-  decimal: ',',
-  minus: enDash,
   currency: ['€', ''],
-  thousands: fourPerEmSpace,
+  decimal: ',',
   grouping: [10], // Set the grouping high so numbers under 10000 do not get grouped.
+  minus: enDash,
+  thousands: fourPerEmSpace,
 });
 
 const formatWithGroupingSeparator = formatLocale.format(',');
-// const formatNoGroupingSeparator = formatLocale.format('');
-
+const formatNoGroupingSeparator = formatLocaleSmall.format('');
 
 /**
  * This is the most important function.
@@ -42,7 +41,7 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
   const columns: Cell[][] = [];
 
   // First get the type of each column.
-  const columnTypes = getColumnsType(dataWithHeader);
+  const columnMetadata = getColumnsType(dataWithHeader);
 
   const formatting = options.formatting || [];
   const sortingOptions = options.sorting || [];
@@ -67,7 +66,7 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
 
     header.push({
       value: dataWithHeader[0][colIndex] || '',
-      type: columnTypes[colIndex],
+      type: columnMetadata[colIndex].type,
       sortable,
       sortDirection,
       classes: [],
@@ -88,15 +87,16 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
     const cells = row.map((rawCellValue, colIndex) => {
       const formatting = formattingMap[colIndex]?.formattingType;
 
-      const type = columnTypes[colIndex];
+      const type = columnMetadata[colIndex].type;
+      const useGroupingSeparator = columnMetadata[colIndex].useGroupingSeparatorForNumbers;
       let cell: Cell;
 
       if (formatting) {
-        cell = formatCell(rawCellValue, formatting);
+        cell = formatCell(rawCellValue, formatting, useGroupingSeparator);
       } else {
         switch (type) {
           case 'numeric':
-            cell = formaticNumericData(rawCellValue);
+            cell = formaticNumericData(rawCellValue, useGroupingSeparator);
             break;
 
           case 'text':
@@ -125,7 +125,7 @@ export function formatTableData(dataWithHeader: QTableDataRaw, footnotes: Footno
   }
 }
 
-function formatCell(rawValue: QTableCellDataRaw, type: FormattingType): Cell {
+function formatCell(rawValue: QTableCellDataRaw, type: FormattingType, useGroupingSeparator = false): Cell {
   let label = '';
 
   if (type === 'country_flags') {
@@ -136,33 +136,38 @@ function formatCell(rawValue: QTableCellDataRaw, type: FormattingType): Cell {
 
   let prefix = '';
 
+  let separator = '';
+  if (useGroupingSeparator) {
+    separator = ',';
+  }
+
   switch (type) {
     case '0':
-      label = parsedRawValue.toString();
+      label =  formatLocale.format(`${separator}.0f`)(parsedRawValue);
       break;
 
     case '0.00':
-      label = formatLocale.format('.2f')(parsedRawValue);
+      label = formatLocale.format(`${separator}.2f`)(parsedRawValue);
       break;
 
     case '0.000':
-      label = formatLocale.format('.3f')(parsedRawValue);
+      label = formatLocale.format(`${separator}.3f`)(parsedRawValue);
       break;
 
     case '0%':
-      label = formatLocale.format('.0f')(parsedRawValue) + '%';
+      label = formatLocale.format(`${separator}.0f`)(parsedRawValue) + '%';
       break;
 
     case '0.0%':
-      label = formatLocale.format('.1f')(parsedRawValue) + '%';
+      label = formatLocale.format(`${separator}.1f`)(parsedRawValue) + '%';
       break;
 
     case '0.00%':
-      label = formatLocale.format('.2f')(parsedRawValue) + '%';
+      label = formatLocale.format(`${separator}.2f`)(parsedRawValue) + '%';
       break;
 
     case '0.000%':
-      label = formatLocale.format('.3f')(parsedRawValue) + '%';
+      label = formatLocale.format(`${separator}.3f`)(parsedRawValue) + '%';
       break;
 
     case 'arrow_sign_relative_int':
@@ -222,7 +227,7 @@ function formatTextualData(rawValue: QTableCellDataRaw): Cell {
   }
 }
 
-function formaticNumericData(rawValue: QTableCellDataRaw): Cell {
+function formaticNumericData(rawValue: QTableCellDataRaw, useGroupingSeparator = false): Cell {
   let label = '';
   let value = 0;
 
@@ -232,16 +237,12 @@ function formaticNumericData(rawValue: QTableCellDataRaw): Cell {
     const parsedValue = parseFloat(rawValue);
 
     value = parsedValue;
-    label = formatWithGroupingSeparator(parsedValue);
 
-    // Todo discuss with team later.
-    // why are different formattings for when there are numbers over 10000
-    // in the dataset??
-    // if (columns[columnIndex].withFormating) {
-    //   value = formatWithGroupingSeparator(parsedValue);
-    // } else {
-    //   value = formatNoGroupingSeparator(parsedValue);
-    // }
+    if (useGroupingSeparator) {
+      label = formatWithGroupingSeparator(parsedValue);
+    } else {
+      label = formatNoGroupingSeparator(parsedValue);
+    }
   }
 
   return {
@@ -262,7 +263,7 @@ export function getNumericColumns(data: QTableDataRaw): IndexedColumnTitle[] {
     const header = data[0];
 
     for (let columnIndex = 0; columnIndex < header.length; columnIndex++) {
-      if (columns[columnIndex] && columns[columnIndex] === 'numeric') {
+      if (columns[columnIndex] && columns[columnIndex].type === 'numeric') {
         const cell = header[columnIndex] || '';
         numericColumns.push({ title: cell, index: columnIndex });
       }
@@ -306,8 +307,8 @@ export function isNumeric(cell: string | null): boolean {
 }
 
 
-export function getColumnsType(dataWithHeader: QTableDataRaw): TableColumnType[] {
-  const columns: TableColumnType[] = [];
+export function getColumnsType(dataWithHeader: QTableDataRaw): TableColumnDetails[] {
+  const columns: TableColumnDetails[] = [];
 
   const columnAmount = dataWithHeader[0].length;
 
@@ -323,45 +324,26 @@ export function getColumnsType(dataWithHeader: QTableDataRaw): TableColumnType[]
     const isNumeric = isColumnNumeric(column);
 
     if (isNumeric) {
-      columns.push('numeric');
+      columns.push({
+        type: 'numeric',
+        useGroupingSeparatorForNumbers: isColumnFormattingWithNumberSeparator(column),
+      });
     } else {
-      columns.push('text');
+      columns.push({
+        type: 'text',
+        useGroupingSeparatorForNumbers: false,
+      })
     }
-
-    // TODO: move somewhere else.
-    // let withFormating = false;
-    // const columnNumeric = isColumnNumeric(column);
-
-    // if (columnNumeric) {
-    //   const numericValuesInColumn: number[] = [];
-
-    //   for (let i = 0; i < column.length; i++) {
-    //     const parsedValue = parseFloat(column[i] || '');
-
-    //     if (!isNaN(parsedValue)) {
-    //       numericValuesInColumn.push(parsedValue);
-    //     }
-    //   }
-
-    //   withFormating = Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
-    // }
-
-    // columns.push({ isNumeric: columnNumeric, withFormating });
   }
 
   return columns;
 }
 
 function isColumnNumeric(rawColumnData: QTableCellDataRaw[]): boolean {
-  // Loop through all cells checking if it is a number and on the way
-  // preparing the formatting.
   for (let i = 0; i < rawColumnData.length; i++) {
     const value = rawColumnData[i];
 
-    // TODO
-    // The question should we accept a string as an exception for a numeric column or force the user to
-    // keep it null or empty?
-    if (value === null || value === '-') {
+    if (value === null || value === '-' || value === '') {
       continue;
     }
 
@@ -371,11 +353,22 @@ function isColumnNumeric(rawColumnData: QTableCellDataRaw[]): boolean {
     }
   }
 
-
   return true;
 }
 
+function isColumnFormattingWithNumberSeparator(rawColumnData: QTableCellDataRaw[]): boolean {
+  const numericValuesInColumn: number[] = [];
 
+  for (let i = 0; i < rawColumnData.length; i++) {
+    const parsedValue = parseFloat(rawColumnData[i] || '');
+
+    if (!isNaN(parsedValue)) {
+      numericValuesInColumn.push(parsedValue);
+    }
+  }
+
+  return Math.max(...numericValuesInColumn) >= 10000 || Math.min(...numericValuesInColumn) <= -10000;
+}
 
 export function getNumericalValuesByColumn(data: QTableDataRaw, column: number): Array<number | null> {
   return data.map(row => {

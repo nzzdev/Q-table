@@ -22,7 +22,7 @@ import displayMergedFootnotesMultiple from '../../../resources/fixtures/data/dis
 import footnotesMixedMinibars from '../../../resources/fixtures/data/footnotes-mixed-minibars.json';
 import footnotesNegativeMinibars from '../../../resources/fixtures/data/footnotes-negative-minibars.json';
 import footnotesPositiveMinibars from '../../../resources/fixtures/data/footnotes-positive-minibars.json';
-import formatting from '../../../resources/fixtures/data/formatting.json';
+import formatting from './formatting';
 import formattedNumbers from '../../../resources/fixtures/data/formatted-numbers.json';
 import formattedNumbersMixed from '../../../resources/fixtures/data/formatted-numbers-mixed.json';
 import formattedNumbersNegative from '../../../resources/fixtures/data/formatted-numbers-negative.json';

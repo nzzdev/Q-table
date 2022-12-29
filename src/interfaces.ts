@@ -22,6 +22,17 @@ export interface QTableConfig {
   notes: string;
 }
 
+export interface TableFixture  {
+  title: string;
+  subtitle: string;
+  data: {
+    table: QTableDataRaw;
+    metaData: DataMetaData;
+  };
+  sources: Source[];
+  options: QTableConfigOptions;
+}
+
 export type BucketType = 'ckmeans' | 'quantile' | 'equal' | 'custom';
 export type ColorColumnType = 'numerical' | 'categorical';
 export type QTableDataRaw = QTableCellDataRaw[][];
@@ -221,7 +232,12 @@ export interface Column {
   formattedValues: string[];
 }
 
+
 export type TableColumnType = 'text' | 'numeric' | 'country-flag-emoji';
+export type TableColumnDetails = {
+  type: 'text' | 'numeric' | 'country-flag-emoji';
+  useGroupingSeparatorForNumbers: boolean;
+};
 
 export interface Row {
   key: number;
