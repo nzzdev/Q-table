@@ -21,7 +21,7 @@ describe('formatting', () => {
     elements(response, '.qtable-cell-label').then(els => {
       let offset = 0;
 
-      // First column.
+      // First row.
       expect(els[offset + 0].innerHTML).toBe('🇨🇭 ');
       expect(els[offset + 1].innerHTML).toBe('9999 ');
       expect(els[offset + 2].innerHTML).toBe('10 000,00 ');
@@ -34,7 +34,7 @@ describe('formatting', () => {
 
       offset = 9;
 
-      // Second column.
+      // Second row.
       expect(els[offset + 0].innerHTML).toBe('🇩🇪 ');
       expect(els[offset + 1].innerHTML).toBe('9999 ');
       expect(els[offset + 2].innerHTML).toBe('9 999,00 ');
@@ -47,7 +47,7 @@ describe('formatting', () => {
 
       offset = 18;
 
-      // Third column.
+      // Third row.
       expect(els[offset + 0].innerHTML).toBe('🇦🇹 ');
       expect(els[offset + 1].innerHTML).toBe('9999 ');
       expect(els[offset + 2].innerHTML).toBe('1 000,00 ');
