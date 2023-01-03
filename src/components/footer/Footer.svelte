@@ -14,7 +14,7 @@ function createMarkup(source: Source, index: number): string {
   }
 
   if (index !== sources.length - 1 && sources[index + 1].text !== '') {
-    markup += ',&nbsp;';
+    markup += ',';
   }
 
   return markup;
