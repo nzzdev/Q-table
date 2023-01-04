@@ -44,6 +44,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@tsconfig/svelte": "^3.0.0",
     "@types/d3-format": "^3.0.1",
+    "@types/hapi__hapi": "^20.0.13",
     "@types/hapi__inert": "^5.2.3",
     "@types/jest": "^29.2.3",
     "@types/jsdom": "^20.0.1",
