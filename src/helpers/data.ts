@@ -4,7 +4,7 @@ import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 // Types.
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
 import type { FootnoteCellMap } from './footnotes.js';
-import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, TableColumnType, QTableCellDataRaw, Cell, FormattingType, Thead, QtableConfigFormattingSetting, TableColumnDetails } from '../interfaces';
+import type { ColorColumnSettings, QTableDataRaw, QTableConfigOptions, Row, QTableCellDataRaw, Cell, FormattingType, Thead, QtableConfigFormattingSetting, TableColumnDetails } from '../interfaces';
 
 const fourPerEmSpace = '\u2005';
 const enDash = '\u2013';

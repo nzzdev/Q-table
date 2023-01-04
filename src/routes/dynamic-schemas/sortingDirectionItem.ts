@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import type { DataMetaData, QTableConfigOptions, QTableDataRaw, SortDirection } from '../../interfaces';
-import type { Request, ServerRoute } from '@hapi/hapi';
+import type { SortDirection } from '../../interfaces';
+import type { ServerRoute } from '@hapi/hapi';
 
 const route: ServerRoute = {
   method: 'POST',
@@ -10,7 +10,7 @@ const route: ServerRoute = {
       payload: Joi.object(),
     },
   },
-  handler: function (request: Request): ReturnPayload {
+  handler: function (): ReturnPayload {
     // const payload = request.payload as Payload;
     // const item = payload.item;
     // const data = item.data.table;
