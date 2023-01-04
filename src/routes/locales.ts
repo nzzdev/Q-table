@@ -20,6 +20,12 @@ const route: ServerRoute = {
   },
   handler: (request: Request, h: ResponseToolkit) => {
     const params = request.params as Params;
+
+    // For some reason after updating deps on 7.1.5 ts is not detecting the
+    // type of h.file() and is complaining about the return type.
+
+    // @ts-ignore
+    // eslint-disable-next-line
     return h.file(localesDir + params.lng + '/translation.json').type('application/json');
   },
 };

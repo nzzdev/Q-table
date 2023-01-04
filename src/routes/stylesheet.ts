@@ -16,8 +16,12 @@ const route: ServerRoute = {
   handler: function (request: Request, h: ResponseToolkit) {
     const params = request.params as Params;
 
-    return h
-      .file(`${params.filename}.${params.extension}`)
+    // For some reason after updating deps on 7.1.5 ts is not detecting the
+    // type of h.file() and is complaining about the return type.
+
+    // @ts-ignore
+    // eslint-disable-next-line
+    return h.file(`${params.filename}.${params.extension}`)
       .type('text/css')
       .header('cache-control', `max-age=${60 * 60 * 24 * 365}, immutable`); // 1 year
   },

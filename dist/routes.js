@@ -2839,8 +2839,11 @@ const route$j = {
     },
     handler: function (request, h) {
         const params = request.params;
-        return h
-            .file(`${params.filename}.${params.extension}`)
+        // For some reason after updating deps on 7.1.5 ts is not detecting the
+        // type of h.file() and is complaining about the return type.
+        // @ts-ignore
+        // eslint-disable-next-line
+        return h.file(`${params.filename}.${params.extension}`)
             .type('text/css')
             .header('cache-control', `max-age=${60 * 60 * 24 * 365}, immutable`); // 1 year
     },
@@ -3401,7 +3404,7 @@ const route$6 = {
             payload: Joi.object(),
         },
     },
-    handler: function (request) {
+    handler: function () {
         // const payload = request.payload as Payload;
         // const item = payload.item;
         // const data = item.data.table;
@@ -3575,6 +3578,10 @@ const route$3 = {
     },
     handler: (request, h) => {
         const params = request.params;
+        // For some reason after updating deps on 7.1.5 ts is not detecting the
+        // type of h.file() and is complaining about the return type.
+        // @ts-ignore
+        // eslint-disable-next-line
         return h.file(localesDir + params.lng + '/translation.json').type('application/json');
     },
 };
