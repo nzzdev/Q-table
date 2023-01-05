@@ -5,9 +5,6 @@ services:
 language: node_js
 node_js:
   - '18'
-cache:
-  directories:
-    - node_modules
 install:
   - npm set-script prepare ""
   - npm install
