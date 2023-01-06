@@ -4,7 +4,7 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import svelte from 'rollup-plugin-svelte';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 
 const backendConfig = {
   input: 'src/routes/routes.ts',
