@@ -1,13 +1,10 @@
-dist: trusty
+dist: jammy
 sudo: true
 services:
   - docker
 language: node_js
 node_js:
-  - '16'
-cache:
-  directories:
-    - node_modules
+  - '18'
 install:
   - npm set-script prepare ""
   - npm install

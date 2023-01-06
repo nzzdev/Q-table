@@ -39,6 +39,7 @@ module.exports = {
   ignorePatterns: ['*.cjs', 'node_modules'],
   rules: {
     quotes: [2, 'single'],
+    "@typescript-eslint/ban-ts-comment": "off",
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
