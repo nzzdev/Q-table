@@ -4,7 +4,7 @@ import { getNumericColumns } from '../helpers/data.js';
 import { getMinibarNumbersWithType } from '../helpers/minibars.js';
 import { hasCustomBuckets } from '../helpers/colorColumn.js';
 import type { AvailabilityResponseObject, WebPayload } from '../interfaces';
-import type { Request } from 'hapi__hapi';
+import type { Request } from '@hapi/hapi';
 
 export default {
   method: 'POST',
