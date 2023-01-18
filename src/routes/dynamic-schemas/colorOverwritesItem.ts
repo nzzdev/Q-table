@@ -31,15 +31,13 @@ const route: ServerRoute = {
 export default route;
 
 function getDropdownSettingsNumerical(colorColumnSettings: ColorColumnSettings): ReturnPayload {
-  const ids: (number | null)[] = [null];
+  const ids: (number | null)[] = [];
   const titles: string[] = [];
   const numberItems = getNumberBuckets(colorColumnSettings);
 
   for (let i = 0; i < numberItems; i++) {
-    const id = i + 1;
-
-    ids.push(id);
-    titles.push(`${id}. Bucket `);
+    ids.push(i);
+    titles.push(`${i + 1}. Bucket `);
   }
 
   return {
