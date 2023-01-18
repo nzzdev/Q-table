@@ -47,15 +47,7 @@ function createMarkup(source: Source, index: number): string {
       </div>
     {/if}
     {#if acronym}
-      <div class="s-q-item__footer__acronym">NZZ / {acronym}</div>
-    {:else}
-      <div class="s-q-item__footer__acronym">NZZ</div>
+      <div class="s-q-item__footer__acronym">{acronym}</div>
     {/if}
   </div>
 </div>
-
-<style>
-.s-q-item__footer__acronym {
-  display: none;
-}
-</style>
