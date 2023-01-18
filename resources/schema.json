@@ -807,7 +807,7 @@
                     },
                     "layout": "compact",
                     "expandable": {
-                      "itemLabelTemplate": "${color} - ${position}"
+                      "itemLabelTemplate": "${color}"
                     },
                     "sortable": false
                   },

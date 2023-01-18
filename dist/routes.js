@@ -896,7 +896,7 @@ function getTextColor(customColor, colorClass) {
     return gray9;
 }
 function getCustomColorMap(colorOverwrites) {
-    return new Map(colorOverwrites.map(({ color, position, textColor }) => [position - 1, { color, textColor }]));
+    return new Map(colorOverwrites.map(({ color, position, textColor }) => [position, { color, textColor }]));
 }
 
 var LABEL_LEGEND_ID;
@@ -2357,7 +2357,7 @@ var properties$1 = {
 									},
 									layout: "compact",
 									expandable: {
-										itemLabelTemplate: "${color} - ${position}"
+										itemLabelTemplate: "${color}"
 									},
 									sortable: false
 								},
@@ -3068,13 +3068,12 @@ const route$g = {
     },
 };
 function getDropdownSettingsNumerical(colorColumnSettings) {
-    const ids = [null];
+    const ids = [];
     const titles = [];
     const numberItems = getNumberBuckets(colorColumnSettings);
     for (let i = 0; i < numberItems; i++) {
-        const id = i + 1;
-        ids.push(id);
-        titles.push(`${id}. Bucket `);
+        ids.push(i);
+        titles.push(`${i + 1}. Bucket `);
     }
     return {
         enum: ids,
@@ -15296,7 +15295,7 @@ var options$4 = {
 				{
 					textColor: "dark",
 					color: "yellow",
-					position: 1
+					position: 0
 				}
 			]
 		},
@@ -15745,12 +15744,12 @@ var options = {
 				{
 					textColor: "dark",
 					color: "pink",
-					position: 1
+					position: 0
 				},
 				{
 					textColor: "dark",
 					color: "lightblue",
-					position: 2
+					position: 1
 				}
 			],
 			customCategoriesOrder: [

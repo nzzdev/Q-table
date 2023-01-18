@@ -24,7 +24,7 @@ export function getTextColor(customColor: { color: string; textColor: string } |
 }
 
 export function getCustomColorMap(colorOverwrites: ColorOverwrites[]): CustomColorMap {
-  return new Map(colorOverwrites.map(({ color, position, textColor }) => [position - 1, { color, textColor }]));
+  return new Map(colorOverwrites.map(({ color, position, textColor }) => [position, { color, textColor }]));
 }
 
 /**
