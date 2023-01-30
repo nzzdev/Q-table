@@ -25,18 +25,20 @@ function getAttributes(colIndex: number): Attribute {
 }
 
 const onSort = (colIndex: number): void => {
-  if ($sortState.colIndex === colIndex) { // Toggle direction on same column.
+  if ($sortState.colIndex === colIndex) {
+    // Toggle direction on same column.
     sortState.set({
       colIndex,
       sortDirection: $sortState.sortDirection === 'asc' ? 'desc' : 'asc',
     });
-  } else { // Changing column.
+  } else {
+    // Changing column.
     sortState.set({
       colIndex,
       sortDirection: 'asc',
     });
   }
-}
+};
 
 interface Attribute {
   colspan: number;
@@ -47,16 +49,16 @@ interface Attribute {
 {#if tableHead.length > 0}
   <thead class="s-font-note s-font-note--strong">
     {#each tableHead as head, colIndex}
-      <th
-        class="qtable-th qtable-th-{head.type} {head.classes.join(' ')} {getAttributes(colIndex).classes}">
-
+      <th class="qtable-th qtable-th-{head.type} {head.classes.join(' ')} {getAttributes(colIndex).classes}">
         <CellLabel label={head.value} footnote={head.footnote} />
 
         {#if head.sortable}
-          <span class="qtable-sort-icon-holder" class:qtable-sort-active={$sortState.colIndex === colIndex}  on:click={() => onSort(colIndex)} >
-
-            <SortArrow
-              sortAscending={$sortState.colIndex === colIndex && $sortState.sortDirection === 'asc'} />
+          <span
+            class="qtable-sort-icon-holder"
+            class:qtable-sort-active={$sortState.colIndex === colIndex}
+            on:click={() => onSort(colIndex)}
+          >
+            <SortArrow sortAscending={$sortState.colIndex === colIndex && $sortState.sortDirection === 'asc'} />
           </span>
         {/if}
       </th>
@@ -74,10 +76,14 @@ interface Attribute {
 }
 
 :global(.qtable-sort-icon-holder) {
-  opacity: .25;
+  opacity: 0.25;
 }
 
 :global(.qtable-sort-active) {
   opacity: 1;
+}
+
+:global(.qtable-th-numeric) {
+  text-align: right;
 }
 </style>
