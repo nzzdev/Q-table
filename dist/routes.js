@@ -990,8 +990,9 @@ function getCategoricalLegend(data, colorColumnSettings) {
  */
 function getCategoryColor(index, customColorMap) {
     const colorScheme = digitWords[index];
-    const customColor = customColorMap.get(index);
     let colorClass = '';
+    // The map starts at index 1 so we have to offset the index by 1.
+    const customColor = customColorMap.get(index + 1);
     if (colorScheme) {
         colorClass = `s-viz-color-${colorScheme}-5`;
     }
@@ -15744,12 +15745,12 @@ var options = {
 				{
 					textColor: "dark",
 					color: "pink",
-					position: 0
+					position: 1
 				},
 				{
 					textColor: "dark",
 					color: "lightblue",
-					position: 1
+					position: 2
 				}
 			],
 			customCategoriesOrder: [
