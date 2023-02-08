@@ -98,12 +98,12 @@
           {
             "textColor": "dark",
             "color": "pink",
-            "position": 0
+            "position": 1
           },
           {
             "textColor": "dark",
             "color": "lightblue",
-            "position": 1
+            "position": 2
           }
         ],
         "customCategoriesOrder": []
