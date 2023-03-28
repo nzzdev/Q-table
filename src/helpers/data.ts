@@ -133,6 +133,15 @@ function formatCell(rawValue: QTableCellDataRaw, type: FormattingType, useGroupi
   }
 
   const parsedRawValue = parseFloat(rawValue || '');
+  if(isNaN(parsedRawValue)) {
+    return {
+      type: 'text',
+      value: parsedRawValue,
+      label: '',
+      footnote: '',
+      classes: [''],
+    }
+  }
 
   let prefix = '';
 

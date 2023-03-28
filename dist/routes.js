@@ -149,6 +149,15 @@ function formatCell(rawValue, type, useGroupingSeparator = false) {
         return formatCountryFlagEmojiDatapoint(rawValue);
     }
     const parsedRawValue = parseFloat(rawValue || '');
+    if (isNaN(parsedRawValue)) {
+        return {
+            type: 'text',
+            value: parsedRawValue,
+            label: '',
+            footnote: '',
+            classes: [''],
+        };
+    }
     let prefix = '';
     let separator = '';
     if (useGroupingSeparator) {
