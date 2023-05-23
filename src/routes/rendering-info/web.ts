@@ -6,7 +6,10 @@ import { getDataWithoutHeaderRow, formatTableData } from '@helpers/data.js';
 import { getFootnotes } from '@helpers/footnotes.js';
 import { getMinibar } from '@helpers/minibars.js';
 import { readFileSync } from 'fs';
-import schemaString from '@rs/schema.json';
+
+// Don't use aliased import here. For some reasom it will not
+// removed during the build then and the app will crash.
+import schemaString from '../../../resources/schema.json';
 import type { Request, ServerRoute } from '@hapi/hapi';
 import type { ColorColumn } from '@helpers/colorColumn.js';
 import type { ProcessedTableData} from '@helpers/data';
