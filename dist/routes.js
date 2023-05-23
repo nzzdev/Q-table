@@ -4,6 +4,7 @@ import { formatLocale as formatLocale$1 } from 'd3-format';
 import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
 import * as simpleStatistics from 'simple-statistics';
 import { readFileSync } from 'fs';
+import schemaString from '@rs/schema.json';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import Joi from 'joi';
@@ -22,6 +23,8 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+/* global Reflect, Promise */
+
 
 function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -918,7 +921,7 @@ var LABEL_LEGEND_ID;
 })(LABEL_LEGEND_ID || (LABEL_LEGEND_ID = {}));
 
 const methodBoxTextConfig = {
-    ckmeans: 'Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede zwischen den Regionen möglichst gut sichtbar werden (Jenks Natural Breaks).',
+    ckmeans: 'Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede möglichst gut sichtbar werden (Jenks Natural Breaks).',
     quantile: 'Die Gruppen wurden so gewählt, dass in jeder Gruppe möglichst gleich viele Werte vorhanden sind.',
     equal: 'Die Gruppen wurden so gewählt, dass sie jeweils einen gleich grossen Bereich auf der Skala abdecken.',
     custom: 'Die Gruppen wurden manuell definiert.',
@@ -1559,1080 +1562,10 @@ function getNegativeColor(type) {
     return 's-viz-color-one-5';
 }
 
-var $schema$1 = "http://json-schema.org/draft-07/schema#";
-var type$1 = "object";
-var title$M = "Tabelle";
-var properties$1 = {
-	title: {
-		title: "Titel",
-		type: "string",
-		"Q:options": {
-			placeholder: "Der Titel bringt die Kernaussage der Tabelle auf den Punkt&#46;"
-		}
-	},
-	subtitle: {
-		title: "Untertitel",
-		type: "string"
-	},
-	data: {
-		title: "Daten",
-		type: "object",
-		"Q:type": "table",
-		"Q:options": {
-			allowTranspose: false,
-			metaDataEditor: {
-				dataPropertyName: "table",
-				features: {
-					cells: {
-						propertyPath: "metaData.cells"
-					}
-				}
-			}
-		},
-		properties: {
-			table: {
-				type: "array",
-				items: {
-					type: "array",
-					items: {
-						oneOf: [
-							{
-								type: "string"
-							},
-							{
-								type: "null"
-							}
-						]
-					}
-				},
-				minItems: 1
-			},
-			metaData: {
-				type: "object",
-				"Q:options": {
-					compact: true
-				},
-				properties: {
-					cells: {
-						type: "array",
-						items: {
-							type: "object",
-							properties: {
-								rowIndex: {
-									type: "number",
-									"Q:options": {
-										hideInEditor: true
-									}
-								},
-								colIndex: {
-									type: "number",
-									"Q:options": {
-										hideInEditor: true
-									}
-								},
-								data: {
-									type: "object",
-									properties: {
-										footnote: {
-											title: "Fussnote",
-											type: "string"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	sources: {
-		title: "Quelle(n)",
-		type: "array",
-		items: {
-			type: "object",
-			title: "Quelle",
-			properties: {
-				text: {
-					title: "Quelle",
-					type: "string"
-				},
-				link: {
-					"Q:type": "link",
-					title: "Link",
-					type: "object",
-					"Q:options": {
-						placeholder: "Direktlink zur Quelle, http://..."
-					},
-					properties: {
-						url: {
-							title: "Url",
-							type: "string"
-						},
-						isValid: {
-							type: "boolean"
-						}
-					}
-				}
-			},
-			required: [
-				"text"
-			]
-		}
-	},
-	notes: {
-		title: "Anmerkungen",
-		type: "string"
-	},
-	options: {
-		title: "Optionen",
-		type: "object",
-		properties: {
-			pageSize: {
-				title: "Zeilen ausblenden nach",
-				type: "number",
-				"default": 10
-			},
-			frozenRowKey: {
-				title: "Zeile einfrieren",
-				oneOf: [
-					{
-						type: "number"
-					},
-					{
-						type: "null"
-					}
-				],
-				"Q:options": {
-					dynamicSchema: {
-						type: "ToolEndpoint",
-						config: {
-							endpoint: "dynamic-schema/selectedFrozenRow",
-							fields: [
-								"data"
-							]
-						}
-					}
-				}
-			},
-			hideTableHeader: {
-				title: "Spaltenüberschriften ausblenden",
-				type: "boolean",
-				"default": false
-			},
-			showTableSearch: {
-				title: "Tabellensuche anzeigen",
-				type: "boolean",
-				"default": false,
-				"Q:options": {
-					availabilityChecks: [
-						{
-							type: "ToolEndpoint",
-							config: {
-								endpoint: "option-availability/showTableSearch",
-								fields: [
-									"options",
-									"data"
-								]
-							}
-						}
-					]
-				}
-			},
-			hideLegend: {
-				title: "Legende ausblenden",
-				type: "boolean",
-				"default": false
-			},
-			cardLayout: {
-				title: "Card-Layout",
-				type: "boolean",
-				"default": false
-			},
-			cardLayoutIfSmall: {
-				title: "Card-Layout für Mobile",
-				type: "boolean",
-				"default": false,
-				"Q:options": {
-					availabilityChecks: [
-						{
-							type: "ToolEndpoint",
-							config: {
-								endpoint: "option-availability/cardLayoutIfSmall",
-								fields: [
-									"options",
-									"data"
-								]
-							}
-						}
-					]
-				}
-			},
-			formatting: {
-				title: "Formatierung",
-				type: "array",
-				"Q:options": {
-					dynamicSchema: {
-						type: "ToolEndpoint",
-						config: {
-							endpoint: "dynamic-schema/getColumnAmount",
-							fields: [
-								"data"
-							]
-						}
-					},
-					layout: "compact"
-				},
-				items: {
-					type: "object",
-					properties: {
-						column: {
-							title: "Zeile",
-							oneOf: [
-								{
-									type: "number"
-								}
-							],
-							"Q:options": {
-								dynamicSchema: {
-									selectType: "select",
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "dynamic-schema/getEachColumn",
-										fields: [
-											"data",
-											"options"
-										]
-									}
-								}
-							}
-						},
-						formattingType: {
-							title: "Formatierung",
-							type: "string",
-							"default": "light",
-							"enum": [
-								"country_flags",
-								"0",
-								"0.00",
-								"0.000",
-								"0%",
-								"0.0%",
-								"0.00%",
-								"0.000%",
-								"arrow_sign_relative_int"
-							],
-							"Q:options": {
-								selectType: "select",
-								enum_titles: [
-									"country_flags",
-									"0",
-									"0.00",
-									"0.000",
-									"0%",
-									"0.0%",
-									"0.00%",
-									"0.000%",
-									"(➚➙➘) (+/-)0%"
-								]
-							}
-						}
-					}
-				}
-			},
-			sorting: {
-				title: "Sortierung",
-				type: "array",
-				"Q:options": {
-					dynamicSchema: {
-						type: "ToolEndpoint",
-						config: {
-							endpoint: "dynamic-schema/getColumnAmount",
-							fields: [
-								"data"
-							]
-						}
-					},
-					layout: "compact",
-					sortable: false
-				},
-				items: {
-					type: "object",
-					properties: {
-						column: {
-							title: "Zeile",
-							oneOf: [
-								{
-									type: "number"
-								}
-							],
-							"Q:options": {
-								dynamicSchema: {
-									selectType: "select",
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "dynamic-schema/getEachColumn",
-										fields: [
-											"data",
-											"options"
-										]
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			minibar: {
-				title: "Minibars",
-				type: "object",
-				"Q:options": {
-					availabilityChecks: [
-						{
-							type: "ToolEndpoint",
-							config: {
-								endpoint: "option-availability/minibars",
-								fields: [
-									"options",
-									"data"
-								]
-							}
-						}
-					]
-				},
-				properties: {
-					selectedColumn: {
-						title: "Spalte auswählen",
-						oneOf: [
-							{
-								type: "number"
-							},
-							{
-								type: "null"
-							}
-						],
-						"Q:options": {
-							availabilityChecks: [
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "option-availability/selectedColumnMinibar",
-										fields: [
-											"options",
-											"data"
-										]
-									}
-								}
-							],
-							dynamicSchema: {
-								type: "ToolEndpoint",
-								config: {
-									endpoint: "dynamic-schema/selectedColumnMinibar",
-									fields: [
-										"data"
-									]
-								}
-							}
-						}
-					},
-					invertColors: {
-						title: "Farben invertieren",
-						type: "boolean",
-						"default": false,
-						"Q:options": {
-							availabilityChecks: [
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "option-availability/invertColors",
-										fields: [
-											"options",
-											"data"
-										]
-									}
-								}
-							]
-						}
-					},
-					barColor: {
-						title: "Farben manuell festlegen",
-						type: "object",
-						"Q:options": {
-							availabilityChecks: [
-								{
-									type: "UserHasRole",
-									config: {
-										role: "expert-table"
-									}
-								},
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "option-availability/barColor",
-										fields: [
-											"options",
-											"data"
-										]
-									}
-								}
-							]
-						},
-						properties: {
-							positive: {
-								title: "Positive Werte",
-								type: "object",
-								"Q:options": {
-									availabilityChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/barColorPositive",
-												fields: [
-													"options",
-													"data"
-												]
-											}
-										}
-									]
-								},
-								properties: {
-									className: {
-										title: "CSS-Klassenname",
-										"default": "",
-										type: "string",
-										"Q:options": {
-											placeholder: "s-viz-color-one-5"
-										}
-									},
-									colorCode: {
-										title: "Farbcode",
-										type: "string",
-										"default": "",
-										"Q:type": "color"
-									}
-								}
-							},
-							negative: {
-								title: "Negative Werte",
-								type: "object",
-								"Q:options": {
-									availabilityChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/barColorNegative",
-												fields: [
-													"options",
-													"data"
-												]
-											}
-										}
-									]
-								},
-								properties: {
-									className: {
-										title: "CSS-Klassenname",
-										"default": "",
-										type: "string",
-										"Q:options": {
-											placeholder: "s-viz-color-two-3"
-										}
-									},
-									colorCode: {
-										title: "Farbcode",
-										type: "string",
-										"default": "",
-										"Q:type": "color"
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			colorColumn: {
-				title: "Einfärben",
-				type: "object",
-				"Q:options": {
-					availabilityChecks: [
-						{
-							type: "ToolEndpoint",
-							config: {
-								endpoint: "option-availability/colorColumn",
-								fields: [
-									"options",
-									"data"
-								]
-							}
-						}
-					]
-				},
-				properties: {
-					selectedColumn: {
-						title: "Spalte auswählen",
-						oneOf: [
-							{
-								type: "number"
-							},
-							{
-								type: "null"
-							}
-						],
-						"Q:options": {
-							availabilityChecks: [
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "option-availability/selectedColorColumn",
-										fields: [
-											"options",
-											"data"
-										]
-									}
-								}
-							],
-							dynamicSchema: {
-								type: "ToolEndpoint",
-								config: {
-									endpoint: "dynamic-schema/selectedColorColumn",
-									fields: [
-										"data"
-									]
-								}
-							}
-						}
-					},
-					colorColumnType: {
-						title: "Einfärbungstyp",
-						type: "string",
-						"enum": [
-							"numerical",
-							"categorical"
-						],
-						"default": "numerical",
-						"Q:options": {
-							availabilityChecks: [
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "option-availability/colorColumnType",
-										fields: [
-											"options"
-										]
-									}
-								}
-							],
-							selectType: "radio",
-							enum_titles: [
-								"numerisch",
-								"kategorisch"
-							]
-						}
-					},
-					numericalOptions: {
-						title: "Optionen numerische Einfärbung",
-						type: "object",
-						"Q:options": {
-							availabilityChecks: [
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "option-availability/isNumerical",
-										fields: [
-											"options"
-										]
-									}
-								}
-							]
-						},
-						properties: {
-							labelLegend: {
-								title: "Mittelwert-Markierung",
-								type: "string",
-								"default": "noLabel",
-								"enum": [
-									"noLabel",
-									"average",
-									"median"
-								],
-								"Q:options": {
-									enum_titles: [
-										"ausblenden",
-										"zeigt Durchschnitt an",
-										"zeigt Median an"
-									]
-								}
-							},
-							bucketType: {
-								title: "Bucketing Methode",
-								type: "string",
-								"default": "ckmeans",
-								"enum": [
-									"ckmeans",
-									"quantile",
-									"equal",
-									"custom"
-								],
-								"Q:options": {
-									availabilityChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/bucketType",
-												fields: [
-													"options"
-												]
-											}
-										}
-									],
-									enum_titles: [
-										"Jenks Natural Breaks",
-										"Quantile",
-										"gleich grosse Intervalle",
-										"manuelle Grenzen"
-									],
-									notificationChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "notification/numberBucketsOutOfColorScale",
-												fields: [
-													"data",
-													"options"
-												]
-											},
-											priority: {
-												type: "medium",
-												value: 2
-											}
-										}
-									]
-								}
-							},
-							customBuckets: {
-								title: "Manuelle Bucketgrenzen",
-								type: "string",
-								"Q:options": {
-									placeholder: "z.B. 5, 15, 20, 30",
-									availabilityChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/customBuckets",
-												fields: [
-													"options"
-												]
-											}
-										}
-									],
-									notificationChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "notification/customBuckets",
-												fields: [
-													"data",
-													"options"
-												]
-											},
-											priority: {
-												type: "medium",
-												value: 2
-											}
-										}
-									]
-								}
-							},
-							numberBuckets: {
-								title: "Anzahl Buckets",
-								type: "number",
-								"default": 5,
-								minimum: 2,
-								"Q:options": {
-									availabilityChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/numberBuckets",
-												fields: [
-													"options"
-												]
-											}
-										}
-									],
-									notificationChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "notification/numberBucketsExceedsDataSet",
-												fields: [
-													"data",
-													"options"
-												]
-											},
-											priority: {
-												type: "medium",
-												value: 2
-											}
-										}
-									]
-								}
-							},
-							scale: {
-								title: "Skala",
-								type: "string",
-								"Q:options": {
-									selectType: "select",
-									availabilityChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/colorScale",
-												fields: [
-													"options"
-												]
-											}
-										}
-									],
-									dynamicSchema: {
-										type: "ToolEndpoint",
-										config: {
-											endpoint: "dynamic-schema/colorScale",
-											fields: [
-												"options"
-											]
-										}
-									}
-								},
-								"default": "sequential"
-							},
-							colorScheme: {
-								title: "Farbschema",
-								type: "string",
-								"default": "one",
-								"Q:options": {
-									selectType: "select",
-									dynamicSchema: {
-										type: "ToolEndpoint",
-										config: {
-											endpoint: "dynamic-schema/colorScheme",
-											fields: [
-												"options"
-											]
-										}
-									},
-									availabilityChecks: [
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/colorScheme",
-												fields: [
-													"options"
-												]
-											}
-										}
-									]
-								}
-							},
-							colorOverwrites: {
-								type: "array",
-								title: "Bucketfarbe",
-								"Q:options": {
-									availabilityChecks: [
-										{
-											type: "UserHasRole",
-											config: {
-												role: "expert-table"
-											}
-										},
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/customColors",
-												fields: [
-													"options"
-												]
-											}
-										}
-									],
-									dynamicSchema: {
-										type: "ToolEndpoint",
-										config: {
-											endpoint: "dynamic-schema/colorOverwrites",
-											fields: [
-												"options",
-												"data"
-											]
-										}
-									},
-									layout: "compact",
-									expandable: {
-										itemLabelTemplate: "${color}"
-									},
-									sortable: false
-								},
-								items: {
-									type: "object",
-									properties: {
-										color: {
-											title: "Farbe",
-											type: "string",
-											"Q:type": "color"
-										},
-										textColor: {
-											title: "Textfarbe",
-											type: "string",
-											"default": "light",
-											"enum": [
-												"light",
-												"dark"
-											],
-											"Q:options": {
-												selectType: "select",
-												enum_titles: [
-													"hell",
-													"dunkel"
-												]
-											}
-										},
-										position: {
-											title: "Position",
-											oneOf: [
-												{
-													type: "number"
-												},
-												{
-													type: "null"
-												}
-											],
-											"Q:options": {
-												dynamicSchema: {
-													selectType: "select",
-													type: "ToolEndpoint",
-													config: {
-														endpoint: "dynamic-schema/colorOverwritesItem",
-														fields: [
-															"options",
-															"data"
-														]
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					categoricalOptions: {
-						title: "Optionen kategorische Einfärbung",
-						type: "object",
-						"Q:options": {
-							availabilityChecks: [
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "option-availability/isCategorical",
-										fields: [
-											"options"
-										]
-									}
-								}
-							],
-							notificationChecks: [
-								{
-									type: "ToolEndpoint",
-									config: {
-										endpoint: "notification/numberCategoriesOutOfColorScale",
-										fields: [
-											"data",
-											"options"
-										]
-									},
-									priority: {
-										type: "medium",
-										value: 2
-									}
-								}
-							]
-						},
-						properties: {
-							colorOverwrites: {
-								type: "array",
-								title: "Kategorienfarbe",
-								"Q:options": {
-									availabilityChecks: [
-										{
-											type: "UserHasRole",
-											config: {
-												role: "expert-table"
-											}
-										},
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/customColors",
-												fields: [
-													"options"
-												]
-											}
-										}
-									],
-									dynamicSchema: {
-										type: "ToolEndpoint",
-										config: {
-											endpoint: "dynamic-schema/colorOverwrites",
-											fields: [
-												"options",
-												"data"
-											]
-										}
-									},
-									layout: "compact",
-									expandable: {
-										itemLabelTemplate: "${color} - ${position}"
-									},
-									sortable: false
-								},
-								items: {
-									type: "object",
-									properties: {
-										color: {
-											title: "Farbe",
-											type: "string",
-											"Q:type": "color"
-										},
-										textColor: {
-											title: "Textfarbe",
-											type: "string",
-											"default": "light",
-											"enum": [
-												"light",
-												"dark"
-											],
-											"Q:options": {
-												selectType: "select",
-												enum_titles: [
-													"hell",
-													"dunkel"
-												]
-											}
-										},
-										position: {
-											title: "Position",
-											oneOf: [
-												{
-													type: "number"
-												},
-												{
-													type: "null"
-												}
-											],
-											"Q:options": {
-												dynamicSchema: {
-													selectType: "select",
-													type: "ToolEndpoint",
-													config: {
-														endpoint: "dynamic-schema/colorOverwritesItem",
-														fields: [
-															"options",
-															"data"
-														]
-													}
-												}
-											}
-										}
-									}
-								}
-							},
-							customCategoriesOrder: {
-								type: "array",
-								title: "Reihenfolge Kategorie",
-								"Q:options": {
-									availabilityChecks: [
-										{
-											type: "UserHasRole",
-											config: {
-												role: "expert-table"
-											}
-										},
-										{
-											type: "ToolEndpoint",
-											config: {
-												endpoint: "option-availability/customCategoriesOrder",
-												fields: [
-													"options"
-												]
-											}
-										}
-									],
-									dynamicSchema: {
-										type: "ToolEndpoint",
-										config: {
-											endpoint: "dynamic-schema/customCategoriesOrder",
-											fields: [
-												"data",
-												"options"
-											]
-										}
-									},
-									layout: "compact",
-									sortable: true
-								},
-								items: {
-									type: "object",
-									title: "Kategorie",
-									properties: {
-										category: {
-											title: "Kategorie",
-											oneOf: [
-												{
-													type: "null"
-												},
-												{
-													type: "string"
-												}
-											],
-											"Q:options": {
-												dynamicSchema: {
-													selectType: "select",
-													type: "ToolEndpoint",
-													config: {
-														endpoint: "dynamic-schema/customCategoriesOrderItem",
-														fields: [
-															"data",
-															"options"
-														]
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-};
-var required = [
-	"title",
-	"data"
-];
-var schema$1 = {
-	$schema: $schema$1,
-	type: type$1,
-	title: title$M,
-	properties: properties$1,
-	required: required
-};
-
 const ajv = new Ajv({
     strict: false,
 });
-const validate = ajv.compile(schema$1);
+const validate = ajv.compile(schemaString);
 const route$k = {
     method: 'POST',
     path: '/rendering-info/web',
@@ -3595,7 +2528,7 @@ const route$3 = {
     },
 };
 
-var title$L = "FIXTURE: simple one-column short table with numeric values";
+var title$M = "FIXTURE: simple one-column short table with numeric values";
 var subtitle$x = "some subtitle here";
 var data$K = {
 	table: [
@@ -3652,7 +2585,7 @@ var sources$K = [
 	}
 ];
 var twoColumn = {
-	title: title$L,
+	title: title$M,
 	subtitle: subtitle$x,
 	data: data$K,
 	options: options$K,
@@ -3660,7 +2593,7 @@ var twoColumn = {
 	sources: sources$K
 };
 
-var title$K = "FIXTURE: four column numeric card layout for small";
+var title$L = "FIXTURE: four column numeric card layout for small";
 var subtitle$w = "Subtitle";
 var data$J = {
 	table: [
@@ -3739,14 +2672,14 @@ var options$J = {
 	}
 };
 var fourColumn = {
-	title: title$K,
+	title: title$L,
 	subtitle: subtitle$w,
 	data: data$J,
 	sources: sources$J,
 	options: options$J
 };
 
-var title$J = "FIXTURE: four column numeric card layout for small no header";
+var title$K = "FIXTURE: four column numeric card layout for small no header";
 var subtitle$v = "Subtitle";
 var data$I = {
 	table: [
@@ -3826,14 +2759,14 @@ var options$I = {
 	}
 };
 var fourColumnNoHeader = {
-	title: title$J,
+	title: title$K,
 	subtitle: subtitle$v,
 	data: data$I,
 	sources: sources$I,
 	options: options$I
 };
 
-var title$I = "FIXTURE: dates in data";
+var title$J = "FIXTURE: dates in data";
 var data$H = {
 	table: [
 		[
@@ -3937,13 +2870,13 @@ var options$H = {
 	}
 };
 var datesInData = {
-	title: title$I,
+	title: title$J,
 	data: data$H,
 	sources: sources$H,
 	options: options$H
 };
 
-var title$H = "FIXTURE: mixed number and text in cell";
+var title$I = "FIXTURE: mixed number and text in cell";
 var subtitle$u = "Opel Insignia Country Tourer 2.0 BiTurbo Diesel";
 var data$G = {
 	table: [
@@ -3995,14 +2928,14 @@ var options$G = {
 	}
 };
 var mixedNumbersAndTextInCell = {
-	title: title$H,
+	title: title$I,
 	subtitle: subtitle$u,
 	data: data$G,
 	sources: sources$G,
 	options: options$G
 };
 
-var title$G = "FIXTURE: hyphen sign as number";
+var title$H = "FIXTURE: hyphen sign as number";
 var subtitle$t = "Subtitle";
 var data$F = {
 	table: [
@@ -4064,14 +2997,14 @@ var options$F = {
 	showTableSearch: true
 };
 var hyphenSignAsNumber = {
-	title: title$G,
+	title: title$H,
 	subtitle: subtitle$t,
 	data: data$F,
 	sources: sources$F,
 	options: options$F
 };
 
-var title$F = "FIXTURE: multiline text";
+var title$G = "FIXTURE: multiline text";
 var subtitle$s = "";
 var data$E = {
 	table: [
@@ -4123,14 +3056,14 @@ var options$E = {
 	}
 };
 var multilineText = {
-	title: title$F,
+	title: title$G,
 	subtitle: subtitle$s,
 	data: data$E,
 	sources: sources$E,
 	options: options$E
 };
 
-var title$E = "FIXTURE: show more button";
+var title$F = "FIXTURE: show more button";
 var data$D = {
 	table: [
 		[
@@ -4428,7 +3361,7 @@ var options$D = {
 var tool$k = "table";
 var subtitle$r = "State by state breakdown";
 var showMoreButton = {
-	title: title$E,
+	title: title$F,
 	data: data$D,
 	sources: sources$D,
 	options: options$D,
@@ -4436,7 +3369,7 @@ var showMoreButton = {
 	subtitle: subtitle$r
 };
 
-var title$D = "FIXTURE: pagination";
+var title$E = "FIXTURE: pagination";
 var data$C = {
 	table: [
 		[
@@ -4736,7 +3669,7 @@ var options$C = {
 var tool$j = "table";
 var subtitle$q = "State by state breakdown";
 var pagination = {
-	title: title$D,
+	title: title$E,
 	data: data$C,
 	sources: sources$C,
 	options: options$C,
@@ -4744,7 +3677,7 @@ var pagination = {
 	subtitle: subtitle$q
 };
 
-var title$C = "FIXTURE: frozenRow";
+var title$D = "FIXTURE: frozenRow";
 var data$B = {
 	table: [
 		[
@@ -5045,7 +3978,7 @@ var options$B = {
 var tool$i = "table";
 var subtitle$p = "State by state breakdown";
 var frozenRow = {
-	title: title$C,
+	title: title$D,
 	data: data$B,
 	sources: sources$B,
 	options: options$B,
@@ -5053,7 +3986,7 @@ var frozenRow = {
 	subtitle: subtitle$p
 };
 
-var title$B = "FIXTURE: disapprearing columns";
+var title$C = "FIXTURE: disapprearing columns";
 var data$A = {
 	table: [
 		[
@@ -5203,7 +4136,7 @@ var options$A = {
 var tool$h = "table";
 var subtitle$o = "State by state breakdown";
 var disappearingColumns = {
-	title: title$B,
+	title: title$C,
 	data: data$A,
 	sources: sources$A,
 	options: options$A,
@@ -5211,7 +4144,7 @@ var disappearingColumns = {
 	subtitle: subtitle$o
 };
 
-var title$A = "FIXTURE: column spacing";
+var title$B = "FIXTURE: column spacing";
 var data$z = {
 	table: [
 		[
@@ -5279,7 +4212,7 @@ var options$z = {
 var tool$g = "table";
 var subtitle$n = "State by state breakdown";
 var columnSpacing = {
-	title: title$A,
+	title: title$B,
 	data: data$z,
 	sources: sources$z,
 	options: options$z,
@@ -5287,7 +4220,7 @@ var columnSpacing = {
 	subtitle: subtitle$n
 };
 
-var title$z = "FIXTURE: minibars with positive and negative values";
+var title$A = "FIXTURE: minibars with positive and negative values";
 var data$y = {
 	table: [
 		[
@@ -5354,7 +4287,7 @@ var options$y = {
 var tool$f = "table";
 var subtitle$m = "State by state breakdown";
 var minibarsMixed = {
-	title: title$z,
+	title: title$A,
 	data: data$y,
 	sources: sources$y,
 	options: options$y,
@@ -5362,7 +4295,7 @@ var minibarsMixed = {
 	subtitle: subtitle$m
 };
 
-var title$y = "FIXTURE: minibars with positive values";
+var title$z = "FIXTURE: minibars with positive values";
 var data$x = {
 	table: [
 		[
@@ -5429,7 +4362,7 @@ var options$x = {
 var tool$e = "table";
 var subtitle$l = "State by state breakdown";
 var minibarsPositive = {
-	title: title$y,
+	title: title$z,
 	data: data$x,
 	sources: sources$x,
 	options: options$x,
@@ -5437,7 +4370,7 @@ var minibarsPositive = {
 	subtitle: subtitle$l
 };
 
-var title$x = "FIXTURE: minibars with negative values";
+var title$y = "FIXTURE: minibars with negative values";
 var data$w = {
 	table: [
 		[
@@ -5504,7 +4437,7 @@ var options$w = {
 var tool$d = "table";
 var subtitle$k = "State by state breakdown";
 var minibarsNegative = {
-	title: title$x,
+	title: title$y,
 	data: data$w,
 	sources: sources$w,
 	options: options$w,
@@ -5512,7 +4445,7 @@ var minibarsNegative = {
 	subtitle: subtitle$k
 };
 
-var title$w = "FIXTURE: minibars with numbers as headers";
+var title$x = "FIXTURE: minibars with numbers as headers";
 var data$v = {
 	table: [
 		[
@@ -5603,7 +4536,7 @@ var options$v = {
 var tool$c = "table";
 var subtitle$j = "State by state breakdown";
 var minibarsHeaderWithNumbers = {
-	title: title$w,
+	title: title$x,
 	data: data$v,
 	sources: sources$v,
 	options: options$v,
@@ -5611,7 +4544,7 @@ var minibarsHeaderWithNumbers = {
 	subtitle: subtitle$j
 };
 
-var title$v = "FIXTURE: mixed minibars with custom colors (className)";
+var title$w = "FIXTURE: mixed minibars with custom colors (className)";
 var data$u = {
 	table: [
 		[
@@ -5678,7 +4611,7 @@ var options$u = {
 var tool$b = "table";
 var subtitle$i = "State by state breakdown";
 var minibarsCustomClassName = {
-	title: title$v,
+	title: title$w,
 	data: data$u,
 	sources: sources$u,
 	options: options$u,
@@ -5686,7 +4619,7 @@ var minibarsCustomClassName = {
 	subtitle: subtitle$i
 };
 
-var title$u = "FIXTURE: mixed minibars with custom colors (colorCode)";
+var title$v = "FIXTURE: mixed minibars with custom colors (colorCode)";
 var data$t = {
 	table: [
 		[
@@ -5753,7 +4686,7 @@ var options$t = {
 var tool$a = "table";
 var subtitle$h = "State by state breakdown";
 var minibarsCustomColorCode = {
-	title: title$u,
+	title: title$v,
 	data: data$t,
 	sources: sources$t,
 	options: options$t,
@@ -5761,7 +4694,7 @@ var minibarsCustomColorCode = {
 	subtitle: subtitle$h
 };
 
-var title$t = "FIXTURE: display footnotes";
+var title$u = "FIXTURE: display footnotes";
 var data$s = {
 	table: [
 		[
@@ -5858,7 +4791,7 @@ var options$s = {
 var tool$9 = "table";
 var subtitle$g = "Einfluss auf Medien und Forschung";
 var displayFootnotes = {
-	title: title$t,
+	title: title$u,
 	data: data$s,
 	sources: sources$s,
 	options: options$s,
@@ -5866,7 +4799,7 @@ var displayFootnotes = {
 	subtitle: subtitle$g
 };
 
-var title$s = "FIXTURE: display merged footnotes";
+var title$t = "FIXTURE: display merged footnotes";
 var data$r = {
 	table: [
 		[
@@ -5963,7 +4896,7 @@ var options$r = {
 var tool$8 = "table";
 var subtitle$f = "Einfluss auf Medien und Forschung";
 var displayMergedFootnotes = {
-	title: title$s,
+	title: title$t,
 	data: data$r,
 	sources: sources$r,
 	options: options$r,
@@ -5971,7 +4904,7 @@ var displayMergedFootnotes = {
 	subtitle: subtitle$f
 };
 
-var title$r = "FIXTURE: display multiple merged footnotes";
+var title$s = "FIXTURE: display multiple merged footnotes";
 var data$q = {
 	table: [
 		[
@@ -6089,7 +5022,7 @@ var options$q = {
 var tool$7 = "table";
 var subtitle$e = "Einfluss auf Medien und Forschung";
 var displayMergedFootnotesMultiple = {
-	title: title$r,
+	title: title$s,
 	data: data$q,
 	sources: sources$q,
 	options: options$q,
@@ -6097,7 +5030,7 @@ var displayMergedFootnotesMultiple = {
 	subtitle: subtitle$e
 };
 
-var title$q = "FIXTURE: display footnotes before minibar";
+var title$r = "FIXTURE: display footnotes before minibar";
 var data$p = {
 	table: [
 		[
@@ -6201,7 +5134,7 @@ var options$p = {
 var tool$6 = "table";
 var subtitle$d = "Einfluss auf Medien und Forschung";
 var displayFootnotesBeforeMinibar = {
-	title: title$q,
+	title: title$r,
 	data: data$p,
 	sources: sources$p,
 	options: options$p,
@@ -6209,7 +5142,7 @@ var displayFootnotesBeforeMinibar = {
 	subtitle: subtitle$d
 };
 
-var title$p = "FIXTURE: display alot of footnotes";
+var title$q = "FIXTURE: display alot of footnotes";
 var data$o = {
 	table: [
 		[
@@ -6348,7 +5281,7 @@ var options$o = {
 var tool$5 = "table";
 var subtitle$c = "Einfluss auf Medien und Forschung";
 var displayAlotOfFootnotes = {
-	title: title$p,
+	title: title$q,
 	data: data$o,
 	sources: sources$o,
 	options: options$o,
@@ -6356,7 +5289,7 @@ var displayAlotOfFootnotes = {
 	subtitle: subtitle$c
 };
 
-var title$o = "FIXTURE: hide footnotes in header";
+var title$p = "FIXTURE: hide footnotes in header";
 var data$n = {
 	table: [
 		[
@@ -6495,7 +5428,7 @@ var options$n = {
 var tool$4 = "table";
 var subtitle$b = "Einfluss auf Medien und Forschung";
 var hideFootnotesInHeader = {
-	title: title$o,
+	title: title$p,
 	data: data$n,
 	sources: sources$n,
 	options: options$n,
@@ -6503,7 +5436,7 @@ var hideFootnotesInHeader = {
 	subtitle: subtitle$b
 };
 
-var title$n = "FIXTURE: display footnotes in cardlayout";
+var title$o = "FIXTURE: display footnotes in cardlayout";
 var data$m = {
 	table: [
 		[
@@ -6614,7 +5547,7 @@ var options$m = {
 var tool$3 = "table";
 var subtitle$a = "Einfluss auf Medien und Forschung";
 var displayFootnotesInCardlayout = {
-	title: title$n,
+	title: title$o,
 	data: data$m,
 	sources: sources$m,
 	options: options$m,
@@ -6622,7 +5555,7 @@ var displayFootnotesInCardlayout = {
 	subtitle: subtitle$a
 };
 
-var title$m = "FIXTURE: footnotes with positive minibars";
+var title$n = "FIXTURE: footnotes with positive minibars";
 var data$l = {
 	table: [
 		[
@@ -6736,13 +5669,13 @@ var options$l = {
 	}
 };
 var footnotesPositiveMinibars = {
-	title: title$m,
+	title: title$n,
 	data: data$l,
 	sources: sources$l,
 	options: options$l
 };
 
-var title$l = "FIXTURE: footnotes with negative minibars";
+var title$m = "FIXTURE: footnotes with negative minibars";
 var data$k = {
 	table: [
 		[
@@ -6856,13 +5789,13 @@ var options$k = {
 	}
 };
 var footnotesNegativeMinibars = {
-	title: title$l,
+	title: title$m,
 	data: data$k,
 	sources: sources$k,
 	options: options$k
 };
 
-var title$k = "FIXTURE: footnotes with mixed minibars";
+var title$l = "FIXTURE: footnotes with mixed minibars";
 var data$j = {
 	table: [
 		[
@@ -6983,13 +5916,13 @@ var options$j = {
 	}
 };
 var footnotesMixedMinibars = {
-	title: title$k,
+	title: title$l,
 	data: data$j,
 	sources: sources$j,
 	options: options$j
 };
 
-var title$j = "FIXTURE: cardlayout";
+var title$k = "FIXTURE: cardlayout";
 var subtitle$9 = "Subtitle";
 var data$i = {
 	table: [
@@ -7054,14 +5987,14 @@ var options$i = {
 	cardLayoutIfSmall: false
 };
 var cardlayout = {
-	title: title$j,
+	title: title$k,
 	subtitle: subtitle$9,
 	data: data$i,
 	sources: sources$i,
 	options: options$i
 };
 
-var title$i = "FIXTURE: cardlayout on mobile";
+var title$j = "FIXTURE: cardlayout on mobile";
 var subtitle$8 = "Subtitle";
 var data$h = {
 	table: [
@@ -7126,14 +6059,14 @@ var options$h = {
 	cardLayoutIfSmall: true
 };
 var cardlayoutMobile = {
-	title: title$i,
+	title: title$j,
 	subtitle: subtitle$8,
 	data: data$h,
 	sources: sources$h,
 	options: options$h
 };
 
-var title$h = "FIXTURE: lots of data";
+var title$i = "FIXTURE: lots of data";
 var data$g = {
 	table: [
 		[
@@ -14104,7 +13037,7 @@ var options$g = {
 };
 var subtitle$7 = "Bugreport here: https://github.com/nzzdev/Q-table/issues/88";
 var lotsOfData = {
-	title: title$h,
+	title: title$i,
 	data: data$g,
 	sources: sources$g,
 	options: options$g,
@@ -14188,19 +13121,19 @@ var options$f = {
 		selectedColumn: null
 	}
 };
-var title$g = "FIXTURE: special characters";
+var title$h = "FIXTURE: special characters";
 var notes = "↻ = Das Spiel wäre anders ausgegangen, wenn beide Teams gleich viel aus ihren Chancen gemacht hätten.";
 var subtitle$6 = "Spiele mit der grössten Abweichung zwischen erwartetem und effektivem Resultat";
 var specialCharacters = {
 	data: data$f,
 	sources: sources$f,
 	options: options$f,
-	title: title$g,
+	title: title$h,
 	notes: notes,
 	subtitle: subtitle$6
 };
 
-var title$f = "FIXTURE: four column numeric card layout for small";
+var title$g = "FIXTURE: four column numeric card layout for small";
 var subtitle$5 = "Subtitle";
 var data$e = {
 	table: [
@@ -14261,14 +13194,14 @@ var options$e = {
 	}
 };
 var formattedNumbers = {
-	title: title$f,
+	title: title$g,
 	subtitle: subtitle$5,
 	data: data$e,
 	sources: sources$e,
 	options: options$e
 };
 
-var title$e = "FIXTURE: four column numeric card layout for small mixed";
+var title$f = "FIXTURE: four column numeric card layout for small mixed";
 var subtitle$4 = "Subtitle";
 var data$d = {
 	table: [
@@ -14315,14 +13248,14 @@ var options$d = {
 	cardLayoutIfSmall: true
 };
 var formattedNumbersMixed = {
-	title: title$e,
+	title: title$f,
 	subtitle: subtitle$4,
 	data: data$d,
 	sources: sources$d,
 	options: options$d
 };
 
-var title$d = "FIXTURE: four column numeric card layout for small negative";
+var title$e = "FIXTURE: four column numeric card layout for small negative";
 var subtitle$3 = "Subtitle";
 var data$c = {
 	table: [
@@ -14369,14 +13302,14 @@ var options$c = {
 	cardLayoutIfSmall: true
 };
 var formattedNumbersNegative = {
-	title: title$d,
+	title: title$e,
 	subtitle: subtitle$3,
 	data: data$c,
 	sources: sources$c,
 	options: options$c
 };
 
-var title$c = "FIXTURE: table search hide";
+var title$d = "FIXTURE: table search hide";
 var data$b = {
 	table: [
 		[
@@ -14499,7 +13432,7 @@ var options$b = {
 var tool$2 = "table";
 var subtitle$2 = "Very important data country by country";
 var tableSearchHidden = {
-	title: title$c,
+	title: title$d,
 	data: data$b,
 	sources: sources$b,
 	options: options$b,
@@ -14507,7 +13440,7 @@ var tableSearchHidden = {
 	subtitle: subtitle$2
 };
 
-var title$b = "FIXTURE: table search show";
+var title$c = "FIXTURE: table search show";
 var data$a = {
 	table: [
 		[
@@ -14630,7 +13563,7 @@ var options$a = {
 var tool$1 = "table";
 var subtitle$1 = "Very important data country by country";
 var tableSearchShow = {
-	title: title$b,
+	title: title$c,
 	data: data$a,
 	sources: sources$a,
 	options: options$a,
@@ -14638,7 +13571,7 @@ var tableSearchShow = {
 	subtitle: subtitle$1
 };
 
-var title$a = "FIXTURE: table search with multiple columns";
+var title$b = "FIXTURE: table search with multiple columns";
 var data$9 = {
 	table: [
 		[
@@ -14803,7 +13736,7 @@ var options$9 = {
 var tool = "table";
 var subtitle = "Very important data country by country";
 var tableSearchWithMultipleColumns = {
-	title: title$a,
+	title: title$b,
 	data: data$9,
 	sources: sources$9,
 	options: options$9,
@@ -14811,7 +13744,7 @@ var tableSearchWithMultipleColumns = {
 	subtitle: subtitle
 };
 
-var title$9 = "FIXTURE: color column numeric";
+var title$a = "FIXTURE: color column numeric";
 var data$8 = {
 	table: [
 		[
@@ -14904,13 +13837,13 @@ var options$8 = {
 	}
 };
 var colorColumnNumerical = {
-	title: title$9,
+	title: title$a,
 	data: data$8,
 	sources: sources$8,
 	options: options$8
 };
 
-var title$8 = "FIXTURE: color column numeric no legend label";
+var title$9 = "FIXTURE: color column numeric no legend label";
 var data$7 = {
 	table: [
 		[
@@ -15003,13 +13936,13 @@ var options$7 = {
 	}
 };
 var colorColumnNumericalNoLabel = {
-	title: title$8,
+	title: title$9,
 	data: data$7,
 	sources: sources$7,
 	options: options$7
 };
 
-var title$7 = "FIXTURE: color column numeric no data";
+var title$8 = "FIXTURE: color column numeric no data";
 var data$6 = {
 	table: [
 		[
@@ -15102,13 +14035,13 @@ var options$6 = {
 	}
 };
 var colorColumnNumericalNoData = {
-	title: title$7,
+	title: title$8,
 	data: data$6,
 	sources: sources$6,
 	options: options$6
 };
 
-var title$6 = "FIXTURE: color column numeric with footnotes";
+var title$7 = "FIXTURE: color column numeric with footnotes";
 var data$5 = {
 	table: [
 		[
@@ -15208,13 +14141,13 @@ var options$5 = {
 	}
 };
 var colorColumnNumericalFootnotes = {
-	title: title$6,
+	title: title$7,
 	data: data$5,
 	sources: sources$5,
 	options: options$5
 };
 
-var title$5 = "FIXTURE: color column numeric custom color";
+var title$6 = "FIXTURE: color column numeric custom color";
 var data$4 = {
 	table: [
 		[
@@ -15319,13 +14252,13 @@ var options$4 = {
 	}
 };
 var colorColumnNumericalCustomColors = {
-	title: title$5,
+	title: title$6,
 	data: data$4,
 	sources: sources$4,
 	options: options$4
 };
 
-var title$4 = "FIXTURE: color column categorical";
+var title$5 = "FIXTURE: color column categorical";
 var data$3 = {
 	table: [
 		[
@@ -15423,13 +14356,13 @@ var options$3 = {
 	}
 };
 var colorColumnCategorical = {
-	title: title$4,
+	title: title$5,
 	data: data$3,
 	sources: sources$3,
 	options: options$3
 };
 
-var title$3 = "FIXTURE: color column categorical footnotes";
+var title$4 = "FIXTURE: color column categorical footnotes";
 var data$2 = {
 	table: [
 		[
@@ -15534,13 +14467,13 @@ var options$2 = {
 	}
 };
 var colorColumnCategoricalFootnotes = {
-	title: title$3,
+	title: title$4,
 	data: data$2,
 	sources: sources$2,
 	options: options$2
 };
 
-var title$2 = "FIXTURE: color column categorical custom order";
+var title$3 = "FIXTURE: color column categorical custom order";
 var data$1 = {
 	table: [
 		[
@@ -15648,13 +14581,13 @@ var options$1 = {
 	}
 };
 var colorColumnCategoricalCustomOrder = {
-	title: title$2,
+	title: title$3,
 	data: data$1,
 	sources: sources$1,
 	options: options$1
 };
 
-var title$1 = "FIXTURE: color column categorical custom colors";
+var title$2 = "FIXTURE: color column categorical custom colors";
 var data = {
 	table: [
 		[
@@ -15769,7 +14702,7 @@ var options = {
 	}
 };
 var colorColumnCategoricalCustomColors = {
-	title: title$1,
+	title: title$2,
 	data: data,
 	sources: sources,
 	options: options
@@ -16021,6 +14954,1076 @@ var customBuckets = {
         }
         return null;
     },
+};
+
+var $schema$1 = "http://json-schema.org/draft-07/schema#";
+var type$1 = "object";
+var title$1 = "Tabelle";
+var properties$1 = {
+	title: {
+		title: "Titel",
+		type: "string",
+		"Q:options": {
+			placeholder: "Der Titel bringt die Kernaussage der Tabelle auf den Punkt&#46;"
+		}
+	},
+	subtitle: {
+		title: "Untertitel",
+		type: "string"
+	},
+	data: {
+		title: "Daten",
+		type: "object",
+		"Q:type": "table",
+		"Q:options": {
+			allowTranspose: false,
+			metaDataEditor: {
+				dataPropertyName: "table",
+				features: {
+					cells: {
+						propertyPath: "metaData.cells"
+					}
+				}
+			}
+		},
+		properties: {
+			table: {
+				type: "array",
+				items: {
+					type: "array",
+					items: {
+						oneOf: [
+							{
+								type: "string"
+							},
+							{
+								type: "null"
+							}
+						]
+					}
+				},
+				minItems: 1
+			},
+			metaData: {
+				type: "object",
+				"Q:options": {
+					compact: true
+				},
+				properties: {
+					cells: {
+						type: "array",
+						items: {
+							type: "object",
+							properties: {
+								rowIndex: {
+									type: "number",
+									"Q:options": {
+										hideInEditor: true
+									}
+								},
+								colIndex: {
+									type: "number",
+									"Q:options": {
+										hideInEditor: true
+									}
+								},
+								data: {
+									type: "object",
+									properties: {
+										footnote: {
+											title: "Fussnote",
+											type: "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	sources: {
+		title: "Quelle(n)",
+		type: "array",
+		items: {
+			type: "object",
+			title: "Quelle",
+			properties: {
+				text: {
+					title: "Quelle",
+					type: "string"
+				},
+				link: {
+					"Q:type": "link",
+					title: "Link",
+					type: "object",
+					"Q:options": {
+						placeholder: "Direktlink zur Quelle, http://..."
+					},
+					properties: {
+						url: {
+							title: "Url",
+							type: "string"
+						},
+						isValid: {
+							type: "boolean"
+						}
+					}
+				}
+			},
+			required: [
+				"text"
+			]
+		}
+	},
+	notes: {
+		title: "Anmerkungen",
+		type: "string"
+	},
+	options: {
+		title: "Optionen",
+		type: "object",
+		properties: {
+			pageSize: {
+				title: "Zeilen ausblenden nach",
+				type: "number",
+				"default": 10
+			},
+			frozenRowKey: {
+				title: "Zeile einfrieren",
+				oneOf: [
+					{
+						type: "number"
+					},
+					{
+						type: "null"
+					}
+				],
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/selectedFrozenRow",
+							fields: [
+								"data"
+							]
+						}
+					}
+				}
+			},
+			hideTableHeader: {
+				title: "Spaltenüberschriften ausblenden",
+				type: "boolean",
+				"default": false
+			},
+			showTableSearch: {
+				title: "Tabellensuche anzeigen",
+				type: "boolean",
+				"default": false,
+				"Q:options": {
+					availabilityChecks: [
+						{
+							type: "ToolEndpoint",
+							config: {
+								endpoint: "option-availability/showTableSearch",
+								fields: [
+									"options",
+									"data"
+								]
+							}
+						}
+					]
+				}
+			},
+			hideLegend: {
+				title: "Legende ausblenden",
+				type: "boolean",
+				"default": false
+			},
+			cardLayout: {
+				title: "Card-Layout",
+				type: "boolean",
+				"default": false
+			},
+			cardLayoutIfSmall: {
+				title: "Card-Layout für Mobile",
+				type: "boolean",
+				"default": false,
+				"Q:options": {
+					availabilityChecks: [
+						{
+							type: "ToolEndpoint",
+							config: {
+								endpoint: "option-availability/cardLayoutIfSmall",
+								fields: [
+									"options",
+									"data"
+								]
+							}
+						}
+					]
+				}
+			},
+			formatting: {
+				title: "Formatierung",
+				type: "array",
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/getColumnAmount",
+							fields: [
+								"data"
+							]
+						}
+					},
+					layout: "compact"
+				},
+				items: {
+					type: "object",
+					properties: {
+						column: {
+							title: "Zeile",
+							oneOf: [
+								{
+									type: "number"
+								}
+							],
+							"Q:options": {
+								dynamicSchema: {
+									selectType: "select",
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "dynamic-schema/getEachColumn",
+										fields: [
+											"data",
+											"options"
+										]
+									}
+								}
+							}
+						},
+						formattingType: {
+							title: "Formatierung",
+							type: "string",
+							"default": "light",
+							"enum": [
+								"country_flags",
+								"0",
+								"0.00",
+								"0.000",
+								"0%",
+								"0.0%",
+								"0.00%",
+								"0.000%",
+								"arrow_sign_relative_int"
+							],
+							"Q:options": {
+								selectType: "select",
+								enum_titles: [
+									"country_flags",
+									"0",
+									"0.00",
+									"0.000",
+									"0%",
+									"0.0%",
+									"0.00%",
+									"0.000%",
+									"(➚➙➘) (+/-)0%"
+								]
+							}
+						}
+					}
+				}
+			},
+			sorting: {
+				title: "Sortierung",
+				type: "array",
+				"Q:options": {
+					dynamicSchema: {
+						type: "ToolEndpoint",
+						config: {
+							endpoint: "dynamic-schema/getColumnAmount",
+							fields: [
+								"data"
+							]
+						}
+					},
+					layout: "compact",
+					sortable: false
+				},
+				items: {
+					type: "object",
+					properties: {
+						column: {
+							title: "Zeile",
+							oneOf: [
+								{
+									type: "number"
+								}
+							],
+							"Q:options": {
+								dynamicSchema: {
+									selectType: "select",
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "dynamic-schema/getEachColumn",
+										fields: [
+											"data",
+											"options"
+										]
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			minibar: {
+				title: "Minibars",
+				type: "object",
+				"Q:options": {
+					availabilityChecks: [
+						{
+							type: "ToolEndpoint",
+							config: {
+								endpoint: "option-availability/minibars",
+								fields: [
+									"options",
+									"data"
+								]
+							}
+						}
+					]
+				},
+				properties: {
+					selectedColumn: {
+						title: "Spalte auswählen",
+						oneOf: [
+							{
+								type: "number"
+							},
+							{
+								type: "null"
+							}
+						],
+						"Q:options": {
+							availabilityChecks: [
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "option-availability/selectedColumnMinibar",
+										fields: [
+											"options",
+											"data"
+										]
+									}
+								}
+							],
+							dynamicSchema: {
+								type: "ToolEndpoint",
+								config: {
+									endpoint: "dynamic-schema/selectedColumnMinibar",
+									fields: [
+										"data"
+									]
+								}
+							}
+						}
+					},
+					invertColors: {
+						title: "Farben invertieren",
+						type: "boolean",
+						"default": false,
+						"Q:options": {
+							availabilityChecks: [
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "option-availability/invertColors",
+										fields: [
+											"options",
+											"data"
+										]
+									}
+								}
+							]
+						}
+					},
+					barColor: {
+						title: "Farben manuell festlegen",
+						type: "object",
+						"Q:options": {
+							availabilityChecks: [
+								{
+									type: "UserHasRole",
+									config: {
+										role: "expert-table"
+									}
+								},
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "option-availability/barColor",
+										fields: [
+											"options",
+											"data"
+										]
+									}
+								}
+							]
+						},
+						properties: {
+							positive: {
+								title: "Positive Werte",
+								type: "object",
+								"Q:options": {
+									availabilityChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/barColorPositive",
+												fields: [
+													"options",
+													"data"
+												]
+											}
+										}
+									]
+								},
+								properties: {
+									className: {
+										title: "CSS-Klassenname",
+										"default": "",
+										type: "string",
+										"Q:options": {
+											placeholder: "s-viz-color-one-5"
+										}
+									},
+									colorCode: {
+										title: "Farbcode",
+										type: "string",
+										"default": "",
+										"Q:type": "color"
+									}
+								}
+							},
+							negative: {
+								title: "Negative Werte",
+								type: "object",
+								"Q:options": {
+									availabilityChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/barColorNegative",
+												fields: [
+													"options",
+													"data"
+												]
+											}
+										}
+									]
+								},
+								properties: {
+									className: {
+										title: "CSS-Klassenname",
+										"default": "",
+										type: "string",
+										"Q:options": {
+											placeholder: "s-viz-color-two-3"
+										}
+									},
+									colorCode: {
+										title: "Farbcode",
+										type: "string",
+										"default": "",
+										"Q:type": "color"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			colorColumn: {
+				title: "Einfärben",
+				type: "object",
+				"Q:options": {
+					availabilityChecks: [
+						{
+							type: "ToolEndpoint",
+							config: {
+								endpoint: "option-availability/colorColumn",
+								fields: [
+									"options",
+									"data"
+								]
+							}
+						}
+					]
+				},
+				properties: {
+					selectedColumn: {
+						title: "Spalte auswählen",
+						oneOf: [
+							{
+								type: "number"
+							},
+							{
+								type: "null"
+							}
+						],
+						"Q:options": {
+							availabilityChecks: [
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "option-availability/selectedColorColumn",
+										fields: [
+											"options",
+											"data"
+										]
+									}
+								}
+							],
+							dynamicSchema: {
+								type: "ToolEndpoint",
+								config: {
+									endpoint: "dynamic-schema/selectedColorColumn",
+									fields: [
+										"data"
+									]
+								}
+							}
+						}
+					},
+					colorColumnType: {
+						title: "Einfärbungstyp",
+						type: "string",
+						"enum": [
+							"numerical",
+							"categorical"
+						],
+						"default": "numerical",
+						"Q:options": {
+							availabilityChecks: [
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "option-availability/colorColumnType",
+										fields: [
+											"options"
+										]
+									}
+								}
+							],
+							selectType: "radio",
+							enum_titles: [
+								"numerisch",
+								"kategorisch"
+							]
+						}
+					},
+					numericalOptions: {
+						title: "Optionen numerische Einfärbung",
+						type: "object",
+						"Q:options": {
+							availabilityChecks: [
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "option-availability/isNumerical",
+										fields: [
+											"options"
+										]
+									}
+								}
+							]
+						},
+						properties: {
+							labelLegend: {
+								title: "Mittelwert-Markierung",
+								type: "string",
+								"default": "noLabel",
+								"enum": [
+									"noLabel",
+									"average",
+									"median"
+								],
+								"Q:options": {
+									enum_titles: [
+										"ausblenden",
+										"zeigt Durchschnitt an",
+										"zeigt Median an"
+									]
+								}
+							},
+							bucketType: {
+								title: "Bucketing Methode",
+								type: "string",
+								"default": "ckmeans",
+								"enum": [
+									"ckmeans",
+									"quantile",
+									"equal",
+									"custom"
+								],
+								"Q:options": {
+									availabilityChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/bucketType",
+												fields: [
+													"options"
+												]
+											}
+										}
+									],
+									enum_titles: [
+										"Jenks Natural Breaks",
+										"Quantile",
+										"gleich grosse Intervalle",
+										"manuelle Grenzen"
+									],
+									notificationChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "notification/numberBucketsOutOfColorScale",
+												fields: [
+													"data",
+													"options"
+												]
+											},
+											priority: {
+												type: "medium",
+												value: 2
+											}
+										}
+									]
+								}
+							},
+							customBuckets: {
+								title: "Manuelle Bucketgrenzen",
+								type: "string",
+								"Q:options": {
+									placeholder: "z.B. 5, 15, 20, 30",
+									availabilityChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/customBuckets",
+												fields: [
+													"options"
+												]
+											}
+										}
+									],
+									notificationChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "notification/customBuckets",
+												fields: [
+													"data",
+													"options"
+												]
+											},
+											priority: {
+												type: "medium",
+												value: 2
+											}
+										}
+									]
+								}
+							},
+							numberBuckets: {
+								title: "Anzahl Buckets",
+								type: "number",
+								"default": 5,
+								minimum: 2,
+								"Q:options": {
+									availabilityChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/numberBuckets",
+												fields: [
+													"options"
+												]
+											}
+										}
+									],
+									notificationChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "notification/numberBucketsExceedsDataSet",
+												fields: [
+													"data",
+													"options"
+												]
+											},
+											priority: {
+												type: "medium",
+												value: 2
+											}
+										}
+									]
+								}
+							},
+							scale: {
+								title: "Skala",
+								type: "string",
+								"Q:options": {
+									selectType: "select",
+									availabilityChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/colorScale",
+												fields: [
+													"options"
+												]
+											}
+										}
+									],
+									dynamicSchema: {
+										type: "ToolEndpoint",
+										config: {
+											endpoint: "dynamic-schema/colorScale",
+											fields: [
+												"options"
+											]
+										}
+									}
+								},
+								"default": "sequential"
+							},
+							colorScheme: {
+								title: "Farbschema",
+								type: "string",
+								"default": "one",
+								"Q:options": {
+									selectType: "select",
+									dynamicSchema: {
+										type: "ToolEndpoint",
+										config: {
+											endpoint: "dynamic-schema/colorScheme",
+											fields: [
+												"options"
+											]
+										}
+									},
+									availabilityChecks: [
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/colorScheme",
+												fields: [
+													"options"
+												]
+											}
+										}
+									]
+								}
+							},
+							colorOverwrites: {
+								type: "array",
+								title: "Bucketfarbe",
+								"Q:options": {
+									availabilityChecks: [
+										{
+											type: "UserHasRole",
+											config: {
+												role: "expert-table"
+											}
+										},
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/customColors",
+												fields: [
+													"options"
+												]
+											}
+										}
+									],
+									dynamicSchema: {
+										type: "ToolEndpoint",
+										config: {
+											endpoint: "dynamic-schema/colorOverwrites",
+											fields: [
+												"options",
+												"data"
+											]
+										}
+									},
+									layout: "compact",
+									expandable: {
+										itemLabelTemplate: "${color}"
+									},
+									sortable: false
+								},
+								items: {
+									type: "object",
+									properties: {
+										color: {
+											title: "Farbe",
+											type: "string",
+											"Q:type": "color"
+										},
+										textColor: {
+											title: "Textfarbe",
+											type: "string",
+											"default": "light",
+											"enum": [
+												"light",
+												"dark"
+											],
+											"Q:options": {
+												selectType: "select",
+												enum_titles: [
+													"hell",
+													"dunkel"
+												]
+											}
+										},
+										position: {
+											title: "Position",
+											oneOf: [
+												{
+													type: "number"
+												},
+												{
+													type: "null"
+												}
+											],
+											"Q:options": {
+												dynamicSchema: {
+													selectType: "select",
+													type: "ToolEndpoint",
+													config: {
+														endpoint: "dynamic-schema/colorOverwritesItem",
+														fields: [
+															"options",
+															"data"
+														]
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					categoricalOptions: {
+						title: "Optionen kategorische Einfärbung",
+						type: "object",
+						"Q:options": {
+							availabilityChecks: [
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "option-availability/isCategorical",
+										fields: [
+											"options"
+										]
+									}
+								}
+							],
+							notificationChecks: [
+								{
+									type: "ToolEndpoint",
+									config: {
+										endpoint: "notification/numberCategoriesOutOfColorScale",
+										fields: [
+											"data",
+											"options"
+										]
+									},
+									priority: {
+										type: "medium",
+										value: 2
+									}
+								}
+							]
+						},
+						properties: {
+							colorOverwrites: {
+								type: "array",
+								title: "Kategorienfarbe",
+								"Q:options": {
+									availabilityChecks: [
+										{
+											type: "UserHasRole",
+											config: {
+												role: "expert-table"
+											}
+										},
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/customColors",
+												fields: [
+													"options"
+												]
+											}
+										}
+									],
+									dynamicSchema: {
+										type: "ToolEndpoint",
+										config: {
+											endpoint: "dynamic-schema/colorOverwrites",
+											fields: [
+												"options",
+												"data"
+											]
+										}
+									},
+									layout: "compact",
+									expandable: {
+										itemLabelTemplate: "${color} - ${position}"
+									},
+									sortable: false
+								},
+								items: {
+									type: "object",
+									properties: {
+										color: {
+											title: "Farbe",
+											type: "string",
+											"Q:type": "color"
+										},
+										textColor: {
+											title: "Textfarbe",
+											type: "string",
+											"default": "light",
+											"enum": [
+												"light",
+												"dark"
+											],
+											"Q:options": {
+												selectType: "select",
+												enum_titles: [
+													"hell",
+													"dunkel"
+												]
+											}
+										},
+										position: {
+											title: "Position",
+											oneOf: [
+												{
+													type: "number"
+												},
+												{
+													type: "null"
+												}
+											],
+											"Q:options": {
+												dynamicSchema: {
+													selectType: "select",
+													type: "ToolEndpoint",
+													config: {
+														endpoint: "dynamic-schema/colorOverwritesItem",
+														fields: [
+															"options",
+															"data"
+														]
+													}
+												}
+											}
+										}
+									}
+								}
+							},
+							customCategoriesOrder: {
+								type: "array",
+								title: "Reihenfolge Kategorie",
+								"Q:options": {
+									availabilityChecks: [
+										{
+											type: "UserHasRole",
+											config: {
+												role: "expert-table"
+											}
+										},
+										{
+											type: "ToolEndpoint",
+											config: {
+												endpoint: "option-availability/customCategoriesOrder",
+												fields: [
+													"options"
+												]
+											}
+										}
+									],
+									dynamicSchema: {
+										type: "ToolEndpoint",
+										config: {
+											endpoint: "dynamic-schema/customCategoriesOrder",
+											fields: [
+												"data",
+												"options"
+											]
+										}
+									},
+									layout: "compact",
+									sortable: true
+								},
+								items: {
+									type: "object",
+									title: "Kategorie",
+									properties: {
+										category: {
+											title: "Kategorie",
+											oneOf: [
+												{
+													type: "null"
+												},
+												{
+													type: "string"
+												}
+											],
+											"Q:options": {
+												dynamicSchema: {
+													selectType: "select",
+													type: "ToolEndpoint",
+													config: {
+														endpoint: "dynamic-schema/customCategoriesOrderItem",
+														fields: [
+															"data",
+															"options"
+														]
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var required = [
+	"title",
+	"data"
+];
+var schema$1 = {
+	$schema: $schema$1,
+	type: type$1,
+	title: title$1,
+	properties: properties$1,
+	required: required
 };
 
 var $schema = "http://json-schema.org/draft-04/schema#";

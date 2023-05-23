@@ -9,7 +9,8 @@ const config: Config.InitialOptions = {
   verbose: true,
   transform: {
     '^.+\\.ts$': ['ts-jest', {
-      useESM: true
+      isolatedModules: true,
+      useESM: true,
     }],
     '^.+\\.svelte$': [
       './node_modules/svelte-jester/dist/transformer.mjs',
@@ -32,4 +33,4 @@ const config: Config.InitialOptions = {
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
 };
 
-export default config;
+module.exports = config;

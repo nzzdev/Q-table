@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "verbatimModuleSyntax": true,
     "sourceMap": false,
     "strict": true,
     "baseUrl": ".",
@@ -18,6 +19,8 @@
         "src/helpers/*"
       ]
     },
+    // Fixes issues with Typescript 5+ in svelte-check
+    // "ignoreDeprecations": "5.0",
     "allowSyntheticDefaultImports": true,
     "declaration": false,
     "esModuleInterop": true,
@@ -44,5 +47,8 @@
     "src",
     "resources",
     "tests"
+  ],
+  "exclude": [
+    "jest.config.js",
   ]
 }

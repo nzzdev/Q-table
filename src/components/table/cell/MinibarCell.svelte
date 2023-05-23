@@ -15,25 +15,27 @@ const classes = ['qtable-minibar-cell'].concat(cell.classes);
 let barType = MINIBAR_TYPE.EMPTY;
 
 // Check what bartype we have.
-if (cell.value < 0) {
-  barType = MINIBAR_TYPE.NEGATIVE;
-} else if ( cell.value > 0) {
-  barType = MINIBAR_TYPE.POSITIVE;
+if (typeof cell.value === 'number') {
+  if (cell.value < 0) {
+    barType = MINIBAR_TYPE.NEGATIVE;
+  } else if (cell.value > 0) {
+    barType = MINIBAR_TYPE.POSITIVE;
+  }
 }
 
 classes.push(`qtable-minibar-cell-${barType}`);
 
-const posClrCode = minibar.barColor.positive.colorCode
+const posClrCode = minibar.barColor.positive.colorCode;
 const posClrClass = minibar.barColor.positive.className;
 
-const negClrCode = minibar.barColor.negative.colorCode
+const negClrCode = minibar.barColor.negative.colorCode;
 const negClrClass = minibar.barColor.negative.className;
 
 const barWidth = minibar.values[rowIndex];
 </script>
 
 <Td type={cell.type} {classes}>
-  {#if cell.value < 0}
+  {#if typeof cell.value === 'number' && cell.value < 0}
     <div class="qtable-minibar-holder">
       <MinibarBox type={MINIBAR_TYPE.NEGATIVE} clrCode={negClrCode} clrClass={negClrClass} width={barWidth} />
     </div>
@@ -41,9 +43,9 @@ const barWidth = minibar.values[rowIndex];
 
   <CellLabel label={cell.label} footnote={cell.footnote} />
 
-  {#if cell.value > 0}
+  {#if typeof cell.value === 'number' && cell.value > 0}
     <div class="qtable-minibar-holder">
-      <MinibarBox type={MINIBAR_TYPE.POSITIVE}  clrCode={posClrCode} clrClass={posClrClass} width={barWidth} />
+      <MinibarBox type={MINIBAR_TYPE.POSITIVE} clrCode={posClrCode} clrClass={posClrClass} width={barWidth} />
     </div>
   {/if}
 </Td>
@@ -51,7 +53,7 @@ const barWidth = minibar.values[rowIndex];
 <style lang="scss">
 :global(.qtable-minibar-cell) {
   align-items: center;
-  background-color: hsla(0,0%,78%,.15);
+  background-color: hsla(0, 0%, 78%, 0.15);
   display: flex;
   min-width: 90px;
 }
