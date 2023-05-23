@@ -150,7 +150,7 @@ describe('minibars', () => {
       expect(value).toEqual(4);
     });
 
-    elementCount(response, '.qtable-minibar-cell .qtable-cell-label ').then(value => {
+    elementCount(response, '.qtable-minibar-cell .qtable-cell-label').then(value => {
       expect(value).toEqual(4);
     });
   });

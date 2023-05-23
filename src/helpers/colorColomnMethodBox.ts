@@ -3,7 +3,7 @@ import type { FormattedBucket } from './colorColumnLegend';
 
 const methodBoxTextConfig: Record<BucketType, string> = {
   ckmeans:
-    'Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede zwischen den Regionen möglichst gut sichtbar werden (Jenks Natural Breaks).',
+    'Die unterschiedlich grossen Gruppen kommen durch ein statistisches Verfahren zustande, welches die Werte so in Gruppen einteilt, dass die Unterschiede möglichst gut sichtbar werden (Jenks Natural Breaks).',
   quantile: 'Die Gruppen wurden so gewählt, dass in jeder Gruppe möglichst gleich viele Werte vorhanden sind.',
   equal: 'Die Gruppen wurden so gewählt, dass sie jeweils einen gleich grossen Bereich auf der Skala abdecken.',
   custom: 'Die Gruppen wurden manuell definiert.',

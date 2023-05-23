@@ -1,5 +1,7 @@
 import Hapi from '@hapi/hapi';
-import { JSDOM } from 'jsdom';
+
+import { Window }  from 'happy-dom';
+
 import Joi from 'joi';
 import type { AvailabilityResponseObject, RenderingInfo, ToolRuntimeConfigSize } from '../src/interfaces';
 
@@ -109,10 +111,15 @@ export function elementCount(response: Hapi.ServerInjectResponse, selector: stri
   });
 }
 
-export function createDOM(response: Hapi.ServerInjectResponse): JSDOM {
+export function createDOM(response: Hapi.ServerInjectResponse): { window: Window } {
   const markup = createMarkupWithScript(response);
 
-  return new JSDOM(markup, { resources: 'usable', runScripts: 'dangerously' });
+  const window = new Window();
+  window.document.write(markup);
+
+  return {
+    window
+  };
 }
 
 export function getSizeObjectForToolRuntimeConfig(width: number): ToolRuntimeConfigSize {
