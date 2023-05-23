@@ -1,16 +1,13 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
-  preset: 'ts-jest/presets/default-esm',
-
   // We are using happydom to fix so many issues regarding
   // events and missing dom apis.
   testEnvironment: "@happy-dom/jest-environment",
   verbose: true,
   transform: {
-    '^.+\\.ts$': ['ts-jest', {
-      isolatedModules: true,
-      useESM: true,
+    '^.+\\.ts$': ['@swc/jest', {
+
     }],
     '^.+\\.svelte$': [
       './node_modules/svelte-jester/dist/transformer.mjs',
