@@ -26,7 +26,6 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ['node_modules'],
   transformIgnorePatterns: ['node_modules'],
   bail: false,
-  setupFiles: ['./setupJest.js'],
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
 };
 

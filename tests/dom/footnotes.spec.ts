@@ -41,7 +41,7 @@ describe('footnotes', () => {
     });
 
     const dom = createDOM(response);
-    const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;
+    const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as  unknown as NodeListOf<HTMLDivElement>;
     let arrayOfFootnotes: { index: string; text: string }[] = [];
 
     footnotes.forEach(footnote => {
@@ -86,7 +86,7 @@ describe('footnotes', () => {
     });
 
     const dom = createDOM(response);
-    const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;
+    const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as unknown as NodeListOf<HTMLDivElement>;
 
     let arrayOfFootnotes: { index: string; text: string }[] = [];
 
@@ -120,7 +120,7 @@ describe('footnotes', () => {
     });
 
     const dom = createDOM(response);
-    const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as NodeListOf<HTMLDivElement>;
+    const footnotes = dom.window.document.querySelectorAll('.q-table-footnote-footer') as unknown as NodeListOf<HTMLDivElement>;
 
     let arrayOfFootnotes: { index: string; text: string }[] = [];
 
