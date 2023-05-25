@@ -35,7 +35,6 @@ export function createServer() {
   });
 
   return () =>  {
-    // console.log('WHYY', server);
     return server;
   }
 }

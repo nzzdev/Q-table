@@ -39,7 +39,8 @@ function setMethodiek(bool: boolean): void {
               <div
                 class="{bucket.color.colorClass}
                 qtable-methodiek-legend-circle"
-                style="color:{bucket.color.customColor}"></div>
+                style="color:{bucket.color.customColor}"
+              />
             </td>
 
             {#if bucketIndex === 0 && legend.hasSingleValueBucket}
@@ -59,14 +60,13 @@ function setMethodiek(bool: boolean): void {
               </td>
               <td />
             {/if}
-
           </tr>
         {/each}
       {/if}
     </table>
 
     <div class="qtable-methodiek-descr">{methodBox.text}</div>
-    <a class="qtable-methodiek-clr-explainer" href={methodBox.article.url}  target="_blank" rel="noopener noreferrer">
+    <a class="qtable-methodiek-clr-explainer" href={methodBox.article.url} target="_blank" rel="noopener noreferrer">
       {methodBox.article.title}
     </a>
   </div>
@@ -104,19 +104,19 @@ function setMethodiek(bool: boolean): void {
       :global(td) {
         width: auto;
       }
-      }
+    }
   }
 }
 
 :global(.qtable-methodiek-legend-circle) {
   position: relative;
-    box-sizing: content-box;
-    width: 7px;
-    height: 7px;
-    margin: 2px 8px 2px 2px;
-    border: 1px solid;
-    border-radius: 50%;
-    background-color: currentColor;
+  box-sizing: content-box;
+  width: 7px;
+  height: 7px;
+  margin: 2px 8px 2px 2px;
+  border: 1px solid;
+  border-radius: 50%;
+  background-color: currentColor;
 }
 
 :global(.qtable-methodiek-descr) {
