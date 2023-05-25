@@ -58,6 +58,7 @@ function createNumericalColorColumn(selectedColumn: number, settings: ColorColum
       colors.push(color);
     });
   }
+
   return {
     legend,
     colors,

@@ -534,8 +534,8 @@ export function getFormattedBuckets(formattingOptions: DataFormattingOptions, bu
     }
 
     return {
-      from: getFormattedValue(null, from),
-      to: getFormattedValue(null, to),
+      from: getFormattedValue(from, null),
+      to: getFormattedValue(to, null),
       color,
     };
   });

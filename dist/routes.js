@@ -474,8 +474,8 @@ function getFormattedBuckets(formattingOptions, buckets) {
             };
         }
         return {
-            from: getFormattedValue(null, from),
-            to: getFormattedValue(null, to),
+            from: getFormattedValue(from, null),
+            to: getFormattedValue(to, null),
             color,
         };
     });
