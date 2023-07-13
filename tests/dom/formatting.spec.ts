@@ -18,45 +18,53 @@ describe('formatting', () => {
       },
     });
 
+    // Countryflag tests.
+    // Flags are not in a label element therefore a diff selection.
+    elements(response, 'img').then(els => {
+      expect(els[0].getAttribute('src')).toBe("https://q-server.st-cdn.nzz.ch/file/countryflags/svg/CH.svg");
+      expect(els[1].getAttribute('src')).toBe("https://q-server.st-cdn.nzz.ch/file/countryflags/svg/DE.svg");
+      expect(els[2].getAttribute('src')).toBe("https://q-server.st-cdn.nzz.ch/file/countryflags/svg/AT.svg");
+    });
+
+
+    // Testing the number values.
+    // They are found in a label element.
+    const expectedNumberValues = [
+      // Row 1.
+      '9999 ',
+      '10 000,00 ',
+      '10,000 ',
+      '1% ',
+      '1,0% ',
+      '1,00% ',
+      '1,000% ',
+      '➚ +1% ',
+
+      // Row 2.
+      '9999 ',
+      '9 999,00 ',
+      '10,000 ',
+      '1% ',
+      '1,0% ',
+      '1,00% ',
+      '1,000% ',
+      '➘ -1% ',
+
+      // Row 3.
+      '9999 ',
+      '1 000,00 ',
+      '10,000 ',
+      '1% ',
+      '1,0% ',
+      '1,00% ',
+      '1,000% ',
+      '➙ 0% ',
+    ];
+
     elements(response, '.qtable-cell-label').then(els => {
-      let offset = 0;
-
-      // First row.
-      expect(els[offset + 0].innerHTML).toBe('🇨🇭 ');
-      expect(els[offset + 1].innerHTML).toBe('9999 ');
-      expect(els[offset + 2].innerHTML).toBe('10 000,00 ');
-      expect(els[offset + 3].innerHTML).toBe('10,000 ');
-      expect(els[offset + 4].innerHTML).toBe('1% ');
-      expect(els[offset + 5].innerHTML).toBe('1,0% ');
-      expect(els[offset + 6].innerHTML).toBe('1,00% ');
-      expect(els[offset + 7].innerHTML).toBe('1,000% ');
-      expect(els[offset + 8].innerHTML).toBe('➚ +1% ');
-
-      offset = 9;
-
-      // Second row.
-      expect(els[offset + 0].innerHTML).toBe('🇩🇪 ');
-      expect(els[offset + 1].innerHTML).toBe('9999 ');
-      expect(els[offset + 2].innerHTML).toBe('9 999,00 ');
-      expect(els[offset + 3].innerHTML).toBe('10,000 ');
-      expect(els[offset + 4].innerHTML).toBe('1% ');
-      expect(els[offset + 5].innerHTML).toBe('1,0% ');
-      expect(els[offset + 6].innerHTML).toBe('1,00% ');
-      expect(els[offset + 7].innerHTML).toBe('1,000% ');
-      expect(els[offset + 8].innerHTML).toBe('➘ -1% ');
-
-      offset = 18;
-
-      // Third row.
-      expect(els[offset + 0].innerHTML).toBe('🇦🇹 ');
-      expect(els[offset + 1].innerHTML).toBe('9999 ');
-      expect(els[offset + 2].innerHTML).toBe('1 000,00 ');
-      expect(els[offset + 3].innerHTML).toBe('10,000 ');
-      expect(els[offset + 4].innerHTML).toBe('1% ');
-      expect(els[offset + 5].innerHTML).toBe('1,0% ');
-      expect(els[offset + 6].innerHTML).toBe('1,00% ');
-      expect(els[offset + 7].innerHTML).toBe('1,000% ');
-      expect(els[offset + 8].innerHTML).toBe('➙ 0% ');
+      els.forEach((el, index) => {
+        expect(el.innerHTML).toBe(expectedNumberValues[index]);
+      });
     });
   });
 });

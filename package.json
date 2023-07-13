@@ -1,6 +1,6 @@
 {
   "name": "q-table",
-  "version": "7.2.8",
+  "version": "7.2.9",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -24,13 +24,13 @@
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.3.2",
     "@hapi/inert": "^7.1.0",
-    "@nzz/et-utils-country-flag-emoji": "^1.0.0",
+    "@nzz/et-utils-country-flags": "^1.0.0",
     "ajv": "^8.12.0",
     "clone": "^2.1.2",
     "d3-format": "^3.1.0",
     "joi": "^17.9.2",
     "simple-statistics": "^7.8.3",
-    "svelte": "^3.59.1",
+    "svelte": "^3.59.2",
     "uglify-js": "^3.17.4"
   },
   "devDependencies": {
