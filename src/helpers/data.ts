@@ -1,5 +1,5 @@
 import { formatLocale as d3FormatLocale } from 'd3-format';
-import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
+import CountryFlags from '@nzz/et-utils-country-flags';
 
 // Types.
 import type { Bucket, FormattedBucket } from './colorColumnLegend.js';
@@ -129,7 +129,7 @@ function formatCell(rawValue: QTableCellDataRaw, type: FormattingType, useGroupi
   let label = '';
 
   if (type === 'country_flags') {
-    return formatCountryFlagEmojiDatapoint(rawValue);
+    return formatCountryFlagDatapoint(rawValue);
   }
 
   const parsedRawValue = parseFloat(rawValue || '');
@@ -206,14 +206,14 @@ function formatCell(rawValue: QTableCellDataRaw, type: FormattingType, useGroupi
 }
 
 
-function formatCountryFlagEmojiDatapoint(rawValue: QTableCellDataRaw): Cell {
+function formatCountryFlagDatapoint(rawValue: QTableCellDataRaw): Cell {
   let label = '';
 
   if (typeof rawValue === 'string') {
-    const valueRetyped = rawValue.toUpperCase() as (keyof typeof CountryFlagEmojis);
+    const valueRetyped = rawValue.toUpperCase() as (keyof typeof CountryFlags);
 
-    if (CountryFlagEmojis[valueRetyped]) {
-      label = CountryFlagEmojis[valueRetyped];
+    if (CountryFlags[valueRetyped]) {
+      label = CountryFlags[valueRetyped];
     }
   }
 

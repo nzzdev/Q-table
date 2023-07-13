@@ -7,7 +7,7 @@ export let footnote = '';
 </script>
 
 <span class="qtable-cell-label {cls}">
-  {label}
+  {@html label}
 
   {#if footnote !== ''}
     <Footnote text={footnote} />

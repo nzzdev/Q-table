@@ -7,8 +7,17 @@ export let cell: Cell;
 </script>
 
 <Td type={cell.type} classes={cell.classes}>
-  <CellLabel label={cell.label} footnote={cell.footnote} />
+  {#if cell.type === 'country-flag-emoji'}
+    <img src={cell.label} alt="country flag {cell.value}" />
+  {:else}
+    <CellLabel label={cell.label} footnote={cell.footnote} />
+  {/if}
 </Td>
 
 <style lang="scss">
+:global(.qtable-cell-country-flag-emoji) {
+  img {
+    width: 16px;
+  }
+}
 </style>
