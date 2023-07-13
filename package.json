@@ -30,7 +30,7 @@
     "d3-format": "^3.1.0",
     "joi": "^17.9.2",
     "simple-statistics": "^7.8.3",
-    "svelte": "^3.59.1",
+    "svelte": "^3.59.2",
     "uglify-js": "^3.17.4"
   },
   "devDependencies": {
