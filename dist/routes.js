@@ -1,7 +1,7 @@
 import Ajv from 'ajv';
 import Boom from '@hapi/boom';
 import { formatLocale as formatLocale$1 } from 'd3-format';
-import CountryFlagEmojis from '@nzz/et-utils-country-flag-emoji';
+import CountryFlags from '@nzz/et-utils-country-flags';
 import * as simpleStatistics from 'simple-statistics';
 import { readFileSync } from 'fs';
 import path, { dirname } from 'path';
@@ -148,7 +148,7 @@ function formatTableData(dataWithHeader, footnotes, options) {
 function formatCell(rawValue, type, useGroupingSeparator = false) {
     let label = '';
     if (type === 'country_flags') {
-        return formatCountryFlagEmojiDatapoint(rawValue);
+        return formatCountryFlagDatapoint(rawValue);
     }
     const parsedRawValue = parseFloat(rawValue || '');
     if (isNaN(parsedRawValue)) {
@@ -211,12 +211,12 @@ function formatCell(rawValue, type, useGroupingSeparator = false) {
         classes: ['s-font-note--tabularnums'],
     };
 }
-function formatCountryFlagEmojiDatapoint(rawValue) {
+function formatCountryFlagDatapoint(rawValue) {
     let label = '';
     if (typeof rawValue === 'string') {
         const valueRetyped = rawValue.toUpperCase();
-        if (CountryFlagEmojis[valueRetyped]) {
-            label = CountryFlagEmojis[valueRetyped];
+        if (CountryFlags[valueRetyped]) {
+            label = CountryFlags[valueRetyped];
         }
     }
     return {
