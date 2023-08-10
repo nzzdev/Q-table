@@ -197,7 +197,7 @@ function formatCell(rawValue, type, useGroupingSeparator = false) {
             else {
                 prefix = '➙ ';
             }
-            label = `${prefix}${parsedRawValue}%`;
+            label = `${prefix}${formatLocale.format(`${separator}`)(parsedRawValue)}%`;
             break;
         default:
             label = parsedRawValue.toString();
@@ -2906,7 +2906,7 @@ var optionAvailability = {
                 if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     return {
-                        available: type === 'mixed' || type === 'positive',
+                        available: type === MINIBAR_TYPE.MIXED || type === MINIBAR_TYPE.POSITIVE,
                     };
                 }
             }
@@ -2914,7 +2914,7 @@ var optionAvailability = {
                 if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     return {
-                        available: type === 'mixed' || type === 'negative',
+                        available: type === MINIBAR_TYPE.MIXED || type === MINIBAR_TYPE.NEGATIVE,
                     };
                 }
             }
@@ -2922,7 +2922,7 @@ var optionAvailability = {
                 if (typeof item.options.minibar.selectedColumn === 'number') {
                     const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
                     return {
-                        available: type === 'mixed',
+                        available: type === MINIBAR_TYPE.MIXED,
                     };
                 }
             }

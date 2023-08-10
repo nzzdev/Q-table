@@ -188,7 +188,7 @@ function formatCell(rawValue: QTableCellDataRaw, type: FormattingType, useGroupi
         prefix = '➙ ';
       }
 
-      label = `${prefix}${parsedRawValue}%`;
+      label = `${prefix}${formatLocale.format(`${separator}`)(parsedRawValue)}%`;
       break;
 
     default:
