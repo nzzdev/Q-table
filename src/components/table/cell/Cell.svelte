@@ -8,7 +8,9 @@ export let cell: Cell;
 
 <Td type={cell.type} classes={cell.classes}>
   {#if cell.type === 'country-flag-emoji'}
-    <img src={cell.label} alt="country flag {cell.value}" />
+    {#if cell.label !== ''}
+      <img src={cell.label} alt="country flag {cell.value}" />
+    {/if}
   {:else}
     <CellLabel label={cell.label} footnote={cell.footnote} />
   {/if}

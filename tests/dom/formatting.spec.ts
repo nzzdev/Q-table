@@ -21,9 +21,12 @@ describe('formatting', () => {
     // Countryflag tests.
     // Flags are not in a label element therefore a diff selection.
     elements(response, 'img').then(els => {
+      // There should be only 2 because one flag is incorrect and
+      // therefore not rendered.
+      expect(els.length).toBe(2);
+
       expect(els[0].getAttribute('src')).toBe("https://q-server.st-cdn.nzz.ch/file/countryflags/svg/CH.svg");
       expect(els[1].getAttribute('src')).toBe("https://q-server.st-cdn.nzz.ch/file/countryflags/svg/DE.svg");
-      expect(els[2].getAttribute('src')).toBe("https://q-server.st-cdn.nzz.ch/file/countryflags/svg/AT.svg");
     });
 
 
