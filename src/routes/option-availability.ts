@@ -1,7 +1,7 @@
 import Boom from '@hapi/boom';
 import Joi from 'joi';
 import { getNumericColumns } from '../helpers/data.js';
-import { getMinibarNumbersWithType } from '../helpers/minibars.js';
+import { MINIBAR_TYPE, getMinibarNumbersWithType } from '../helpers/minibars.js';
 import { hasCustomBuckets } from '../helpers/colorColumn.js';
 import type { AvailabilityResponseObject, WebPayload } from '../interfaces';
 import type { Request } from '@hapi/hapi';
@@ -58,7 +58,7 @@ export default {
           const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
 
           return {
-            available: type === 'mixed' || type === 'positive',
+            available: type === MINIBAR_TYPE.MIXED || type === MINIBAR_TYPE.POSITIVE,
           };
         }
       }
@@ -68,7 +68,7 @@ export default {
           const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
 
           return {
-            available: type === 'mixed' || type === 'negative',
+            available: type === MINIBAR_TYPE.MIXED || type === MINIBAR_TYPE.NEGATIVE,
           };
         }
       }
@@ -78,7 +78,7 @@ export default {
           const type = getMinibarNumbersWithType(item.data.table, item.options.minibar.selectedColumn).type;
 
           return {
-            available: type === 'mixed',
+            available: type === MINIBAR_TYPE.MIXED,
           };
         }
       }

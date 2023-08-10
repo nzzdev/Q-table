@@ -40,7 +40,7 @@ export function migrate(uncastedItem: unknown): ReturnPayload {
 
 interface ReturnPayload {
   isChanged: boolean;
-  item: null | unknown;
+  item: unknown;
 }
 
 interface Item {

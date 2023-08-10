@@ -43,5 +43,5 @@ interface Data {
 
 interface ReturnPayload {
   isChanged: boolean;
-  item: null | unknown;
+  item: unknown;
 }
