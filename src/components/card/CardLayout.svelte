@@ -14,17 +14,17 @@ const { tableHead } = componentConfiguration;
       {#each row.cells as cell, colIndex}
         <div class={`qtable-card-cell ${cell.classes.join(' ')} `}>
           <span class="qtable-card-cell-title">
-            {tableHead[colIndex].value}
+            {@html tableHead[colIndex].value}
 
             {#if tableHead[colIndex].footnote !== ''}
-              <Footnote text={tableHead[colIndex].footnote}/>
+              <Footnote text={tableHead[colIndex].footnote} />
             {/if}
           </span>
 
           <span class="qtable-card-cell-value">
             {cell.value}
             {#if cell.footnote !== ''}
-              <Footnote text={cell.footnote}/>
+              <Footnote text={cell.footnote} />
             {/if}
           </span>
         </div>
