@@ -1691,8 +1691,9 @@ var properties$1 = {
 		type: "object",
 		properties: {
 			pageSize: {
-				title: "Zeilen ausblenden nach",
+				title: "Zeilen ausblenden nach (Min. = 10)",
 				type: "number",
+				minimum: 10,
 				"default": 10
 			},
 			frozenRowKey: {
